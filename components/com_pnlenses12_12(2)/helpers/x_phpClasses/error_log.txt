@@ -1,0 +1,208 @@
+[22-Jun-2012 10:27:16] PHP Notice:  Undefined index: companyID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 17
+[22-Jun-2012 10:27:16] PHP Notice:  Undefined index: polymerID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 18
+[22-Jun-2012 10:27:16] PHP Notice:  Undefined index: format in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 20
+[22-Jun-2012 10:27:17] PHP Notice:  Undefined variable: params in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 17
+[22-Jun-2012 10:27:17] PHP Notice:  Undefined variable: params in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 18
+[22-Jun-2012 10:27:17] PHP Notice:  Use of undefined constant checkSph - assumed 'checkSph' in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/RxHelper.php on line 181
+[22-Jun-2012 10:27:17] PHP Notice:  Use of undefined constant checkCyl - assumed 'checkCyl' in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/RxHelper.php on line 181
+[22-Jun-2012 10:27:17] PHP Notice:  Use of undefined constant checkAxis - assumed 'checkAxis' in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/RxHelper.php on line 181
+[22-Jun-2012 10:27:17] PHP Warning:  Division by zero in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/RxObject.php on line 99
+[22-Jun-2012 10:27:17] PHP Warning:  Division by zero in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/RxObject.php on line 100
+[22-Jun-2012 10:28:18] PHP Notice:  Undefined index: companyID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 17
+[22-Jun-2012 10:28:18] PHP Notice:  Undefined index: polymerID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 18
+[22-Jun-2012 10:28:18] PHP Notice:  Undefined index: format in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 20
+[22-Jun-2012 10:28:18] PHP Notice:  Undefined variable: params in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 17
+[22-Jun-2012 10:28:18] PHP Notice:  Undefined variable: params in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 18
+[22-Jun-2012 10:28:18] PHP Fatal error:  Call to undefined function checkSph() in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/RxHelper.php on line 181
+[22-Jun-2012 10:29:09] PHP Notice:  Undefined index: companyID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 17
+[22-Jun-2012 10:29:09] PHP Notice:  Undefined index: polymerID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 18
+[22-Jun-2012 10:29:09] PHP Notice:  Undefined index: format in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 20
+[22-Jun-2012 10:29:09] PHP Fatal error:  Call to undefined function checkSph() in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/RxHelper.php on line 181
+[22-Jun-2012 10:30:12] PHP Notice:  Undefined index: companyID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 17
+[22-Jun-2012 10:30:12] PHP Notice:  Undefined index: polymerID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 18
+[22-Jun-2012 10:30:12] PHP Notice:  Undefined index: format in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 20
+[22-Jun-2012 10:30:46] PHP Notice:  Undefined index: companyID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 17
+[22-Jun-2012 10:30:46] PHP Notice:  Undefined index: polymerID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 18
+[22-Jun-2012 10:30:46] PHP Notice:  Undefined index: format in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 20
+[22-Jun-2012 10:39:02] PHP Notice:  Undefined index: companyID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 17
+[22-Jun-2012 10:39:02] PHP Notice:  Undefined index: polymerID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 18
+[22-Jun-2012 10:39:02] PHP Notice:  Undefined index: format in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 20
+[22-Jun-2012 10:39:02] PHP Notice:  Undefined variable: format in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 105
+[22-Jun-2012 10:39:39] PHP Notice:  Undefined index: companyID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 17
+[22-Jun-2012 10:39:39] PHP Notice:  Undefined index: polymerID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 18
+[22-Jun-2012 10:39:39] PHP Notice:  Undefined index: format in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 20
+[22-Jun-2012 11:20:04] PHP Notice:  Undefined variable: targetCyl in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 58
+[22-Jun-2012 11:20:04] PHP Notice:  Undefined variable: targetCyl in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 58
+[22-Jun-2012 11:24:00] PHP Fatal error:  Call to a member function diffVertex() on a non-object in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 22
+[22-Jun-2012 11:25:18] PHP Fatal error:  Call to a member function prettyString() on a non-object in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 23
+[22-Jun-2012 11:26:15] PHP Fatal error:  Call to a member function diffVertex() on a non-object in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 23
+[22-Jun-2012 11:26:36] PHP Fatal error:  Call to a member function diffVertex() on a non-object in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 23
+[22-Jun-2012 11:27:10] PHP Fatal error:  Call to a member function diffVertex() on a non-object in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 23
+[22-Jun-2012 11:27:28] PHP Fatal error:  Call to a member function diffVertex() on a non-object in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 23
+[22-Jun-2012 11:28:49] PHP Fatal error:  Call to a member function diffVertex() on a non-object in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 23
+[22-Jun-2012 11:29:08] PHP Fatal error:  Call to a member function diffVertex() on a non-object in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 23
+[22-Jun-2012 11:29:51] PHP Fatal error:  Call to a member function diffVertex() on a non-object in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 23
+[22-Jun-2012 11:30:17] PHP Fatal error:  Call to a member function diffVertex() on a non-object in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 23
+[22-Jun-2012 11:30:36] PHP Fatal error:  Call to a member function diffVertex() on a non-object in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 23
+[22-Jun-2012 11:30:38] PHP Fatal error:  Call to a member function diffVertex() on a non-object in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 23
+[22-Jun-2012 11:30:55] PHP Fatal error:  Call to a member function diffVertex() on a non-object in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 23
+[22-Jun-2012 11:31:09] PHP Fatal error:  Call to a member function diffVertex() on a non-object in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 23
+[24-Jun-2012 21:06:41] PHP Notice:  Undefined variable: VA in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 85
+[24-Jun-2012 21:06:41] PHP Notice:  Undefined variable: VA in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 85
+[24-Jun-2012 21:06:41] PHP Notice:  Undefined variable: allRxArray in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 89
+[24-Jun-2012 21:07:13] PHP Notice:  Undefined variable: allRxArray in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 89
+[24-Jun-2012 21:15:46] PHP Fatal error:  Call to undefined function prettyStringMinus() in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 85
+[24-Jun-2012 21:16:20] PHP Fatal error:  Call to a member function sphericalEquivalent() on a non-object in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 11
+[24-Jun-2012 21:17:40] PHP Fatal error:  Call to a member function sphericalEquivalent() on a non-object in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 11
+[24-Jun-2012 21:17:56] PHP Fatal error:  Call to a member function sphericalEquivalent() on a non-object in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 11
+[24-Jun-2012 21:20:29] PHP Fatal error:  Call to a member function sphericalEquivalent() on a non-object in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 11
+[24-Jun-2012 21:22:41] PHP Fatal error:  Call to a member function sphericalEquivalent() on a non-object in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 11
+[24-Jun-2012 21:24:13] PHP Fatal error:  Call to a member function sphericalEquivalent() on a non-object in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 11
+[24-Jun-2012 21:24:59] PHP Fatal error:  Call to a member function sphericalEquivalent() on a non-object in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 11
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 46
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 47
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 48
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 38
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 46
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 47
+[24-Jun-2012 21:26:19] PHP Notice:  Object of class RxObject could not be converted to int in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/VAHelper.php on line 48
+[24-Jun-2012 22:14:22] PHP Notice:  Undefined variable: lensArray in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 143
+[25-Jun-2012 21:42:38] PHP Notice:  Undefined variable: targetSphere in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 76
+[25-Jun-2012 21:42:38] PHP Notice:  Undefined variable: targetSphere in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 76
+[25-Jun-2012 21:42:38] PHP Notice:  Undefined variable: targetSphere in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 76
+[25-Jun-2012 21:42:38] PHP Notice:  Undefined variable: targetSphere in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 76
+[25-Jun-2012 21:42:38] PHP Notice:  Undefined variable: targetSphere in /Applications/MAMP/htdocs/eyedock.com/api_new/phpClasses/CLHelper.php on line 76
+[27-Jun-2012 22:04:05] PHP Notice:  Undefined variable: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 59
+[27-Jun-2012 22:06:04] PHP Notice:  Undefined variable: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 59
+[27-Jun-2012 22:06:04] PHP Notice:  Use of undefined constant name - assumed 'name' in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 59
+[27-Jun-2012 22:06:52] PHP Notice:  Undefined variable: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 59
+[27-Jun-2012 22:06:52] PHP Notice:  Use of undefined constant name - assumed 'name' in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 59
+[27-Jun-2012 22:06:52] PHP Notice:  Undefined index: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 341
+[27-Jun-2012 22:06:52] PHP Notice:  Undefined offset: 0 in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 348
+[27-Jun-2012 22:06:52] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:06:52] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:06:52] PHP Notice:  Undefined offset: 0 in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 359
+[27-Jun-2012 22:07:15] PHP Notice:  Undefined variable: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 59
+[27-Jun-2012 22:07:15] PHP Notice:  Undefined index: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 341
+[27-Jun-2012 22:07:15] PHP Notice:  Undefined offset: 0 in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 348
+[27-Jun-2012 22:07:15] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:07:15] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:07:15] PHP Notice:  Undefined offset: 0 in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 359
+[27-Jun-2012 22:08:09] PHP Notice:  Undefined variable: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 59
+[27-Jun-2012 22:08:09] PHP Notice:  Undefined index: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 341
+[27-Jun-2012 22:08:09] PHP Notice:  Undefined index: tid in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 348
+[27-Jun-2012 22:08:09] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:08:09] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:08:09] PHP Notice:  Undefined offset: 0 in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 359
+[27-Jun-2012 22:08:40] PHP Notice:  Undefined variable: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 59
+[27-Jun-2012 22:08:40] PHP Notice:  Undefined index: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 341
+[27-Jun-2012 22:08:40] PHP Notice:  Undefined index: tid in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 349
+[27-Jun-2012 22:08:40] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:08:40] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:08:40] PHP Notice:  Undefined offset: 0 in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 360
+[27-Jun-2012 22:11:14] PHP Notice:  Undefined variable: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 59
+[27-Jun-2012 22:11:14] PHP Notice:  Undefined index: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 341
+[27-Jun-2012 22:11:14] PHP Notice:  Undefined index: tid in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 349
+[27-Jun-2012 22:11:14] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:11:14] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:11:14] PHP Notice:  Undefined offset: 0 in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 360
+[27-Jun-2012 22:11:20] PHP Notice:  Undefined variable: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 59
+[27-Jun-2012 22:11:20] PHP Notice:  Undefined index: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 341
+[27-Jun-2012 22:11:20] PHP Notice:  Undefined index: tid in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 349
+[27-Jun-2012 22:11:20] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:11:20] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:11:20] PHP Notice:  Undefined offset: 0 in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 360
+[27-Jun-2012 22:11:53] PHP Notice:  Undefined variable: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 59
+[27-Jun-2012 22:11:53] PHP Notice:  Undefined index: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 341
+[27-Jun-2012 22:11:53] PHP Notice:  Undefined index: tid in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 349
+[27-Jun-2012 22:11:53] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:11:53] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:11:53] PHP Notice:  Undefined offset: 0 in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 360
+[27-Jun-2012 22:11:55] PHP Notice:  Undefined variable: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 59
+[27-Jun-2012 22:11:55] PHP Notice:  Undefined index: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 341
+[27-Jun-2012 22:11:55] PHP Notice:  Undefined index: tid in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 349
+[27-Jun-2012 22:11:55] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:11:55] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:11:55] PHP Notice:  Undefined offset: 0 in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 360
+[27-Jun-2012 22:13:04] PHP Notice:  Undefined variable: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 59
+[27-Jun-2012 22:13:04] PHP Notice:  Undefined index: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 341
+[27-Jun-2012 22:13:04] PHP Notice:  Undefined index: tid in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 349
+[27-Jun-2012 22:13:04] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:13:04] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:13:04] PHP Notice:  Undefined offset: 0 in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 360
+[27-Jun-2012 22:13:20] PHP Notice:  Undefined variable: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 59
+[27-Jun-2012 22:13:20] PHP Notice:  Undefined index: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 341
+[27-Jun-2012 22:13:20] PHP Notice:  Undefined index: tid in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 349
+[27-Jun-2012 22:13:20] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:13:20] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:13:20] PHP Notice:  Undefined offset: 0 in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 360
+[27-Jun-2012 22:13:24] PHP Notice:  Undefined variable: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 59
+[27-Jun-2012 22:13:24] PHP Notice:  Undefined index: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 341
+[27-Jun-2012 22:13:24] PHP Notice:  Undefined index: tid in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 349
+[27-Jun-2012 22:13:24] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:13:24] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:13:24] PHP Notice:  Undefined offset: 0 in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 360
+[27-Jun-2012 22:14:41] PHP Notice:  Undefined variable: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 59
+[27-Jun-2012 22:14:41] PHP Notice:  Undefined index: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 341
+[27-Jun-2012 22:14:41] PHP Notice:  Undefined index: tid in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 349
+[27-Jun-2012 22:14:41] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:14:41] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:14:41] PHP Notice:  Undefined offset: 0 in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 360
+[27-Jun-2012 22:15:23] PHP Notice:  Undefined variable: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 59
+[27-Jun-2012 22:15:23] PHP Notice:  Undefined index: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 341
+[27-Jun-2012 22:15:23] PHP Notice:  Undefined index: tid in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 349
+[27-Jun-2012 22:15:23] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:15:23] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 51
+[27-Jun-2012 22:15:23] PHP Notice:  Undefined offset: 0 in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 360
+[27-Jun-2012 22:15:49] PHP Notice:  Undefined variable: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 59
+[27-Jun-2012 22:15:49] PHP Notice:  Undefined index: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 341
+[27-Jun-2012 22:16:07] PHP Notice:  Undefined variable: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 59
+[27-Jun-2012 22:16:07] PHP Notice:  Undefined index: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/dataGetters.php on line 341
+[27-Jun-2012 22:16:36] PHP Notice:  Undefined variable: lensID in /Applications/MAMP/htdocs/eyedock.com/api_new/index.php on line 59

@@ -1,0 +1,300 @@
+#contentarea, #left {
+	height: 1000px; !important;
+}
+
+eyedock-lens-detail{
+ position: absolute;
+ top: 0px;
+ left: 0px;
+ width: 100%;
+ height: 100%;
+ background: transparent;
+ z-index: 50;
+ display: none;
+}
+
+.edas-ld-top{
+ height: 36px;
+ overflow: hidden;
+}
+
+.edas-ld-titleheader{
+	background-color: #2687AE;
+	width: 690px;
+	padding-left: 20px;
+	font-size: 25px;
+ 	font-weight: bold;
+ 	color: white;
+ 	line-height: 36px;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	height: 40px;
+}
+
+.ed-ld-lenstitle{
+	width: 400px;
+	display: inline;
+	vertical-align: middle;
+}
+
+.ed-ld-header-icons{
+	float: right;
+	vertical-align: middle;
+	
+}
+
+.ed-ld-close-btn {
+	margin: 10px 30px 0 0;
+	float: right;
+}
+
+
+.edas-ld-main{
+ border: 2px solid #2687ae;
+ background: white;
+ border-bottom-left-radius: 10px;
+ border-bottom-right-radius: 10px;
+}
+
+.edas-ld-main-content{
+ overflow: hidden;
+ padding: 10px;
+}
+
+
+.ed-ld-row {
+	clear: both;
+}
+
+.ed-ld-clear{
+	clear: both;
+	padding-top: 30px;
+}
+
+.ed-ld-title {
+	 float: left;
+	 width: 95px;
+	 text-align: right;
+	 font-weight: bold;
+	 padding: 5px 10px;
+ }
+ 
+ .ed-ld-data {
+	 margin: 0 0 0 115px;
+	 text-align: left;
+	 padding: 5px;
+ }
+ 
+ .ed-ld-powertable {
+ 	clear: both;
+ 	margin: 0 5px 3px; 
+ 	width:650px;
+ 	border-collapse:collapse;
+ }
+ 
+.ed-ld-powertable, th, td{
+	border: 1px solid #d9e7f2;
+
+}
+
+.ed-ld-powertable th {
+	background-color: #d9e7f2;
+	font-weight: bold;	
+	text-align: center;
+}
+
+.ed-ld-powertable th.spherecell {
+	min-width: 185px;
+}
+ 
+ .ed-ld-powertable td, tr {
+ 	padding: 7px;
+ }
+ 
+ .ed-ld-imagecolumn{
+ 	float: left;
+ 	width: 150px;
+ 	text-align: center;
+ 	height: 200px;
+ 	cursor: pointer;
+
+ }
+ 
+.ed-ld-companyImage{
+	margin-left:auto;
+	margin-right: auto;
+}
+
+.ed-ld-lensImage {
+	margin-left:auto;
+	margin-right: auto;
+}
+
+.ed-ld-lensImage div{
+	overflow: auto;
+	display: inline;
+}
+ 
+.ed-ld-paramcolumn-left {
+	height: 210px;
+ 	float: left;
+ 	margin: 0 0 0 36px;
+ 	width: 210px;
+	border: 1px solid #d9e7f2; 
+	border-top-width: 5px;	
+	padding: 20px 0 0;
+ }
+ 
+.ed-ld-paramcolumn-right {
+	height:210px;
+	margin: 0px 0px 0 36px;
+ 	width: 210px;
+ 	float: left;
+  	border: 1px solid #d9e7f2; 
+	border-top-width: 5px;	
+  	padding: 20px 0 0;
+ }
+ 
+ .ed-ld-paramcolumns{
+ 	padding: 5px;
+ 	overflow: hidden;
+ 	float: left;
+ 	margin: 0 0 20px;
+ }
+
+.ed-ld-questionmark{
+	font-weight: bold;
+	color: green;
+	display: inline;
+	cursor: pointer;
+}
+
+
+ .ed-ld-tablecomments {
+  	float: right;
+  	margin: 3px 20px 30px auto;
+ }
+ 
+ .ed-ld-rowtitle {
+	font-weight: bold;
+ 	width: 630px;
+ 	background-color: #d9e7f2;
+ 	margin-top:30px;
+ 	padding: 10px;
+	border: 1px solid #d9e7f2;
+ }
+ 
+  .ed-ld-rowcontent {
+ 	width: 630px;
+ 	padding: 10px;
+ 	border: 1px solid #d9e7f2;
+ }
+
+
+.ed-ld-popup-info {
+	display: none;
+}
+
+
+
+
+
+/*_________________*/
+
+.edas-ld-wholesale-view{
+ text-align: center;
+ padding: 10px 0 3px 0;
+}
+
+.edas-ld-wholesale{
+ padding: 7px;
+ background: #d9e7f2;
+ border: 1px solid #DDDCDC;
+}
+
+/*
+.edas-ld-bottom{
+ height: 36px;
+ display: none;
+}
+
+.edas-ld-bottom-left{
+ height: 100%;
+ background-image: url('../img/bottom-left.gif');
+ background-position: left center;
+ background-repeat: no-repeat;
+}
+
+.edas-ld-bottom-right{
+ height: 100%;
+ background-image: url('../img/bottom-right.gif');
+ background-position: right center;
+ background-repeat: no-repeat;
+ padding: 0 7px;
+}
+
+.edas-ld-bottom-content{
+ height: 100%;
+ background-image: url('../img/bottom-bg.gif');
+ background-position: center center;
+ background-repeat: repeat-x;
+}
+
+.edas-popup-link{
+ margin: 0 0 0 2px;
+ color: #01A700;
+ cursor: pointer;
+ font-weight: bold;
+}
+
+.edas-ld-link{
+ text-align: center;
+ margin: 5px 0;
+}
+
+.ed-ld-mrsearch {
+	padding:20px 0;
+}
+
+.edas-ld-discontinued{
+ color: red;
+ font-size: 13px;
+ font-style: italic;
+ margin-top: -9px;
+ text-align: center;
+ padding: 7px;
+}
+
+.edas-company-details {
+ position: absolute;
+ top: 82px;
+ left: 47px;
+}
+
+.edas-company-details-companyname {
+ font-weight: bold;
+ font-size: 1.5em;
+}
+
+.edas-address-inline {
+ display: inline;
+}
+
+.edas-popup-interior-link {
+ /*color: #FA0 !important;*/
+ color: #327180; !important;
+ font-weight: bold;
+}
+
+.edas-company-details-block {
+ margin-top: 7px;
+}
+
+.edas-company-details .eyedock-detailed-popup-close {
+ right: 5px;
+ top: 2px;
+ position: relative;
+ float: right;
+ display: none;
+}
+*/

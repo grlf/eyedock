@@ -1,0 +1,19 @@
+Dear {fname} {lname}
+
+We are currently updating {companyname} lenses on our database at http://www.eyedock.com. I was hoping you could look through the data we have on file and let us know if there are any errors, updates, omissions, or other issues with our listings.
+
+You can see all of your company's lenses on EyeDock at this URL:
+http://www.eyedock.com/index.php?option=com_pnlenses#view=detail&id={compID}
+
+I've also pasted a text summary of our listings for your lenses below. If you see any errors I'd greatly appreciate a reply to this email with any correction (using another color of text is really helpful). 
+
+If you are unfamiliar with EyeDock, we are a subscription service for eye care providers. We have been cataloging contact lenses and other ophthalmic products and data since 2002. We currently have over 3,000 users, including most of the optometry schools and the US Navy. We also provide data for multiple electronic medical records (EMR) systems. Needless to say we want to make sure our listings are as accurate as humanly possible, for the sake of everyone involved (us, you, and our users!).
+
+My goal is to send out a "report" like this every 3 months or so, and I'm hoping you can let me know if there are any changes that need to be made. If everything looks good it would be great to get some confirmation of that too, but I'll leave that up to you.
+
+Please let me know if you have any questions about EyeDock or myself. If you would like these emails to be sent to a different person or email address just let me know. Also, if you would like access to the website (and our iPhone app) let me know and I'd be happy to set up an account for you. 
+
+Sincerely,
+
+Todd M Zarwell OD FAAO
+EyeDock developer

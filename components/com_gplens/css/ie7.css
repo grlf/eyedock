@@ -1,0 +1,32 @@
+.gp_rounder_right {
+position: relative;
+top: -22px;
+}
+
+.gp_company_listing, .gp_lens_listing {
+clear: both;
+}
+
+.gp_tab span {
+position: relative;
+left: -5px;
+}
+
+a:active, input:active
+{
+outline: 0 !important;
+}
+
+/*
+.greater_less_than a {
+margin-bottom: 2px;
+}
+
+.greater_less_than a:focus {
+text-decoration: underline !important;
+}
+*/
+
+#gp_lens_details .gp_rounder_right {
+top: -29px;
+}

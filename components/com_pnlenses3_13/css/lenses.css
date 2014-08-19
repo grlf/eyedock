@@ -1,0 +1,18 @@
+#ed-lenses-main {
+    width: 730px;
+    min-height: 600px;
+    /*background-color: gray;*/
+    margin: 20px 0;
+}
+
+#ed-lenses-display{
+    width: 710px;
+    min-height: 580px;   
+    /*background-color: green;*/
+    margin: 10px;
+   display: none;
+}
+
+.ui-dialog-content p{
+	margin: 10px;
+}

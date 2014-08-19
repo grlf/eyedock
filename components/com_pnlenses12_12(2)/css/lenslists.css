@@ -1,0 +1,110 @@
+
+#ed-lenses-paramsList{
+	max-height: 1000px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+#ed-lenses-search {
+    /*display:none;*/
+    margin-left: 120px;
+}
+
+#ed-lenses-listHeader{
+    width: 680px;
+    height: 40px;   
+    background-color: pink;
+    margin: 10px;
+    /*display:inline-block;*/
+}
+
+#ed-lenses-paramsList table,th, td{
+    border: 1px solid black;
+    padding: 7px;
+}
+
+#ed-lenses-powerList table,th, td{
+    border: 1px solid black;
+    padding: 7px;
+}
+
+#ed-lenses-lists{
+	margin-top: 40px;
+	display: none;
+}
+
+/* tables */
+table.tablesorter {
+	
+	font-family:arial;
+	margin:10px 0pt 15px;
+	width: 100%;
+	text-align: left;
+}
+table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+	background-color: #e6EEEE;
+	/*border:1px solid #f1f6fa;
+	padding: 4px;*/
+}
+table.tablesorter thead tr .header {
+	/*background-image: url('../img/bg.gif');*/
+	background-repeat: no-repeat;
+	background-position: center right;
+	cursor: pointer;
+	padding: 4px;
+}
+
+table.tablesorter tbody td {
+	padding: 4px;
+	vertical-align: top;
+	height: 25 px;
+	border:1px solid #f1f6fa;
+	padding: 8px;
+}
+
+table.tablesorter thead tr .headerSortUp {
+	background-image: url('../images/asc.gif');
+}
+table.tablesorter thead tr .headerSortDown {
+	background-image: url('../images/desc.gif');
+}
+table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+	 background-color: #D9E7F2;
+}
+
+table.tablesorter  tbody tr:hover{ 
+	background-color: #f1f6fa;
+} 
+
+table.tablesorter tbody tr{ 
+	cursor: pointer;
+} 
+
+.discontinuedCol {
+ 	color: red;
+}
+
+/* columns */
+.sDiamCol, .lDiamCol, .dkCol, .ctCol, .ozCol, .h2oCol {
+	display: none;
+}
+
+.ed_lenses_settings_btns {
+	float: right;
+}
+
+#ed-lenses-settings {
+	text-align: left;
+	font-size: 11pt;
+}
+
+#ed-lenses-settings label {
+	width: 220px;
+}
+
+#ed-lenses-settings div {
+	margin-top: 25px;
+}
+
+
+

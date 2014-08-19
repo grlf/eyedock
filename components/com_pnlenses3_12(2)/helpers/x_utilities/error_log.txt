@@ -1,0 +1,17 @@
+[29-Sep-2012 16:06:31 UTC] PHP Notice:  Undefined index: format in /Applications/MAMP/htdocs/eyedock.com/api_new/utilities/clParamExtraction.php on line 18
+[29-Sep-2012 16:06:31 UTC] PHP Notice:  Undefined index: bcData in /Applications/MAMP/htdocs/eyedock.com/api_new/utilities/clParamExtraction.php on line 23
+[29-Sep-2012 16:06:31 UTC] PHP Notice:  Undefined index: diamData in /Applications/MAMP/htdocs/eyedock.com/api_new/utilities/clParamExtraction.php on line 29
+[29-Sep-2012 16:06:31 UTC] PHP Notice:  Undefined index: sphData in /Applications/MAMP/htdocs/eyedock.com/api_new/utilities/clParamExtraction.php on line 38
+[29-Sep-2012 16:06:31 UTC] PHP Notice:  Undefined index: cylPwrData in /Applications/MAMP/htdocs/eyedock.com/api_new/utilities/clParamExtraction.php on line 44
+[29-Sep-2012 16:06:31 UTC] PHP Notice:  Undefined index: cylAxisData in /Applications/MAMP/htdocs/eyedock.com/api_new/utilities/clParamExtraction.php on line 50
+[29-Sep-2012 16:06:31 UTC] PHP Notice:  Undefined index: addData in /Applications/MAMP/htdocs/eyedock.com/api_new/utilities/clParamExtraction.php on line 64
+[29-Sep-2012 16:06:31 UTC] PHP Notice:  Undefined variable: response in /Applications/MAMP/htdocs/eyedock.com/api_new/utilities/clParamExtraction.php on line 77
+[29-Sep-2012 16:07:04 UTC] PHP Notice:  Undefined index: format in /Applications/MAMP/htdocs/eyedock.com/api_new/utilities/clParamExtraction.php on line 18
+[29-Sep-2012 16:07:04 UTC] PHP Notice:  Undefined index: bcData in /Applications/MAMP/htdocs/eyedock.com/api_new/utilities/clParamExtraction.php on line 23
+[29-Sep-2012 16:07:04 UTC] PHP Notice:  Undefined index: diamData in /Applications/MAMP/htdocs/eyedock.com/api_new/utilities/clParamExtraction.php on line 29
+[29-Sep-2012 16:07:04 UTC] PHP Notice:  Undefined index: sphData in /Applications/MAMP/htdocs/eyedock.com/api_new/utilities/clParamExtraction.php on line 38
+[29-Sep-2012 16:07:04 UTC] PHP Notice:  Undefined index: cylPwrData in /Applications/MAMP/htdocs/eyedock.com/api_new/utilities/clParamExtraction.php on line 44
+[29-Sep-2012 16:07:04 UTC] PHP Notice:  Undefined index: cylAxisData in /Applications/MAMP/htdocs/eyedock.com/api_new/utilities/clParamExtraction.php on line 50
+[29-Sep-2012 16:07:04 UTC] PHP Notice:  Undefined index: addData in /Applications/MAMP/htdocs/eyedock.com/api_new/utilities/clParamExtraction.php on line 64
+[29-Sep-2012 16:07:04 UTC] PHP Notice:  Undefined variable: response in /Applications/MAMP/htdocs/eyedock.com/api_new/utilities/clParamExtraction.php on line 77
+[29-Sep-2012 16:07:04 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /Applications/MAMP/htdocs/eyedock.com/api_new/utilities/clParamExtraction.php:18) in /Applications/MAMP/htdocs/eyedock.com/api_new/utilities/clParamExtraction.php on line 106

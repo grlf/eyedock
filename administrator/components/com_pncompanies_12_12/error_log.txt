@@ -1,0 +1,1 @@
+[15-Dec-2012 13:00:05 UTC] PHP Notice:  Undefined variable: companies in /Applications/MAMP/htdocs/eyedock.com/administrator/components/com_pncompanies/emailReports.php on line 34

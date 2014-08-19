@@ -1,0 +1,30 @@
+[30-Dec-2012 14:53:00 UTC] PHP Fatal error:  Function name must be a string in /Applications/MAMP/htdocs/eyedock.com/administrator/components/com_pncompanies/utilities/handleReportForm.php on line 13
+[30-Dec-2012 14:54:25 UTC] PHP Fatal error:  Function name must be a string in /Applications/MAMP/htdocs/eyedock.com/administrator/components/com_pncompanies/utilities/handleReportForm.php on line 13
+[30-Dec-2012 14:56:46 UTC] PHP Notice:  Undefined index: to in /Applications/MAMP/htdocs/eyedock.com/administrator/components/com_pncompanies/utilities/handleReportForm.php on line 13
+[30-Dec-2012 14:56:46 UTC] PHP Notice:  Undefined index: subject in /Applications/MAMP/htdocs/eyedock.com/administrator/components/com_pncompanies/utilities/handleReportForm.php on line 14
+[30-Dec-2012 14:56:46 UTC] PHP Notice:  Undefined index: report_content in /Applications/MAMP/htdocs/eyedock.com/administrator/components/com_pncompanies/utilities/handleReportForm.php on line 15
+[30-Dec-2012 14:56:46 UTC] PHP Notice:  Undefined index: email_body in /Applications/MAMP/htdocs/eyedock.com/administrator/components/com_pncompanies/utilities/handleReportForm.php on line 16
+[30-Dec-2012 14:56:46 UTC] PHP Notice:  Undefined index: company in /Applications/MAMP/htdocs/eyedock.com/administrator/components/com_pncompanies/utilities/handleReportForm.php on line 17
+[30-Dec-2012 14:56:46 UTC] PHP Notice:  Undefined index: contact in /Applications/MAMP/htdocs/eyedock.com/administrator/components/com_pncompanies/utilities/handleReportForm.php on line 18
+[30-Dec-2012 14:56:46 UTC] PHP Notice:  Undefined index: id in /Applications/MAMP/htdocs/eyedock.com/administrator/components/com_pncompanies/utilities/handleReportForm.php on line 19
+[30-Dec-2012 14:57:03 UTC] PHP Notice:  Undefined index: report_content in /Applications/MAMP/htdocs/eyedock.com/administrator/components/com_pncompanies/utilities/handleReportForm.php on line 15
+[30-Dec-2012 14:57:13 UTC] PHP Notice:  Undefined index: report_content in /Applications/MAMP/htdocs/eyedock.com/administrator/components/com_pncompanies/utilities/handleReportForm.php on line 15
+[30-Dec-2012 14:57:13 UTC] PHP Notice:  Undefined variable: headers in /Applications/MAMP/htdocs/eyedock.com/administrator/components/com_pncompanies/utilities/emailer.php on line 34
+[30-Dec-2012 14:57:13 UTC] PHP Notice:  Undefined variable: header in /Applications/MAMP/htdocs/eyedock.com/administrator/components/com_pncompanies/utilities/emailer.php on line 36
+[30-Dec-2012 14:57:21 UTC] PHP Notice:  Undefined index: report_content in /Applications/MAMP/htdocs/eyedock.com/administrator/components/com_pncompanies/utilities/handleReportForm.php on line 15
+[30-Dec-2012 14:57:21 UTC] PHP Notice:  Undefined variable: headers in /Applications/MAMP/htdocs/eyedock.com/administrator/components/com_pncompanies/utilities/emailer.php on line 34
+[30-Dec-2012 14:57:21 UTC] PHP Notice:  Undefined variable: header in /Applications/MAMP/htdocs/eyedock.com/administrator/components/com_pncompanies/utilities/emailer.php on line 36
+[30-Dec-2012 14:57:21 UTC] PHP Fatal error:  Call to a member function close() on a non-object in /Applications/MAMP/htdocs/eyedock.com/administrator/components/com_pncompanies/utilities/companyFunctions.php on line 16
+[30-Dec-2012 16:08:15 UTC] PHP Notice:  Undefined variable: headers in /Applications/MAMP/htdocs/eyedock.com/administrator/components/com_pncompanies/utilities/emailer.php on line 34
+[30-Dec-2012 16:08:15 UTC] PHP Notice:  Undefined variable: header in /Applications/MAMP/htdocs/eyedock.com/administrator/components/com_pncompanies/utilities/emailer.php on line 36
+[30-Dec-2012 16:08:16 UTC] PHP Fatal error:  Call to a member function close() on a non-object in /Applications/MAMP/htdocs/eyedock.com/administrator/components/com_pncompanies/utilities/companyFunctions.php on line 17
+[05-Jan-2013 07:17:41] PHP Notice:  Undefined variable: headers in /home/eyedockuser/eyedock.com/administrator/components/com_pncompanies/utilities/emailer.php on line 34
+[05-Jan-2013 07:17:41] PHP Notice:  Undefined variable: header in /home/eyedockuser/eyedock.com/administrator/components/com_pncompanies/utilities/emailer.php on line 36
+[05-Jan-2013 07:17:41] PHP Notice:  Undefined variable: query in /home/eyedockuser/eyedock.com/administrator/components/com_pncompanies/utilities/companyFunctions.php on line 15
+[05-Jan-2013 07:17:41] PHP Notice:  Undefined variable: headers in /home/eyedockuser/eyedock.com/administrator/components/com_pncompanies/utilities/emailer.php on line 34
+[05-Jan-2013 07:17:41] PHP Notice:  Undefined variable: header in /home/eyedockuser/eyedock.com/administrator/components/com_pncompanies/utilities/emailer.php on line 36
+[05-Jan-2013 07:17:41] PHP Notice:  Undefined variable: query in /home/eyedockuser/eyedock.com/administrator/components/com_pncompanies/utilities/companyFunctions.php on line 15
+[05-Jan-2013 07:17:41] PHP Notice:  Undefined variable: headers in /home/eyedockuser/eyedock.com/administrator/components/com_pncompanies/utilities/emailer.php on line 34
+[05-Jan-2013 07:17:41] PHP Notice:  Undefined variable: header in /home/eyedockuser/eyedock.com/administrator/components/com_pncompanies/utilities/emailer.php on line 36
+[05-Jan-2013 07:17:41] PHP Notice:  Undefined variable: query in /home/eyedockuser/eyedock.com/administrator/components/com_pncompanies/utilities/companyFunctions.php on line 15
+[06-Jul-2014 20:09:31 America/Los_Angeles] PHP Notice:  Undefined variable: from in /home/eyedockuser/eyedock.com/administrator/components/com_pncompanies/utilities/emailer.php on line 43

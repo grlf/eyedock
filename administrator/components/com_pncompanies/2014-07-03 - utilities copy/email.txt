@@ -1,0 +1,14 @@
+<p>Dear {fname} {lname},</p>
+
+<p>We are currently updating {companyname} lenses on our database at <a href='http://www.eyedock.com'>eyedock.com</a>. I was hoping you could look through the data we have on file (below) and let us know if there are any errors, updates, omissions, or other issues with our listings.</p>
+
+<p>If you are unfamiliar with EyeDock, we are a subscription service for eye care providers. We have been cataloging contact lenses and other ophthalmic products and data for the last 10 years. We currently have over 3,000 users, including most of the optometry schools and the US Navy. We also provide data for multiple electronic medical records systems. Needless to say we want to make sure our listings are as accurate as humanly possible, for the sake of everyone involved (us, you, and our users).</p>
+
+<p>My goal is to send out a "report" like this every 3 months or so, and I'm hoping you can let me know if there are any changes that need to be made. If everything looks good it would be great to get some confirmation of that too, but I'll leave that up to you.</p>
+
+<p>Please let me know if you have any questions about EyeDock or myself. If you would like these emails to be sent to a different person or email address just <a href='mailto:todd@eyedock.com'>send me an email</a>. Also, if you would like access to the website (and our <a href='https://itunes.apple.com/us/app/eyedock/id354889491?mt=8'>iPhone app</a>) let me know and I'd be happy to set up an account for you. </p>
+
+<p>Sincerely,</p>
+
+<p>Todd M Zarwell OD FAAO<br/>
+EyeDock developer</p>

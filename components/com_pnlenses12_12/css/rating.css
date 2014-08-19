@@ -1,0 +1,86 @@
+.rating {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	background: url('../images/star.png') top;
+	text-indent: -99999px;
+}
+.rating:hover {
+	background-position: 0 -16px;
+}
+
+.rating.on {
+	background-position: 0 -32px;
+}
+
+.popularityBar {
+	background-color: #5DA3CC; 
+/* 
+	overflow: hidden;
+ */
+	height: 10px;
+	/* 
+border-width: 0 1px 1px 0px;
+	border-color: #455878;
+	border-style: solid;
+ */
+	margin-left: 3px;
+	
+}
+/*
+
+.rating {
+	cursor: pointer;
+	display: inline;
+	float: right;
+	clear: both;
+	margin: 10px 50px 0 0;
+	
+	vertical-align: middle;
+}
+
+.rating:after {
+	content: '.';
+	display: inline;
+	height: 0;
+	width: 0;
+	clear: both;
+	visibility: hidden;
+}
+.cancel,
+.star {
+	float: left;
+	
+	
+	width: 21px;
+	height: 25px;
+	overflow: hidden;
+	text-indent: -999em;
+	cursor: pointer;
+	display: inline;
+	vertical-align: middle;
+}
+.cancel,
+.cancel a {background: url(delete.gif) no-repeat 0 -16px;}
+
+.star,
+.star a {background: url('../images/star.gif') no-repeat 0 0px;}
+	
+.cancel a,
+.star a {
+	display: inline;
+	width: 100%;
+	height: 100%;
+	background-position: 0 0px;
+}
+
+div.rating div.on a {
+	background-position: 0 -32px;
+}
+div.rating div.hover a,
+div.rating div a:hover {
+	background-position: 0 -16px;
+}
+
+*/
+
