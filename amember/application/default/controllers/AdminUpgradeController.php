@@ -715,6 +715,8 @@ class AdminUpgradeController extends Am_Controller
         foreach ($this->getDi()->plugins as $type => $pm)
             foreach ($pm->getEnabled() as $v)
                 $req->addPostParameter('plugins['.$type.']['.$v.']', $pm->loadGet($v)->getVersion());
+        foreach ($this->getDi()->config->get('lang.enabled') as $l)
+            $req->addPostParameter('lang[]', $l);
         $req->addPostParameter('php-version', PHP_VERSION);
         $req->addPostParameter('mysql-version', $this->getDi()->db->selectCell("SELECT VERSION()"));
         $req->addPostParameter('root-url', ROOT_URL);

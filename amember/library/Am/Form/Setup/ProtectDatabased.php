@@ -163,7 +163,7 @@ CUT
                         $("input[name$=\'_other_db\']").attr("checked", true).change();
 
                         for(i in data.data){
-                            var e = $("input[name$=\'__"+i+"\']");
+                            var e = $("input[name$=\'__"+i+"\'], select[name$=\'__"+i+"\']");
                             if(e.is(":checkbox"))
                                 e.attr("checked", (data.data[i] ? true :  false)).change();
                             else
@@ -188,7 +188,8 @@ CUT
         $fs->addCheckbox("other_db")
             ->setLabel(___("Use another MySQL Db\n".
             "use custom host, user, password for %s database connection".
-            "Usually you can leave this unchecked", $title));
+            "Usually you can leave this unchecked", $title))
+            ->setId('other-db');
         $fs->addText("user", array('class'=>'other-db'))->setLabel(___('%s MySQL Username', $title))
             ->setId('other-db-user');
         $fs->addPassword("pass", array('class'=>'other-db'))->setLabel(___('%s MySQL Password', $title))
@@ -213,9 +214,9 @@ $(function()
         if (!$("#other-db-user").val()) return flashError("Please enter MySQL username first");
         if (!$("#other-db-pass").val()) return flashError("Please enter MySQL password first");
         if (!$("#other-db-host").val()) return flashError("Please enter MySQL hostname or IP first");
-        if (!$("#db-0").val()) return flashError("Please enter MySQL database name");
+        if (!$("#db-name").val()) return flashError("Please enter MySQL database name");
         btn.val("Testing...");
-        $("#other-db-test-result").load(window.rootUrl + '/admin-setup/ajax', $(this).parents("form").serialize()+'&test_db=1', function(data){
+        $("#other-db-test-result").load(window.rootUrl + '/admin-setup/ajax', $(this).parents("form").find("#other-db, #other-db-user, #other-db-pass, #other-db-host, #db-name, #db-prefix, input[name=p]").serialize()+'&test_db=1', function(data){
             btn.val(val); 
             if (!data.match(/^OK/)) 
                 $("#other-db-test-result").css("color", "red");
@@ -236,8 +237,10 @@ CUT
 
         $group = $fs->addGroup()->setLabel(___('%s Database name and Tables Prefix', $title));
         $group->setSeparator(' ');
-        $group->addText("db", array('class'=>'db-prefiix'))->addRule('required', ___('this field is required'));
-        $group->addText("prefix", array('class'=>'db-prefiix'));
+        $group->addText("db", array('class'=>'db-prefiix'))
+            ->setId('db-name')->addRule('required', ___('this field is required'));
+        $group->addText("prefix", array('class'=>'db-prefiix'))
+            ->setId('db-prefix');
         $group->addRule('callback2', '-error-', array($this, 'configCheckDbSettings'));
         try {
             $a = array();

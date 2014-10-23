@@ -1,21 +1,19 @@
 <?php
 /**
- * @table paysystems
- * @id plimus
- * @title Plimus
- * @visible_link http://home.plimus.com/ecommerce/
- * @recurring paysystem
- * @logo_url plimus.gif
+ * This plugin is deprecated. Use bluesnap instead.
+ * We leave this file so existing recurring
+ * subscription in plimus continue to work
+ * in existing installations.
  */
 class Am_Paysystem_Plimus extends Am_Paysystem_Abstract {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
     
     protected $defaultTitle = 'Plimus';
     protected $defaultDescription = 'Credit Card Payment';
     
-    const URL = "https://www.plimus.com/jsp/buynow.jsp";
-    const TESTING_URL = "https://sandbox.plimus.com/jsp/buynow.jsp";
+    const URL = "https://www.bluesnap.com/jsp/buynow.jsp";
+    const TESTING_URL = "https://sandbox.bluesnap.com/jsp/buynow.jsp";
     const MODE_LIVE = 'live';
     const MODE_SANDBOX = 'sandbox';
     const MODE_TEST = 'test';
@@ -79,7 +77,11 @@ class Am_Paysystem_Plimus extends Am_Paysystem_Abstract {
     function getReadme(){
         return <<<CUT
 <b>Plimus payment plugin configuration</b>
-Up to date instructions can be found at <a href='http://www.amember.com/docs/Plimus_Plugin_Configuration'>http://www.amember.com/docs/Plimus_Plugin_Configuration</a>
+
+This plugin is deprecated. You need to continue use this plugin
+only in case you have active recurring subscriptions that began
+with Plimus. Other way use BlueSnap plugin instead.
+
 CUT;
     }
     public function canAutoCreate()

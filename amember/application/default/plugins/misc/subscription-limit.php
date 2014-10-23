@@ -3,17 +3,21 @@
 class Am_Plugin_SubscriptionLimit extends Am_Plugin
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
 
     function init()
     {
         $this->getDi()->productTable->customFields()->add(new Am_CustomFieldText('subscription_limit', ___('Subscription limit'), ___('limit amount of subscription for this product, keep empty if you do not want to limit amount of subscriptions')));
+        $this->getDi()->productTable->customFields()->add(new Am_CustomFieldText('subscription_user_limit', ___('Subscription limit for each user'), ___('limit amount of subscription for this product per user, keep empty if you do not want to limit amount of subscriptions')));
+        
     }
 
-    function onInvoiceBeforeInsert(Am_Event $event)
+    function onInvoiceBeforePayment(Am_Event $event)
     {
         /* @var $invoice Invoice */
         $invoice = $event->getInvoice();
+        $user = $invoice->getUser();
+
         foreach ($invoice->getItems() as $item)
         {
             $product = $this->getDi()->productTable->load($item->item_id);
@@ -22,8 +26,20 @@ class Am_Plugin_SubscriptionLimit extends Am_Plugin
             {
                 throw new Am_Exception_InputError(sprintf('There is not such amount (%d) of product %s', $item->qty, $item->item_title));
             }
+            
+            $count  = $this->getDI()->db->selectCell("
+                SELECT SUM(ii.qty) 
+                FROM ?_invoice_item ii LEFT JOIN ?_invoice i ON ii.invoice_id = i.invoice_id 
+                WHERE i.user_id = ? and ii.item_id=? and i.status<>0
+                ", $user->pk(), $product->pk());
+            if (($limit = $product->data()->get('subscription_user_limit')) &&
+                $limit < ($item->qty + $count))
+            {
+                throw new Am_Exception_InputError(sprintf('There is not such amount (%d) of product %s you can purchase only %s items.', $item->qty, $item->item_title, $limit));
+            }
+            
+            
         }
-
     }
 
     function onInvoiceStarted(Am_Event_InvoiceStarted $event)

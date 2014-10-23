@@ -1,4 +1,35 @@
 <?php
+
+class Am_Grid_Action_Group_StateEnable extends Am_Grid_Action_Group_Abstract
+{
+
+    protected $needConfirmation = true;
+    protected $enable = true;
+
+    public function __construct($enable = true)
+    {
+        $this->enable = (bool) $enable;
+        parent::__construct(
+                $enable ? "state-enable" : "state-disable",
+                $enable ? ___("Enable") : ___("Disable")
+        );
+    }
+
+    public function handleRecord($id, $record)
+    {
+        if ($this->enable) {
+            if ($record->tag < 0) {
+                $record->updateQuick('tag', -1 * $record->tag);
+            }
+        } else {
+            if ($record->tag >= 0) {
+                $record->updateQuick('tag', $record->tag ? -1 * $record->tag : -1);
+            }
+        }
+    }
+
+}
+
 class AdminStatesController extends Am_Controller_Grid
 {
     function preDispatch()
@@ -75,6 +106,8 @@ class AdminStatesController extends Am_Controller_Grid
         $grid->addCallback(Am_Grid_Editable::CB_VALUES_TO_FORM, array($this, 'valuesToForm'));
         $grid->addCallback(Am_Grid_Editable::CB_VALUES_FROM_FORM, array($this, 'valuesFromForm'));
         $grid->actionAdd(new Am_Grid_Action_LiveEdit('title'));
+        $grid->actionAdd(new Am_Grid_Action_Group_StateEnable(false));
+        $grid->actionAdd(new Am_Grid_Action_Group_StateEnable(true));
         $grid->setFilter(new Am_Grid_Filter_Text(___('Filter by State Title'), array('title' => 'LIKE')));        
         return $grid;
         

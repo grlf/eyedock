@@ -177,7 +177,7 @@ class AffCommissionTable extends Am_Table {
             FROM ?_aff_commission c RIGHT JOIN ?_user a ON a.user_id=c.aff_id
             WHERE (c.record_type=? OR c.date<?) AND (c.payout_detail_id IS NULL)
             GROUP BY c.aff_id
-            HAVING _total > ? AND a.aff_payout_type > ''
+            HAVING _total > 0 AND _total >= ?  AND a.aff_payout_type > ''
         ", AffCommission::VOID, AffCommission::VOID,
             $threseholdDate,
             (double)$this->getDi()->config->get('aff.payout_min', 0));

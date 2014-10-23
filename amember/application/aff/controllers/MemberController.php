@@ -7,7 +7,7 @@
  *        Web: http://www.cgi-central.net
  *    Details: Affiliate pages
  *    FileName $RCSfile$
- *    Release: 4.4.2 ($Revision$)
+ *    Release: 4.4.4 ($Revision$)
  *
  * Please direct bug reports,suggestions or feedback to the cgi-central forums.
  * http://www.cgi-central.net/forum/
@@ -119,5 +119,25 @@ class Aff_MemberController extends Am_Controller
 
         $this->view->form = $form;
         $this->view->display('aff/payout-info.phtml');
+    }
+
+    public function payoutAction()
+    {
+        $query = new Am_Query($this->getDi()->affPayoutDetailTable);
+        $query->leftJoin('?_aff_payout', 'p', 'p.payout_id=t.payout_id');
+        $query->addField('p.*')
+            ->addWhere('aff_id=?',  $this->user->pk());
+
+        $this->view->payouts = $query->selectAllRecords();
+        $this->view->display('aff/payout.phtml');
+    }
+    
+    public function clicksDetailAction()
+    {
+        $date_from = $this->getFiltered('from');
+        $date_to = $this->getFiltered('to');
+        $this->view->clicks = $this->getDi()->affClickTable->fetchByDateInterval($date_from, $date_to, $this->getDi()->auth->getUserId());
+        $this->view->display('/aff/clicks-detail.phtml');
+        
     }
 }

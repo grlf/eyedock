@@ -9,7 +9,7 @@
  */
 class Am_Paysystem_Multisafepay extends Am_Paysystem_Abstract{
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
 
     protected $defaultTitle = 'Multisafepay';
     protected $defaultDescription = 'Credit Card Payment';
@@ -27,7 +27,7 @@ class Am_Paysystem_Multisafepay extends Am_Paysystem_Abstract{
     
     function getSupportedCurrencies()
     {
-        return array('USD','GBP','CAD');
+        return array('USD','GBP','EUR');
     }
     public function createMSP() {
         require_once dirname(__FILE__) . '/MultiSafepay.class.php';

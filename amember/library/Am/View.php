@@ -550,12 +550,17 @@ class Am_View extends Zend_View_Abstract
         $this->headLink()->appendStylesheet(REL_ROOT_URL . "/application/default/views/public/js/jquery/jquery.ui.css");
         $this->headLink()->appendStylesheet(REL_ROOT_URL . "/application/default/views/public/js/chosen/chosen.min.css");
         $this->headLink()->appendStylesheet($this->_scriptCss('admin.css'));
+
+        list($lang, ) = explode('_', Zend_Registry::get('Am_Locale')->getId());
+
         if ($theme = $this->_scriptCss('admin-theme.css'))
             $this->headLink()->appendStylesheet($theme);
         $this->headScript()
             ->prependScript(
                 "window.uiDateFormat = " . Am_Controller::getJson($this->convertDateFormat(Zend_Registry::get('Am_Locale')->getDateFormat())) . ";\n")
             ->prependScript(sprintf("window.uiDefaultDate = new Date(%d,%d,%d);\n", date('Y'), date('n')-1, date('d')))
+            ->prependScript(
+                "window.lang = " . Am_Controller::getJson($lang) . ";\n")
             ->prependScript(sprintf("window.configDisable_rte = %d;\n", $this->di->config->get('disable_rte', 0)))
             ->prependFile(REL_ROOT_URL . "/js.php?js=admin");
         $this->placeholder('body-start')->append(

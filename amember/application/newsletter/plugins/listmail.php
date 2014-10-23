@@ -118,14 +118,15 @@ class Am_Newsletter_Plugin_Listmail extends Am_Newsletter_Plugin
     
     public function onSubscriptionDeleted(Am_Event_SubscriptionDeleted $event)
     {
+        if(!$this->getConfig('expired_list')) return;
         $user = $event->getUser();
         $lmDb = $this->getConfig('db') . '.' . $this->getConfig('prefix');
-        Am_Di::getInstance()->db->select("
+        Am_Di::getInstance()->db->query("
             INSERT INTO {$lmDb}users
                 (uid,list,fname,lname,email,cseq,cdel,cnf,dateadd,htmail)
             VALUES
                 (?,?,?,?,?, 1, 0, 1, ?, 1)
-            " . $this->_getUniqUid(), $this->getConfig('expired_list'), $user->name_f, $user->name_l, $user->email, sqlDate(time()));
+            " , $this->_getUniqUid(), $this->getConfig('expired_list'), $user->name_f, $user->name_l, $user->email, sqlDate(time()));
     }
 
     private function _getUniqUid()

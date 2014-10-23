@@ -71,7 +71,7 @@ class Am_Session_SaveHandler implements Zend_Session_SaveHandler_Interface
             'id' => $id,
             'modified' => Am_Di::getInstance()->time,
             'lifetime' => $this->getLifetime(),
-            'user_id' => null,
+            'user_id' => Am_Di::getInstance()->auth->getUserId(),
             'data' => $data,
         );
         $this->db->query("REPLACE INTO ?_session SET ?a", $row);

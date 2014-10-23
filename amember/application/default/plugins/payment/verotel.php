@@ -12,7 +12,7 @@
  */
 class Am_Paysystem_Verotel extends Am_Paysystem_Abstract {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
     
     protected $defaultTitle = 'Verotel';
     protected $defaultDescription = 'Credit Card Payment';
@@ -24,6 +24,9 @@ class Am_Paysystem_Verotel extends Am_Paysystem_Abstract {
             ->setLabel('Your Verotel Merchant ID#');
         $form->addInteger('site_id')
             ->setLabel('Verotel Site Id');
+        $form->addAdvCheckbox('dynamic_pricing')->setLabel(array('Allow Dynamic Pricing','this option does not allow to use recurring'));
+        $form->addText('secret')
+            ->setLabel(array('Private key','required for dynamic pricing only'));
     }
     
     public function isConfigured() {
@@ -39,16 +42,41 @@ class Am_Paysystem_Verotel extends Am_Paysystem_Abstract {
     }
     public function _process(Invoice $invoice, Am_Request $request, Am_Paysystem_Result $result) {
         $a  = new Am_Paysystem_Action_Redirect(self::URL);
-        $a->verotel_id = $this->getConfig('merchant_id');
-        $a->verotel_product = $invoice->getItem(0)->getBillingPlanData("verotel_id") ?  $invoice->getItem(0)->getBillingPlanData("verotel_id") : $this->getConfig('site_id');
-        $a->verotel_website = $invoice->getItem(0)->getBillingPlanData("verotel_id") ?  $invoice->getItem(0)->getBillingPlanData("verotel_id") : $this->getConfig('site_id');
-        $a->verotel_usercode = $invoice->getLogin();
-        $a->verotel_passcode = 'FromSignupForm';//$invoice->getUser()->getPlaintextPass();
+        if($this->getConfig('dynamic_pricing'))
+        {
+            $a->version = 1;
+            $a->shopID = $this->getConfig('site_id');
+            $a->priceAmount = $invoice->first_total;
+            $a->priceCurrency = $invoice->currency;
+            $a->description = $invoice->getLineDescription();
+            $a->signature = sha1($this->getConfig('secret').":description=" . $invoice->getLineDescription() . ":priceAmount=" . $invoice->first_total . ":priceCurrency=" . $invoice->first_total . ":referenceID=" . ":shopID=" . $this->getConfig('site_id') . ":version=1");
+        }
+        else
+        {
+            $a->verotel_id = $this->getConfig('merchant_id');
+            $a->verotel_product = $invoice->getItem(0)->getBillingPlanData("verotel_id") ?  $invoice->getItem(0)->getBillingPlanData("verotel_id") : $this->getConfig('site_id');
+            $a->verotel_website = $invoice->getItem(0)->getBillingPlanData("verotel_id") ?  $invoice->getItem(0)->getBillingPlanData("verotel_id") : $this->getConfig('site_id');
+            $a->verotel_usercode = $invoice->getLogin();
+            $a->verotel_passcode = 'FromSignupForm';//$invoice->getUser()->getPlaintextPass();
+        }
         $a->verotel_custom1 = $invoice->public_id;        
         $a->filterEmpty();
         $result->setAction($a);
     }
     
+    public function directAction(Am_Request $request, Zend_Controller_Response_Http $response, array $invokeArgs)
+    {
+        try{
+            parent::directAction($request, $response, $invokeArgs);
+        }
+        catch(Am_Exception_Paysystem $e)
+        {
+            $this->getDi()->errorLogTable->logException($e);
+            print "APPROVED";
+            exit();            
+        }
+    }
+
     public function createTransaction(Am_Request $request, Zend_Controller_Response_Http $response, array $invokeArgs) {
         $res = split(":", $request->get('vercode'));
         switch($request->get('trn', @$res[3])){

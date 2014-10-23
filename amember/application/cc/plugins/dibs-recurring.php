@@ -4,6 +4,7 @@
  * @id dibs-recurring
  * @title Dibs
  * @visible_link http://www.dibspayment.com/
+ * @logo_url dibs.png
  * @recurring cc
  */
 class Am_Paysystem_DibsRecurring extends Am_Paysystem_CreditCard

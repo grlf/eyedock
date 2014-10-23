@@ -105,6 +105,12 @@ class Admin extends Am_Record
     {
         return (bool) $this->super_user;
     }
+
+    public function delete()
+    {
+        parent::delete();
+        $this->getDi()->hook->call(Am_Event::ADMIN_AFTER_DELETE, array('admin'=>$this));
+    }
 }
 
 class AdminTable extends Am_Table

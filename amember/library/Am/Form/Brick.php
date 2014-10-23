@@ -245,7 +245,7 @@ class Am_Form_Brick_Name extends Am_Form_Brick
         'Please enter your First Name',
         'Please enter your Last Name',
     );
-    protected $hideIfLoggedInPossible = self::HIDE_DESIRED;
+    protected $hideIfLoggedInPossible = self::HIDE_ALWAYS;
 
     public function __construct($id = null, $config = null)
     {
@@ -384,9 +384,12 @@ class Am_Form_Brick_Email extends Am_Form_Brick
     public function initConfigForm(Am_Form $form)
     {
         $form->addAdvCheckbox('validate')->setLabel(___('Validate E-Mail Address by sending e-mail message with code'));
-        $form->addAdvCheckbox('confirm')->setLabel(array(___('Confirm E-Mail Address'), ___('second field will be displayed to enter email address twice')))
+        $form->addAdvCheckbox('confirm')
+            ->setLabel(___("Confirm E-Mail Address\n" .
+                'second field will be displayed to enter email address twice'))
             ->setId('email-confirm');
-        $form->addAdvCheckbox('do_not_allow_copy_paste')->setLabel(array(___('Does not allow to Copy&Paste to confirmation field')))
+        $form->addAdvCheckbox('do_not_allow_copy_paste')
+            ->setLabel(___('Does not allow to Copy&Paste to confirmation field'))
             ->setId('email-do_not_allow_copy_paste');
         $form->addAdvCheckbox("disabled")->setLabel(___('Read-only'));
         $form->addScript()
@@ -576,9 +579,12 @@ class Am_Form_Brick_Password extends Am_Form_Brick
 
     public function initConfigForm(Am_Form $form)
     {
-        $form->addAdvCheckbox('do_not_confirm')->setLabel(array(___('Does not Confirm Password'), ___('second field will not be displayed to enter password twice')))
+        $form->addAdvCheckbox('do_not_confirm')
+            ->setLabel(___("Does not Confirm Password\n" .
+                'second field will not be displayed to enter password twice'))
             ->setId('password-do_not_confirm');
-        $form->addAdvCheckbox('do_not_allow_copy_paste')->setLabel(array(___('Does not allow to Copy&Paste to confirmation field')))
+        $form->addAdvCheckbox('do_not_allow_copy_paste')
+            ->setLabel(___('Does not allow to Copy&Paste to confirmation field'))
             ->setId('password-do_not_allow_copy_paste');
         $form->addScript()
             ->setScript(<<<CUT
@@ -657,10 +663,15 @@ class Am_Form_Brick_NewPassword extends Am_Form_Brick
 
     public function initConfigForm(Am_Form $form)
     {
-        $form->addAdvCheckbox('do_not_ask_current_pass')->setLabel(array(___('Does not Ask Current Password'), ___('user will not need to enter his current password to change it')));
-        $form->addAdvCheckbox('do_not_confirm')->setLabel(array(___('Does not Confirm Password'), ___('second field will not be displayed to enter password twice')))
+        $form->addAdvCheckbox('do_not_ask_current_pass')
+            ->setLabel(___("Does not Ask Current Password\n" .
+                'user will not need to enter his current password to change it'));
+        $form->addAdvCheckbox('do_not_confirm')
+            ->setLabel(___("Does not Confirm Password\n" .
+                'second field will not be displayed to enter password twice'))
             ->setId('new-password-do_not_confirm');
-        $form->addAdvCheckbox('do_not_allow_copy_paste')->setLabel(array(___('Does not allow to Copy&Paste to confirmation field')))
+        $form->addAdvCheckbox('do_not_allow_copy_paste')
+            ->setLabel(___('Does not allow to Copy&Paste to confirmation field'))
             ->setId('new-password-do_not_allow_copy_paste');
         $form->addScript()
             ->setScript(<<<CUT
@@ -1144,7 +1155,7 @@ $(function(){
             $('#$name-preview').
                 append(
                     $('<div style="margin-bottom:0.2em" class="am-selected-product-row"></div>').
-                        append('[<a href="javascript:;" class="local-link" onclick="$(\'#$name-list input[type=checkbox][value=' + $(this).val() + ']\').removeProp(\'checked\').change(); return false;">X</a>] ').
+                        append('[<a href="javascript:;" class="local-link" onclick="$(\'#$name-list input[type=checkbox][value=' + $(this).val() + ']\').prop(\'checked\', \'\').change(); return false;">X</a>] ').
                         append($(this).parent().html().replace(/<input.*>/, ''))
                 );
         })
@@ -1229,7 +1240,8 @@ EOF;
 
     public function initConfigForm(Am_Form $form)
     {
-        $radio = $form->addSelect('type')->setLabel(array(___('What to Display')));
+        $radio = $form->addSelect('type')
+            ->setLabel(___('What to Display'));
         $radio->loadOptions(array(
             self::DISPLAY_ALL => ___('Display All Products'),
             self::DISPLAY_CATEGORY => ___('Products from selected Categories'),
@@ -1274,7 +1286,9 @@ EOF;
             ->setLabel(___("Add an 'empty' option to select box\nto do not choose any products"))
             ->addText('empty-option-text');
 
-        $form->addAdvCheckbox('hide_if_one')->setLabel(array(___('Hide Select'), ___('if there is only one choice')));
+        $form->addAdvCheckbox('hide_if_one')
+            ->setLabel(___("Hide Select\n" .
+                'if there is only one choice'));
 
         $form->addAdvRadio('require')
             ->setLabel(___('Require Behaviour'))
@@ -1472,10 +1486,13 @@ CUT
     public function initConfigForm(Am_Form $form)
     {
         Am_Di::getInstance()->plugins_payment->loadEnabled();
-        $ps = $form->addSortableMagicSelect('paysystems')->setLabel(array(___('Payment Options'),
-                    ___('if none selected, all enabled will be displayed')))
-                ->loadOptions(Am_Di::getInstance()->paysystemList->getOptionsPublic());
-        $form->addAdvCheckbox('hide_if_one')->setLabel(array(___('Hide Select'), ___('if there is only one choice')));
+        $ps = $form->addSortableMagicSelect('paysystems')
+            ->setLabel(___("Payment Options\n" .
+                'if none selected, all enabled will be displayed'))
+            ->loadOptions(Am_Di::getInstance()->paysystemList->getOptionsPublic());
+        $form->addAdvCheckbox('hide_if_one')
+            ->setLabel(___("Hide Select\n" .
+                'if there is only one choice'));
     }
 
 }
@@ -1494,7 +1511,8 @@ class Am_Form_Brick_Recaptcha extends Am_Form_Brick
     public function initConfigForm(Am_Form $form)
     {
         $form->addSelect('theme')
-            ->setLabel(array(___('reCaptcha Theme'), sprintf('<a target="_blank" href="https://developers.google.com/recaptcha/docs/customization">%s<a/>', ___('examples'))))
+            ->setLabel(___("reCaptcha Theme\n" .
+                '%sexamples%s', '<a target="_blank" href="https://developers.google.com/recaptcha/docs/customization">', '</a>'))
             ->loadOptions($this->theme_options);
     }
 
@@ -1672,8 +1690,8 @@ class Am_Form_Brick_Field extends Am_Form_Brick
             ));
         $form->addText('value')
             ->setId($id_value)
-            ->setLabel(array(___('Default Value for this field'),
-                ___('hidden field will be populated with this value')));
+            ->setLabel(___("Default Value for this field\n" .
+                'hidden field will be populated with this value'));
 
         $type_hidden = self::TYPE_HIDDEN;
         $form->addScript()
@@ -1751,8 +1769,8 @@ class Am_Form_Brick_Agreement extends Am_Form_Brick
     public function initConfigForm(Am_Form $form)
     {
         $form->addAdvCheckbox("do_not_show_agreement_text")
-            ->setLabel(array(___('Does not show Agreement Text'),
-                ___('display only tick box')))
+            ->setLabel(___("Does not show Agreement Text\n" .
+                'display only tick box'))
             ->setId('do-not-show-agreement-text');
         $form->addAdvCheckbox("isHtml")
             ->setLabel(___('Is Html?'))
@@ -1841,7 +1859,7 @@ class Am_Form_Brick_UserGroup extends Am_Form_Brick
     {
         $form->addMagicSelect('groups')
             ->loadOptions(Am_Di::getInstance()->userGroupTable->getSelectOptions())
-            ->setLabel(array(___('Add user to these groups')));
+            ->setLabel(___('Add user to these groups'));
     }
 
     public function insertBrick(HTML_QuickForm2_Container $form)
@@ -1984,15 +2002,14 @@ class Am_Form_Brick_RandomQuestions extends Am_Form_Brick
 
     public function initConfigForm(Am_Form $form)
     {
-        $form->addTextarea('questions', array('rows' => 10, 'cols' => 80))
-            ->setLabel(array(___('Questions with possible answers'),
-                ___('one question per line') . '<br/>' .
-                ___('question and answers should be') . '<br/>' .
-                ___('separated by pipe, for example') . '<br/><br/>' .
-                ___('Question1?|Answer1|Answer2|Answer3') . '<br/>' .
-                ___('Question2?|Answer1|Answer2') . '<br/><br/>' .
-                ___('register of answers does not matter')
-            ));
+        $form->addTextarea('questions', array('rows' => 10, 'class'=>'el-wide'))
+            ->setLabel(___("Questions with possible answers\n" .
+                "one question per line\n" .
+                "question and answers should be\n" .
+                "separated by pipe, for example\n" .
+                "Question1?|Answer1|Answer2|Answer3\n" .
+                "Question2?|Answer1|Answer2\n" .
+                "register of answers does not matter"));
     }
 
     public function validate($answer)
@@ -2009,4 +2026,36 @@ class Am_Form_Brick_RandomQuestions extends Am_Form_Brick
             return false;
     }
 
+}
+
+class Am_Form_Brick_Unsubscribe extends Am_Form_Brick {
+    protected $labels = array(
+        'Unsubscribe from all e-mail messages'
+    );
+
+    public function init()
+    {
+        Am_Di::getInstance()->hook->add(Am_Event::PROFILE_USER_UPDATED, array($this, 'triggerEvent'));
+    }
+
+    public function insertBrick(HTML_QuickForm2_Container $form)
+    {
+        $form->addAdvCheckbox('unsubscribed')
+            ->setLabel($this->___('Unsubscribe from all e-mail messages'));
+    }
+
+    public function isAcceptableForForm(Am_Form_Bricked $form)
+    {
+        return $form instanceof Am_Form_Profile;
+    }
+
+    public function triggerEvent(Am_Event $e)
+    {
+        $oldUser = $e->getOldUser();
+        $user = $e->getUser();
+        if ($oldUser->unsubscribed != $user->unsubscribed) {
+            Am_Di::getInstance()->hook->call(Am_Event::USER_UNSUBSCRIBED_CHANGED,
+                array('user'=>$user, 'unsubscribed' => $user->unsubscribed));
+        }
+    }
 }

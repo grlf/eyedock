@@ -8,7 +8,7 @@
 *    Web: http://www.cgi-central.net
 *    Details: Coupons management
 *    FileName $RCSfile$
-*    Release: 4.4.2 ($Revision$)
+*    Release: 4.4.4 ($Revision$)
 *
 * Please direct bug reports,suggestions or feedback to the cgi-central forums.
 * http://www.cgi-central.net/forum/
@@ -75,9 +75,9 @@ class Am_Form_Admin_CouponBatch extends Am_Form_Admin {
                 ->addRule('gt', ___('Should be greater than 0'), 0);
 
             $source->addText('_code_len', array('size' => 5, 'rel' => 'source-generate'))
-                ->setLabel(array(___("Code Length\ngenerated coupon code length\nbetween 5 and 32")))
-                ->addRule('gt', 'Should be greater than 4', 4)
-                ->addRule('lt', 'Should be less then 33', 33);
+                ->setLabel(___("Code Length\ngenerated coupon code length\nbetween 5 and 32"))
+                ->addRule('gt', ___('Should be greater than %d', 4), 4)
+                ->addRule('lt', ___('Should be less then %d', 33), 33);
 
             $source->addFile('file[]', array('class' => 'styled', 'rel' => 'source-file'))
                 ->setLabel(___('File'));
@@ -238,7 +238,7 @@ class AdminCouponsController extends Am_Controller_Grid
         $grid = new Am_Grid_Editable('_coupon', ___('Coupons Batches'), $ds, $this->_request, $this->view);
         $grid->setRecordTitle(array($this, 'getRecordTitle'));
         $grid->setEventId('gridCouponBatch');
-        $grid->addField('batch_id', ___('#'), true, '', null, '1%');
+        $grid->addField('batch_id', '#', true, '', null, '1%');
         $grid->addField(new Am_Grid_Field_Date('begin_date', ___('Begin Date')))->setFormatDate();
         $grid->addField(new Am_Grid_Field_Date('expire_date', ___('Expire Date')))->setFormatDate();
         $grid->addField(new Am_Grid_Field_IsDisabled());
@@ -483,18 +483,24 @@ CUT
             //100% discount
             if(!$payments)
             {
-                $user = Am_Di::getInstance()->userTable->load($invoice->user_id);
-                $ret[] = sprintf($tpl,
-                    $this->getDi()->view->escape($user->login),
-                    $this->getDi()->view->escape($user->name_f),
-                    $this->getDi()->view->escape($user->name_l),
-                   //REL_ROOT_URL . "/admin-user-payments/index/user_id/{$invoice->user_id}#invoice-{$invoice->pk()}",
-                    $invoice->pk(), $invoice->public_id,
-                    amDatetime($invoice->tm_started),
-                    '&ndash;',
-                    $this->getDi()->view->escape(Am_Currency::render(0)),
-                    ___('100% discount')
-                    );
+                try{
+                    $user = Am_Di::getInstance()->userTable->load($invoice->user_id);
+                    $ret[] = sprintf($tpl,
+                        $this->getDi()->view->escape($user->login),
+                        $this->getDi()->view->escape($user->name_f),
+                        $this->getDi()->view->escape($user->name_l),
+                       //REL_ROOT_URL . "/admin-user-payments/index/user_id/{$invoice->user_id}#invoice-{$invoice->pk()}",
+                        $invoice->pk(), $invoice->public_id,
+                        amDatetime($invoice->tm_started),
+                        '&ndash;',
+                        $this->getDi()->view->escape(Am_Currency::render(0)),
+                        ___('100% discount')
+                        );
+                }
+                catch(Am_Exception_Db_NotFound $e)
+                {
+                    $this->getDi()->errorLogTable->logException($e);
+                }
             }
         }
         $out .= implode("\n", $ret);
@@ -518,6 +524,7 @@ CUT
         foreach($this->getDi()->couponTable->findBy(array('batch_id' => $id)) as $c)
             $out .= $c->code."\r\n";
 
+        $dat = sqlDate('now');
         $this->_helper->sendFile->sendData($out, 'text/csv', "amember_coupons-$id-$dat.csv");
     }
 }

@@ -16,7 +16,7 @@ class Am_Protect_Joomla extends Am_Protect_Databased {
 
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
     const PLUGIN_COMM = self::COMM_COMMERCIAL; //paid
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
 
     protected $groupMode = self::GROUP_MULTI;
     protected $guessTablePattern = "users";
@@ -537,6 +537,16 @@ CUT;
 
 class Am_Protect_Table_Joomla extends Am_Protect_Table {
 
+     function checkPassword(Am_Record $record, User $user, $plaintextPass = null)
+     {
+         if ($plaintextPass)
+         {
+             $ph = new PasswordHash(8, true);
+             if( $ph->CheckPassword($plaintextPass, $record->password))
+                 return true;
+         }
+         return parent::checkPassword($record, $user, $plaintextPass);
+     }
     function __construct(Am_Protect_Databased $plugin, $db = null, $table = null, $recordClass = null, $key = null) {
         parent::__construct($plugin, $db, $table, $recordClass, $key);
     }

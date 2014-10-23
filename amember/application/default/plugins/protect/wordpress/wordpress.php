@@ -17,7 +17,7 @@ class Am_Protect_Wordpress extends Am_Protect_Databased
 {
 
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
 
     protected $_error_reporting_backup = null;
     protected $_timezone_backup = null;
@@ -39,6 +39,7 @@ class Am_Protect_Wordpress extends Am_Protect_Databased
     protected $wpmu = null;
 
     const WPMU_BLOG_ID = 'wpmu_blog_id';
+    const DEFAULT_VERSION =3;
 
     public function init()
     {
@@ -227,6 +228,7 @@ $(function(){
 CUT
             );
         }
+            $form->addSelect($configPrefix ."version", null, array('options'=>array(4=>'4.0 and newer', 3=>'older then 4.0')))->setLabel('Wordpress version');
     }
 
     function getBuddyPressGroups()
@@ -343,6 +345,13 @@ CUT
         $config = preg_replace(array("/include_once/", "/require_once/", "/include/", "/require/"), "trim", $config);
         $config = preg_replace(array("/\<\?php/", "/\?\>/"), "", $config);
         eval($config);
+        
+        if(is_file($version_path = $path.'/wp-includes/version.php') && is_readable($version_path)){
+            @include_once($version_path);
+            list($version, ) = explode('.', $wp_version);
+        }else{
+            $version = '';
+        }
         return array(
             'db' => DB_NAME,
             'prefix' => $table_prefix,
@@ -358,6 +367,7 @@ CUT
             'secure_auth_salt' => SECURE_AUTH_SALT,
             'logged_in_salt' => LOGGED_IN_SALT,
             'nonce_salt' => NONCE_SALT,
+            'version' => $version
         );
     }
 
@@ -629,7 +639,7 @@ CUT
     }
     function calculateWpCoursewareGroups(User $user)
     {
-        $groups = array();
+        $levels = array();
         if ($user && $user->pk())
         {
             foreach ($this->getIntegrationTable()->getAllowedResources($user, $this->getId()) as $integration)
@@ -667,7 +677,7 @@ CUT
 3. Check all configuration settings, set Default level and Default user level 
    if necessary. Click "Save" button. 
    Do not change any settings if you are not sure.
-4. Go to aMember CP -> Products -> Protect Content -> Integrations and setup protection. 
+4. Go to aMember CP -> Protect Content -> Integrations and setup protection.
 
 <b>Optionally</b> you can install aMember plugin into wordpress in order to 
 protect content in wordpress itself: 

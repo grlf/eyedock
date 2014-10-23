@@ -19,6 +19,7 @@ class Cc_AdminRebillsController extends Am_Controller_Grid
         $q->clearFields();
         $q->groupBy('rebill_date');
         $q->addField('rebill_date');
+        $q->addField('(1)', 'is_log');
         $q->addField('COUNT(t.rebill_date)', 'total');
         $q->addField('SUM(IF(t.status=0, 1, 0))', 'status_0');
         $q->addField('SUM(IF(t.status=1, 1, 0))', 'status_1');
@@ -28,7 +29,9 @@ class Cc_AdminRebillsController extends Am_Controller_Grid
         $u = new Am_Query(new InvoiceTable, 'i');
         $u->groupBy('rebill_date');
         $u->clearFields()->addField('i.rebill_date');
-        for ($i = 0; $i < 6; $i++)
+        $u->addField('(0)', 'is_log');
+        $u->addField('COUNT(i.invoice_id)', 'total');
+        for ($i = 1; $i < 6; $i++)
             $u->addField('(NULL)');
         $u->leftJoin('?_cc_rebill', 't', 't.rebill_date=i.rebill_date');
         $u->addWhere('i.rebill_date IS NOT NULL');
@@ -48,8 +51,9 @@ class Cc_AdminRebillsController extends Am_Controller_Grid
         $grid->addField('status_2', 'Error', true)->setFormatFunction(array($this, 'emptyZero'));
         $grid->addField('status_3', 'Success', true)->setFormatFunction(array($this, 'emptyZero'));
         $grid->addField('status_4', 'Exception!', true)->setFormatFunction(array($this, 'emptyZero'));
-        $grid->addField('total', 'Total Records', true)->setFormatFunction(array($this, 'emptyZero'));
+        $grid->addField('total', 'Total Records', true)->setRenderFunction(array($this, 'renderTotal'));
         $grid->addField('_action', '', true)->setRenderFunction(array($this, 'renderLink'));
+        $grid->addCallback(Am_Grid_ReadOnly::CB_TR_ATTRIBS, array($this, 'getTrAttribs'));
         return $grid;
     }
 
@@ -60,12 +64,49 @@ class Cc_AdminRebillsController extends Am_Controller_Grid
         return $this->renderTd("$d<input type='hidden' name='raw-date' value='$raw' /><input type='hidden' name='raw-r_p' value='" . $this->_request->get('_r_p') . "' />", false);
     }
 
+    public function getTrAttribs(& $ret, $record)
+    {
+        if ($record->rebill_date > sqlDate('now'))
+        {
+            $ret['class'] = isset($ret['class']) ? $ret['class'] . ' disabled' : 'disabled';
+        }
+    }
+
+    public function renderTotal(CcRebill $obj)
+    {
+        if ($obj->is_log) {
+            return $this->renderTd($obj->total);
+        } else {
+            $url = REL_ROOT_URL . '/default/admin-payments/p/invoices/index/?' . http_build_query(array(
+                            '_invoice_filter' => array(
+                                'datf' => 'rebill_date',
+                                'dat1' => amDate($obj->rebill_date),
+                                'dat2' => amDate($obj->rebill_date)
+                            ),
+                            '_invoice_sort' => 'rebill_date'
+                            ));
+            return $this->renderTd(sprintf('<a href="%s" target="_top">%d</a>',
+                $this->escape($url), $obj->total), false);
+        }
+    }
+
     public function renderLink(CcRebill $obj)
     {
-        $iconRun = $this->getDi()->view->icon('retry', ___('Run'));
-        $iconDetail = $this->getDi()->view->icon('view', ___('Details'));
+        $linkRun = $linkDetail = '';
 
-        return "<td width='1%' nowrap><a href='javascript:;' class='run' id='run-{$obj->rebill_date}'>$iconRun</a> <a href='javascript:;' class='detail' id='detail-{$obj->rebill_date}'>$iconDetail</a></td>";
+        if ($obj->rebill_date <= sqlDate('now')) {
+            if ($obj->status_3 < $obj->total) {
+                $iconRun = $this->getDi()->view->icon('retry', ___('Run'));
+                $back_url = $this->grid->makeUrl();
+                $linkRun = "<a href='javascript:;' class='run' id='run-{$obj->rebill_date}' data-back_url='$back_url'>$iconRun</a>";
+            }
+            if ($obj->is_log) {
+                $iconDetail = $this->getDi()->view->icon('view', ___('Details'));
+                $linkDetail = "<a href='javascript:;' class='detail' id='detail-{$obj->rebill_date}'>$iconDetail</a>";
+            }
+        }
+
+        return "<td width='1%' nowrap>$linkRun $linkDetail</td>";
     }
 
     public function renderInvoiceLink($record)
@@ -88,10 +129,11 @@ class Cc_AdminRebillsController extends Am_Controller_Grid
         $title = ___('Run Rebill Manually');
         $title_details = ___('Details');
         return <<<CUT
-    function bindClicks(){
-        $("#grid-r a.run").bind('click', function(event){
+    $(document).ready(function(){
+        $(document).on('click', '#grid-r a.run', function(event){
             var date = $(this).attr("id").replace(/^run-/, '');
-            $("#run-form").load(window.rootUrl + "/cc/admin-rebills/run", { date : date}, function(){
+            var back_url = $(this).data('back_url');
+            $("#run-form").load(window.rootUrl + "/cc/admin-rebills/run", { 'date' : date, 'back_url' : back_url}, function(){
                 $("#run-form").dialog({
                     autoOpen: true
                     ,width: 500
@@ -102,7 +144,7 @@ class Cc_AdminRebillsController extends Am_Controller_Grid
                 });
             });
         });
-        $("#grid-r a.detail").bind('click', function(event){
+        $(document).on('click', '#grid-r a.detail', function(event){
             var date = $(this).attr("id").replace(/^detail-/, '');
             var div = $('<div class="grid-wrap" id="grid-r_d"></div>');
             div.load(window.rootUrl + "/cc/admin-rebills/detail?_r_d_date=" + date , function(){
@@ -119,9 +161,7 @@ class Cc_AdminRebillsController extends Am_Controller_Grid
                 });
             });
         });
-    };
-    $(document).ready(function(){bindClicks();});
-    $(document).ajaxStop(function(){bindClicks();});
+    });
     $(function(){
         $(document).on('submit',"#run-form form", function(){
             $(this).ajaxSubmit({target: '#run-form'});
@@ -146,6 +186,7 @@ CUT;
         foreach ($this->getModule()->getPlugins() as $p)
             $s->addOption($p->getTitle(), $p->getId());
         $form->addDate('date')->setLabel(___('Run Rebill Manually'))->addRule('required');
+        $form->addHidden('back_url');
         $form->addSubmit('run', array('value' => ___('Run')));
         return $form;
     }
@@ -188,7 +229,8 @@ CUT;
         $form = $this->createRunForm();
         if ($form->isSubmitted() && $form->validate()) {
             $value = $form->getValue();
-            return $this->doRun($value['paysys_id'], $value['date']);
+            $this->doRun($value['paysys_id'], $value['date']);
+            echo sprintf('<div class="info">%s</div><script type="text/javascript">window.location.href="' . $value['back_url'] . '"</script>', ___('Rebill Opereation Completed for %s', amDate($date)));
         } else {
             echo $form;
         }
@@ -207,8 +249,6 @@ CUT;
             ", $date, $paysys_id, ccRebill::SUCCESS);
 
         $p->ccRebill($date);
-
-        echo sprintf('<div class="info">%s</div>', ___('Rebill Opereation Completed for %s', amDate($date)));
     }
 
 }

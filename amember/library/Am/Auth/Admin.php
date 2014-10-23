@@ -32,6 +32,7 @@ class Am_Auth_Admin extends Am_Auth_Abstract
     const PERM_LOGS_INVOICE = 'logs_invoice';
     const PERM_LOGS_MAIL = 'logs_mail';
     const PERM_LOGS_ADMIN = 'logs_admin';
+    const PERM_LOGS_DOWNLOAD = 'logs_download';
     const PERM_COUNTRY_STATE = 'country_state';
     const PERM_TRANSLATION = 'translation';
     const PERM_REBUILD_DB = 'rebuild_db';
@@ -143,6 +144,7 @@ class Am_Auth_Admin extends Am_Auth_Abstract
                 self::PERM_LOGS_INVOICE => ___('Logs: Invoice'),
                 self::PERM_LOGS_MAIL => ___('Logs: Mail Queue'),
                 self::PERM_LOGS_ADMIN => ___('Logs: Admin Log'),
+                self::PERM_LOGS_DOWNLOAD => ___('Logs: File Downloads'),
                 self::PERM_SYSTEM_INFO => ___('System Info'),
                 self::PERM_TRANSLATION => ___('Manage Translation of Messages'),
                 self::PERM_CLEAR => ___('Delete Old Records'),

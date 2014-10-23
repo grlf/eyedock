@@ -31,6 +31,7 @@ class AffCommissionRule extends Am_Record
     const COND_PRODUCT_ID      = 'product_id';
     const COND_PRODUCT_CATEGORY_ID = 'product_category_id';
     const COND_COUPON = 'coupon';
+    const COND_PAYSYS_ID = 'paysys_id';
     
     static function getTypes()
     {
@@ -117,6 +118,10 @@ class AffCommissionRule extends Am_Record
                     if ($vars['used'] ? !$coupon_cond_match : $coupon_cond_match)
                         return false;
                     break;
+                case self::COND_PAYSYS_ID :
+                    if (!in_array($invoice->paysys_id, (array)$vars))
+                        return false;
+                    break;
                 default: 
                     return false;
             }
@@ -178,20 +183,29 @@ class AffCommissionRule extends Am_Record
                     $ret[] = ___("product category IN (%s)", implode(", ", $v));
                     break;
                 case self::COND_COUPON:
-                    $end = '';
+                    $txt = '';
                     switch ($vars['type']) {
                             case 'any' :
-                                $end = ___('Any Coupon');
+                                $txt = $vars['used']  ?
+                                    ___('Used Any Coupon') :
+                                    ___("Did't Use Any Coupon");
                                 break;
                             case 'coupon' :
-                                $end = ___('Coupon with Code : %s', $vars['code']);
+                                $text = $vars['used'] ?
+                                    ___('Used Coupon with Code: %s', $vars['code']) :
+                                    ___("Did't Use Coupon with Code: %s", $vars['code']);
                                 break;
                             case 'batch' :
                                 $options = $this->getDi()->couponBatchTable->getOptions(false);
-                                $end = ___('Coupon from Batch : %s', $options[$vars['batch_id']]);
+                                $txt = $vars['used'] ?
+                                    ___('Used Coupon from Batch: %s', $options[$vars['batch_id']]) :
+                                    ___("Did't Use Coupon from Batch: %s", $options[$vars['batch_id']]);
                                 break;
                         }
-                    $ret[] = ($vars['used'] ? ___('Used ') : ___("Did't Use ")) . $end;
+                    $ret[] = $txt;
+                    break;
+                case self::COND_PAYSYS_ID:
+                    $ret[] = ___("paysystem IN (%s)", implode(', ', (array)$vars));
                     break;
                 default: 
                     return false;
@@ -291,7 +305,7 @@ class AffCommissionRuleTable extends Am_Table
         } else { // for higher tier just take amount paid to previous tier
             $paidForItem = $paymentAmount;
         }
-        $paidForItem = $paidForItem/$invoice->base_currency_multi;
+        $paidForItem = $tier ? $paidForItem : $paidForItem/$invoice->base_currency_multi;
 
         foreach ($this->findRules($invoice, $item, $aff, $paymentNumber, $tier, $paymentDate) as $rule)
         {
@@ -371,6 +385,15 @@ class AffCommissionRuleTable extends Am_Table
         // load affiliate and continue
         $aff = $this->getDi()->userTable->load($aff_id, false);
         if (!$aff || !$aff->is_affiliate) return; // affiliate not found
+
+        $user = $invoice->getUser();
+        if (!$user->aff_id) {
+            $user->aff_id = $aff->pk();
+            $user->aff_added = sqlTime('now');
+            $user->data()->set('aff-source', 'invoice-' . $invoice->pk());
+            $user->save();
+        }
+
         // try to load other tier affiliate
         $aff_tier = $aff;
         $aff_tiers = array();

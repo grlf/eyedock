@@ -92,7 +92,7 @@ class Am_Navigation_UserTabs extends Zend_Navigation
                 'params' => array(
                     'user_id' => $id,
                 ),
-                'resource' => 'grid_file_download',
+                'resource' => Am_Auth_Admin::PERM_LOGS_DOWNLOAD,
           ));
         }
         $event = new Am_Event_UserTabs($this, $id<=0, (int)$id);

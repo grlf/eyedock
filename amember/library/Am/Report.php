@@ -805,15 +805,28 @@ class Am_Report_Line
     protected $key;
     protected $label;
     protected $color;
+    protected $formatFunc = null;
 
-    public function __construct($key, $label, $color = null) {
+    public function __construct($key, $label, $color = null, $formatFunc = null) {
         $this->key = $key;
         $this->label = $label;
         $this->color = $color ? $color : self::generateColor();
+        $this->setFormatFunc($formatFunc);
     }
     public function getKey(){ return $this->key; }
     public function getLabel() { return $this->label; }
     public function getColor() { return $this->color; }
+    public function formatValue($val)
+    {
+        return $this->formatFunc ?
+            call_user_func($this->formatFunc, $val) :
+            $val;
+    }
+    protected function setFormatFunc($callable)
+    {
+        if (is_callable($callable))
+            $this->formatFunc = $callable;
+    }
     protected static function generateColor()
     {
         return array_shift(self::$colors);
@@ -865,19 +878,20 @@ class Am_Report_Table extends Am_Report_Output
             $i = 0;
             foreach ($this->result->getLines() as $line)
             {
-                $out .= sprintf("<td style='text-align: right'>%s</td>", Am_Controller::escape($point->getValue($line->getKey())));
+                $out .= sprintf("<td style='text-align: right'>%s</td>", Am_Controller::escape($line->formatValue($point->getValue($line->getKey()))));
+                @$lines[$i] = $line;
                 @$totals[ $i++ ] += $point->getValue($line->getKey());
             }
             $out .= "</tr>\n";
         }
-        foreach ($totals as $tt) 
+        foreach ($totals as $k => $tt)
         {
             // if we have at least one numeric value in totals, display total row
             if ($tt > 0) 
             {
                 $out .= "<tr class='am-report-total'><td><b>" . ___("Total") . "</b></td>";
                 foreach ($totals as $v)
-                    $out .= "<td style='text-align: right'><b>" . Am_Controller::escape($v) . "</b></td>";
+                    $out .= "<td style='text-align: right'><b>" . Am_Controller::escape($lines[$k]->formatValue($v)) . "</b></td>";
                 $out .= "</tr>\n";
                 break;
             }
@@ -905,7 +919,7 @@ class Am_Report_Text extends Am_Report_Output
             if (!$point->hasValues()) continue;
             $out .= $point->getLabel();
             foreach ($this->result->getLines() as $line)
-                $out .= " / " . $point->getValue($line->getKey());
+                $out .= " / " . $line->formatValue($point->getValue($line->getKey()));
             $out .= "\n";
         }
         return $out;

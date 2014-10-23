@@ -7,7 +7,7 @@ class AdminFileDownloadController extends Am_Controller_Grid
 
     public function checkAdminPermissions(Admin $admin)
     {
-        return $admin->hasPermission('grid_file_download');
+        return true;
     }
 
     function createGrid()
@@ -18,6 +18,7 @@ class AdminFileDownloadController extends Am_Controller_Grid
             ->addWhere('user_id=?', $this->getParam('user_id'));
 
         $grid = new Am_Grid_Editable('_file_download', ___("File Downloads"), $query, $this->_request, $this->view);
+        $grid->setPermissionId(Am_Auth_Admin::PERM_LOGS_DOWNLOAD);
         $grid->actionsClear();
         $grid->actionAdd(new Am_Grid_Action_Delete());
         $grid->actionAdd(new Am_Grid_Action_Group_Delete());

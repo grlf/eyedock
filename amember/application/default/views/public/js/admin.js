@@ -283,6 +283,7 @@ function initCkeditor(textareaId, options)
         autoGrow_maxHeight: 800,
         baseHref: window.rootUrl,
         customConfig : false,
+        language: window.lang,
         toolbar: "Am",
         toolbar_Am : toolbar_Am,
         allowedContent: true,

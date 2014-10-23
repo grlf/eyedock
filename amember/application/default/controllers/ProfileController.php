@@ -103,6 +103,9 @@ class ProfileController extends Am_Controller
 
         if ($this->form->isSubmitted() && $this->form->validate())
         {
+            $oldUser = clone $this->user;
+            $oldUser->toggleFrozen(true);
+
             $vars = $this->form->getValue();
             unset($vars['user_id']);
             if (!empty($vars['pass']))
@@ -114,6 +117,13 @@ class ProfileController extends Am_Controller
             $u = $this->user->setForUpdate($vars);
             $this->emailChangesToAdmin();
             $u->update();
+            $this->getDi()->hook->call(Am_Event::PROFILE_USER_UPDATED, array(
+                'vars' => $vars,
+                'oldUser' => $oldUser,
+                'user' => $u,
+                'form' => $this->form
+            ));
+            
             $this->getDi()->auth->setUser($u, '');
             $msg = $ve ? ___('Verification email has been sent to your address.
                     E-mail will be changed in your account after confirmation') :

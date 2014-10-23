@@ -8,7 +8,7 @@ class Am_Newsletter_Plugin_Activecampaign extends Am_Newsletter_Plugin
     function _initSetupForm(Am_Form_Setup $form)
     {
         $el = $form->addAdvRadio('api_type')
-            ->setLabel(array(___('Version of script')))
+            ->setLabel(___('Version of script'))
             ->loadOptions(array(
             '0' => ___('Downloaded on your own server'),
             '1' => ___('Hosted at Activecampaing\'s server')));

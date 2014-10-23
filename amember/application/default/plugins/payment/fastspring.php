@@ -14,7 +14,7 @@
  */
 class Am_Paysystem_Fastspring extends Am_Paysystem_Abstract{
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
 
     protected $defaultTitle = 'FastSpring';
     protected $defaultDescription = 'Pay by credit card';
@@ -25,6 +25,10 @@ class Am_Paysystem_Fastspring extends Am_Paysystem_Abstract{
         $form->addText('key')->setLabel(array('Private Security Key', 'FastSpring -> Account -> Notification Configuration -> Order Notification -> Security'));
         $form->addText('api_user')->setLabel(array('API Username', 'used to handle cancellations'));
         $form->addText('api_pass')->setLabel(array('API Password', 'used to handle cancellations'));
+        $form->addSelect("instant", array(), array('options' => array(
+                ''=>'No',
+                '1'=>'Yes' 
+            )))->setLabel(array('Instant order process', 'leave it disabled for default product pages'));
         $form->addSelect("testing", array(), array('options' => array(
                 ''=>'No',
                 '1'=>'Yes' 
@@ -52,13 +56,32 @@ class Am_Paysystem_Fastspring extends Am_Paysystem_Abstract{
     }
     
     function getActionUrl(Invoice $invoice){
-        return sprintf("http://sites.fastspring.com/%s/product/%s", 
+        $url = "http://sites.fastspring.com/%s/product/%s";
+        if ($this->getConfig('instant') == 1)
+            $url = "https://sites.fastspring.com/%s/instant/%s";
+        return sprintf($url, 
             $this->getConfig('company'), 
             $invoice->getItem(0)->getBillingPlanData('fastspring_product_id'));
     }
     public function _process(Invoice $invoice, Am_Request $request, Am_Paysystem_Result $result)
     {
-        $a = new Am_Paysystem_Action_Redirect($this->getActionUrl($invoice));
+        if ($this->getConfig('instant') == 1)
+            $a = new Am_Paysystem_Action_Redirect($this->getActionUrl($invoice));
+        else
+        {
+            $a = new Am_Paysystem_Action_Form("http://sites.fastspring.com/".$this->getConfig('company')."/api/order");
+            $a->operation = 'create';
+            $a->destination = 'checkout';
+            $i=1;
+            foreach($invoice->getItems() as $item)
+            {
+                $path = "product_{$i}_path";
+                $quantity = "product_{$i}_quantity";
+                $a->{$path} = '/'.$item->getBillingPlanData('fastspring_product_id');
+                $a->{$quantity} = $item->qty;
+                $i++;
+            }
+        }
         $a->referrer = $invoice->public_id;
         if($this->getConfig('testing')){
             $a->mode = 'test';

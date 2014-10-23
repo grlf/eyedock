@@ -3,7 +3,7 @@
  * @table paysystems
  * @id eway-rapid3
  * @title eWay Rapid3.0
- * @visible_link http://ewaypayments.com/
+ * @visible_link http://www.eway.com.au/
  * @recurring cc
  * @logo_url eway.png
  */
@@ -11,7 +11,7 @@ class Am_Paysystem_EwayRapid3 extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
 
     protected $defaultTitle = "eWay Rapid 3.1";
     protected $defaultDescription = "accepts all major credit cards";
@@ -552,27 +552,37 @@ class Am_Form_EwayRapid3 extends Am_Form_CreditCard
     public function init()
     {
 
-        $name = $this->addText('EWAY_CARDNAME', array('size' => 30))->setLabel(array(___('Cardholder Name'), sprintf(___('cardholder first and last name, exactly as%son the card'), '<br/>')));
+        $name = $this->addText('EWAY_CARDNAME', array('size' => 30))
+            ->setLabel(___("Cardholder Name\n" .
+                'cardholder first and last name, exactly as on the card'));
         $name->addRule('required', ___('Please enter credit card holder first and last name'))->addRule('regex', ___('Please enter credit card holder first and last name'), '/^[^=:<>{}()"]+$/D');
 
         $options = $this->plugin->getFormOptions();
 
         if (in_array(Am_Paysystem_CreditCard::CC_COMPANY, $options))
-            $company = $this->addText('cc_company')->setLabel(array(___('Company Name'), sprintf(___('the company name associated with the%sbilling address for the transaction'), '<br/>')));
+            $company = $this->addText('cc_company')
+                ->setLabel(___("Company Name\n" .
+                    'the company name associated with the billing address for ' .
+                    'the transaction'));
 
         $cc = $this->addText('EWAY_CARDNUMBER', array('autocomplete' => 'off', 'size' => 22, 'maxlength' => 22))
-            ->setLabel(array(___('Credit Card Number'), ___('for example: 1111-2222-3333-4444')));
+            ->setLabel(___("Credit Card Number\n" .
+                'for example: 1111-2222-3333-4444'));
         $cc->addRule('required', ___('Please enter Credit Card Number'))
             ->addRule('regex', ___('Invalid Credit Card Number'), '/^[0-9 -]+$/')
             ->addRule('callback2', 'Invalid CC#', array($this->plugin, 'validateCreditCardNumber'));
 
         $expire = $this->addElement(new Am_Form_Element_CreditCardExpire_EwayRapid3())
-            ->setLabel(array(___('Card Expire'), ___('Select card expiration date - month and year')))
+            ->setLabel(___("Card Expire\n" .
+                'Select card expiration date - month and year'))
             ->addRule('required');
 
 
         $code = $this->addPassword('EWAY_CARDCVN', array('autocomplete' => 'off', 'size' => 4, 'maxlength' => 4))
-            ->setLabel(array(___('Credit Card Code'), ___('The "Card Code" is a three- or four-digit security code that is printed on the back of credit cards in the card\'s signature panel (or on the front for American Express cards).')));
+            ->setLabel(___("Credit Card Code\n" .
+                'The "Card Code" is a three- or four-digit security code that ' .
+                'is printed on the back of credit cards in the card\'s signature ' .
+                'panel (or on the front for American Express cards).'));
         $code->addRule('required', ___('Please enter Credit Card Code'))
             ->addRule('regex', ___('Please enter Credit Card Code'), '/^\s*\d{3,4}\s*$/');
         $buttons = $this->addGroup();

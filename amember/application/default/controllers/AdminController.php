@@ -211,7 +211,10 @@ class AdminController extends Am_Controller
                 throw new Am_Exception_InputError(___('Unknown report display type [%s]', $type));
         }
         
-        return sprintf('<div class="admin-index-report-wrapper"><div class="admin-index-report report-%s">%s</div></div>', $savedReport->report_id, $output->render());
+        return sprintf('<h2>%s</h2><div class="admin-index-report-wrapper"><div class="admin-index-report report-%s">%s</div></div>',
+            $savedReport->title,
+            $savedReport->report_id,
+            $output->render());
     }
 
     public function createWidgetReportConfigForm() {
@@ -500,16 +503,16 @@ You can find info how to set up cron job for your installation <a class="link" h
             }
         }
         if ($this->getDi()->config->get('email_queue_enabled') && !$this->getDi()->config->get('use_cron')) {
-            $warn[] = ___('Enable and configure external cron (%saMember CP -> Setup -> Advanced%s</a>) if you are using E-Mail Throttle Queue',
-                '<a class="link" href="'.REL_ROOT_URL. '/admin-setup/advanced">', '</a>');
+            $warn[] = ___('%sEnable%s and %sconfigure%s external cron if you are using E-Mail Throttle Queue',
+                '<a class="link" href="'.REL_ROOT_URL. '/admin-setup/advanced">', '</a>', '<a class="link" href="http://www.amember.com/docs/Cron">', '</a>');
         }
 
         if ($this->getDi()->db->selectCell("SELECT COUNT(*) FROM ?_email_template WHERE name in (?a)",
             array('pending_to_user', 'pending_to_admin', 'expire', 'autoresponder')) &&
             !$this->getDi()->config->get('use_cron')) {
 
-            $warn[] = ___('Enable and configure external cron (%saMember CP -> Setup -> Advanced%s</a>) if you are using Periodic E-Mails (Autoresponder/Expiration/Pending Notifications)',
-                '<a class="link" href="'.REL_ROOT_URL. '/admin-setup/advanced">', '</a>');
+            $warn[] = ___('%sEnable%s and %sconfigure%s external cron if you are using Periodic E-Mails (Autoresponder/Expiration/Pending Notifications)',
+                '<a class="link" href="'.REL_ROOT_URL. '/admin-setup/advanced">', '</a>', '<a class="link" href="http://www.amember.com/docs/Cron">', '</a>');
         }
 
         // load all plugins

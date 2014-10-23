@@ -46,7 +46,8 @@ class Am_Form_Brick_Newsletter extends Am_Form_Brick
         $el->addOption(___('Checkboxes for Selected Lists'), 'checkboxes');
         
         $lists = $form->addMagicSelect('lists', array('id'=>'newsletter-lists-select'))
-            ->setLabel(array(___('Lists'), ___('All List will be displayed if none selected')));
+            ->setLabel(___("Lists\n" .
+                'All List will be displayed if none selected'));
         $lists->loadOptions(Am_Di::getInstance()->newsletterListTable->getAdminOptions());
         $form->addScript()->setScript(<<<CUT
 jQuery(document).ready(function($) {
@@ -58,7 +59,8 @@ jQuery(document).ready(function($) {
 CUT
             );
         $form->addAdvCheckbox('unchecked')
-            ->setLabel(array(___('Default unchecked'), ___('Leave unchecked if you want newsletter default to be checked')));
+            ->setLabel(___("Default unchecked\n" .
+                'Leave unchecked if you want newsletter default to be checked'));
     }
 }
 

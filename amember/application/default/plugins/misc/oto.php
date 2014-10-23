@@ -3,7 +3,7 @@
 class Am_Plugin_Oto extends Am_Plugin
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION; //dev status
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
 
     const NEED_SHOW_OTO = 'need_show_oto';
     const LAST_OTO_SHOWN = 'last_oto_shown';
@@ -274,12 +274,19 @@ class AdminOneTimeOfferController extends Am_Controller_Grid
     {
         $form = new Am_Form_Admin();
 
-        $form->addText('comment', array('class' => 'el-wide'))->setLabel(array(___('Comment'), ___('for your reference')))->addRule('required');
+        $form->addText('comment', array('class' => 'el-wide'))
+            ->setLabel(___("Comment\n" .
+                'for your reference'))
+            ->addRule('required');
 
-        $sel = $form->addMagicSelect('conditions[product]')->setLabel(array(___('Conditions'),
-            ___('After actual payment aMember will check user invoice and in case of it contains one of defined
-                product or product from defined product category this OTO will be shown for him instead of ordinary thank you page.
-                In case of you use OTO (Downsell) condition it will be matched if user click NO link in defined offer and this OTO will be shown for user')));
+        $sel = $form->addMagicSelect('conditions[product]')
+            ->setLabel(___("Conditions\n" .
+                'After actual payment aMember will check user invoice and in case ' .
+                'of it contains one of defined  product or product from defined ' .
+                'product category this OTO will be shown for him instead of ' .
+                'ordinary thank you page. In case of you use OTO (Downsell) ' .
+                'condition it will be matched if user click NO link in defined ' .
+                'offer and this OTO will be shown for user'));
         $cats = $pr = $oto = array();
         foreach ($this->getDi()->productCategoryTable->getAdminSelectOptions() as $k => $v)
             $cats['category-'.$k] = ___('Category') . ':'. $v;

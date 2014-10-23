@@ -295,7 +295,7 @@ class EmailTemplateTable extends ResourceAbstractTable
         if ($invoice->first_total > 0 || $invoice->second_total > 0) return;
         if ($event->getDi()->config->get('send_free_payment_admin'))
         {
-            $et = Am_Mail_Template::load('send_free_payment_admin', $event->getUser()->lang);
+            $et = Am_Mail_Template::load('send_free_payment_admin');
             if ($et)
             {
                 $et->setUser($event->getUser())

@@ -293,6 +293,7 @@ class InvoiceCreator_Standard extends InvoiceCreator_Abstract
                     $payment->user_id = $this->user->user_id;
                     $payment->currency = $invoice->currency;
                     $payment->invoice_id = $invoice->pk();
+                    $payment->invoice_public_id = $invoice->public_id;
                     if (count($list) == 1) {
                         $payment->amount = $p['amount'];
                     } elseif ($p['data']['BASKET_PRICES'])
@@ -566,6 +567,7 @@ class InvoiceCreator_Epayeu extends InvoiceCreator_Standard{
                     $payment->user_id = $this->user->user_id;
                     $payment->currency = $invoice->currency;
                     $payment->invoice_id = $invoice->pk();
+                    $payment->invoice_public_id = $invoice->public_id;
                     if (count($list) == 1) {
                         $payment->amount = $p['amount'];
                     } elseif ($p['data']['BASKET_PRICES'])
@@ -744,6 +746,7 @@ class InvoiceCreator_PaypalR extends InvoiceCreator_Abstract
                 $payment = $this->getDi()->invoicePaymentRecord;
                 $payment->user_id = $this->user->user_id;
                 $payment->invoice_id = $invoice->pk();
+                $payment->invoice_public_id = $invoice->public_id;
                 $payment->amount = $p['amount'];
                 $payment->paysys_id = 'paypal';
                 $payment->dattm = $tm->format('Y-m-d H:i:s');
@@ -1740,7 +1743,12 @@ class Am_Import_Folder3 extends Am_Import_Abstract
             $folder->clearAccess();
             $leave = false;
             foreach(explode(',',$r['product_ids']) as $pid){
-                if($newpid = $this->getDi()->db->selectCell("SELECT id FROM ?_data WHERE `table`='product' AND `key`='am3:id' AND value=?",$pid)){
+                if($pid == 'ALL')
+                {
+                    $folder->addAccessListItem(-1, NULL, NULL, 'product_category_id');
+                    $leave = true;                    
+                }
+                elseif($newpid = $this->getDi()->db->selectCell("SELECT id FROM ?_data WHERE `table`='product' AND `key`='am3:id' AND value=?",$pid)){
                     $folder->addAccessListItem($newpid, NULL, NULL, 'product_id');
                     $leave = true;
                 }
@@ -1823,12 +1831,16 @@ class Am_Import_Productlinks3 extends Am_Import_Abstract
                     $link = $this->getDi()->linkRecord;
                     $link->url = $r['data']['url'];
                     $link->title = $r['title'];
-                    $link->insert();                
-                    $link->addAccessListItem($newpid, NULL, NULL, 'product_id');
+                    if(isset($link->url))
+                    {
+                        $link->insert();
+                        $link->addAccessListItem($newpid, NULL, NULL, 'product_id');
+                    }
                     foreach ((array)preg_split('/[\r\n]+/', trim($r['data']['add_urls'])) as $u) {
                         if (!strlen($u)) continue;
                         list($k, $v) = @preg_split('/\|/', $u);
                         if (!$v) $v = $r['title'];
+                        if (!$k) continue;
                         $link = $this->getDi()->linkRecord;
                         $link->url = $k;
                         $link->title = $v;

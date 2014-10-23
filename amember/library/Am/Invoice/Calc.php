@@ -87,9 +87,9 @@ class Am_Invoice_Calc_Coupon extends Am_Invoice_Calc
         if ($this->coupon->getBatch()->discount_type == Coupon::DISCOUNT_PERCENT){
             foreach ($invoiceBill->getItems() as $item) {
                 if ($this->coupon->isApplicable($item->item_type, $item->item_id, $isFirstPayment))
-                    $item->first_discount = moneyRound($item->first_total * $this->coupon->getBatch()->discount / 100 );
+                    $item->first_discount = $item->qty * moneyRound($item->first_price * $this->coupon->getBatch()->discount / 100);
                 if ($this->coupon->isApplicable($item->item_type, $item->item_id, false))
-                    $item->second_discount = moneyRound($item->second_total * $this->coupon->getBatch()->discount / 100 );
+                    $item->second_discount = $item->qty * moneyRound($item->second_price * $this->coupon->getBatch()->discount / 100);
             }
         } else { // absolute discount
             $discountFirst = $this->coupon->getBatch()->discount;

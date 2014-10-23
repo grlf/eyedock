@@ -8,7 +8,7 @@
  *        Web: http://www.cgi-central.net
  *    Details: New fields
  *    FileName $RCSfile$
- *    Release: 4.4.2 ($Revision$)
+ *    Release: 4.4.4 ($Revision$)
  *
  * Please direct bug reports,suggestions or feedback to the cgi-central forums.
  * http://www.cgi-central.net/forum/
@@ -48,12 +48,13 @@ class Am_Form_Admin_CustomFields extends Am_Form_Admin
         $title->addRule('required');
 
         $this->addTextarea('description', array('class'=>'translate'))
-            ->setLabel(array(___('Field Description'),
-                ___('for dispaying on signup and profile editing screen (for user)')));
+            ->setLabel(___("Field Description\n" .
+                'for dispaying on signup and profile editing screen (for user)'));
 
         $sql = $this->addAdvRadio('sql')
-                ->setLabel(array(___('Field Type'),
-                    ___('sql field will be added to table structure, common field will not, we recommend you to choose second option')))
+                ->setLabel(___("Field Type\n" .
+                    'sql field will be added to table structure, common field ' .
+                    'will not, we recommend you to choose second option'))
                 ->loadOptions(array(
                     1 => ___('SQL (could not be used for multi-select and checkbox fields)'),
                     0 => ___('Not-SQL field (default)')))
@@ -62,8 +63,8 @@ class Am_Form_Admin_CustomFields extends Am_Form_Admin
         $sql->addRule('required');
 
         $sql_type = $this->addElement('select', 'sql_type')
-                ->setLabel(array(___('SQL field type'),
-                    ___('if you are unsure, choose first type (string)')))
+                ->setLabel(___("SQL field type\n" .
+                    'if you are unsure, choose first type (string)'))
                 ->loadOptions(array(
                         '' => '-- ' . ___('Please choose') . '--',
                         'VARCHAR(255)' => ___('String') . ' (VARCHAR(255))',
@@ -119,8 +120,9 @@ class Am_Form_Admin_CustomFields extends Am_Form_Admin
                     'email' => ___('E-Mail Address')));
 
         $this->addElement(new Am_Form_Element_ResourceAccess)->setName('_access')
-            ->setLabel(array(___('Access Permissions'),
-                ___('this field will be removed from form if access permission does not match and user will not be able to update this field')));
+            ->setLabel(___("Access Permissions\n" .
+                'this field will be removed from form if access permission ' .
+                'does not match and user will not be able to update this field'));
 
         $jsCode = <<<CUT
 (function($){

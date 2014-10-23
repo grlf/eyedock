@@ -473,7 +473,7 @@ Best Regards,
 There is an automated message from aMember Pro script. 
             
 Your customer %user.login% "%user.name_f% %user.name_l%" &lt;%user.email%&gt; 
-recently changed his subscription to new payment plan. Unfortunaetly,
+recently changed his subscription to new payment plan. Unfortunately,
 the payment system does not allow to cancel previous subscription automatically.
 Please cancel previous user recurring subscription manually:
    Payment System:         %invoice.paysys_id%

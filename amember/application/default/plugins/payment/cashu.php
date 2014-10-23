@@ -4,12 +4,13 @@
  * @id cashu
  * @title Cashu
  * @visible_link https://www.cashu.com
+ * @logo_url cashu.png
  * @recurring paysystem_noreport
  */
 class Am_Paysystem_Cashu extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
     
     public function _initSetupForm(Am_Form_Setup $form)
     {

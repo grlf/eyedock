@@ -100,7 +100,7 @@ class Am_Lite
 
     public function getLogoutURL()
     {
-        return $this->getConfigValue('root_surl') . '/login/logout';
+        return $this->getConfigValue('root_surl') . '/logout';
     }
 
     public function getProfileURL()
@@ -113,14 +113,14 @@ class Am_Lite
         $params = array();
 
         if ($redirect)
-            $params['amember_redirect_url'] = $redirect;
+            $params['_amember_redirect_url'] = base64_encode($redirect);
 
         if (array_key_exists('_lang', $_GET) && $_GET['_lang'])
             $params['_lang'] = $_GET['_lang'];
 
         $query = http_build_query($params, '', '&');
         return $this->getConfigValue('root_surl')
-            . '/login/index'
+            . '/login/'
             . ($query ? '?' . $query : '');
     }
 

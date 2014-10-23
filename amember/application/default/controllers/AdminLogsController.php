@@ -70,8 +70,9 @@ class AdminLogsController extends Am_Controller_Pages
             ->addField("m.login", 'member_login')
             ->addField("CONCAT(m.name_f, ' ', m.name_l)", 'member_name');        
         $query->setOrder('time', 'desc');
-        $g = new Am_Grid_ReadOnly('_access', ___('Access Log'), $query, $this->getRequest(), $this->view);
+        $g = new Am_Grid_Editable('_access', ___('Access Log'), $query, $this->getRequest(), $this->view);
         $g->setPermissionId(Am_Auth_Admin::PERM_LOGS_ACCESS);
+        $g->actionsClear();
         $g->addField(new Am_Grid_Field_Date('time', ___('Date/Time'), true));
         $g->addField(new Am_Grid_Field('member_login', ___('User'), true, '', array($this, 'renderAccessMember')));
         $g->addField(new Am_Grid_Field_Expandable('url', ___('URL'), true))
@@ -86,6 +87,7 @@ class AdminLogsController extends Am_Controller_Pages
             'referrer' => 'LIKE', 
             'url' => 'LIKE',
         )));
+        $g->actionAdd(new Am_Grid_Action_Export);
         return $g;
     }
     public function createInvoice()
@@ -96,7 +98,7 @@ class AdminLogsController extends Am_Controller_Pages
         $query->addField("i.public_id");
         $query->leftJoin("?_user", "m", "t.user_id=m.user_id");
         $query->leftJoin("?_invoice", "i", "t.invoice_id=i.invoice_id");
-        $query->setOrder('tm', 'desc');
+        $query->setOrder('log_id', 'desc');
 
         $g = new Am_Grid_Editable('_invoice', ___('Invoice Log'), $query, $this->getRequest(), $this->view);
         $g->setPermissionId(Am_Auth_Admin::PERM_LOGS_INVOICE);
@@ -116,16 +118,7 @@ class AdminLogsController extends Am_Controller_Pages
         $g->actionAdd(new Am_Grid_Action_InvoiceRetry('retry'));
         $g->setFilter(new Am_Grid_Filter_InvoiceLog);
         $g->actionAdd(new Am_Grid_Action_Group_Callback('retrygroup', ___("Repeat Action Handling"), array('Am_Grid_Action_InvoiceRetry', 'groupCallback')));
-        $g->addCallback(Am_Grid_ReadOnly::CB_TR_ATTRIBS, array($this, 'getTrAttribs'));
         return $g;
-    }
-
-    public function getTrAttribs(& $ret, $record)
-    {
-        if ($record->is_processed)
-        {
-            $ret['class'] = isset($ret['class']) ? $ret['class'] . ' disabled' : 'disabled';
-        }
     }
 
     public function renderInvoice($record){

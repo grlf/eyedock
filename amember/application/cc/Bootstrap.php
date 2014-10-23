@@ -37,8 +37,8 @@ class Bootstrap_Cc extends Am_Module
         $has_cc_fields = class_exists('Am_Paysystem_CreditCard', false);
         if ($has_cc_fields && !$this->getDi()->config->get('use_cron'))
         {
-            $event->addReturn(___('Enable and configure external cron (%saMember CP -> Setup -> Advanced%s) if you are using credit card payment plugins',
-                '<a href="' . REL_ROOT_URL . '/admin-setup/advanced">', '</a>'));
+            $event->addReturn(___('%sEnable%s and %sconfigure%s external cron if you are using credit card payment plugins',
+                '<a class="link" href="'.REL_ROOT_URL. '/admin-setup/advanced">', '</a>', '<a class="link" href="http://www.amember.com/docs/Cron">', '</a>'));
             try
             {
                 $crypt = $this->getDi()->crypt;

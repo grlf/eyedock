@@ -81,7 +81,9 @@ class Am_Form_CreditCard extends Am_Form
     public function init() {
         parent::init();
 
-        $name = $this->addGroup()->setLabel(array(___('Cardholder Name'), sprintf(___('cardholder first and last name, exactly as%son the card'), '<br/>')));
+        $name = $this->addGroup()
+            ->setLabel(___("Cardholder Name\n" .
+                'cardholder first and last name, exactly as on the card'));
         $name->setSeparator(' ');
         $name->addRule('required', ___('Please enter credit card holder name'));
         $name_f = $name->addText('cc_name_f', array('size'=>15));
@@ -92,11 +94,15 @@ class Am_Form_CreditCard extends Am_Form
         $options = $this->plugin->getFormOptions();
 
         if (in_array(Am_Paysystem_CreditCard::CC_COMPANY, $options))
-            $company = $this->addText('cc_company')->setLabel(array(___('Company Name'), sprintf(___('the company name associated with the%sbilling address for the transaction'), '<br/>')));
+            $company = $this->addText('cc_company')
+                ->setLabel(___("Company Name\n" .
+                    'the company name associated with the billing address for the transaction'));
         
         if (in_array(Am_Paysystem_CreditCard::CC_TYPE_OPTIONS, $options))
         {
-            $type = $this->addSelect('cc_type')->setLabel(array(___('Credit Card Type'), ___('please select one')))
+            $type = $this->addSelect('cc_type')
+                ->setLabel(___("Credit Card Type\n" .
+                    'please select one'))
                 ->loadOptions(array_merge(array(''=>'-- ' . ___('Please choose') . ' --'), 
                     $this->plugin->getCreditCardTypeOptions()));
             $type->addRule('required', ___('Please choose a Credit Card Type'));
@@ -104,7 +110,9 @@ class Am_Form_CreditCard extends Am_Form
 
         if ($this->formType == self::ADMIN_UPDATE)
         {
-            $group = $this->addGroup()->setLabel(array(___('Credit Card Number'), ___('for example: 1111-2222-3333-4444')));
+            $group = $this->addGroup()
+                ->setLabel(___("Credit Card Number\n" .
+                    "for example: 1111-2222-3333-4444"));
             $group->addStatic()->setContent('<div>');
             $group->addStatic('cc');
             $cc = $group->addText('cc_number', array('autocomplete'=>'off', 'size'=>22, 'maxlength'=>22, 'style'=>'display:none'));
@@ -124,44 +132,55 @@ CUT
             $group->addStatic()->setContent('</div>');
         } else {
             $cc = $this->addText('cc_number', array('autocomplete'=>'off', 'size'=>22, 'maxlength'=>22))
-                    ->setLabel(array(___('Credit Card Number'), ___('for example: 1111-2222-3333-4444')));
+                    ->setLabel(___("Credit Card Number\n" .
+                        'for example: 1111-2222-3333-4444'));
             $cc->addRule('required', ___('Please enter Credit Card Number'))
                 ->addRule('regex', ___('Invalid Credit Card Number'), '/^[0-9 -]+$/')
                 ->addRule('callback2', 'Invalid CC#', array($this->plugin, 'validateCreditCardNumber'));
         }
 
         $expire = $this->addElement(new Am_Form_Element_CreditCardExpire('cc_expire'))
-            ->setLabel(array(___('Card Expire'), ___('Select card expiration date - month and year')))
+            ->setLabel(___("Card Expire\n" .
+                'Select card expiration date - month and year'))
             ->addRule('required');
 
         
         if (in_array(Am_Paysystem_CreditCard::CC_CODE, $options))
         {
             $code = $this->addPassword('cc_code', array('autocomplete'=>'off', 'size'=>4, 'maxlength'=>4))
-                    ->setLabel(array(___('Credit Card Code'), ___('The "Card Code" is a three- or four-digit security code that is printed on the back of credit cards in the card\'s signature panel (or on the front for American Express cards).')));
+                    ->setLabel(___("Credit Card Code\n" .
+                        'The "Card Code" is a three- or four-digit security code ' .
+                        'that is printed on the back of credit cards in the card\'s ' .
+                        'signature panel (or on the front for American Express cards)'));
             $code->addRule('required', ___('Please enter Credit Card Code'))
                  ->addRule('regex', ___('Please enter Credit Card Code'), '/^\s*\d{3,4}\s*$/');
         }
         if (in_array(Am_Paysystem_CreditCard::CC_MAESTRO_SOLO_SWITCH, $options))
         {
             $issue = $this->addText('cc_issuenum', array('autocomplete'=>'off', 'size'=>20, 'maxlength'=>22))
-                    ->setLabel(array(___('Card Issue #'), ___('is required for Maestro/Solo/Switch credit cards only')))
+                    ->setLabel(___("Card Issue #\n" .
+                        'is required for Maestro/Solo/Switch credit cards only'))
                     ->addRule('regex', ___('Invalid Issue Number'), '/^\d+$/');
             $this->addElement(new Am_Form_Element_CreditCardExpire('cc_startdate', null, array('dont_require'=>true, 'years'=>-10)))
-                ->setLabel(array(___('Card Start Date'), ___('is required for Maestro/Solo/Switch credit cards only')));
+                ->setLabel(___("Card Start Date\n" .
+                    'is required for Maestro/Solo/Switch credit cards only'));
         }
         if (in_array(Am_Paysystem_CreditCard::CC_INPUT_BIN, $options))
         {
             $fieldSet = $this->addFieldset()->setLabel(___('Bank Identification'));
             $fieldSet->addText('_cc_bin_name', array())
-               ->setLabel(array(___('Bank Name'), ___('name of the bank which issued the credit card')));
+               ->setLabel(___("Bank Name\n" .
+                   'name of the bank which issued the credit card'));
             $fieldSet->addText('_cc_bin_phone', array())
-               ->setLabel(array(___('Bank Phone'), ___('customer service phone number listed on back of your credit card')));
+               ->setLabel(___("Bank Phone\n" .
+                   'customer service phone number listed on back of your credit card'));
         }
         
         if (in_array(Am_Paysystem_CreditCard::CC_ADDRESS, $options))
         {
-            $fieldSet = $this->addFieldset(___('Address Info'))->setLabel(array(___('Address Info'), ___('(must match your credit card statement delivery address)')));
+            $fieldSet = $this->addFieldset(___('Address Info'))
+                ->setLabel(___("Address Info\n" .
+                    '(must match your credit card statement delivery address)'));
             if (in_array(Am_Paysystem_CreditCard::CC_STREET, $options))
             {
                 $street = $fieldSet->addText('cc_street')->setLabel(___('Street Address'))
@@ -184,7 +203,10 @@ CUT
             }
             if (in_array(Am_Paysystem_CreditCard::CC_PROVINCE_OUTSIDE_OF_US, $options))
             {
-                $province = $fieldSet->addText('cc_province', array('size'=>15))->setLabel(array(___('Billing International Province'), ___('for international provinces outside of US & Canada include the province name here')))
+                $province = $fieldSet->addText('cc_province', array('size'=>15))
+                    ->setLabel(___("Billing International Province\n" .
+                        'for international provinces outside of US & Canada ' .
+                        'include the province name here'))
                         ->addRule('required', ___('Please choose state'));
             }
 

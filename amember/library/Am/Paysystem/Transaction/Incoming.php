@@ -252,7 +252,7 @@ abstract class Am_Paysystem_Transaction_Incoming extends Am_Paysystem_Transactio
     /** @return Invoice|null */
     public function loadInvoice($invoiceId)
     {
-        $invoiceId = preg_replace('/-.*/', '', $invoiceId);
+        $invoiceId = preg_replace('/-[^-]*$/', '', $invoiceId);
         $invoice = Am_Di::getInstance()->invoiceTable->findFirstByPublicId($invoiceId);
         // update invoice_id in the log record
         if ($invoice && $this->log)

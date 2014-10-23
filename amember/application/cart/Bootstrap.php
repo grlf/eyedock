@@ -67,6 +67,16 @@ class Bootstrap_Cart extends Am_Module
         );
     }
 
+    function checkPath($path, $grid)
+    {
+        if (!$path) return true;
+
+        $record = $grid->getRecord();
+
+        return !$this->getDi()->db->selectCell("SELECT COUNT(*) FROM ?_product WHERE path=? {AND product_id<>?}",
+            $path, $record->isLoaded() ? $record->pk() : DBSIMPLE_SKIP );
+    }
+
     function onGridProductInitForm(Am_Event $event)
     {
 
@@ -76,14 +86,20 @@ class Bootstrap_Cart extends Am_Module
                 ->setLabel(___('Shopping Cart'));
 
         $fs->addUpload('img', null, array('prefix' => self::UPLOAD_PREFIX))
-            ->setLabel(___('Product Picture') . "\n" . ___('for shopping cart pages. Only jpeg, png and gif formats allowed'))
+            ->setLabel(___("Product Picture\n" .
+                'for shopping cart pages. Only jpg, png and gif formats allowed'))
             ->setAllowedMimeTypes(array(
                 'image/png', 'image/jpeg', 'image/gif',
             ));
 
         $fs->addText('path', array('class' => 'el-wide'))
             ->setId('product-path')
-            ->setLabel(array(___('Path'), ___('will be used to construct user-friendly url, in case of you leave it empty aMember will use id of this product to do it')));
+            ->setLabel(___("Path\n" .
+                'will be used to construct user-friendly url, in case of you ' .
+                'leave it empty aMember will use id of this product to do it'))
+            ->addRule('callback', ___('Path should be unique across all products'), array(
+                'callback' => array($this, 'checkPath'),
+                'arguments' => array($event->getGrid())));
 
         $root_url = Am_Controller::escape(Am_Di::getInstance()->config->get('root_url'));
 
@@ -104,7 +120,8 @@ CUT
         );
 
         $fs->addHtmlEditor('cart_description')
-            ->setLabel(___('Product Description') . "\n" . ___('displayed on the shopping cart page'));
+            ->setLabel(___("Product Description\n" .
+                'displayed on the shopping cart page'));
 
         $fs = $form->addAdvFieldset('meta', array('id'=>'meta'))
                 ->setLabel(___('Meta Data'));
@@ -174,7 +191,7 @@ CUT
                     $ext = 'png';
                     break;
                 case 'image/jpeg' :
-                    $ext = 'jpeg';
+                    $ext = 'jpg';
                     break;
                 default :
                     throw new Am_Exception_InputError(sprintf('Unknown MIME type [%s]', $mime));
@@ -187,7 +204,7 @@ CUT
             $image = new Am_Image($upload->getFullPath(), $upload->getType());
 
             foreach ($sizes as $id => $size) {
-                $newName = 'cart/' . $size['w'] . '_' . $size['h'] . '/' . $name . '.jpeg';
+                $newName = 'cart/' . $size['w'] . '_' . $size['h'] . '/' . $name . '.jpg';
                 $newFilename = ROOT_DIR . '/data/public/' . $newName;
 
                 if (!file_exists($newFilename)) {

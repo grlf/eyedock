@@ -23,11 +23,11 @@ abstract class Am_Grid_Filter_Aff_Abstract extends Am_Grid_Filter_Abstract
         }
         if ($filter = $this->getParam('dat1')) {
             $this->grid->getDataSource()->getDataSourceQuery()
-                ->addWhere("t.date >= ?", Am_Form_Element_Date::createFromFormat(null, $filter)->format('Y-m-d'));
+                ->addWhere("t.{$this->datField} >= ?", Am_Form_Element_Date::createFromFormat(null, $filter)->format('Y-m-d'));
         }
         if ($filter = $this->getParam('dat2')) {
             $this->grid->getDataSource()->getDataSourceQuery()
-                ->addWhere("t.date <= ?", Am_Form_Element_Date::createFromFormat(null, $filter)->format('Y-m-d'));
+                ->addWhere("t.{$this->datField} <= ?", Am_Form_Element_Date::createFromFormat(null, $filter)->format('Y-m-d'));
         }
     }
 
@@ -214,6 +214,21 @@ class Aff_AdminCommissionController extends Am_Controller_Pages
             echo $this->getModule()->renderInvoiceCommissions($invoice, $this->view);
         }
         
+    }
+
+    public function calcAction()
+    {
+        $invoice = $this->getDi()->invoiceTable->load($this->_request->get('id'));
+
+        if ($this->getDi()->affCommissionTable->findByInvoiceId($invoice->pk())) {
+            throw new Am_Exception_InputError('Can not calculate commission for this Invoice. This invoice already has associated commission records');
+        }
+
+        foreach ($invoice->getPaymentRecords() as $payment) {
+            $this->getDi()->affCommissionRuleTable->processPayment($invoice, $payment);
+        }
+
+        echo $this->getModule()->renderInvoiceCommissions($invoice, $this->view);
     }
 
     public function createClicksGrid()

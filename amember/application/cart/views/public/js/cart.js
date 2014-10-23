@@ -124,6 +124,11 @@ var cart = {
             }
         } else {
             jQuery(function() {
+                jQuery.ajaxSetup({
+                    xhrFields : {
+                        withCredentials: true
+                    }
+                });
                 cart._initCategorySelect();
             });
         }

@@ -5,8 +5,6 @@
   '%d user(s) matches your search' => '%d пользователей соответсвуют условиям вашего поиска',
   '%d-th subscription day' => '%d-ый день подписки',
   '%s Plugins' => '%s  Плагины',
-  '%url% will be replaced with actual url of affilate link' => '%url% будет заменен ссылкой или партнерской ссылкой',
-  '- all old members become not-approved' => '- все старые пользователи становятся не утвержденными',
   '-- Please Select --' => '-- Пожалуйста выберите --',
   '-- Without A Category --' => '-- Без Категории --',
   '..th subscription day (starts from 2)' => '..ый день подписки (начиная со второго)',
@@ -60,7 +58,6 @@ to admin once payment is received' => 'Уведомление администр
   'Advanced' => 'Дополнительно',
   'Advanced Settings' => 'Расширенные настройки',
   'Affiliate %s not found' => 'Партнер %s не найден',
-  'Affiliate Can View Sales Details' => 'Партнер может видеть детали продаж',
   'Affiliate Commission' => 'Комиссионные',
   'Affiliate Commission Rules' => 'Правила начисления комиссии',
   'Affiliate Cookie Lifetime
@@ -101,8 +98,6 @@ apply coupon discount to recurring rebills?' => 'Применять купон �
   'Assign Category' => 'Назначить категорию',
   'At least one billing plan must be added' => 'Должен быть добвален хотя бы один план платежей',
   'Authentification' => 'Аутентификация',
-  'Auto Buffering' => 'Автоматический буфферинг',
-  'Auto Play' => 'Автматическое проигрование',
   'Autoclose Tickets Due to Inactivity' => 'Автоматически закрывать Запрос в случае отсутствия активности',
   'Available' => 'Доступно',
   'Available Locales
@@ -133,7 +128,6 @@ You can edit exchange rate %shere%s' => 'Основная валюта
   'Browse Found Users' => 'Просмотреть найденных пользователей',
   'Browse Users' => 'Все клиенты',
   'Bruteforce Protection' => 'Защита Bruteforce',
-  'Buffer Length' => 'Длина буфера',
   'Build Demo' => 'Создать демо',
   'Building demo records' => 'Создать демо записи',
   'Button/Link HTML Code' => 'HTML код Кнопки/Ссылки',
@@ -185,6 +179,7 @@ calculated for first customer invoice only' => 'Комиссия за беспл
   'Company Logo for Invoice
 it must be png/jpeg/tiff file (%s)' => 'Логотип компании для заказа
 должен быть png/jpeg/tiff файл (%s)',
+  'Conditions' => 'Условия',
   'Configuration' => 'Настройки',
   'Configured License Keys' => 'Настроенные лицензионные ключи',
   'Copy' => 'Копировать',
@@ -246,7 +241,6 @@ width&times;height' => 'Размер
   'Default value for field
 (that is default value for inputs, not SQL DEFAULT)' => 'Значение по умолчанию для поля
 (значение по умолчанию для поля ввода, это не SQL DEFAULT)',
-  'Delay Payout (days)' => 'Задержка выплат (дней)',
   'Delete Old Records' => 'Удалить устаревшие записи',
   'Delete Saved Search?' => 'Удалить сохраненые результаты поиска?',
   'Delete payment and access record' => 'Удалить записи платеж и доступ',
@@ -290,7 +284,6 @@ use existing products for demo records' => 'Не генерировать про
   'Do you really want to void this commission?' => 'Вы действительно хотите аннулировать эту комиссию?',
   'Documentation' => 'Документация',
   'Does Not Allow to Upload Attachments for Users' => 'Запретить загрузку файлов для клиентов',
-  'Does Not Require Login to Access FAQ Section' => 'Не требовать аутентификации для просмотра FAQ',
   'Does Not Show FAQ Tab in Member Area' => 'Не добавлять раздел FAQ в меню',
   'Download CSV File' => 'Сохранить CSV файл',
   'Download Upgrades' => 'Скачать обновления',
@@ -324,14 +317,12 @@ used to display name of sender in outgoing e-mails' => 'Имя отправит�
   'Email' => 'Email',
   'Email Addresses Separated by Comma' => 'Email адреса через запятую',
   'Email Backup Frequency' => 'Частота отсылки резервной копии базы данных на E-Mail',
-  'Email Domain' => 'Email домен',
   'Email Sending method
 PLEASE DO NOT CHANGE if emailing from aMember works' => 'Метод отправки email
 ПОЖАЛУЙСТА НЕ ИЗМЕНЯЙТЕ если отправка сообщений от aMember работает',
   'Email Sent' => 'Письмо отправлено',
   'Email Subject' => 'Тема письма',
   'Email address is required field.' => 'Email адрес это обязательное поле.',
-  'Empty Payout Method Notification to User' => 'Уведомление партнера о не выбранном способе выплат',
   'Enable plugins if necessary' => 'Включить плагины если необходимо',
   'End Date' => 'Дата окончания',
   'Enter Maintenance Mode' => 'Войти в режим техобслуживания',
@@ -349,7 +340,6 @@ PLEASE DO NOT CHANGE if emailing from aMember works' => 'Метод отправ
 enter cost of 1 (one) %s' => 'Обменный курс 
 введите цену 1 (одного) %s',
   'Field' => 'Поле',
-  'Field Description' => 'Описание поля',
   'Field Name' => 'Имя поля',
   'Field Title' => 'Название поля',
   'Field Type' => 'Тип поля',
@@ -400,7 +390,6 @@ you may get your key in %smembers area%s' => 'Лицензионный ключ 
   'From' => 'От',
   'Future' => 'Будущее',
   'General' => 'Основные',
-  'General Affiliate Link Redirect URL' => 'Основная партнерская ссылка',
   'General Link' => 'Основная ссылка',
   'General Settings' => 'Общие настройки',
   'Generate' => 'Генерировать',
@@ -416,8 +405,6 @@ you may get your key in %smembers area%s' => 'Лицензионный ключ 
   'Global' => 'Общие',
   'Graph Bar' => 'Гистограмма',
   'Graph Line' => 'График',
-  'HTML Code' => 'Код HTML',
-  'Height' => 'Высота',
   'Help & Support' => 'Помощь и поддержка',
   'Hide' => 'Скрыть',
   'Hostname' => 'Имя хоста',
@@ -430,8 +417,6 @@ you may get your key in %smembers area%s' => 'Лицензионный ключ 
   'IP within' => 'IP в',
   'If you are moving from one payment processor, you can use this page to switch existing subscription from one payment processor to another. It is possible only if full credit card info is stored on aMember side.' => 'Если вы переключаетесь с одного платежного процессора на другой,  вы можете использовать эту страницу для переключения созданных подписок с одного процессора на другой. Это возможно только если номера кредиток сохранены в aMember.',
   'Image' => 'Изображение',
-  'Image height must be number greater than 0.' => 'Значение высоты картинки должно быть больше чем 0.',
-  'Image width must be number greater than 0.' => 'Значение ширины картинки должно быть больше чем 0.',
   'Import Finished' => 'Импорт закончен',
   'Import Pre-Defined List of Coupon Codes from CSV File (One coupon code per line)' => 'Импортировать список готовых кодов из CSV файла (один код купона на строке)',
   'Import Users' => 'Импорт клиентов',
@@ -487,7 +472,6 @@ disable product ordering, hide it from signup and renewal forms' => 'Выклю�
   'Last expiration date in the renewal group' => 'Последняя дата истечения в обновленной группе',
   'Last login' => 'Последние посещение',
   'Leads' => 'Регистрации',
-  'Leave this checkbox unselected to restrict affiliates from seeing their sales details' => 'имя клиента и спиок преобретенных продуктов',
   'Length of admin password must be from %d to %d' => 'Длина пароля адмистратора должна быть от %d до %d',
   'Length of username must be from %d to %d' => 'Длина имени пользователя должна быть от %d до %d',
   'Light Boxes' => 'Лайтбоксы',
@@ -520,14 +504,12 @@ disable product ordering, hide it from signup and renewal forms' => 'Выклю�
   'Manage Product Upgrade Paths' => 'Управление путями обновлений продуктов',
   'Manage Products' => 'Управление продуктами',
   'Manually Added' => 'Добавлено вручную',
-  'Manually Approve New Invoices' => 'вручную утвердить новые заказы',
   'Mark NOT Paid' => 'Отметить как неоплаченный',
   'Mark Paid' => 'Отметить как оплаченный',
   'Mass Subscribe' => 'Массовая подписка',
   'Membership' => 'Членство',
   'Membership Info Page' => 'Страница инофрмации пользователя',
   'Merge' => 'Слить',
-  'Minimum Payout' => 'Минимальный платеж',
   'Miscellaneous' => 'Прочее',
   'Monthly' => 'Ежемесячно',
   'Msg' => 'Сообщения',
@@ -538,7 +520,6 @@ instead of product name' => 'Составное название заказа
 когда пользователь заказывает несколько продуктов,
 показать следующее в платежной системе 
 вместо имени продукта',
-  'Name must be entered and it may contain lowercase letters, underscores and digits' => 'Имя должно быть введено и оно может содержать строчные буквы, подчеркивания и цифры',
   'Name of Preset' => 'Название начальной установки',
   'Need points to get %s discount' => 'Нужны очки для получения %s дисконта',
   'New Autoresponder' => 'Новый автоответчик',
@@ -582,7 +563,6 @@ to customers. If empty, [Admin E-Mail Address] is used' => 'Адрес исхо�
 покупателю. Если пусто, ипользуется [E-Mail адрес администратора]',
   'Overwrite User if Exist User with Same Login' => 'Перезаписать пользователя если существует пользователь с таким же логином',
   'Owner' => 'Владелец',
-  'Page Not Found (404)' => 'Страница не найдена (404)',
   'Paid' => 'Уплачено',
   'Paper Format' => 'Формат листа',
   'Password Length' => ' Длина пароля',
@@ -605,7 +585,6 @@ to customers. If empty, [Admin E-Mail Address] is used' => 'Адрес исхо�
   'Paysystem' => 'Платежная система',
   'Pending Invoice Notification Rules' => 'Правила уведомления об обрабатываемом заказе',
   'Permissions' => 'Права доступа',
-  'Player Configuration' => 'Конфигурация плеера',
   'Please assign the following fields: ' => 'Пожалуйста введите следующий значения:',
   'Please choose another field name. This name is already used' => 'Выберите другое имя поля. Данное имя уже используется',
   'Please choose product' => 'Выбирите продукт',
@@ -666,7 +645,7 @@ will occur at the Second Price' => 'Количество повторных пл
   'Records Deleted Sucessfully' => 'Записи удалены успешно',
   'Records per Page (for grids)' => 'Записей на странице (для таблиц)',
   'Recurring' => 'Повторные платежи',
-  'Referer' => 'Ссылка',
+  'Redirect URL' => 'Ссылка (перенаправление)',
   'Referrer' => 'Отправитель',
   'Refund Amount' => 'Вернуть сумму',
   'Refund Date' => 'Дата возврата',
@@ -685,7 +664,6 @@ remember username/password in cookies' => 'Запомнить логин
   'Report Bugs' => 'Сообщить об ошибке',
   'Report Settings' => 'Настройки отчета',
   'Reports' => 'Отчеты',
-  'Require Strong Password' => 'Требовать сложный пароль',
   'Required value' => 'Обязательное значение',
   'Reseller Packages' => 'Услуги реселлера',
   'Resend' => 'Повторная отправка',
@@ -714,14 +692,12 @@ URL корневого скрипта, обычно %s',
   'SMTP Username' => 'Имя пользователя SMTP',
   'SQL (could not be used for multi-select and checkbox fields)' => 'SQL (не может быть использован для multi-select и checkbox полей)',
   'SQL Date Format' => 'формат даты SQL',
-  'SQL field type' => 'SQL тип поля',
   'Sales' => 'Продажи',
   'Sales Statistic' => 'Статистика продаж',
   'Save This Search' => 'Сохранить этот поиск',
   'Saved Credit Cards' => 'Сохранить кредитные карты',
   'Saved Reports' => 'Сохраненные отчеты',
   'Saved Search' => 'Сохранить результаты поиска',
-  'Scaling' => 'Масштабирование',
   'Second Period' => 'Второй период',
   'Second Price' => 'Вторая цена',
   'Second Price
@@ -752,7 +728,6 @@ if nothing selected - all products' => 'Продукты
   'Send Cancel Notifications to Admin
 send email to admin when recurring subscription cancelled by member' => 'Отправить администратору уведомление об отмене
 отправлять email с уведомлением администратору когда клиент отменил подписку с автопродлением',
-  'Send Cancel Notifications to User' => 'Отправить пользователю уведомление об отмене',
   'Send E-Mail Message' => 'Отправить E-Mail сообщение',
   'Send E-Mail Messages' => 'Отправить E-Mail сообщения',
   'Send E-Mail if customer has subscription (required)' => 'Отправить E-Mail если есть подписка',
@@ -784,19 +759,6 @@ once FIRST subscripton is completed' => 'Отправить регистраци
   'Sent' => 'Отправить',
   'Session Storage' => 'Механизм хранения сессий',
   'Set the following admin as owner of ticket' => 'Назначить следующего администратора ответственным по этому обращению',
-  'Setting which defines how video is scaled on the video screen. Available options are:
-
-                <strong>fit</strong>: Fit to window by preserving the aspect ratio encoded in the file\'s metadata.
-                <strong>half</strong>: Half-size (preserves aspect ratio)
-                <strong>orig</strong>: Use the dimensions encoded in the file. If the video is too big for the available space, the video is scaled using the \'fit\' option.
-                <strong>scale</strong>: Scale the video to fill all available space. Ignores the dimensions in the metadata. This is the default setting.
-                ' => 'Настройка которая определяет как видео масштабируется на  экране. 
-Доступные опции:
-
-<strong>fit</strong>: Подогнать к окну, сохраняя соотношение сторон закодированное в метаданых файла.
-<strong>half</strong>: Половина размера (cохранять соотнешение сторон)
-<strong>orig</strong>: Использовать измерения закодированные в файл. Если видео слишком большое для доступного места, видео масштабируется при влюченной опции \'подогнать\'.
-<strong>scale</strong>: Масштабировать видео для заполнения всего доступного пространства. Игнорируя измерения закодированные в файл. Это настройка по умолчанию.',
   'Setup/Configuration' => 'Конфигурация',
   'Shopping Cart Settings' => 'Настройки корзины',
   'Show Search Function in FAQ' => 'Показывать форму поиска в FAQ',
@@ -861,7 +823,6 @@ automatically calculated if empty' => 'Текст условий
   'Text Link' => 'Текстовые Ссылки',
   'Text Links' => 'Текстовые ссылки',
   'TextArea' => 'Текстовое поле',
-  'The amount of video data (in seconds) which should be loaded into Flowplayer\'s memory in advance of playback commencing.' => 'Количество видео данных (в секундах) которые должны быть загружены в память Flowplayer-а перед воспроизведением',
   'The password is entered incorrectly' => 'Пароль введен некорректно',
   'This code can be inserted into any HTML page on your website or into any WordPress post or page' => 'этот код может быть вставлен в любую HTML страницу вашего сайта или в любой WordPress пост или страницу',
   'This email template is empty in given language.
@@ -975,8 +936,6 @@ at aMember CP -> Forms Editor -> Edit, click "configure" on E-Mail brick' => 'П
   'Voided' => 'Аннулирована',
   'We will submit a request to payment system or you will be redirected to payment system page to submit refund request' => 'Мы отправим запрос платежной системе или вы будете перенаправлены на платежную систему для отправки запроса возврата платежа',
   'Weekly' => 'Еженедельно',
-  'When logged-in user try to access /amember/index page, he will be redirected to /amember/member' => 'Когда авторизованный пользователь будет пытаться попасть на страницу /amember/index, он будет перенаправляться на /amember/member',
-  'Width' => 'Ширина',
   'Yes, assign category' => 'Да, назначить категорию',
   'Yes, assign group' => 'Да, добавить группу',
   'Yes, do not e-mail this customer for any reasons' => 'Да, не писать пользователю по любым причинам',
@@ -1029,18 +988,13 @@ and template filename must start with [signup]' => 'aMember будет иска�
   'error_log table (used by admin only)' => 'таблица error_log (используется только администратором)',
   'expand details' => 'показать подробности',
   'first paid at' => 'первый платеж в ',
-  'for dispaying on signup and profile editing screen (for user)' => 'для отображения в форме подписки и профиля (для пользователей)',
   'hours' => 'часов',
   'if code is present, products will be hidden in shopping cart and this code is required to see these products' => 'если код предоставлен, в электронном магазине продукты будут спрятаны и этот код будет обязателен для того чтобы увидеть эти продукты',
   'if customer uses more than' => 'Если пользователь использует больше чем',
   'if user enters wrong password' => 'если пользователь ввел неправильный пароль',
-  'if you are unsure, choose first type (string)' => 'если вы не уверены, выберите первый тип (строка)',
   'immediately after subscription is started' => 'сразу после начала подписки',
   'leave it empty in case of you want this item be available for all users' => 'оставьте пустым чтобы сделать доступным для всех пользователей',
   'login, email or name' => 'логин, email или имя',
-  'make it public' => 'сделать раздел публично доступным',
-  'manually approve all new invoices' => 'вручную утвердить все заказы',
-  'minimal commission amount earned by affiliate to include it to payout report' => 'минимальная возмажная сумма комиссионных для включение в отчет о выплатах',
   'must be a number in format 99 or 99.99' => 'должен быть номер в формате 99 или 99.99',
   'must be equal or greather than 0' => 'должна быть не меньше нуля',
   'must be equal or greather than 0.0' => 'должно быть не меньше нуля',
@@ -1048,25 +1002,18 @@ and template filename must start with [signup]' => 'aMember будет иска�
   'next 30 days' => 'ближайшие 30 дней',
   'notification will be sent in case of one of selected payment system was used for invoice' => 'Уведомление будет отправлено если одна из выбранных платежных систем используется для оплаты заказа',
   'notification will be sent in case of one of selected products exits in invoice' => 'Уведомление будет отправлено если один из выбранных продуктов существует в счете',
-  'number of days that should go through before commision is included to payout report' => 'количество дней которые должны пройти после платежа перед тем как включать комиссионные по данному платежу в отчет для выплат',
   'on expiration day' => 'в день истечения',
   'open in new window' => 'открыть в новом окне',
   'or' => 'или',
   'or %smake access free%s' => 'или %sсделать доступ бесплатным%s',
-  'password should contain at least 2 capital letters, 2 or more numbers and 2 or more special chars' => 'пароль должен содержать как минимум 2 прописные буквы, 2 или более цифр и 2 или более специальных символов',
   'put website offline, making it available for admins only' => 'перевести сайт в режим обслуживания, сделав его доступным только для администраторов',
   'refund' => 'возврат',
   'replace' => 'заменить',
   'seconds, he will be forced to wait until next try' => 'секунд, он будет ждать перед следующей попыткой ',
-  'send email to user in case he has commission but did not define payout method yet.
-This email will be sent only once.' => 'отправить email партнеру если он получил коммисию но еще не выбрал способ выплат.
-Такой email будет отправлен только один раз для партнера.',
   'sending' => 'отправка',
   'sent successfully' => 'отправленно успешно',
-  'sql field will be added to table structure, common field will not, we recommend you to choose second option' => 'sql поля будут добавлены в структуру таблицы, обычные поля не будут, рекомендуется выбирать "обычные"',
   'switch to show all records' => 'показать истекшие записи',
   'switch to show only active records' => 'скрыть истекшие записи',
-  'this field will be removed from form if access permission does not match and user will not be able to update this field' => 'это поле будет убрано с формы в том случае если клиент не удовлетворяет данному условию. Клиент не увидет его и не сможет его обновить',
   'this item is available for %sall registered customers%s.
 click to %smake this item protected%s
 %sor %smake this item available without login and registration%s
@@ -1082,15 +1029,8 @@ or %smake log-in required%s
 нажмите %sдля того что бы сделать этот элемент защищенным%s
 или %sсделать вход обязательным%s
 ',
-  'this option is applied only for video files' => 'эта опция применяется только для видео файлов',
-  'this page will be public and do not require any login/password' => 'эта страница будет публично доступна',
   'times within' => 'раз в течение',
-  'used to generate email address for users' => 'использовать при генерирование email адресов для пользователей',
   'version' => 'версия',
   'void' => 'аннулировать',
   'when there is a problem with displaying such symbols in the PDF invoice.' => 'Когда возникает проблема с выводом таких символов в PDF счете.',
-  'whether loading of clip into player\'s memory should begin straight away. When this is true and autoPlay is false then the clip will automatically stop at the first frame of the video.' => 'должен ли клип немедленно загружаться в память плеера. Если это опция выбрана а autoPlay нет, тогда клип будте автоматически остановлен на первом фрейме видео.',
-  'whether the player should start playback immediately upon loading' => 'должен ли плеер начать воспроизведение немедленно после загрузки',
-  'you can choose from list of currencies supported by paysystems' => 'вы можете выбрать из списка валют поддерживаемых платежными системами',
-  'you can create new pages %shere%s' => 'вы можете добавить новые страницы %sсдесь%s',
 );

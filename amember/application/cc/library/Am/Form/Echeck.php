@@ -30,7 +30,8 @@ class Am_Form_Echeck extends Am_Form
         parent::init();
 
         $name = $this->addGroup()
-            ->setLabel(array(___('Your Name'), sprintf(___('your first and last name'))));
+            ->setLabel(___("Your Name\n" .
+                'your first and last name'));
         $name->addRule('required', ___('Please enter your name'));
 
         $name->addText('echeck_name_f', array('size' => 15))
@@ -43,7 +44,8 @@ class Am_Form_Echeck extends Am_Form
 
         if ($this->formType == self::ADMIN_UPDATE)
         {
-            $group = $this->addGroup()->setLabel(array(___('Bank Account Number'), ___('Up to 20 digits')));
+            $group = $this->addGroup()->setLabel(___("Bank Account Number\n" .
+                'Up to 20 digits'));
             $group->addStatic()->setContent('<div>');
             $group->addStatic('echeck');
             $group->addText('echeck_ban', array('autocomplete' => 'off', 'maxlength' => 20, 'style' => 'display:none'))
@@ -64,13 +66,15 @@ CUT
         } else
         {
             $this->addText('echeck_ban', array('autocomplete' => 'off', 'maxlength' => 20))
-                ->setLabel(array(___('Your Bank Account Number'), ___('Up to 20 digits')))
+                ->setLabel(___("Your Bank Account Number\n" .
+                    'Up to 20 digits'))
                 ->addRule('required', ___('Please enter Account Number'))
                 ->addRule('regex', ___('Invalid Account Number'), '/^[0-9]{1,20}$/');
         }
         
         $this->addText('echeck_aba', array('autocomplete' => 'off', 'maxlength' => 9))
-            ->setLabel(array(___('ABA Routing Number'), ___('9 digits')))
+            ->setLabel(___("ABA Routing Number\n" .
+                '9 digits'))
             ->addRule('required', ___('Please enter Routing Number'))
             ->addRule('regex', ___('Invalid Routing Number'), '/^[0-9]{9}$/');
 
@@ -79,13 +83,16 @@ CUT
         if (in_array(Am_Paysystem_Echeck::ECHECK_COMPANY, $options))
         {
             $this->addText(Am_Paysystem_Echeck::ECHECK_COMPANY)
-            ->setLabel(array(___('Company Name'), sprintf(___('the company name associated with the%sbilling address for the transaction'), '<br/>')));
+            ->setLabel(___("Company Name\n" .
+                'the company name associated with the billing address for ' .
+                'the transaction'));
         }
 
         if (in_array(Am_Paysystem_Echeck::ECHECK_TYPE_OPTIONS, $options))
         {
             $type = $this->addSelect(Am_Paysystem_Echeck::ECHECK_TYPE_OPTIONS)
-                ->setLabel(array(___('Bank Account Type'), ___('please select one')))
+                ->setLabel(___("Bank Account Type\n" .
+                    'please select one'))
                 ->loadOptions(array_merge(array(''=>'-- ' . ___('Please choose') . ' --'),
                     $this->plugin->getEcheckTypeOptions()));
             $type->addRule('required', ___('Please choose a Bank Account Type'));
@@ -101,13 +108,16 @@ CUT
         if (in_array(Am_Paysystem_Echeck::ECHECK_ACCOUNT_NAME, $options))
         {
             $this->addText(Am_Paysystem_Echeck::ECHECK_ACCOUNT_NAME, array('autocomplete' => 'off', 'maxlength' => 50))
-                ->setLabel(array(___('Bank Account Name'), ___('name associated with the bank account')))
+                ->setLabel(___("Bank Account Name\n" .
+                    'name associated with the bank account'))
                 ->addRule('required', ___('Please enter Bank Account Name'));
         }
 
         if (in_array(Am_Paysystem_Echeck::ECHECK_ADDRESS, $options))
         {
-            $fieldSet = $this->addFieldset(___('Address Info'))->setLabel(array(___('Address Info'), ___('(must match your credit card statement delivery address)')));
+            $fieldSet = $this->addFieldset(___('Address Info'))
+                ->setLabel(___("Address Info\n" .
+                    '(must match your credit card statement delivery address)'));
             if (in_array(Am_Paysystem_Echeck::ECHECK_STREET, $options))
             {
                 $street = $fieldSet->addText('echeck_street')->setLabel(___('Street Address'))

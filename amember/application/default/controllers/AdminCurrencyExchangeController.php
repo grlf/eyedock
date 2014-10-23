@@ -46,7 +46,7 @@ class AdminCurrencyExchangeController extends Am_Controller_Grid
         array_remove_value($options, Am_Currency::getDefault());
         
         $sel = 
-            $form->addSelect('currency')
+            $form->addSelect('currency', array('class' => 'am-combobox'))
             ->setLabel(___('Currency'))
             ->loadOptions($options)
             ->addRule('required');

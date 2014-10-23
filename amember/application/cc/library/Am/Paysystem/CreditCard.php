@@ -714,8 +714,8 @@ CUT
             $text = "<p><font color='red'>WARNING!</font> Every application processing credit card information, must be certified\n" .
                     "as PA-DSS compliant, and every website processing credit cards must\n" .
                     "be certified as PCI-DSS compliant.</p>";
-            $text.= "<p>aMember Pro is not yet certified as PA-DSS compliant. We will start certification process\n".
-                    "once we get 4.2.0 branch released and stable. This plugins is provided solely for TESTING purproses\n".
+            $text.= "<p>aMember Pro is not yet certified as PA-DSS compliant. ".
+                    "This plugins is provided solely for TESTING purproses\n".
                     "Use it for anything else but testing at your own risk.</p>";
             
             $form->addProlog(<<<CUT

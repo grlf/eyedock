@@ -98,8 +98,8 @@ CUT
             ->setLabel(___('Show Gravatars in Ticket Conversation'));
 
         $fieldSetFeatures->addAdvCheckbox('helpdesk.does_not_require_login')
-            ->setLabel(array(___('Does Not Require Login to Access FAQ Section'),
-                ___('make it public')));
+            ->setLabel(___("Does Not Require Login to Access FAQ Section\n" .
+                'make it public'));
 
         $fieldSetFeatures->addAdvCheckbox('helpdesk.does_not_show_faq_tab')
             ->setLabel(___('Does Not Show FAQ Tab in Member Area'));

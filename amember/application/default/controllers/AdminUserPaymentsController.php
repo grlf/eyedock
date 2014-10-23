@@ -48,6 +48,8 @@ class Am_Grid_Filter_Payments extends Am_Grid_Filter_Abstract
                 ->addWhere('ii.item_type=?', 'product')
                 ->addWhere('ii.item_id=?', $filter['product_id']);
         }
+        if (@$filter['dont_show_refunded'])
+            $q->addWhere('t.refund_dattm IS NULL');
     }
 
     public function renderInputs()
@@ -87,6 +89,8 @@ class Am_Grid_Filter_Payments extends Am_Grid_Filter_Abstract
         $start = ___('Start Date');
         $end   = ___('End Date');
 
+        $dsr = $this->renderDontShowRefunded();
+
         return <<<CUT
 <select name="{$prefix}_filter[product_id]" style="width:150px">
 $pOptions
@@ -99,7 +103,21 @@ $dSelect
 <select name="{$prefix}_filter[type]">
 $options
 </select>
+<br />
+$dsr
 CUT;
+    }
+
+    public function renderDontShowRefunded()
+    {
+        $filter = (array) $this->vars['filter'];
+        return sprintf('<label>
+                <input type="hidden" name="%s_filter[dont_show_refunded]" value="0" />
+                <input type="checkbox" name="%s_filter[dont_show_refunded]" value="1" %s /> %s</label>',
+            $this->grid->getId(), $this->grid->getId(),
+            (@$this->vars['filter']['dont_show_refunded'] == 1 ? 'checked' : ''),
+            Am_Controller::escape(___('do not show refunded payments'))
+        );
     }
 
     public function getDateFieldOptions()
@@ -222,6 +240,9 @@ class AdminUserPaymentsController extends Am_Controller
                 ->addField(new Am_Grid_Field('public_id', ___('Invoice (Public Id)')))
             ;
         $grid->actionAdd($action);
+        if ($this->getDi()->config->get('send_pdf_invoice')) {
+            $grid->actionAdd(new Am_Grid_Action_ExportPdf);
+        }
         $action = $grid->actionAdd(new Am_Grid_Action_Total());
         foreach ($totalFields as $f)
             $action->addField($f, 'ROUND(%s / base_currency_multi, 2)');
@@ -254,7 +275,9 @@ class AdminUserPaymentsController extends Am_Controller
         $tm_due = $form->addDate('tm_due')->setLabel(___('Due Date'));
         $tm_due->setValue($invoice->due_date < sqlDate('now') ? sqlDate('+7 days') : $invoice->due_date);
 
-        $message = $form->addTextarea('message', array('class' => 'el-wide'))->setLabel(array(___('Message'), ___('will be included to email to user')));
+        $message = $form->addTextarea('message', array('class' => 'el-wide'))
+            ->setLabel(___("Message\n" .
+                'will be included to email to user'));
 
         $form->addElement('email_link', 'invoice_pay_link')
             ->setLabel(___('Email Template with Payment Link'));
@@ -413,7 +436,7 @@ class AdminUserPaymentsController extends Am_Controller
         }
 
         try {
-            $invoice->setPaysystem($vars['paysys_id']);
+            $invoice->setPaysystem($vars['paysys_id'], false);
         } catch (Am_Exception_InputError $e) {
             $form->setError($e->getMessage());
             return false;
@@ -438,7 +461,7 @@ class AdminUserPaymentsController extends Am_Controller
             return false;
 
         try {
-            $invoice->setPaysystem($vars['paysys_id']);
+            $invoice->setPaysystem($vars['paysys_id'], false);
         } catch (Am_Exception_InputError $e) {
             $form->setError($e->getMessage());
             return false;
@@ -467,7 +490,7 @@ class AdminUserPaymentsController extends Am_Controller
     {
         if ($vars['paysys_id']) {
             try {
-                $invoice->setPaysystem($vars['paysys_id']);
+                $invoice->setPaysystem($vars['paysys_id'], false);
             } catch (Am_Exception_InputError $e) {
                 $form->setError($e->getMessage());
                 return false;

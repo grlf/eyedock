@@ -184,6 +184,8 @@ class Aff_AdminPayoutController extends Am_Controller_Grid
         $grid->addCallback(Am_Grid_ReadOnly::CB_TR_ATTRIBS, array($this, 'cbGetTrAttribs'));
         $grid->addCallback(Am_Grid_Editable::CB_RENDER_CONTENT, array($this, 'renderContent'));
 
+        $grid->actionAdd(new Am_Grid_Action_Total_Payout());
+
         return $grid;
     }
 
@@ -282,4 +284,34 @@ class Aff_AdminPayoutController extends Am_Controller_Grid
                 '<a class="link" href="' . REL_ROOT_URL . '/admin-setup/aff#payout" target="_top">', '</a>') . '</div>' . $out;
     }
 
+}
+
+class Am_Grid_Action_Total_Payout extends Am_Grid_Action_Abstract
+{
+    protected $type = self::HIDDEN;
+    
+    public function run()
+    {
+        
+    }
+    public function renderOut(& $out)
+    {
+        $totals = array();
+        $totals[] = sprintf('%s %s: <strong>%s</strong>', ___('Total'), ___('To Pay'), Am_Currency::render(
+            Am_Di::getInstance()->db->selectCell("SELECT SUM(amount) from ?_aff_payout_detail")));
+        $totals[] = sprintf('%s %s: <strong>%s</strong>', ___('Total'), ___('Paid'), Am_Currency::render(
+            Am_Di::getInstance()->db->selectCell("SELECT SUM(amount) from ?_aff_payout_detail where is_paid > 0")));
+        $count = count($this->grid->getFields());
+        $tr = sprintf('<tr><td class="grid-total" colspan="%d">%s</td></td>',
+                $count, implode(',', $totals));
+
+        $out = preg_replace('|(<tr>\s*<th>)|', str_replace('$', '\$', $tr) . '\1', $out);
+    }
+    public function setGrid(Am_Grid_Editable $grid)
+    {
+        $grid->addCallback(Am_Grid_ReadOnly::CB_RENDER_TABLE, array($this, 'renderOut'));
+        /* @var $ds Am_Query */
+        $this->ds = clone $grid->getDataSource();
+        parent::setGrid($grid);
+    }
 }

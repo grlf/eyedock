@@ -1177,7 +1177,7 @@ ul.admin-menu-collapsed li a.bold {
 .form-login legend {
   text-align: center;
 }
-.form-login input[name=login] {
+.form-login input[name=am_admin_login] {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -1187,7 +1187,7 @@ ul.admin-menu-collapsed li a.bold {
   padding-left: 30px;
   width: 100%;
 }
-.form-login input[name=passwd] {
+.form-login input[name=am_admin_passwd] {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -1539,6 +1539,7 @@ div.admin-last div.grid-container {
   -webkit-border-radius: 10px;
   border-radius: 10px;
   box-shadow: 0 4px 8px #d6d6d6;
+  margin-bottom: 1em;
 }
 
 .admin-index-report {
@@ -2066,9 +2067,12 @@ div.mail-editor div.mail-editor-element {
   font-size: 12pt;
   font-weight: bold;
   color: white;
-  background-color: red;
+  background-color: #E34B3D;
   text-align: center;
   padding-top: 1em;
+}
+.maint-mode-warning a {
+  color: white;
 }
 
 .disabled-text {

@@ -4,11 +4,12 @@
  * @id sagepay-form
  * @title Sagepay Form
  * @visible_link http://www.sagepay.com/
+ * @logo_url sagepay.png
  * @recurring none
  */
 class Am_Paysystem_SagepayForm extends Am_Paysystem_Abstract {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
     
     protected $defaultTitle = 'Sagepay Form';
     protected $defaultDescription = 'Pay by credit card';

@@ -104,6 +104,12 @@ class Am_Event
      *
      *  * {@link Product} product
      */
+    /**
+     * Called after admin record deletion.
+     *
+     *  * {@link Admin Admin} admin
+     */
+    const ADMIN_AFTER_DELETE = 'adminAfterDelete';
     const PRODUCT_AFTER_DELETE = 'productAfterDelete';
     /**
      * Called just before coupon update
@@ -129,6 +135,10 @@ class Am_Event
     const SIGNUP_AFF_ADDED = 'signupAffAdded';
     /** User record is updated after submitting signup form - before payment */
     const SIGNUP_USER_UPDATED  = 'signupUserUpdated';
+    
+    /** User record is updated after submitting profile form*/
+    const PROFILE_USER_UPDATED  = 'profileUserUpdated';
+    
     /** Called just before payment record insered into database. Is not called for free subscriptions */
     const PAYMENT_BEFORE_INSERT = 'paymentBeforeInsert';
     /** Payment record insered into database. Is not called for free subscriptions */

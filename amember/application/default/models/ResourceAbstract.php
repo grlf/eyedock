@@ -132,11 +132,11 @@ abstract class ResourceAbstract extends Am_Record
                 ?_product_product_category ppc 
                 LEFT JOIN 
                 ?_resource_access ra ON ppc.product_category_id = ra.id
-            WHERE ra.fn = 'product_category_id' AND ra.resource_id=?d
+            WHERE ra.fn = 'product_category_id' AND ra.resource_id=?d and ra.resource_type =?
         ", 
             ResourceAccess::ANY_PRODUCT, $this->pk(), ResourceAccess::ANY_PRODUCT, 
             $this->pk(), 
-            $this->pk());
+            $this->pk(), $this->getAccessType());
         
         if ($ret && ($ret[0] == ResourceAccess::ANY_PRODUCT)) return ResourceAccess::ANY_PRODUCT;
         return $ret;

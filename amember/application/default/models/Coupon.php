@@ -38,6 +38,8 @@ class Coupon extends Am_Record_WithData {
             return ___('This coupon belongs to another customer');
         if ($this->user_id && $this->user_id != $user_id)
             return ___('This coupon belongs to another customer');
+        if($batch->aff_id &&  $user_id && $batch->aff_id == $user_id)
+            return ___("You can't use your affiliate coupon code");
         $tm = $this->getDi()->time;
         if ($batch->begin_date && strtotime($batch->begin_date) > $tm)
             return ___('Coupon is not yet active');

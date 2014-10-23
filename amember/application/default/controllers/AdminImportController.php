@@ -1238,6 +1238,7 @@ class AdminImportController extends Am_Controller
         $grid->setPermissionId(Am_Auth_Admin::PERM_IMPORT);
         $grid->addField(new Am_Grid_Field_Date('date', ___('Date'), false, '', null, '10%'))
             ->setFormatDate();
+        $grid->addField('id', '#');
         $grid->addField(new Am_Grid_Field('title', ___('Title'), false, '', array($this, 'renderGridTitle'), '90%'));
         $grid->actionsClear();
         $grid->actionAdd(new Am_Grid_Action_ImportDel);
@@ -1286,8 +1287,8 @@ class AdminImportController extends Am_Controller
     protected function getID()
     {
         if (!$this->session->ID) {
-            $this->session->ID = sprintf('IMPORT-%d-%d',
-                    time(), rand(100, 999));
+            $this->session->ID = sprintf('I-%s',
+                strtoupper($this->getDi()->app->generateRandomString(6)));
         }
 
         return $this->session->ID;
@@ -1757,9 +1758,11 @@ class AdminImportController extends Am_Controller
         $form = new Am_Form_Admin('confirm');
         $form->setAction($this->getUrl(null, 'confirm'));
 
-        $form->addElement('select', 'mode')
-            ->setLabel('Import Mode')
-            ->loadOptions(self::getImportModeOptions());
+        $form->addAdvRadio('mode')
+            ->setLabel(___('Import Mode'))
+            ->loadOptions(self::getImportModeOptions())
+            ->setValue(self::MODE_SKIP);
+
 
         $group = $form->addGroup();
         $group->setSeparator(' ');

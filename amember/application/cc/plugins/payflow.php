@@ -3,13 +3,16 @@
  * @table paysystems
  * @id payflow
  * @title PayFlow
+ * @visible_link http://www.paypal.com/
+ * @logo_url paypal.png
+ * @international 1
  * @recurring cc
  */
 class Am_Paysystem_Payflow extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.2';    
+    const PLUGIN_REVISION = '4.4.4';    
     
     const LIVE_URL = 'https://payflowpro.paypal.com';
     const TEST_URL = 'https://pilot-payflowpro.paypal.com';

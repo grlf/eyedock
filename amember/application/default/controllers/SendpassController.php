@@ -8,7 +8,7 @@
 *        Web: http://www.cgi-central.net
 *    Details: Send lost password page
 *    FileName $RCSfile$
-*    Release: 4.4.2 ($Revision$)
+*    Release: 4.4.4 ($Revision$)
 *
 * Please direct bug reports,suggestions or feedback to the cgi-central forums.
 * http://www.cgi-central.net/forum/
@@ -132,6 +132,8 @@ class SendpassController extends Am_Controller {
             //allright let's change pass
             $this->user->setPass($this->getParam('pass0'));
             $this->user->update();
+            // Password has been reset. Delete all other sessions instead of current one. (Logout other' users)
+            $this->getDi()->db->query('DELETE FROM ?_session where user_id=? and id<>?', $this->user->pk(), session_id());
             $this->getDi()->store->delete(self::STORE_PREFIX . 
                 $this->getFiltered(self::SECURITY_VAR));
 

@@ -123,8 +123,8 @@ CUT
         $passLen->addInteger('pass_max_length', array('size'=>3))->setLabel('max');
 
         $fs->addAdvCheckbox('require_strong_password')
-            ->setLabel(array(___('Require Strong Password'),
-                ___('password should contain at least 2 capital letters, 2 or more numbers and 2 or more special chars')));
+            ->setLabel(___("Require Strong Password\n" .
+                'password should contain at least 2 capital letters, 2 or more numbers and 2 or more special chars'));
 
         $fs = $this->addElement('fieldset', '##03')
         ->setLabel(___('Miscellaneous'));
@@ -138,7 +138,7 @@ CUT
 
         $this->setDefault('currency', 'USD');
         $currency = $fs->addElement('select', 'currency', array (
-                'size' => 1,
+                'size' => 1, 'class' => 'am-combobox'
         ), array('help-id' => '#Set_Up.2FEdit_Base_Currency'))
         ->setLabel(___("Base Currency\n".
                 "base currency to be used for reports and affiliate commission.\n".
@@ -150,8 +150,10 @@ CUT
             $currency->toggleFrozen(true);
 
         $this->addSelect('404_page')
-            ->setLabel(array(___('Page Not Found (404)'), '<strong>' . ___('this page will be public and do not require any login/password') . "</strong>\n" .
-                ___('you can create new pages %shere%s', '<a class="link" href="' . REL_ROOT_URL . '/default/admin-content/p/pages/index' . '">', '</a>')))
+            ->setLabel(___("Page Not Found (404)\n" .
+                "%sthis page will be public and do not require any login/password%s\n" .
+                'you can create new pages %shere%s', '<strong>', '</strong>',
+                '<a class="link" href="' . REL_ROOT_URL . '/default/admin-content/p/pages/index' . '">', '</a>'))
             ->loadOptions(array(''=>___('Default Not Found Page')) +
                 Am_Di::getInstance()->db->selectCol("SELECT page_id AS ?, title FROM ?_page", DBSIMPLE_ARRAY_KEY));
     }
@@ -226,7 +228,7 @@ class Am_Form_Setup_Plugins extends Am_Form_Setup
                     break;
             }
 
-            $el = $this->addMagicSelect('plugins.' . $type, null, array('help-id' => $help_id))
+            $el = $this->addMagicSelect('plugins.' . $type, array('class' => 'magicselect am-combobox'), array('help-id' => $help_id))
             ->setLabel(___('%s Plugins', ___($mgr->getTitle())));
             
             $paths = $mgr->getPaths();
@@ -545,7 +547,8 @@ CUT
         ->setLabel(___('E-Mails by User Request'));
 
         $fs->addElement('email_checkbox', 'mail_cancel_member', null, array('help-id' => '#Forgotten_Password_Templates'))
-        ->setLabel(array(___('Send Cancel Notifications to User'), ___('send email to member when he cancels recurring subscription.')));
+        ->setLabel(___("Send Cancel Notifications to User\n" .
+            'send email to member when he cancels recurring subscription.'));
 
         $fs->addElement('email_checkbox', 'mail_cancel_admin', null, array('help-id' => '#Forgotten_Password_Templates'))
         ->setLabel(___("Send Cancel Notifications to Admin\n" .
@@ -624,13 +627,12 @@ CUT
         $fs->addElement('advcheckbox', 'disable_unsubscribe_block', null, array('help-id' => '#Miscellaneous_Email_Settings'))
         ->setLabel(___('Do not Show Unsubscribe Block on Member Page'));
 
-        $fs->addElement('text', 'copy_admin_email', array (
-                'class' => 'el-wide',
-        ), array('help-id' => '#Miscellaneous_Email_Settings'))
-        ->setLabel(array(___("Send Copy of All Admin Notifications"), ___('will be used to send copy of email notifications to admin ' .
+        $fs->addElement('text', 'copy_admin_email', array('class' => 'el-wide'), array('help-id' => '#Miscellaneous_Email_Settings'))
+            ->setLabel(___("Send Copy of All Admin Notifications\n" .
+                'will be used to send copy of email notifications to admin ' .
                 'you can specify more then one email separated by comma: ' .
-                'test@email.com,test1@email.com,test2@email.com')))
-                ->addRule('callback', 'Please enter valid e-mail address', array('Am_Validate', 'emails'));
+                'test@email.com,test1@email.com,test2@email.com'))
+            ->addRule('callback', 'Please enter valid e-mail address', array('Am_Validate', 'emails'));
     }
     
     function haveCronRebillPlugins(){
@@ -855,30 +857,37 @@ class Am_Form_Setup_VideoPlayer extends Am_Form_Setup
         $gr->addText($prefix . 'height', array('size' => 4));
 
         $form->addElement('select', $prefix . 'autoPlay')
-        ->setLabel(array(___('Auto Play'), ___('whether the player should start playback immediately upon loading')))
-        ->loadOptions(array(
+            ->setLabel(___("Auto Play\n" .
+                'whether the player should start playback immediately upon loading'))
+            ->loadOptions(array(
                 0 => ___('No'),
                 1 => ___('Yes')
-        ));
+            ));
 
         $form->addElement('select', $prefix . 'autoBuffering')
-        ->setLabel(array(___('Auto Buffering'), ___('whether loading of clip into player\'s memory should begin straight away. When this is true and autoPlay is false then the clip will automatically stop at the first frame of the video.')))
-        ->loadOptions(array(
-                0 => ___('No'),
-                1 => ___('Yes')
-        ));
+            ->setLabel(___("Auto Buffering\n" .
+                'whether loading of clip into player\'s memory should begin ' .
+                'straight away. When this is true and autoPlay is false then ' .
+                'the clip will automatically stop at the first frame of the video.'))
+            ->loadOptions(array(
+                    0 => ___('No'),
+                    1 => ___('Yes')
+            ));
 
         $form->addInteger($prefix . 'bufferLength')
-        ->setLabel(array(___('Buffer Length'), ___('The amount of video data (in seconds) which should be loaded into Flowplayer\'s memory in advance of playback commencing.')));
+            ->setLabel(___("Buffer Length\n" .
+                'The amount of video data (in seconds) which should be loaded ' .
+                'into Flowplayer\'s memory in advance of playback commencing.'));
 
         $form->addElement('select', $prefix . 'scaling')
-        ->setLabel(array(___('Scaling'), ___('Setting which defines how video is scaled on the video screen. Available options are:
-
-                <strong>fit</strong>: Fit to window by preserving the aspect ratio encoded in the file\'s metadata.
-                <strong>half</strong>: Half-size (preserves aspect ratio)
-                <strong>orig</strong>: Use the dimensions encoded in the file. If the video is too big for the available space, the video is scaled using the \'fit\' option.
-                <strong>scale</strong>: Scale the video to fill all available space. Ignores the dimensions in the metadata. This is the default setting.
-                ')))
+            ->setLabel(___("Scaling\n" .
+                "Setting which defines how video is scaled on the video screen. Available options are:\n" .
+                "<strong>fit</strong>: Fit to window by preserving the aspect ratio encoded in the file's metadata.\n" .
+                "<strong>half</strong>: Half-size (preserves aspect ratio)\n" .
+                "<strong>orig</strong>: Use the dimensions encoded in the file. " .
+                "If the video is too big for the available space, the video is scaled using the 'fit' option.\n" .
+                "<strong>scale</strong>: Scale the video to fill all available space. ".
+                "Ignores the dimensions in the metadata. This is the default setting."))
                 ->loadOptions(array(
                         'fit' => 'fit',
                         'half' => 'half',
@@ -977,6 +986,24 @@ $(function(){
 CUT
             );
 
+        $gr = $this->addGroup()->setLabel(___('Clear Incomplete Users'));
+        $gr->addElement('advcheckbox', 'clear_inc_users');
+        $gr->addStatic()->setContent(sprintf('<span class="clear_inc_users_days"> %s </span>', ___("after")));
+        $gr->addElement('integer', 'clear_inc_users_days', array('class'=>'clear_inc_users_days', 'size'=>4));
+        $gr->addStatic()->setContent(sprintf('<span class="clear_inc_users_days"> %s </span>', ___("days")));
+
+        $this->setDefault('clear_inc_users_days', 7);
+
+        $this->addScript()->setScript(<<<CUT
+$(function(){
+    $('input[name=clear_inc_users]').change(function(){
+        $('.clear_inc_users_days').toggle(this.checked);
+    }).change();
+})
+
+CUT
+            );
+
         $this->setDefault('multi_title', ___('Membership'));
         $this->addText('multi_title', array('class' => 'el-wide'), array('help-id' => '#Configuring_Advanced_Settings'))
         ->setLabel(___("Multiple Order Title\n".
@@ -1064,10 +1091,10 @@ CUT;
                 ->setLabel(___('Manually Approve'));
 
         $fs->addAdvCheckbox('manually_approve', null, array('help-id' => '#Configuring_Advanced_Options'))
-        ->setLabel(array(___('Manually Approve New Users'), ___('manually approve all new users (first payment)')."\n".
-                ___('don\'t enable it if you have huge users base already')."\n".
-                ___('- all old members become not-approved')
-        ));
+        ->setLabel(___("Manually Approve New Users\n" .
+            "manually approve all new users (first payment)\n" .
+            "don't enable it if you have huge users base already\n" .
+            "- all old members become not-approved"));
 
         $fs->addElement('email_link', 'manually_approve', array('rel'=>'manually_approve'), array('help-id' => '#Configuring_Advanced_Options'))
             ->setLabel(___('Require Approval Notification to User  (New Signup)'));
@@ -1076,7 +1103,8 @@ CUT;
             ->setLabel(___('Require Approval Notification to Admin (New Signup)'));
 
         $fs->addAdvCheckbox('manually_approve_invoice', null, array('help-id' => '#Configuring_Advanced_Options'))
-            ->setLabel(array(___('Manually Approve New Invoices'), ___('manually approve all new invoices')));
+            ->setLabel(___("Manually Approve New Invoices\n" .
+                'manually approve all new invoices'));
         $fs->addMagicSelect('manually_approve_invoice_products', array('rel'=>'manually_approve_invoice'), array('help-id' => '#Configuring_Advanced_Options'))
             ->setLabel(array(
                 ___('Require Approval Only if Invoice has these Products (Invoice)'),
@@ -1307,13 +1335,15 @@ CUT
                 "notify admin when bruteforce attack is detected"));
          
         $this->addElement('advcheckbox', 'skip_index_page')
-            ->setLabel(array(___('Skip Index Page if User is Logged-in'),
-                ___('When logged-in user try to access /amember/index page, he will be redirected to /amember/member')))
+            ->setLabel(___("Skip Index Page if User is Logged-in\n" .
+                'When logged-in user try to access /amember/index page, he will be redirected to /amember/member'))
             ->setId('skip-index-page');
 
         $this->addSelect('index_page')
-            ->setLabel(array(___('Index Page'), '<strong>' . ___('this page will be public and do not require any login/password') . '</strong>'. "\n" .
-                ___('you can create new pages %shere%s', '<a class="link" href="' . REL_ROOT_URL . '/default/admin-content/p/pages/index' . '">', '</a>')))
+            ->setLabel(___("Index Page\n" .
+                "%sthis page will be public and do not require any login/password%s\n" .
+                'you can create new pages %shere%s', '<strong>', '</strong>',
+                '<a class="link" href="' . REL_ROOT_URL . '/default/admin-content/p/pages/index' . '">', '</a>'))
             ->loadOptions(array(''=>___('Default Index Page')) +
                 Am_Di::getInstance()->db->selectCol("SELECT page_id AS ?, title FROM ?_page", DBSIMPLE_ARRAY_KEY))
             ->setId('index-page');
@@ -1336,15 +1366,21 @@ CUT
             ))->setLabel(___('ReCaptcha Theme for Login Page'));
 
          $this->addSelect('video_non_member')
-            ->setLabel(array(___("Video for Non User\n" .
-                'this video will be shown instead of actual video in case of non-user try to access protected video content. %sThis video will be public and do not require any login/password%s. ' .
-                'You can add new video %shere%s', '<strong>', '</strong>', '<a class="link" href="' . REL_ROOT_URL . '/default/admin-content/p/video/index' . '">', '</a>')))
+            ->setLabel(___("Video for Non User\n" .
+                'this video will be shown instead of actual video in case of ' .
+                'non-user try to access protected video content. %sThis video ' .
+                'will be public and do not require any login/password%s. ' .
+                'You can add new video %shere%s', '<strong>', '</strong>',
+                '<a class="link" href="' . REL_ROOT_URL . '/default/admin-content/p/video/index' . '">', '</a>'))
             ->loadOptions(array(''=>___('Show Error Message')) +
                 Am_Di::getInstance()->db->selectCol("SELECT video_id AS ?, title FROM ?_video", DBSIMPLE_ARRAY_KEY));
          $this->addSelect('video_not_proper_level')
-            ->setLabel(array(___("Video for User without Proper Membership Level\n" .
-                "this video will be shown instead of actual video in case of user without proper access try to access protected video content. %sThis video will be public and do not require any login/password%s. " .
-                "You can add new video %shere%s", '<strong>', '</strong>', '<a class="link" href="' . REL_ROOT_URL . '/default/admin-content/p/video/index' . '">', '</a>')))
+            ->setLabel(___("Video for User without Proper Membership Level\n" .
+                "this video will be shown instead of actual video in case of " .
+                "user without proper access try to access protected video " .
+                "content. %sThis video will be public and do not require any login/password%s. " .
+                "You can add new video %shere%s", '<strong>', '</strong>',
+                '<a class="link" href="' . REL_ROOT_URL . '/default/admin-content/p/video/index' . '">', '</a>'))
             ->loadOptions(array(''=>___('Show Error Message')) +
                 Am_Di::getInstance()->db->selectCol("SELECT video_id AS ?, title FROM ?_video", DBSIMPLE_ARRAY_KEY));
     }
@@ -1364,12 +1400,12 @@ class Am_Form_Setup_Language extends Am_Form_Setup
         ->setLabel(___('Display Language Choice'));
         $list = Am_Di::getInstance()->languagesListUser;
 
-        $sel = $this->addElement('select', 'lang.enabled', array('multiple'=> 'multiple', 'class' => 'magicselect'), array('help-id' => '#Selecting_Languages_to_Offer'))
+        $sel = $this->addElement('select', 'lang.enabled', array('multiple'=> 'multiple', 'class' => 'magicselect am-combobox'), array('help-id' => '#Selecting_Languages_to_Offer'))
         ->setLabel(___("Available Locales\ndefines both language and date/number formats"));
         $sel->loadOptions($list);
 
         $this->setDefault('lang.default', 'en');
-        $sel = $this->addElement('select', 'lang.default', array(), array('help-id' => '#Selecting.2FEditing_Default_Language'))
+        $sel = $this->addElement('select', 'lang.default', array('class' => 'am-combobox'), array('help-id' => '#Selecting.2FEditing_Default_Language'))
         ->setLabel(___('Default Locale'));
         $sel->loadOptions(array('' => '== '.___('Please Select').' ==') + $list);
     }

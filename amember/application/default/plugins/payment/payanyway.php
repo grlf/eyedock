@@ -9,7 +9,7 @@
  */
 class Am_Paysystem_Payanyway extends Am_Paysystem_Abstract{
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
     
     protected $defaultTitle = 'PayAnyWay';
     protected $defaultDescription = 'Universal Payment System for Internet Shops';
@@ -19,11 +19,13 @@ class Am_Paysystem_Payanyway extends Am_Paysystem_Abstract{
     public function _initSetupForm(Am_Form_Setup $form)
     {
         $form->addText('url')
-                ->setLabel(array(___('Payment System Domain'), ___('Leave default value if you are not sure')))
+                ->setLabel(___("Payment System Domain\n" .
+                    'Leave default value if you are not sure'))
                 ->setValue(self::DOMAIN);
         
         $form->addText('mnt_id')
-                ->setLabel(array(___('Shop Id'), ___('Unique Shop ID in the system')));
+                ->setLabel(___("Shop Id\n" .
+                    'Unique Shop ID in the system'));
         $form->addAdvCheckbox('test_mode')->setLabel(___('Test Mode'));
         $form->addSelect('locale', array(), array('options'=>array('ru'=>'ru', 'eng'=>'eng')))->setLabel(___('Language'));
         $form->addText('secret_code')

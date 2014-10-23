@@ -5,12 +5,13 @@
  * @title Xfers
  * @visible_link https://www.xfers.io/
  * @recurring none
+ * @logo_url xfers.png
  * @country SG
  */
 class Am_Paysystem_Xfers extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
 
     protected $defaultTitle = 'Xfers';
     protected $defaultDescription = 'Pay by credit card card';

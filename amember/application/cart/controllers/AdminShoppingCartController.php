@@ -175,9 +175,10 @@ class Am_Form_Setup_Cart extends Am_Form_Setup
     {
         $options = Am_Di::getInstance()->paysystemList->getOptions();
         unset($options['free']);
-        $this->addSortableMagicSelect('cart.paysystems')->setLabel(array(___('Payment Options'),
-                    ___('if none selected, all enabled will be displayed')))
-                ->loadOptions($options);
+        $this->addSortableMagicSelect('cart.paysystems')
+            ->setLabel(___("Payment Options\n" .
+                'if none selected, all enabled will be displayed'))
+            ->loadOptions($options);
 
         $this->addSelect('cart.category_id')->setLabel(___("Category\n" .
                     "root category of hierarchy which included to shopping cart\n" .
@@ -211,34 +212,37 @@ CUT
             ->setLabel(___('Product Image'));
 
         $imgSize = $fs->addGroup()
-                ->setLabel(array(___('List View (Width x Height)'), ___('Empty - 200x200 px')));
+                ->setLabel(___("List View (Width × Height)\n" .
+                    'Empty - 200×200 px'));
 
         $imgSize->addText('cart.product_image_width', array('size' => 3))
-            ->addRule('regex', ___('Image width must be number greater than 0.'), '/^$|^[1-9](\d+)?$/');
+            ->addRule('regex', ___('Image width must be number greater than %d', 0), '/^$|^[1-9](\d+)?$/');
         $imgSize->addHtml()
             ->setHtml(' &times; ');
         $imgSize->addText('cart.product_image_height', array('size' => 3))
-            ->addRule('regex', ___('Image height must be number greater than 0.'), '/^$|^[1-9](\d+)?$/');
+            ->addRule('regex', ___('Image height must be number greater than %d', 0), '/^$|^[1-9](\d+)?$/');
 
         $imgSize = $fs->addGroup()
-                ->setLabel(array(___('Detail View (Width x Height)'), ___('Empty - 400x400 px')));
+                ->setLabel(___("Detail View (Width × Height)\n" .
+                    'Empty - 400×400 px'));
 
         $imgSize->addText('cart.img_detail_width', array('size' => 3))
-            ->addRule('regex', ___('Image width must be number greater than 0.'), '/^$|^[1-9](\d+)?$/');
+            ->addRule('regex', ___('Image width must be number greater than %d', 0), '/^$|^[1-9](\d+)?$/');
         $imgSize->addHtml()
             ->setHtml(' &times; ');
         $imgSize->addText('cart.img_detail_height', array('size' => 3))
-            ->addRule('regex', ___('Image height must be number greater than 0.'), '/^$|^[1-9](\d+)?$/');
+            ->addRule('regex', ___('Image height must be number greater than %d', 0), '/^$|^[1-9](\d+)?$/');
 
         $imgSize = $fs->addGroup()
-                ->setLabel(array(___('Cart View (Width x Height)'), ___('Empty - 50x50 px')));
+                ->setLabel(___("Cart View (Width × Height)\n" .
+                    'Empty - 50×50 px'));
 
         $imgSize->addText('cart.img_cart_width', array('size' => 3))
-            ->addRule('regex', ___('Image width must be number greater than 0.'), '/^$|^[1-9](\d+)?$/');
+            ->addRule('regex', ___('Image width must be number greater than %d', 0), '/^$|^[1-9](\d+)?$/');
         $imgSize->addHtml()
             ->setHtml(' &times; ');
         $imgSize->addText('cart.img_cart_height', array('size' => 3))
-            ->addRule('regex', ___('Image height must be number greater than 0.'), '/^$|^[1-9](\d+)?$/');
+            ->addRule('regex', ___('Image height must be number greater than %d', 0), '/^$|^[1-9](\d+)?$/');
 
 
         $fs = $this->addAdvFieldset('layout')

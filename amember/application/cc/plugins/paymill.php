@@ -4,7 +4,7 @@ class Am_Paysystem_Paymill extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
 
     const TOKEN = 'paymill_token';
     const CLIENT_ID = 'paymill_clientId';
@@ -100,7 +100,9 @@ class Am_Controller_CreditCard_Paymill extends Am_Controller
     {
         $form = new Am_Form('cc-paymill');
         
-        $name = $form->addGroup()->setLabel(array(___('Cardholder Name'), sprintf(___('cardholder first and last name, exactly as%son the card'), '<br/>')));
+        $name = $form->addGroup()
+            ->setLabel(___("Cardholder Name\n" .
+                'cardholder first and last name, exactly as on the card'));
         $name->addRule('required', ___('Please enter credit card holder name'));
         $name_f = $name->addText('cc_name_f', array('size'=>15, 'id' => 'cc_name_f'));
         $name_f->addRule('required', ___('Please enter credit card holder first name'))->addRule('regex', ___('Please enter credit card holder first name'), '|^[a-zA-Z_\' -]+$|');
@@ -116,7 +118,8 @@ class Am_Controller_CreditCard_Paymill extends Am_Controller
 
         class_exists('Am_Form_CreditCard', true); // preload element
         $expire = $form->addElement(new Am_Form_Element_CreditCardExpire('cc_expire'))
-            ->setLabel(array(___('Card Expire'), ___('Select card expiration date - month and year')));
+            ->setLabel(___("Card Expire\n" .
+                'Select card expiration date - month and year'));
         
         $code = $form->addPassword('', array('autocomplete'=>'off', 'size'=>4, 'maxlength'=>4, 'id' => 'cc_code'))
                 ->setLabel(___('Credit Card Code'), sprintf(___('The "Card Code" is a three- or four-digit security code that is printed on the back of credit cards in the card\'s signature panel (or on the front for American Express cards).'),'<br>','<br>'));
@@ -124,7 +127,9 @@ class Am_Controller_CreditCard_Paymill extends Am_Controller
              ->addRule('regex', ___('Please enter Credit Card Code'), '/^\s*\d{3,4}\s*$/');
             
         /**/
-        $fieldSet = $form->addFieldset(___('Address Info'))->setLabel(array(___('Address Info'), ___('(must match your credit card statement delivery address)')));
+        $fieldSet = $form->addFieldset(___('Address Info'))
+            ->setLabel(___("Address Info\n" .
+                '(must match your credit card statement delivery address)'));
         $street = $fieldSet->addText('cc_street')->setLabel(___('Street Address'))
                            ->addRule('required', ___('Please enter Street Address'));
 

@@ -124,6 +124,7 @@ abstract class MediaController extends Am_Controller
             try {
                 if ($media->mime == 'audio/mpeg') throw new Exception; //skip it for audio files
                 $m = $this->getDi()->videoTable->load($this->getDi()->config->get('video_non_member'));
+                $media = $m;
                 $this->view->media = $this->getSignedLink($m);
                 $this->view->mime = $m->mime;
             } catch (Exception $e) {
@@ -134,6 +135,7 @@ abstract class MediaController extends Am_Controller
             try {
                 if ($media->mime == 'audio/mpeg') throw new Exception; //skip it for audio files
                 $m = $this->getDi()->videoTable->load($this->getDi()->config->get('video_not_proper_level'));
+                $media = $m;
                 $this->view->media = $this->getSignedLink($m);
                 $this->view->mime = $m->mime;
             } catch (Exception $e) {

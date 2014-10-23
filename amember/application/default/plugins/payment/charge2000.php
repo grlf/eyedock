@@ -4,13 +4,13 @@
  * @id charge2000
  * @title 2000Charge
  * @visible_link http://2000charge.com/
+ * @logo_url charge2000.png
  * @recurring paysystem_eot
  */
 
-
 class Am_Paysystem_charge2000 extends Am_Paysystem_Abstract{
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
 
     protected $defaultTitle = '2000Charge';
     protected $defaultDescription = 'The Leader in Alternative Payment Solutions';
@@ -23,8 +23,30 @@ class Am_Paysystem_charge2000 extends Am_Paysystem_Abstract{
             'NTD' => 'TWD'
             );
    
-    const LIVE_URL = 'https:///secure.2000charge.com/sys/PaymentSelect.asp';
+    const LIVE_URL = 'https://secure.2000charge.com/sys/NATSPaymentProcess.asp';
     const CANCEL_URL = ': https://secure.2000charge.com/ClientsOnly/RCS.asp';
+
+    protected $payment_options  = array(
+            'COMBO' => 'Allows consumer to choose',
+            'ACH'  => 'ACH USD/ CAD',
+            'ASTROPAYCARD'=>'ASTROPAYCARD USD',
+            'BRAZILPAY' => 'BRAZILPAY BRL',
+            'CREDITCARD' => 'CREDITCARD USD', 
+            'DIRECTPAY' => 'DIRECTPAY USD/EUR',
+            'EPS' => 'EPS EUR',
+            'EURODEBIT' => 'EURODEBIT EUR',
+            'GIROPAY' => 'GIROPAY EUR',
+            'IDEAL' => 'IDEAL EUR',
+            'PAYSAFECARD' => 'PAYSAFECARD EUR',
+            'POLIAU' => 'POLIAU AUD',
+            'POLINZ' => 'POLINZ NZD',
+            'PRZELEWY' => 'PRZELEWY PLN',
+            'QIWI' => 'QIWI EUR',
+            'SEPA' => 'SEPA EUR',
+            'TELEINGRESO' => 'TELEINGRESO EUR',
+            'TELEPAY' => 'TELEPAY MXN',
+            'YELLOWPAY' => 'YELLOWPAY CHF'
+                );
     
     
     const PRICEPOINT = 'charge2000_pricepoint';
@@ -35,6 +57,9 @@ class Am_Paysystem_charge2000 extends Am_Paysystem_Abstract{
         
         $this->getDi()->productTable->customFields()
             ->add(new Am_CustomFieldText(self::PRICEPOINT, 'Mapping code given by 2000Charge'));
+        $this->getDi()->productTable->customFields()
+            ->add(new Am_CustomFieldSelect('payment_option', 'Payment Option', 'Display Only Specified Payment Options', null, array('options' =>$this->payment_options)));
+        
     }
     
     public function _initSetupForm(Am_Form_Setup $form)
@@ -45,8 +70,14 @@ class Am_Paysystem_charge2000 extends Am_Paysystem_Abstract{
         
         $form->addText('account')->setLabel('Your client account login id');
         $form->addText('pwd')->setLabel('Your client account login password');
+        $form->addSelect('payment_option', '', array('options' => $this->payment_options))->setLabel(array('Payment Option', 'Display Only Specified Payment Options'));
         
         
+    }
+    
+    function getPaymentOption(\Invoice $invoice){
+        $products = $invoice->getProducts();
+        return ($po = $products[0]->data()->get('payment_option')) ? $po : $this->getConfig('payment_option', 'COMBO');
     }
     
     function getSupportedCurrencies()
@@ -66,10 +97,11 @@ class Am_Paysystem_charge2000 extends Am_Paysystem_Abstract{
     {
         $products = $invoice->getProducts();
         
-        $a = new Am_Paysystem_Action_Redirect(self::LIVE_URL);
+        $a = new Am_Paysystem_Action_Form(self::LIVE_URL);
         
         $a->id = $this->getConfig('web_id');
         $a->pricepoint = $products[0]->data()->get(self::PRICEPOINT);
+        $a->paymentoption = $this->getPaymentOption($invoice);
         $a->firstname = $invoice->getFirstName();
         $a->lastname =  $invoice->getLastName();
         $a->address = $invoice->getStreet();
@@ -115,6 +147,8 @@ class Am_Paysystem_charge2000 extends Am_Paysystem_Abstract{
     function getReadme()
     {
         return <<<CUT
+        Contact 2000Charge support and ask to configure this url for Postback notifications: 
+        %root_url%/payment/charge2000/ipn?status=APPROVED
 CUT;
     }
     
@@ -177,12 +211,27 @@ class Am_Paysystem_Transaction_charge2000 extends Am_Paysystem_Transaction_Incom
     public function validateTerms()
     {        
         return true;
-        return ($this->request->get('initsales') ? 
-                (floatval($this->invoice->first_total) == floatval($this->request->get('amount'))) : 
-                (floatval($this->invoice->second_total) == floatval($this->request->get('amount'))));
     }
     
     public function processValidated(){
-        $this->invoice->addPayment($this);
+        
+        $this->invoice->addPayment($this);     
+/*        switch($this->request->get('transtype'))
+        {
+            case 'SALE-00':
+            case 'SALE-01':
+            case 'SALE-02':
+                $this->invoice->addPayment($this);
+                break;
+            case 'REFUND':
+            case 'VOID':
+                $this->invoice->addRefund($this, $this->request->get('orgtransaction'));
+                break;
+            case 'CHARGEBACK':
+                $this->invoice->addChargeback($this, $this->request->get('orgtransaction'));
+                
+        }
+ * 
+ */
     }
 }

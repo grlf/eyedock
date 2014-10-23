@@ -300,11 +300,11 @@ class Am_Pdf_Invoice
         );
 
         $table->addRow(array(
-            ___('#'),
+            '#',
             ___('Subscription/Product Title'),
             ___('Qty'),
             ___('Unit Price'),
-            ___('Total')
+            ___('Total Price')
         ));
 
         $num = 0;
@@ -355,7 +355,7 @@ class Am_Pdf_Invoice
             (!$this->isFirstPayment() && $invoice->second_tax > 0))
         {
             $table->addRow(array(
-                ___('Tax Amount'),
+                ___('Tax Amount') . sprintf(' (%d%s)', $invoice->tax_rate, '%'),
                 $invoice->getCurrency($this->isFirstPayment() ? $invoice->first_tax : $invoice->second_tax)
             ));
         }

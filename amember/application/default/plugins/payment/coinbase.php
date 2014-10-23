@@ -9,18 +9,21 @@
 class Am_Paysystem_Coinbase extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
 
     protected $defaultTitle = 'Coinbase';
     protected $defaultDescription = 'paid by bitcoins';
 
     const API_KEY = 'api_key';
+    const API_SECRET = 'api_secret';
     const CHECKOUT_URL = 'https://coinbase.com/checkouts';
     
     public function _initSetupForm(\Am_Form_Setup $form) {
         
         $form->addText(self::API_KEY, array('size' => 40))
             ->setLabel(array('API KEY', 'Get it from your coinbase account'));
+        $form->addPassword(self::API_SECRET, array('size' => 40))
+            ->setLabel(array('API SECRET', 'Get it from your coinbase account'));
         
     }
     
@@ -46,7 +49,7 @@ class Am_Paysystem_Coinbase extends Am_Paysystem_Abstract
         
         try{
             // Get code from API
-            $r = new Am_Request_Coinbase($this->getConfig(self::API_KEY));
+            $r = new Am_Request_Coinbase($this->getConfig(self::API_KEY),$this->getConfig(self::API_SECRET));
             
             $resp = $r->post('buttons', $vars);
             
@@ -110,7 +113,7 @@ class Am_Paysystem_Transaction_Coinbase extends Am_Paysystem_Transaction_Incomin
     }
 
     public function validateTerms() {
-        return ((@$this->order->total_native->cents/100 == $this->invoice->first_total) ? true : false);
+        return doubleval(@$this->order->total_native->cents/100000000) == doubleval($this->invoice->first_total);
     }    
     public function findInvoiceId()
     {
@@ -126,9 +129,11 @@ class Am_Request_Coinbase
      */
     protected $_request;
     protected $_key;
+    protected $_secret;
     
-    function __construct($api_key) {
+    function __construct($api_key, $api_secret) {
         $this->_key = $api_key;
+        $this->_secret = $api_secret;
         $this->_createRequest();
     }
     
@@ -136,16 +141,14 @@ class Am_Request_Coinbase
         $this->_request = new Am_HttpRequest();
     }
     
-    protected function _getURL($function, $method){
-        
-        if($method != Am_HttpRequest::METHOD_GET)
-            $this->_request->addPostParameter ('api_key', $this->_key);
-        
-        return self::API_URL . '/'.$function.($method == Am_HttpRequest::METHOD_GET ? '?api_key='.$this->_key : '');
-        
-    }
     protected function _request($function, $method, $params=null){
-        $this->_request->setUrl($this->_getURL($function, $method));
+        $this->_request->setUrl(self::API_URL . '/'.$function);
+        $nonce = sprintf('%0.0f',round(microtime(true) * 1000000));
+        $data = $nonce . self::API_URL . '/' . $function . http_build_query($params);
+        $this->_request->setHeader(array(
+            'ACCESS_KEY' => $this->_key,
+            'ACCESS_SIGNATURE' => hash_hmac('sha256', $data, $this->_secret),
+            'ACCESS_NONCE' => $nonce));
         $this->_request->setMethod($method);
         if(!empty($params))
             $this->_request->addPostParameter($params);

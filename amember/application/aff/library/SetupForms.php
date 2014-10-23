@@ -64,25 +64,19 @@ class Am_Form_Setup_Aff extends Am_Form_Setup
              ->setLabel(___('New Affiliate Payout to Admin'));
 
          $fs->addInteger('aff.payout_min', array('placeholder'=>___('Unlimited')), array('help-id' => '#Affiliate_Payout_Options'))
-            ->setLabel(array(___('Minimum Payout'),
-                ___('minimal commission amount earned by affiliate to include it to payout report')));
-
-//         $el = $this->addElement('select', 'aff.payout_delay')
-//            ->setLabel(___('Delay Payout'));
-//         $el->addOption('Display commissions to affilate immediately, but delay actual payout (default)', 0);
-//         //$el->addOption('Delay payouts, and hide commissions from affiliates until it becomes payable', 1);
-//         $el->addOption('Do not delay payouts (not recommended, high risk of fraud)', 2);
+            ->setLabel(___("Minimum Payout\n" .
+                'minimal commission amount earned by affiliate to include it to payout report'));
 
          $fs->addInteger('aff.payout_delay_days', null, array('help-id' => '#Affiliate_Payout_Options'))
-            ->setLabel(array(___('Delay Payout (days)'),
-                ___('number of days that should go through before commision is included to payout report')));
+            ->setLabel(___("Delay Payout (days)\n" .
+                'number of days that should go through before commision is included to payout report'));
 
          $this->setDefault('aff.payout_delay_days', 30);
 
          $fs->addElement('email_checkbox', 'aff.notify_payout_empty')
-            ->setLabel(array(___('Empty Payout Method Notification to User'),
-                 ___("send email to user in case he has commission but did not define payout method yet.\n" .
-                     'This email will be sent only once.')));
+            ->setLabel(___("Empty Payout Method Notification to User\n" .
+                 "send email to user in case he has commission but did not define payout method yet.\n" .
+                 'This email will be sent only once.'));
 
          $fs->addElement('email_checkbox', 'aff.notify_payout_paid')
              ->setLabel(___("Affiliate Payout Paid Notification to User\n" .
@@ -136,8 +130,8 @@ class Am_Form_Setup_Aff extends Am_Form_Setup
              ->setLabel(___('Miscellaneous'));
 
          $this->addAdvCheckbox('aff.affiliate_can_view_details', null, array('help-id' => '#Affiliate_Payout_Options'))
-            ->setLabel(array(___('Affiliate Can View Sales Details'),
-                ___('Leave this checkbox unselected to restrict affiliates from seeing their sales details')));
+            ->setLabel(___("Affiliate Can View Sales Details\n" .
+                'Leave this checkbox unselected to restrict affiliates from seeing their sales details'));
          
          $this->addSelect('aff.custom_redirect')
             ->setLabel(___("Allow Affiliates to redirect Referrers to any url"))
@@ -150,7 +144,9 @@ class Am_Form_Setup_Aff extends Am_Form_Setup
          $this->addHtmlEditor('aff.intro')
                  ->setLabel(___("Intro Text on Affiliate Info Page"));
          
-         $this->addAdvCheckbox('aff.tracking_code')->setLabel(array(___('Enable Click Tracking Code'), ___('Enable ability to track affiliate clicks on any page on your site')));
+         $this->addAdvCheckbox('aff.tracking_code')
+             ->setLabel(___("Enable Click Tracking Code\n" .
+                 'Enable ability to track affiliate clicks on any page on your site'));
 
          $code = htmlentities(Am_Di::getInstance()->modules->loadGet('aff')->getClickJs());
          $this->addHTML('tracking_code')->setHTML(<<<EOT

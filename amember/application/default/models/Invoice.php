@@ -313,7 +313,7 @@ class Invoice extends Am_Record_WithData
         /// set periods, it has been checked for compatibility in @see add()
         foreach ($this->getItems() as $item) {
             $this->currency = $item->currency;
-            if (empty($this->first_period))
+            if (empty($this->first_period) && $item->rebill_times)
                 $this->first_period = $item->first_period;
             if (empty($this->second_period))
                 $this->second_period = $item->second_period;
@@ -321,6 +321,11 @@ class Invoice extends Am_Record_WithData
                 $this->rebill_times = $item->rebill_times;
             $this->rebill_times = max($this->rebill_times, $item->rebill_times);
         }
+        
+        // First period is empty, invoice has only one time items, set first period from last item.
+        if (empty($this->first_period)&&!empty($item->first_period))
+            $this->first_period = $item->first_period;
+        
         if ($this->currency == Am_Currency::getDefault())
             $this->base_currency_multi = 1.0;
         else {
@@ -405,14 +410,14 @@ class Invoice extends Am_Record_WithData
      * @see $this->paysys_id
      * @param string $paysys_id
      */
-    public function setPaysystem($paysys_id)
+    public function setPaysystem($paysys_id, $requirepublic = true)
     {
         $this->paysys_id = null;
         if ($this->isZero() && !empty($this->_items)) {
             $this->paysys_id = 'free';
             return $this->paysys_id;
         }
-        if (!$paysys_id || !$this->getDi()->paysystemList->isPublic($paysys_id))
+        if (!$paysys_id || (!$this->getDi()->paysystemList->isPublic($paysys_id) && $requirepublic))
             throw new Am_Exception_InputError(___('Please select payment system for payment'));
         if (!$plugin = $this->getDi()->plugins_payment->get($paysys_id))
             throw new Am_Exception_InternalError('Could not load paysystem ' . htmlentities($paysys_id));
@@ -860,7 +865,7 @@ class Invoice extends Am_Record_WithData
         if ($this->{$prefix . '_shipping'} > 0)
             $out .= $indent . sprintf("{$total_space}%-{$column_total}s{$space}%{$price_width}s$newline", ___('Shipping'), Am_Currency::render($this->{$prefix . '_shipping'}, $this->currency));
         if ($this->{$prefix . '_tax'} > 0)
-            $out .= $indent . sprintf("{$total_space}%-{$column_total}s{$space}%{$price_width}s$newline", ___('Tax'), Am_Currency::render($this->{$prefix . '_tax'}, $this->currency));
+            $out .= $indent . sprintf("{$total_space}%-{$column_total}s{$space}%{$price_width}s$newline", ___('Tax') . sprintf(' (%d%s)', $this->tax_rate, '%'), Am_Currency::render($this->{$prefix . '_tax'}, $this->currency));
         $out .= $indent . sprintf("{$total_space}%-{$column_total}s{$space}%{$price_width}s$newline", ___('Total'), Am_Currency::render($this->{$prefix . '_total'}, $this->currency));
         $out .= $border;
         if ($this->rebill_times) {

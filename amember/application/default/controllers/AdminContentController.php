@@ -126,11 +126,12 @@ class Am_Grid_Action_EmailPreview extends Am_Grid_Action_Abstract
         $mail = Am_Mail_Template::createFromEmailTemplate($template);
 
         switch ($template->name) {
-            case 'autoresponder':
+            case EmailTemplate::AUTORESPONDER:
                 $mail->setLast_product_title($product->title);
                 break;
-            case 'expire':
+            case EmailTemplate::EXPIRE:
                 $mail->setProduct_title($product->title);
+                $mail->setExpires($vars['expires']);
                 break;
             default:
                 throw new Am_Exception_InternalError('Unknown email template name [%s]', $template->name);
@@ -177,6 +178,15 @@ $(function(){
 });
 CUT
         );
+
+        $tmp = $this->grid->getRecord();
+
+        if ($tmp->name == EmailTemplate::EXPIRE) {
+            $f->addDate('expires')
+                ->setLabel(___('Expiration Date'))
+                ->addRule('required');
+        }
+
         $f->addSaveButton(___('Preview'));
         foreach ($this->grid->getVariablesList() as $k) {
             $kk = $this->grid->getId() . '_' . $k;
@@ -686,11 +696,16 @@ class Am_Grid_Editable_Pages extends Am_Grid_Editable_Content
     {
         $form = new Am_Form_Admin;
 
-        $form->addText('title', array('class' => 'el-wide'))->setLabel(___('Title'))->addRule('required', 'This field is required');
-        $form->addText('desc', array('class' => 'el-wide'))->setLabel(___('Description'));
+        $form->addText('title', array('class' => 'el-wide'))
+            ->setLabel(___('Title'))
+            ->addRule('required', 'This field is required');
+        $form->addText('desc', array('class' => 'el-wide'))
+            ->setLabel(___('Description'));
         $form->addText('path', array('class' => 'el-wide'))
             ->setId('page-path')
-            ->setLabel(array(___('Path'), ___('will be used to construct user-friendly url, in case of you leave it empty aMember will use id of this page to do it')));
+            ->setLabel(___("Path\n" .
+                'will be used to construct user-friendly url, in case of you leave ' .
+                'it empty aMember will use id of this page to do it'));
 
         $root_url = Am_Controller::escape(Am_Di::getInstance()->config->get('root_url'));
 
@@ -1645,20 +1660,24 @@ CUT
         $form->addText('desc', array('class' => 'el-wide'))->setLabel(___('Description'));
         $form->addAdvCheckbox('hide')->setLabel(___("Hide\n" . "do not display this item link in members area"));
 
-        $form->addElement(new Am_Form_Element_PlayerConfig('config'))->setLabel(array(___('Player Configuration'),
-            ___('this option is applied only for video files')));
+        $form->addElement(new Am_Form_Element_PlayerConfig('config'))
+            ->setLabel(___("Player Configuration\n" .
+                'this option is applied only for video files'));
 
         $form->addSelect('tpl')
-            ->setLabel(___("Template\nalternative template for this video") .
-                "\n" .
-                ___("aMember will look for templates in [application/default/views/] folder\n" .
+            ->setLabel(___("Template\nalternative template for this video\n" .
+                    "aMember will look for templates in [application/default/views/] folder\n" .
                     "and in theme's [/] folder\n" .
                     "and template filename must start with [layout]"))
             ->loadOptions($this->getTemplateOptions());
 
-        $form->addElement(new Am_Form_Element_ResourceAccess)->setName('_access')->setLabel(___('Access Permissions'));
+        $form->addElement(new Am_Form_Element_ResourceAccess)->setName('_access')
+            ->setLabel(___('Access Permissions'));
         $form->addText('no_access_url', array('class' => 'el-wide'))
-            ->setLabel(___("No Access URL\ncustomer without required access will see link to this url in the player window\nleave empty if you want to redirect to default 'No access' page"));
+            ->setLabel(___("No Access URL\n" .
+                "customer without required access will see link to this url in " .
+                "the player window\nleave empty if you want to redirect to " .
+                "default 'No access' page"));
 
         $this->addCategoryToForm($form);
 

@@ -16,7 +16,7 @@ class Am_Paysystem_PaypalExpress extends Am_Paysystem_Abstract
     
     const SANDBOX_URL = "https://www.sandbox.paypal.com/webscr";
     const LIVE_URL = "https://www.paypal.com/webscr";
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
     
     protected $defaultTitle = "PayPal Express";
     protected $defaultDescription = "pay with paypal quickly";
@@ -43,6 +43,21 @@ class Am_Paysystem_PaypalExpress extends Am_Paysystem_Abstract
     public function _initSetupForm(Am_Form_Setup $form)
     {
         Am_Paysystem_PaypalApiRequest::initSetupForm($form);
+
+        $form->addAdvCheckbox("dont_verify")
+             ->setLabel(
+            "Disable IPN verification\n" .
+            "<b>Usually you DO NOT NEED to enable this option.</b>
+            However, on some webhostings PHP scripts are not allowed to contact external
+            web sites. It breaks functionality of the PayPal payment integration plugin,
+            and aMember Pro then is unable to contact PayPal to verify that incoming
+            IPN post is genuine. In this case, AS TEMPORARY SOLUTION, you can enable
+            this option to don't contact PayPal server for verification. However,
+            in this case \"hackers\" can signup on your site without actual payment.
+            So if you have enabled this option, contact your webhost and ask them to
+            open outgoing connections to www.paypal.com port 80 ASAP, then disable
+            this option to make your site secure again.");
+        
         
         $form->addText('localecode')->setLabel(array('Locale Code', 'By default: US'));
     }
@@ -201,14 +216,14 @@ class Am_Paysystem_PaypalExpress extends Am_Paysystem_Abstract
         
         $apireq = new Am_Paysystem_PaypalApiRequest($this);
         $apireq->cancelRecurringPaymentProfile($invoice, $invoice->data()->get(self::PAYPAL_PROFILE_ID));
-        $result = $apireq->sendRequest($log);
+        $vars = $apireq->sendRequest($log);
         $log->setInvoice($invoice);
         $log->update();
-        if($result['ACK'] != 'Success')
-            throw new Am_Exception_InputError('Transaction was not cancelled. Got error from paypal: '.$result['L_SHORTMESSAGE0']);
+        if($vars['ACK'] != 'Success')
+            throw new Am_Exception_InputError('Transaction was not cancelled. Got error from paypal: '.$vars['L_SHORTMESSAGE0']);
         
         $invoice->setCancelled(true);
-        
+        $result->setSuccess();        
     }
     
     

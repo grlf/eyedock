@@ -10,6 +10,8 @@
  */
 class ProductUpgrade extends Am_Record 
 {
+    const TYPE_DEFAULT = 'default';
+    const TYPE_FLAT = 'flat';
     /** @return BillingPlan */
     function getFromPlan()
     {
@@ -66,11 +68,19 @@ class ProductUpgrade extends Am_Record
 
         $unusedAmount = $this->getUnusedAmount($exInvoice, $item);
 
-        // magic upgrade formula!
-        $newItem->first_price = moneyRound(
-            $newItem->first_price
-            - $unusedAmount 
-            + $this->surcharge);
+        if($this->type == self::TYPE_FLAT)
+        {
+            $newItem->first_price = $this->surcharge;
+        }
+        else
+        {
+            $unusedAmount = $this->getUnusedAmount($exInvoice, $item);
+            // magic upgrade formula!
+            $newItem->first_price = moneyRound(
+                $newItem->first_price
+                - $unusedAmount 
+                + $this->surcharge);
+        }
             
         if ($newItem->first_price < 0)
         {
@@ -122,7 +132,9 @@ class ProductUpgrade extends Am_Record
         $row = $this->getDi()->db->selectRow("
             SELECT begin_date, expire_date 
             FROM ?_access
-            WHERE invoice_id=?d AND product_id=?",
+            WHERE invoice_id=?d AND product_id=?
+            ORDER by expire_date desc LIMIT 1 
+            ",
                 $invoice->pk(), $item->item_id);
         if (!$row) return;
         $maxExpire = $row['expire_date'];

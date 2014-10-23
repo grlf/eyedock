@@ -62,7 +62,8 @@ class Aff_AdminController extends Am_Controller
         $ds = new Am_Query($this->getDi()->affPayoutDetailTable);
         $ds->leftJoin('?_aff_payout', 'p', 'p.payout_id=t.payout_id');
         $ds->addField('p.*')
-            ->addWhere('aff_id=?', $this->user_id);
+            ->addWhere('aff_id=?', $this->user_id)
+            ->setOrder('date', 'DESC');
 
         $grid = new Am_Grid_ReadOnly('_d', ___('Payouts'), $ds, $this->_request, $this->view);
         $grid->setPermissionId(Bootstrap_Aff::ADMIN_PERM_ID);

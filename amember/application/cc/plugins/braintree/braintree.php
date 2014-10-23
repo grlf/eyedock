@@ -11,7 +11,7 @@ class Am_Paysystem_Braintree extends Am_Paysystem_CreditCard
 
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
     const CUSTOMER_ID = 'braintree_customer_id';
 
     protected $defaultTitle = "Pay with your Credit Card";
@@ -24,6 +24,11 @@ class Am_Paysystem_Braintree extends Am_Paysystem_CreditCard
         $result->setAction($action);
     }
 
+    function getSupportedCurrencies()
+    {
+        return array_keys(Am_Currency::getFullList());
+    }
+    
     protected function ccActionValidateSetInvoice(Am_Request $request, array $invokeArgs)
     {
         $invoiceId = $request->getFiltered('cc_id');
@@ -71,6 +76,10 @@ class Am_Paysystem_Braintree extends Am_Paysystem_CreditCard
             Braintree_Configuration::privateKey($this->getConfig('private_key'));
             Braintree_Configuration::publicKey($this->getConfig('public_key'));
             Braintree_Configuration::environment($this->getConfig('sandbox') ? 'sandbox' : 'production');
+            if($this->getConfig('multicurrency'))
+                $this->getDi()->billingPlanTable->customFields()
+                    ->add(new Am_CustomFieldText('braintree_merchant_account_id', "BrainTree Merchant Account ID",
+                            "please set this up if you sell products in different currencies"));
         }
     }
     
@@ -101,6 +110,7 @@ class Am_Paysystem_Braintree extends Am_Paysystem_CreditCard
         $form->addText('test_merchant_account_id')->setLabel('Your BrainTree SANDBOX Merchant Account ID');
         $form->addTextArea('test_client_side_key', array('rows' => 10, 'cols' => 40))->setLabel('SANDBOX Client-Side Encryption Key');
         $form->addAdvCheckbox('sandbox')->setLabel('Sandbox testing');
+        $form->addAdvCheckbox('multicurrency')->setLabel(array("Use different merchant account ID's",'if you sell products in different currencies you need to setup merchant account ID for each product'));
     }
 
     // We do not store CC info.
@@ -210,7 +220,8 @@ class Am_Form_CreditCard_Braintree extends Am_Form_CreditCard
             $fn = 'customer__';
         else
             $fn = '';
-        $name = $this->addGroup()->setLabel(array(___('Cardholder Name'), sprintf(___('cardholder first and last name, exactly as%son the card'), '<br/>')));
+        $name = $this->addGroup()->setLabel(___("Cardholder Name\n" .
+            'cardholder first and last name, exactly as on the card'));
         $name->addRule('required', ___('Please enter credit card holder name'));
 
         $name->addText($fn.'credit_card__cardholder_name', array('size' => 30))
@@ -220,11 +231,12 @@ class Am_Form_CreditCard_Braintree extends Am_Form_CreditCard
         $this->addText($fn.'credit_card__number', array('autocomplete' => 'off', 'size' => 22, 'maxlength' => 22))
             ->setLabel(___('Credit Card Number'), ___('for example: 1111222233334444'))
             ->addRule('required', ___('Please enter Credit Card Number'))
-            ->addRule('regex', ___('Invalid Credit Card Number'), '/^[0-9]+$/')
+            ->addRule('regex', ___('Invalid Credit Card Number'), '/^[0-9 -]+$/')
             ->addRule('callback2', 'Invalid CC#', array($this->plugin, 'validateCreditCardNumber'));
 
         $gr = $this->addGroup()
-            ->setLabel(array(___('Card Expire'), ___('Select card expiration date - month and year')));
+            ->setLabel(___("Card Expire\n" .
+                'Select card expiration date - month and year'));
         $gr->addSelect($fn.'credit_card__expiration_month')
             ->loadOptions($this->getMonthOptions());
         $gr->addSelect($fn.'credit_card__expiration_year')
@@ -232,19 +244,24 @@ class Am_Form_CreditCard_Braintree extends Am_Form_CreditCard
 
 
         $this->addPassword($fn.'credit_card__cvv', array('autocomplete' => 'off', 'size' => 4, 'maxlength' => 4))
-            ->setLabel(array(___('Credit Card Code'), ___('The "Card Code" is a three- or four-digit security code that is printed on the back of credit cards in the card\'s signature panel (or on the front for American Express cards).')))
+            ->setLabel(___("Credit Card Code\n" .
+                'The "Card Code" is a three- or four-digit security code that ' .
+                'is printed on the back of credit cards in the card\'s ' .
+                'signature panel (or on the front for American Express cards).'))
             ->addRule('required', ___('Please enter Credit Card Code'))
             ->addRule('regex', ___('Please enter Credit Card Code'), '/^\s*\d{3,4}\s*$/');
 
 
         $fieldSet = $this->addFieldset(___('Address Info'))
-            ->setLabel(array(___('Address Info'), ___('(must match your credit card statement delivery address)')));
+            ->setLabel(___("Address Info\n" .
+                '(must match your credit card statement delivery address)'));
 
-        $bname = $fieldSet->addGroup()->setLabel(array(___('Billing Name'), sprintf(___('Billing Address First and Last name'), '<br/>')));
-        $bname->addRule('required', ___('Please enter billing  name'));
+        $bname = $fieldSet->addGroup()->setLabel(___("Billing Name\n" .
+            'Billing Address First and Last name'));
+        $bname->addRule('required', ___('Please enter billing name'));
 
         $bname->addText($fn.'credit_card__billing_address__first_name', array('size' => 15))
-            ->addRule('required', ___('Please first enter name'))
+            ->addRule('required', ___('Please enter first name'))
             ->addRule('regex', ___('Please enter first name'), '|^[a-zA-Z_\' -]+$|');
 
         $bname->addText($fn.'credit_card__billing_address__last_name', array('size' => 15))
@@ -521,6 +538,10 @@ class Am_Paysystem_Transaction_CreditCard_Braintree extends Am_Paysystem_Transac
         {
             if ($errors = $this->paysystemResponse->errors->deepAll())
             {
+                if(!is_array($errors)) $errors = array($errors);
+                foreach($errors as $error){
+                    $error_text .= $error->message;
+                }
                 $result->setFailed("Error: " . $errors);
             }
             else if ($this->paysystemResponse->transaction->status == 'processor_declined')
@@ -546,15 +567,21 @@ class Am_Paysystem_Transaction_CreditCard_Braintree_Sale extends Am_Paysystem_Tr
 
     function getRequest()
     {
-        return array(
+        $vars = array(
             'amount' => ($this->doFirst ? $this->invoice->first_total : $this->invoice->second_total),
-            'merchantAccountId' => $this->plugin->getConfig('merchant_account_id'),
             'customerId' => $this->invoice->getUser()->data()->get(Am_Paysystem_Braintree::CUSTOMER_ID),
             'orderId' => $this->invoice->public_id . '-' . time(),
             'options' => array(
                 'submitForSettlement' => true
             )
         );
+        if($this->plugin->getConfig('multicurrency'))
+        {
+            $vars['merchantAccountId'] = $this->invoice->getItem(0)->getBillingPlanData('braintree_merchant_account_id');
+        }
+        elseif($id = $this->plugin->getConfig('merchant_account_id'))
+            $vars['merchantAccountId'] = $id;
+        return $vars;
     }
 
     function submitTransaction($request)

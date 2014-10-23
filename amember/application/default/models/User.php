@@ -344,6 +344,9 @@ class User extends Am_Record_WithData {
         if ($et = Am_Mail_Template::load('send_signup_mail', $this->lang))
         {
             $et->setUser($this);
+            //%password% placeholder will be available only in case auto_create
+            //mode in payment system (user and payment created during same request)
+            $et->setPassword($this->getPlaintextPass());
             if (empty($p))
                 $p = $this->getDi()->invoicePaymentTable->findFirstByUserId($this->user_id);
             if ($p)
@@ -457,7 +460,29 @@ class User extends Am_Record_WithData {
             FROM ?_access
             WHERE user_id=?d AND begin_date > ? { AND product_id IN (?a) }",
             $this->pk(), sqlDate('now'), $productIdOrIds ? $productIdOrIds : DBSIMPLE_SKIP
-         );
+        );
+    }
+
+    function getRebill($productIdOrIds = array())
+    {
+        $productIdOrIds = (array)$productIdOrIds;
+        $productIdOrIds = array_filter(array_map('intval', $productIdOrIds));
+        return $this->getDi()->db->selectCell("SELECT
+            MIN(i.rebill_date)
+            FROM ?_access a
+            LEFT JOIN ?_invoice_item ii
+                ON a.invoice_id = ii.invoice_id
+                AND a.product_id = ii.item_id
+                AND ii.item_type = 'product'
+            LEFT JOIN ?_invoice i
+                ON a.invoice_id = i.invoice_id
+            WHERE a.user_id=?d
+            AND i.rebill_date IS NOT NULL
+            AND i.rebill_date > ?
+            AND ii.second_total > 0
+            {AND a.product_id IN (?a)}",
+            $this->pk(), sqlDate('now'), $productIdOrIds ? $productIdOrIds : DBSIMPLE_SKIP
+        );
     }
     
     function getActiveProductsExpiration(){
@@ -471,6 +496,13 @@ class User extends Am_Record_WithData {
         $ret = array();
         foreach($this->getFutureProductIds() as $pid){
             $ret[$pid] = $this->getBegin($pid);
+        }
+        return $ret;
+    }
+    function getActiveProductsRebill(){
+        $ret = array();
+        foreach($this->getActiveProductIds() as $pid){
+            $ret[$pid] = $this->getRebill($pid);
         }
         return $ret;
     }

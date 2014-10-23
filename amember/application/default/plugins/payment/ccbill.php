@@ -14,7 +14,7 @@ class Am_Paysystem_Ccbill extends Am_Paysystem_Abstract
 {
 
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
 
     protected $defaultTitle = 'ccBill';
     protected $defaultDescription = 'Pay by credit card/debit card';
@@ -25,6 +25,7 @@ class Am_Paysystem_Ccbill extends Am_Paysystem_Abstract
     const URL = 'https://bill.ccbill.com/jpost/signup.cgi';
     const CCBILL_LAST_RUN = 'ccbill_datalink_last_run';
     const DATALINK_URL = 'https://datalink.ccbill.com/data/main.cgi';
+    const DATALINK_SUBSCR_MANAGEMENT = 'https://datalink.ccbill.com/utils/subscriptionManagement.cgi';
     protected $currency_codes = array(
         'USD' => 840,
         'AUD' => 036,
@@ -103,6 +104,7 @@ class Am_Paysystem_Ccbill extends Am_Paysystem_Abstract
         $a->phone_number = $invoice->getPhone();
         $a->payment_id = $invoice->public_id;
         $a->customVar1 = $invoice->public_id;
+        $a->invoice = $invoice->getSecureId("THANKS");
         if($this->getConfig('dynamic_pricing'))
         {
             $a->formPrice = $invoice->first_total;
@@ -131,11 +133,164 @@ class Am_Paysystem_Ccbill extends Am_Paysystem_Abstract
         $result->setAction($a);
     }
 
-    function getCancelUrl(Zend_Controller_Request_Abstract $request = null)
+    function cancelAction(Invoice $invoice, $actionName, Am_Paysystem_Result $result)
     {
-        return "https://www.ccbill.com";
-    }
+        if (!$this->getConfig('datalink_user') || !$this->getConfig('datalink_pass'))
+        {
+            $this->getDi()->errorLogTable->log("ccBill plugin error: Datalink is not configured!");
+            return;
+        }
+//https://datalink.ccbill.com/utils/subscriptionManagement.cgi?clientSubacc=&usingSubacc=0005&subscriptionId=1071776966&username=ccbill12&password=test123&returnXML=1&action=cancelSubscription&clientAccnum=923590        
+        $payments  = $invoice->getPaymentRecords();
+        
+        $subscriptionId = $payments[0]->transaction_id;
+        
+        $vars = array(
+            'clientAccnum' => $this->getConfig('account'),
+            'clientSubacc' => $this->getConfig('subaccount_id'),
+            'usingSubacc' => $this->getConfig('subaccount_id'),
+            'returnXML' => 1, 
+            'action' => 'cancelSubscription',
+            'subscriptionId' => $subscriptionId,
+            'username' => $this->getConfig('datalink_user'),
+            'password' => $this->getConfig('datalink_pass')
+        );
 
+        $r = new Am_HttpRequest($requestString = self::DATALINK_SUBSCR_MANAGEMENT . '?' . http_build_query($vars, '', '&'));
+        $response = $r->send();
+        if (!$response)
+        {
+            $this->getDi()->errorLogTable->log('ccBill Subscription Management error: Unable to contact datalink server');
+            throw new Am_Exception_InternalError('ccBill Subscription Management error: Unable to contact datalink server');
+        }
+
+        $resp = $response->getBody();
+
+        // Log datalink requests; 
+        $this->getDi()->errorLogTable->log(sprintf("ccBill SMS debug:\n%s\n%s", $requestString, $resp));
+        $xml = simplexml_load_string($resp);
+        if((string)$xml != "1") 
+            throw new Am_Exception_InternalError('ccBill Subscription Management error: Incorrect response received while attempting to cancel subscription!');
+        $result->setSuccess();
+
+    }
+    
+    function doUpgrade(\Invoice $invoice, \InvoiceItem $item, \Invoice $newInvoice, \ProductUpgrade $upgrade)
+    {
+        if (!$this->getConfig('datalink_user') || !$this->getConfig('datalink_pass'))
+        {
+            $this->getDi()->errorLogTable->log("ccBill plugin error: Datalink is not configured!");
+            return;
+        }
+        $payments  = $invoice->getPaymentRecords();
+        
+        $subscriptionId = $payments[0]->transaction_id;
+        
+        $vars = array(
+	    'clientAccnum' => $this->getConfig('account'),
+//	    'clientSubacc' =>$this->getConfig('subaccount_id'),
+	    'usingSubacc' => $this->getConfig('subaccount_id'),
+            'subscriptionId' => $subscriptionId,
+            'newClientAccnum' => $this->getConfig('account'),
+            'newClientSubacc' => $this->getConfig('subaccount_id'),
+            'sharedAuthentication' => 1,
+            'action'    => 'chargeByPreviousTransactionId',
+            'currencyCode'  => $this->currency_codes[$invoice->currency],
+            'initialPrice' => $newInvoice->first_total, 
+            'initialPeriod' => $this->getDays($newInvoice->first_period),
+//            'specialOffer'  => 0, 
+//            'prorate' => 1,
+	    'returnXML' => 1,
+	    'username' => $this->getConfig('datalink_user'),
+	    'password' => $this->getConfig('datalink_pass')
+
+        );
+        if($newInvoice->rebill_times)
+        {
+            $vars['recurringPrice'] = $newInvoice->second_total;
+            $vars['recurringPeriod']    =   $this->getDays($newInvoice->second_period);
+            $vars['rebills'] = $newInvoice->rebill_times == 99999 ? 99 : $newInvoice->rebill_times;
+        }else{
+            $vars['recurringPrice'] = 0;
+            $vars['recurringPeriod']    =   0;
+            $vars['rebills'] = 0;
+	
+	}
+        
+        $r = new Am_HttpRequest($requestString = "https://bill.ccbill.com/jpost/billingApi.cgi?" . http_build_query($vars, '', '&'));
+        $response = $r->send();
+        if (!$response)
+        {
+            $this->getDi()->errorLogTable->log('ccBill Billing API  error: Unable to contact datalink server');
+            throw new Am_Exception_InternalError('ccBill Billing API  error: Unable to contact datalink server');
+        }
+
+        $resp = $response->getBody();
+
+        // Log datalink requests; 
+        $this->getDi()->errorLogTable->log(sprintf("ccBill billing API  debug:\n%s\n%s", $requestString, $resp));
+        $xml = simplexml_load_string($resp);
+        
+        if((string)$xml->approved != "1") 
+            throw new Am_Exception_InternalError('ccBill Subscription Management error: Incorrect response received while attempting to upgrade subscription!');
+        
+        $tr = new Am_Paysystem_Transaction_Ccbill_Upgrade($this, $xml);
+        // Add payment to new invocie;
+        $newInvoice->addPayment($tr);
+        // Cancel old one
+        $invoice->setCancelled(true);
+        
+    }
+    
+    
+    /**
+    function doUpgrade(\Invoice $invoice, \InvoiceItem $item, \Invoice $newInvoice, \ProductUpgrade $upgrade)
+    {
+        // Attempt to upgrade invoice; 
+        if (!$this->getConfig('datalink_user') || !$this->getConfig('datalink_pass'))
+        {
+            $this->getDi()->errorLogTable->log("ccBill plugin error: Datalink is not configured!");
+            return;
+        }
+        // https://bill.ccbill.com/jpost/billingApi.cgi?clientAccnum=900100&username=testUser&password=testPass&action=upgradeSubscription&subscriptionId=0108114301000018799&upgradeTypeId=14&upgradeClientAccnum=900100&upgradeClientSubacc=0000&specialOffer=1&sharedAuthentication=1&returnXML=1 
+        $payments  = $invoice->getPaymentRecords();
+        
+        $subscriptionId = $payments[0]->transaction_id;
+        $vars = array(
+            'upgradeClientAccnum' => $this->getConfig('account'),
+            'upgradeClientSubacc' => $this->getConfig('subaccount_id'),
+            'returnXML' => 1, 
+            'action' => 'upgradeSubscription',
+            'subscriptionId' => $subscriptionId,
+            'upgradeTypeId' => $newInvoice->getItem(0)->getBillingPlanData("ccbill_product_id"),
+            'username' => $this->getConfig('datalink_user'),
+            'password' => $this->getConfig('datalink_pass')
+        );
+        $r = new Am_HttpRequest($requestString = "https://bill.ccbill.com/jpost/billingApi.cgi?" . http_build_query($vars, '', '&'));
+        $response = $r->send();
+        if (!$response)
+        {
+            $this->getDi()->errorLogTable->log('ccBill Billing API  error: Unable to contact datalink server');
+            throw new Am_Exception_InternalError('ccBill Billing API  error: Unable to contact datalink server');
+        }
+
+        $resp = $response->getBody();
+
+        // Log datalink requests; 
+        $this->getDi()->errorLogTable->log(sprintf("ccBill billing API  debug:\n%s\n%s", $requestString, $resp));
+        $xml = simplexml_load_string($resp);
+        if((string)$xml->approved != "1") 
+            throw new Am_Exception_InternalError('ccBill Subscription Management error: Incorrect response received while attempting to upgrade subscription!');
+        
+        $tr = new Am_Paysystem_Transaction_Ccbill_Upgrade($this, $xml);
+        // Add payment to new invocie;
+        $newInvoice->addPayment($tr);
+        // Cancel old one
+        $invoice->setCancelled(true);
+        
+    }
+     *
+     */
     public function getSupportedCurrencies()
     {
         return array_keys($this->currency_codes);
@@ -180,7 +335,7 @@ your site.
     
    Goto Modify Subaccount - Basic
    Set Approval URL:
-     %root_url%/payment/ccbill/thanks?customVar1=%%customVar1%%
+     %root_url%/payment/ccbill/thanks?customVar1=%%customVar1%%&id=%%invoice%%
 
 7. Click on "User Management" link and scroll down to "Username settings". Set:
    "Username Type" : "USER DEFINED"
@@ -492,6 +647,23 @@ EOT;
     }
 }
 
+class Am_Paysystem_Transaction_Ccbill_Upgrade extends Am_Paysystem_Transaction_Abstract
+{
+    protected $xml;
+
+    function __construct(Am_Paysystem_Abstract $plugin, $xml)
+    {
+        parent::__construct($plugin);
+        $this->xml = $xml;
+    }
+
+    public function getUniqId()
+    {
+        return (string)$this->xml->subscriptionId;
+    }
+    
+}
+
 class Am_Paysystem_Transaction_Ccbill_datalink extends Am_Paysystem_Transaction_Abstract
 {
 
@@ -616,7 +788,7 @@ class Am_Paysystem_Transaction_Ccbill extends Am_Paysystem_Transaction_Incoming
 
     public function validateTerms()
     {
-
+        if($this->getPlugin()->getConfig('dynamic_pricing')) return true;
         if (intval($this->invoice->getItem(0)->getBillingPlanData("ccbill_product_id")) != intval($this->request->get('typeId')))
         {
             throw new Am_Exception_Paysystem_TransactionInvalid(sprintf("Product ID doesn't match: %s and %s", intval($this->invoice->getItem(0)->getBillingPlanData("ccbill_product_id")), intval($this->request->get('typeId'))));

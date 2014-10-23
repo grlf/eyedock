@@ -9,7 +9,7 @@
  */
 class Am_Paysystem_Moneris extends Am_Paysystem_Abstract{
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
 
     protected $defaultTitle = 'Moneris';
     protected $defaultDescription = 'Credit Card Payment';
@@ -167,7 +167,7 @@ class Am_Paysystem_Transaction_Moneris extends Am_Paysystem_Transaction_Incoming
     
     public function validateStatus()
     {
-        return (intval($this->xml->response_code)<50 && strtolower($this->xml->response_code!='null'));
+        return (intval($this->xml->response_code)<50 && strtolower($this->xml->response_code)!='null');
     }
     
     public function validateTerms()

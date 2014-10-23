@@ -30,6 +30,7 @@ class Am_Query_User extends Am_Query_Renderable
         $this->possibleConditions[] = new Am_Query_User_Condition_HavePaymentBetween;
         $this->possibleConditions[] = new Am_Query_User_Condition_HaveSubscriptionDate;
         $this->possibleConditions[] = new Am_Query_User_Condition_SpentAmount();
+        $this->possibleConditions[] = new Am_Query_User_Condition_ImportId();
         $this->possibleConditions[] = new Am_Query_User_Condition_Usergroup;
         $this->possibleConditions[] = new Am_Query_User_Condition_NoUsergroup;
         // add payment search options
@@ -600,6 +601,55 @@ implements Am_Query_Renderable_Condition
     public function getDescription(){
         $ids = join(',', $this->ids);
         return "user_id IN ($ids)";
+    }
+}
+
+class Am_Query_User_Condition_ImportId
+extends Am_Query_Condition
+implements Am_Query_Renderable_Condition
+{
+    protected $title;
+    protected $id = '';
+
+    public function __construct()
+    {
+        $this->title = ___('Added During Import');
+    }
+    public function getId() {
+        return 'import';
+    }
+    public function isEmpty() {
+        return !$this->id;
+    }
+    public function renderElement(HTML_QuickForm2_Container $form) {
+       $form->options[___('Misc')][$this->getId()] = $this->title;
+       $group = $form->addGroup($this->getId())
+           ->setLabel($this->title)
+           ->setAttribute('id', $this->getId())
+           ->setAttribute('class', 'searchField empty');
+        $group->addText('id');
+    }
+
+    public function setFromRequest(array $input)
+    {
+        $this->id = @$input[$this->getId()]['id'];
+        if ($this->id)
+            return true;
+    }
+    public function getJoin(Am_Query $q)
+    {
+        $a = $q->getAlias();
+        $id = $this->id;
+        $ids = $ids ? implode(',', $ids) : '-1';
+        return "LEFT JOIN ?_data itd ON $a.user_id = itd.id AND itd.`table` = 'user' AND itd.`key` = 'import-id'";
+    }
+    public function _getWhere(Am_Query $q){
+        if (!$this->id) return null;
+        $id = $q->escape($this->id);
+        return "itd.value = $id";
+    ;}
+    public function getDescription(){
+        return "import-id = $this->id";
     }
 }
 

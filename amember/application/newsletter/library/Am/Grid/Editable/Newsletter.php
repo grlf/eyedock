@@ -125,20 +125,21 @@ class Am_Grid_Editable_Newsletter extends Am_Grid_Editable_Content
                 $group = $form->addFieldset($pl->getId())->setId('headrow-' . $pl->getId());
                 $group->setLabel($pl->getTitle());
             }
-            $form->addText('plugin_list_id')->setLabel(___('Plugin List Id')."\n".___('value required'));
             
+            $form->addText('plugin_list_id')->setLabel(___("Plugin List Id\nvalue required"));
+
             $form->addScript()->setScript(<<<END
 $(function(){
     function showHidePlugins(el, skip)
     {
         var txt = $("input[name='plugin_list_id']");
-        var enabled = el.val() != '';
+        var enabled = el.size() && (el.val() != '');
         txt.closest(".row").toggle(enabled);
         if (enabled)
             txt.rules("add", { required : true});
         else if(skip)
             txt.rules("remove", "required");
-        var selected = el.val() ? el.val() : 'standard';
+        var selected = (el.size() && el.val()) ? el.val() : 'standard';
         $("[id^='headrow-']").hide();
         $("[id=headrow-"+selected+"-legend]").show();
         $("[id=headrow-"+selected+"-pluginoptions]").show();
@@ -151,6 +152,7 @@ $(function(){
 });
 END
 );
+
         }
         
         

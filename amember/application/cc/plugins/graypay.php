@@ -5,13 +5,12 @@
  * @title GrayPAY
  * @visible_link http://www.graypay.com/
  * @recurring cc
- * @logo_url graypay.png
  */
 class Am_Paysystem_Graypay extends Am_Paysystem_Nmi
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
     
     protected $defaultTitle = "GrayPAY";
     protected $defaultDescription  = "accept payments in the world";

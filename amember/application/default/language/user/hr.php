@@ -1,6 +1,5 @@
 <?php
  return array (
-  '(must match your credit card statement delivery address)' => '(mora odgovarati adresi na koju vam se alju izvjetaji o kreditnoj kartici)',
   'Add/Renew Subscription' => 'Dodaj/Obnovi pretplatu',
   'Address Info' => 'Adresa - Podaci',
   'Advertise our website to your friends and earn money' => 'Reklamirajte nau web stranicu prijateljima i zaradite novac',
@@ -16,14 +15,8 @@
   'Back' => 'Natrag',
   'Bank Identification' => 'Identifikacija banke',
   'Bank Name' => 'Naziv banke',
-  'Bank Phone' => 'Telefon banke',
-  'Billing International Province' => 'Billing International Province',
   'Cancel' => 'Otkazujem',
   'Cannot use FREE payment plugin with the product which cost more than 0.0' => 'Ne moete koristiti plugin za BESPLATNO plaćanje sa proizvodom koji kota vie od 0.0',
-  'Card Expire' => 'Kartica istječe',
-  'Card Issue #' => 'Kartica izdanje #',
-  'Card Start Date' => 'Datum početka kartice',
-  'Cardholder Name' => 'Ime vlasnika kartice',
   'Change' => 'Promijeni',
   'Change Password' => 'Promjena lozinke',
   'Change Password error' => 'Greka prilikom promjene lozinke',
@@ -32,7 +25,6 @@
   'City' => 'Grad',
   'Click here if you do not want to wait any longer (or if your browser does not automatically forward you).' => 'Kliknite ovdje ako ne elite due čekati (ali ako vas va preglednik neće automatski preusmjeriti).',
   'Close' => 'Zatvori',
-  'Company Name' => 'Naziv poduzeća',
   'Confirm Password' => 'Potvrdi lozinku',
   'Continue' => '#-#-#-#-#  hr.po  #-#-#-#-#
 Nastavi
@@ -54,7 +46,6 @@ Broj kreditne kartice
 Broj kreditne kartice
 #-#-#-#-#  hr.po  #-#-#-#-#
 Broj kreditne kartice',
-  'Credit Card Type' => 'Vrsta kreditne kartice',
   'Date' => 'Datum',
   'Date and time of payment: %s' => 'Datum i vrijeme plaćanja: %s',
   'Do you really want to cancel subscription?' => 'Da li stvarno elite otkazati pretplatu?',
@@ -187,7 +178,7 @@ Molimo da se logirate
 #-#-#-#-#  hr.po  #-#-#-#-#
 Molim prijavu',
   'Please select payment system for payment' => 'Molimo da odaberete sistem plaćanja za plaćanje',
-  'Please use %sAdd/Renew subscription%s form' => 'Molimo da koristite formular %sDodaj/Obnovi pretplatu%s',
+  'Please use %sAdd/Renew subscription%s form to order or renew subscription.' => 'Molimo da koristite formular %sDodaj/Obnovi pretplatu%s da biste se pretplatili ili obnovili pretplatu.',
   'Price' => 'Cijena',
   'Product' => 'Proizvod',
   'Remember my password?' => 'Zapamti moju lozinku?',
@@ -196,7 +187,6 @@ Molim prijavu',
   'Review your affiliate statistics' => 'Pregledajte svoju affiliate statistiku',
   'Save' => 'Spremi',
   'Save Profile' => 'Spremi Profil',
-  'Select card expiration date - month and year' => 'Označite datum isteka kartice - mjesec i godina',
   'Session expired, please enter username and password again' => 'Povezanost je istekla, molimo da unesete korisničko ime i lozinku ponovo',
   'Sign-up' => '#-#-#-#-#  hr.po  #-#-#-#-#
 Registracija
@@ -255,12 +245,5 @@ Sveukupno',
   '[Select country]' => '[Odaberite dravu]',
   '[Select state]' => '[Odaberite regiju]',
   '_default_locale' => 'hr_HR',
-  'customer service phone number listed on back of your credit card' => 'Telefonski broj korisničkog servisa napisan na pozadini vae kreditne kartice',
   'for example: 1111-2222-3333-4444' => 'na primjer: 1111-2222-3333-4444',
-  'for international provinces outside of US & Canada include the province name here' => 'za internacionalne provincije izvan USA i Kanade uključuju ime provincije ovdje',
-  'is required for Maestro/Solo/Switch credit cards only' => 'je obavezno samo za Maestro/Solo/Switch kreditne kartice',
-  'name of the bank which issued the credit card' => 'naziv banke koja je izdala kreditnu karticu',
-  'please select one' => 'molimo da označite jednu',
-  'the company name associated with the%sbilling address for the transaction' => 'naziv poduzeća vezano uz%sadresu računa za transakciju',
-  'to order or renew subscription.' => 'da biste se pretplatili ili obnovili pretplatu.',
 );

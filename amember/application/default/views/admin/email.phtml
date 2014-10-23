@@ -41,6 +41,7 @@ $(function(){
                 $this.append($('<input type="hidden" name="files[]" />').val($(this).val()))
             })
             $(this).append(subj).append(fmt).append(body);
+            $(this).attr('method', 'post');
             $(this).submit(); // resubmit form with new fields
         }
     });

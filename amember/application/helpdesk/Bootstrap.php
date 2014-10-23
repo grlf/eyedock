@@ -95,6 +95,14 @@ class Bootstrap_Helpdesk extends Am_Module
         $event->addReturn(new Am_Widget('helpdesk-messages', ___('Last Messages in Helpdesk'), array($this, 'renderWidget'), Am_Widget::TARGET_ANY, array($this, 'createWidgetConfigForm'), self::ADMIN_PERM_ID));
     }
 
+    function onAdminAfterDelete(Am_Event $e)
+    {
+        $this->getDi()->db->query("UPDATE ?_helpdesk_ticket SET owner_id = NULL WHERE owner_id=?", $e->getAdmin()->pk());
+        $this->getDi()->db->query("UPDATE ?_helpdesk_ticket SET lock_admin_id = NULL,
+            lock_admin = NULL,
+            lock_until = NULL WHERE lock_admin_id=?", $e->getAdmin()->pk());
+    }
+
     function createWidgetConfigForm()
     {
         $form = new Am_Form_Admin();

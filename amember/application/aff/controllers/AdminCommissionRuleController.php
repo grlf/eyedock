@@ -97,8 +97,8 @@ class Am_Grid_Action_TestAffCommissionRule extends Am_Grid_Action_Abstract
             $pr = $p->getProduct();
             $invoice->add($pr, $qty);
         }
-        $invoice->paysys_id = 'manual';
         $invoice->calculate();
+        $invoice->setPaysystem($vars['paysys_id'], false);
 
         $invoice->invoice_id = '00000';
         $invoice->public_id = 'TEST';
@@ -170,11 +170,11 @@ class Am_Grid_Action_TestAffCommissionRule extends Am_Grid_Action_Abstract
                     echo $rule->render('*   ');
                 }
                 $to_pay = Am_Di::getInstance()->affCommissionRuleTable->calculate($invoice, $item, $aff, 1, 0, $payment->amount, $payment->dattm);
-                echo "* AFFILIATE WILL GET FOR THIS ITEM: " . Am_Currency::render($to_pay) . "\n";
+                echo "* AFFILIATE WILL GET FOR THIS ITEM: <strong>" . Am_Currency::render($to_pay) . "</strong>\n";
                 for ($i=1; $i<=$max_tier; $i++) {
                     $to_pay = Am_Di::getInstance()->affCommissionRuleTable->calculate($invoice, $item, $aff, 1, $i, $to_pay, $payment->dattm);
                     $tier = $i+1;
-                    echo "* $tier-TIER AFFILIATE WILL GET FOR THIS ITEM: " . Am_Currency::render($to_pay) . "\n";
+                    echo "* $tier-TIER AFFILIATE WILL GET FOR THIS ITEM: <strong>" . Am_Currency::render($to_pay) . "</strong>\n";
                 }
                 echo str_repeat("-", 70) . "\n";
             }
@@ -197,11 +197,11 @@ class Am_Grid_Action_TestAffCommissionRule extends Am_Grid_Action_Abstract
                     echo $rule->render('*   ');
                 }
                 $to_pay = Am_Di::getInstance()->affCommissionRuleTable->calculate($invoice, $item, $aff, 2, 0, $payment->amount, $payment->dattm);
-                echo "* AFFILIATE WILL GET FOR THIS ITEM: " . Am_Currency::render($to_pay) . "\n";
+                echo "* AFFILIATE WILL GET FOR THIS ITEM: <strong>" . Am_Currency::render($to_pay) . "</strong>\n";
                 for ($i=1; $i<=$max_tier; $i++) {
                     $to_pay = Am_Di::getInstance()->affCommissionRuleTable->calculate($invoice, $item, $aff, 2, $i, $to_pay, $payment->dattm);
                     $tier = $i+1;
-                    echo "* $tier-TIER AFFILIATE WILL GET FOR THIS ITEM: " . Am_Currency::render($to_pay) . "\n";
+                    echo "* $tier-TIER AFFILIATE WILL GET FOR THIS ITEM: <strong>" . Am_Currency::render($to_pay) . "</strong>\n";
                 }
                 echo str_repeat("-", 70) . "\n";
             }
@@ -222,6 +222,9 @@ class Am_Grid_Action_TestAffCommissionRule extends Am_Grid_Action_Abstract
             ->setLabel(___('Choose products to include into test invoice'))
             ->loadOptions(Am_Di::getInstance()->billingPlanTable->selectAllSorted())
             ->addRule('required');
+        $f->addSelect('paysys_id')
+            ->setLabel(___('Payment System'))
+            ->loadOptions(Am_Di::getInstance()->paysystemList->getOptions());
         $f->addSubmit('', array('value' => 'Test'));
         $f->addScript()->setScript(<<<CUT
 $(function(){
@@ -254,7 +257,7 @@ class Am_Grid_Editable_AffCommissionRule extends Am_Grid_Editable
 'If it finds a matching custom rule, it takes commission rates from it. ' .
 'If no matching custom rule was found, it uses "Default" commission settings.</p>' .
 '<p>For n-tier affiliates, no rules are used, you can just define percentage of commission earned by previous level.</p>') .
-        '<p><a class="link" target="_top" href="$root/admin-setup/aff">' . ___('Check other Affiliate Program Settings') . '</a></p>';
+        '<p><a class="link" target="_top" href="'.$root.'/admin-setup/aff">' . ___('Check other Affiliate Program Settings') . '</a></p>';
     }
     public function __construct(Am_Request $request, Am_View $view)
     {
@@ -443,7 +446,8 @@ CUT
                 'aff_sales_count' => 'By Affiliate Sales Count',
                 'aff_items_count' => 'By Affiliate Item Sales Count',
                 'aff_sales_amount' => 'By Affiliate Sales Amount',
-                'coupon' => 'By Used Coupon'
+                'coupon' => 'By Used Coupon',
+                'paysys_id' => 'By Used Payemt System',
             ));
 
             $set->addHidden('_conditions_status[product_id]');
@@ -531,6 +535,11 @@ CUT
             $gr->addText('code', array('size'=>10))
                 ->setId('used-code');
 
+            $set->addHidden('_conditions_status[paysys_id]');
+            $set->addMagicSelect('_conditions[paysys_id]', array('id' => 'paysys_id'))
+                ->setLabel('This rule is for particular payment system')
+               ->loadOptions(Am_Di::getInstance()->paysystemList->getOptions());
+
 
         }
 
@@ -555,8 +564,8 @@ CUT
         {
             $set = $form->addFieldset('', array('id' => 'multiplier'))->setLabel('Multipier');
             $set->addText('multi', array('size' => 5, 'placeholder' => '1.0'))
-                ->setLabel(array(___("Multiply commission calculated by the following rules\n" .
-                    "to number specified in this field. To keep commission untouched, enter 1 or delete this rule")))
+                ->setLabel(___("Multiply commission calculated by the following rules\n" .
+                    "to number specified in this field. To keep commission untouched, enter 1 or delete this rule"))
                 ;//->addRule('gt', 'Values must be greater than 0.0', 0.0);
         }
         return $form;

@@ -194,10 +194,6 @@ class Am_Form_Admin_User extends Am_Form_Admin {
             );
 
             $ban = Am_Di::getInstance()->banTable->findBan(array(
-                'ip' => $this->record->remote_addr
-            ));
-
-            $ban = Am_Di::getInstance()->banTable->findBan(array(
                 'ip' => $this->record->last_ip
             ));
             $banInfoHtml = $ban ?
@@ -207,7 +203,7 @@ class Am_Form_Admin_User extends Am_Form_Admin {
                         REL_ROOT_URL . '/admin-ban?' . http_build_query(array(
                             '_ip_a' => 'insert',
                             '_ip_b' => Am_Di::getInstance()->view->userUrl($this->record->pk()),
-                            'value' => $this->record->remote_addr,
+                            'value' => $this->record->last_ip,
                             'comment' => sprintf('%s (%s %s)', $this->record->login,
                                 $this->record->name_f,
                                 $this->record->name_l))),
@@ -971,10 +967,11 @@ class AdminUsersController extends Am_Controller_Grid
         $userGroupField->setRenderFunction(array($this, 'renderUGroup'));
 
         $action = new Am_Grid_Action_Customize();
-        $action->addField(new Am_Grid_Field('user_id', ___('#'), true, '', null, '1%'))
+        $action->addField(new Am_Grid_Field('user_id', '#', true, '', null, '1%'))
             ->addField(new Am_Grid_Field('name_f', ___('First Name')))
             ->addField(new Am_Grid_Field('name_l', ___('Last Name')))
             ->addField(new Am_Grid_Field('street', ___('Street')))
+            ->addField(new Am_Grid_Field('street2', ___('Street (Second Line)')))
             ->addField(new Am_Grid_Field('city', ___('City')))
             ->addField(new Am_Grid_Field('state', ___('State')))
             ->addField($stateTitleField)

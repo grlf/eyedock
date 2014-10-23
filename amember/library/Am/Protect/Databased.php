@@ -301,11 +301,13 @@ abstract class Am_Protect_Databased extends Am_Protect_Abstract implements Am_Pr
                 $dsn = array_merge($dsn, array(
                     'host' => $dbConfig['host'],
                     'user' => $dbConfig['user'],
-                    'pass' => $dbConfig['pass'],
+                    'pass' => $dbConfig['pass']
                     ));
+                if(isset($dbConfig['port']) && $dbConfig['port'])
+                    $dsn['port'] = $dbConfig['port'];
             }
 
-            if($dsn['host'] && (strpos($dsn['host'], ':') !== false) && preg_match('/\:(\d+)$/',$dns['host']))
+            if($dsn['host'] && (strpos($dsn['host'], ':') !== false) && preg_match('/\:(\d+)$/',$dsn['host']))
                 list($dsn['host'], $dsn['port']) = explode(':', $dsn['host']);
 
             $this->_db = Am_Db::connect($dsn, true);

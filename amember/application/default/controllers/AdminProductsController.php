@@ -139,8 +139,9 @@ class Am_Form_Admin_Product extends Am_Form_Admin
         $fieldSet->addElement('advcheckbox', 'tax_group', array('value' => IProduct::ALL_TAX))
             ->setLabel(___('Apply Tax?'));
 
-        $fieldSet->addElement('select', 'currency')
-            ->setLabel(array(___("Currency"), ___('you can choose from list of currencies supported by paysystems')))
+        $fieldSet->addElement('select', 'currency', array('class' => 'am-combobox'))
+            ->setLabel(___("Currency\n" .
+                'you can choose from list of currencies supported by paysystems'))
             ->loadOptions(Am_Currency::getSupportedCurrencies('ru_RU'));
 
         $this->addBillingPlans();
@@ -656,6 +657,11 @@ class AdminProductsController extends Am_Controller_Grid
                 $arr['variable_qty'] = 0;
             if (empty($arr['qty']))
                 $arr['qty'] = 1;
+
+            if ($arr['rebill_times'] == 0) {
+                $arr['second_price'] = null;
+                $arr['second_period'] = null;
+            }
         }
         foreach ($existing as $k => $plan)
             if (empty($plans[$plan->pk()])) {
@@ -716,6 +722,16 @@ class AdminProductsController extends Am_Controller_Grid
         $to->addRule('neq', ___('[From] and [To] billing plans must not be equal'), $from);
         $form->addText('surcharge', array('placeholder' => '0.0'))->setLabel(___(
                 "Surcharge\nto be additionally charged when customer moves [From]->[To] plan\naMember will not charge First Price on upgrade, use Surcharge instead"));
+        $el  = $form->addAdvRadio('type')->setLabel(___('Upgrade Price Calculation Type'));
+        $el->addOption(<<<CUT
+          <b>Default</b> - Unused amount from previous subscription  will be applied as discount to new one  
+CUT
+   , ProductUpgrade::TYPE_DEFAULT);
+        $el->addOption(<<<CUT
+          <b>Flat</b> - User only pay flat rate on upgrade (Surcharge amount)
+CUT
+   , ProductUpgrade::TYPE_FLAT);
+   
         return $form;
     }
 

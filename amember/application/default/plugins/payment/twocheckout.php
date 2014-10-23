@@ -12,7 +12,7 @@
 class Am_Paysystem_Twocheckout extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
 
     const URL = "https://www.2checkout.com/checkout/spurchase";
     const mURL = "https://www.2checkout.com/checkout/purchase";
@@ -99,7 +99,7 @@ class Am_Paysystem_Twocheckout extends Am_Paysystem_Abstract
             $a->{"li_{$i}_type"} = 'product';
             $a->{"li_{$i}_name"} = $item->item_title;
             $a->{"li_{$i}_quantity"} = $item->qty;
-            $a->{"li_{$i}_price"} = $item->rebill_times ? $item->second_total : $item->first_total;
+            $a->{"li_{$i}_price"} = moneyRound(($item->rebill_times ? $item->second_total : $item->first_total) / $item->qty);
             $a->{"li_{$i}_tangible"} = $item->is_tangible ? 'Y' : 'N';
             $a->{"li_{$i}_product_id"} = $item->item_id;
             if ($item->rebill_times)
@@ -113,6 +113,7 @@ class Am_Paysystem_Twocheckout extends Am_Paysystem_Abstract
             }
             $i++;
         }
+        $a->currency_code = $invoice->currency;
         $a->skip_landing = 1;
         $a->x_Receipt_Link_URL = $this->getReturnUrl();
         $a->lang = $this->getConfig('lang', 'en');
@@ -226,6 +227,8 @@ CUT;
         $transaction->setInvoiceLog($log);
         try {
             $transaction->process();
+        } catch(Am_Exception_Paysystem_TransactionAlreadyHandled $e){
+            // Ignore. Just show receipt. 
         } catch (Exception $e) {
             throw $e;
             $this->getDi()->errorLogTable->logException($e);
@@ -443,6 +446,16 @@ class Am_Paysystem_Transaction_Twocheckout_Fraud extends Am_Paysystem_Transactio
 }
 class Am_Paysystem_Transaction_Twocheckout_Refund extends Am_Paysystem_Transaction_Twocheckout
 {
+    public function getUniqId()
+    {
+        return $this->request->getFiltered('message_id');
+    }
+
+    public function getReceiptId()
+    {
+        return $this->request->getFiltered('message_id');
+    }
+
     public function getAmount()
     {
         //https://www.2checkout.com/static/va/documentation/INS/message_refund_issued.html

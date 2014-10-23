@@ -18,6 +18,10 @@ class Am_Interval {
     const PERIOD_THIS_MONTH = 'this-month';
     const PERIOD_LAST_30_DAYS = 'last-30-days';
     const PERIOD_LAST_MONTH = 'last-month';
+    const PERIOD_LAST_90_DAYS = 'last-90-days';
+    const PERIOD_LAST_6_MONTHS = 'last-6-months';
+    const PERIOD_LAST_YEAR = 'last-year';
+    const PERIOD_THIS_YEAR = 'this-year';
     const PERIOD_ALL = 'all';
 
     public function getOptions()
@@ -35,6 +39,10 @@ class Am_Interval {
             self::PERIOD_THIS_MONTH => ___('This Month'),
             self::PERIOD_LAST_30_DAYS => ___('Last 30 Days'),
             self::PERIOD_LAST_MONTH => ___('Last Month'),
+            self::PERIOD_LAST_90_DAYS => ___('Last 90 Days'),
+            self::PERIOD_LAST_6_MONTHS => ___('Last 6 Months'),
+            self::PERIOD_LAST_YEAR => ___('Last Year'),
+            self::PERIOD_THIS_YEAR => ___('This Year'),
             self::PERIOD_ALL => ___('All Time')
         );
     }
@@ -133,6 +141,28 @@ class Am_Interval {
                 return array(
                     $start->format('Y-m-01 00:00:00'),
                     $stop->format('Y-m-t 23:59:59'));
+            case self::PERIOD_LAST_90_DAYS :
+                $start->modify('-90 days');
+                return array(
+                    $start->format('Y-m-d 00:00:00'),
+                    $stop->format('Y-m-d 23:59:59'));
+            case self::PERIOD_LAST_6_MONTHS :
+                $start->modify('last month');
+                $start->modify('-5 month');
+                $stop->modify('last month');
+                return array(
+                    $start->format('Y-m-01 00:00:00'),
+                    $stop->format('Y-m-t 23:59:59'));
+            case self::PERIOD_LAST_YEAR :
+                $start->modify('last year');
+                $stop->modify('last year');
+                return array(
+                    $start->format('Y-01-01 00:00:00'),
+                    $stop->format('Y-12-t 23:59:59'));
+            case self::PERIOD_THIS_YEAR :
+                return array(
+                    $start->format('Y-01-01 00:00:00'),
+                    $stop->format('Y-m-d 23:59:59'));
             case self::PERIOD_ALL :
                 return array(
                     date('Y-m-d 00:00:00', 0),

@@ -4,13 +4,14 @@
  * @id stripe
  * @title Stripe
  * @visible_link https://stripe.com/
+ * @logo_url stripe.png
  * @recurring amember
  */
 class Am_Paysystem_Stripe extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
     
     const TOKEN = 'stripe_token';
     const CC_EXPIRES = 'stripe_cc_expires';
@@ -89,7 +90,9 @@ class Am_Controller_CreditCard_Stripe extends Am_Controller
     {
         $form = new Am_Form('cc-stripe');
 
-        $name = $form->addGroup()->setLabel(array(___('Cardholder Name'), sprintf(___('cardholder first and last name, exactly as%son the card'), '<br/>')));
+        $name = $form->addGroup()
+            ->setLabel(___("Cardholder Name\n" .
+                'cardholder first and last name, exactly as on the card'));
         $name->addRule('required', ___('Please enter credit card holder name'));
         $name_f = $name->addText('cc_name_f', array('size'=>15, 'id' => 'cc_name_f'));
         $name_f->addRule('required', ___('Please enter credit card holder first name'))->addRule('regex', ___('Please enter credit card holder first name'), '|^[a-zA-Z_\' -]+$|');
@@ -105,7 +108,8 @@ class Am_Controller_CreditCard_Stripe extends Am_Controller
 
         class_exists('Am_Form_CreditCard', true); // preload element
         $expire = $form->addElement(new Am_Form_Element_CreditCardExpire('cc_expire'))
-            ->setLabel(array(___('Card Expire'), ___('Select card expiration date - month and year')));
+            ->setLabel(___("Card Expire\n" .
+                'Select card expiration date - month and year'));
         $expire->addRule('required', ___('Please enter Credit Card expiration date'));
         
         $code = $form->addPassword('', array('autocomplete'=>'off', 'size'=>4, 'maxlength'=>4, 'id' => 'cc_code'))
@@ -113,9 +117,14 @@ class Am_Controller_CreditCard_Stripe extends Am_Controller
         $code->addRule('required', ___('Please enter Credit Card Code'))
              ->addRule('regex', ___('Please enter Credit Card Code'), '/^\s*\d{3,4}\s*$/');
             
-        $fieldSet = $form->addFieldset(___('Address Info'))->setLabel(array(___('Address Info'), ___('(must match your credit card statement delivery address)')));
+        $fieldSet = $form->addFieldset(___('Address Info'))
+            ->setLabel(___("Address Info\n" .
+                '(must match your credit card statement delivery address)'));
         $street = $fieldSet->addText('cc_street')->setLabel(___('Street Address'))
                            ->addRule('required', ___('Please enter Street Address'));
+        
+        $city = $fieldSet->addText('cc_city')->setLabel(___('City '))
+                           ->addRule('required', ___('Please enter City'));
         
         $zip = $fieldSet->addText('cc_zip')->setLabel(___('ZIP'))
                         ->addRule('required', ___('Please enter ZIP code'));
@@ -161,7 +170,11 @@ jQuery(function($){
             exp_year: frm.find("[name='cc_expire[y]']").val(),
             name: frm.find("#cc_name_f").val() + " " + frm.find("#cc_name_l").val(),
             address_zip : frm.find("[name=cc_zip]").val(),
-            address_line1 : frm.find("[name=cc_street]").val()
+            address_line1 : frm.find("[name=cc_street]").val(),
+            address_country : frm.find("[name=cc_country]").val(),
+            address_city : frm.find("[name=cc_city]").val(),
+            address_state : frm.find("[name=cc_state]").val()
+            
         }, function(status, response){ // handle response
             if (status == '200')
             {
@@ -465,7 +478,12 @@ class Am_Paysystem_Transaction_Stripe_CreateCustomer extends Am_Paysystem_Transa
     {
         if (!@$this->parsedResponse['id'])
         {
-            $this->result->setErrorMessages(array('Error storing customer profile'));
+            $code = @$this->parsedResponse['error']['code'];
+            $message = @$this->parsedResponse['error']['message'];
+            $error = "Error storing customer profile";
+            if ($code) $error .= " [".$code."]";
+            if ($message) $error .= " (".$message.")";
+            $this->result->setErrorMessages(array($error));
             return false;
         }
         $this->result->setSuccess($this);

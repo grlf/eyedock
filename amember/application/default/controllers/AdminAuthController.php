@@ -22,8 +22,8 @@ class Admin_RestorePassForm extends Am_Form_Admin {
 
 class AdminAuthController extends Am_Controller_Auth
 {
-    protected $loginField = 'login';
-    protected $passField = 'passwd';
+    protected $loginField = 'am_admin_login';
+    protected $passField = 'am_admin_passwd';
     const EXPIRATION_PERIOD = 2; //hrs
     const CODE_STATUS_VALID = 1;
     const CODE_STATUS_EXPIRED = -1;

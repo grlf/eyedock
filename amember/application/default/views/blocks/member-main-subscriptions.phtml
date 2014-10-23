@@ -2,7 +2,9 @@
 <ul id="member-subscriptions">
     <?php foreach ($member_products as $p):  ?>
     <li><strong><?php echo $p->getTitle(); ?></strong> -
-    <?php if ($products_expire[$p->pk()] == Am_Period::MAX_SQL_DATE): ?>
+    <?php if ($products_rebill[$p->pk()]) : ?>
+        <?php __e('Next Rebill') ?> <?php echo amDate($products_rebill[$p->pk()]); ?>
+    <?php elseif ($products_expire[$p->pk()] == Am_Period::MAX_SQL_DATE): ?>
         <?php __e('Lifetime') ?>
     <?php else: ?>
         <?php __e('expires') ?> <?php echo amDate($products_expire[$p->pk()]); ?>
@@ -16,6 +18,6 @@
 </ul>
 <?php else : // Customer doesn't have any active subscriptions ?>
     <h3><?php __e('You have no active subscriptions') ?></h3>
-    <p><?php __e('Please use %sAdd/Renew subscription%s form', '<a href="' . REL_ROOT_URL . '/signup">','</a>') ?>
-    <?php __e('to order or renew subscription.') ?></p>
+    <p><?php __e('Please use %sAdd/Renew subscription%s form to order or renew subscription.',
+        '<a href="' . REL_ROOT_URL . '/signup">','</a>') ?></p>
 <?php endif ?>

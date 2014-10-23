@@ -1,4 +1,5 @@
 <div class="user-invoice-record-details-commissions">
+    <?php if ($this->comm_items) : ?>
     <em><?php __e('Commissions')?></em>
     <div class="grid-container">
         <table class="grid grid-small">
@@ -34,4 +35,7 @@
             <?php endforeach; ?>
         </table>
     </div>
+    <?php else: ?>
+        <a class="local calc-commission" href="<?php p(REL_ROOT_URL) ?>/aff/admin-commission/calc/id/<?php p($invoice->pk()) ?>"><?php __e('Calculate Commission for this Invoice') ?></a>
+    <?php endif; ?>
 </div>

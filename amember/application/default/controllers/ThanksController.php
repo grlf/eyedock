@@ -4,6 +4,7 @@ class ThanksController extends Am_Controller {
     /** @var Invoice */
     protected $invoice;
     function indexAction(){
+        $this->getDi()->plugins_payment->loadEnabled()->getAllEnabled();
         $id = $this->_request->getFiltered('id');
         if (empty($id)) $id = filterId(@$_GET['id']);
         $this->invoice = null;

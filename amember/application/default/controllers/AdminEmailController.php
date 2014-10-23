@@ -7,7 +7,7 @@
  *        Web: http://www.cgi-central.net
  *    Details: Admin Info / PHP
  *    FileName $RCSfile$
- *    Release: 4.4.2 ($Revision$)
+ *    Release: 4.4.4 ($Revision$)
  *
  * Please direct bug reports,suggestions or feedback to the cgi-central forums.
  * http://www.cgi-central.net/forum/
@@ -185,7 +185,7 @@ class AdminEmailController extends Am_Controller
         $form->setDataSources(array($this->getRequest()));
         $form->setAction($this->getUrl(null, 'preview'));
         $subj = $form->addText('subject', array('class' => 'el-wide'))
-                ->setLabel(array(___('Email Subject')));
+                ->setLabel(___('Email Subject'));
         $subj->persistentFreeze(true); // ??? why is it necessary? but it is 
         $subj->addRule('required', ___('Subject is required'));
 //        $arch = $form->addElement('advcheckbox', 'do_archive')->setLabel(array('Archive Message', 'if you are sending it to newsletter subscribers'));
@@ -398,6 +398,7 @@ CUT
         $i = 0;
         $db = $this->getDi()->db;
         while ($r = $db->fetchRow($q)) {
+            if (!$batch->checkLimits()) return false;
             $r['name'] = $r['name_f'] . ' ' . $r['name_l'];
             $this->saved->updateQuick(array('last_email' => $r['email'], 'sent_users' => $this->saved->sent_users + 1));
             if ($r['email'] == '')

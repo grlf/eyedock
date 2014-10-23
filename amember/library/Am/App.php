@@ -299,8 +299,10 @@ class Am_Pluggable_Base
 
     public function onAdminWarnings(Am_Event $event)
     {
-        if (!$this->isConfigured())
-            $event->addReturn(___("Plugin [%s] is not configured", $this->getId()));
+        if (!$this->isConfigured()) {
+            $setupUrl = REL_ROOT_URL . '/admin-setup/' . $this->getId();
+            $event->addReturn(___("Plugin [%s] is not configured yet. Please %scomplete configuration%s", $this->getId(), '<a href="' . $setupUrl . '">', '</a>'));
+        }
     }
 
     /**
@@ -560,14 +562,15 @@ class Am_Theme_Default extends Am_Theme
     public function initSetupForm(Am_Form_Setup_Theme $form)
     {
         $form->addUpload('header_logo', null, array('prefix' => 'theme-default'))
-                ->setLabel(array(___('Header Logo'), ___('keep it empty for default value')))->default = '';
+                ->setLabel(___("Header Logo\n" .
+                    'keep it empty for default value'))->default = '';
 
         $form->addText('home_url', array('class' => 'el-wide', 'placeholder' => $this->getDi()->config->get('root_url')), array('prefix' => 'theme-default'))
                 ->setLabel(___("Logo Link URL\n" .
                     "url of page on your site, user will be redirected to this url if click on logo (usually it is url of either your homepage or root url of aMember installation)"))->default = '';
 
         $form->addHtmlEditor('header')
-                ->setLabel(array(___("Header\nthis content will be included to header")))->default = '';
+                ->setLabel(___("Header\nthis content will be included to header"))->default = '';
     }
 
 }
@@ -1591,6 +1594,9 @@ class Am_App
         $this->initFront();
         require_once 'Am/License.php';
 
+        // Load user in order to check may be we need to refresh user's session; 
+        $this->di->auth->getUser();
+
         $this->di->hook->call(Am_Event::INIT_FINISHED);
         $this->initFinished = true;
 
@@ -1682,7 +1688,7 @@ class Am_App
     function addRoutes(Zend_Controller_Router_Abstract $router)
     {
         $router->addRoute('user-logout', new Zend_Controller_Router_Route(
-                'logout/:action',
+                'logout/*',
                 array(
                     'module' => 'default',
                     'controller' => 'login',
@@ -2033,6 +2039,10 @@ class Am_App
             $dat = sqlDate($this->di->time - $this->di->config->get('clear_inc_payments_days') * 3600 * 24);
             $this->di->invoiceTable->clearPending($dat);
         }
+        if ($this->di->config->get('clear_inc_users') && $this->di->config->get('clear_inc_users_days') > 0) {
+            $dat = sqlDate($this->di->time - $this->di->config->get('clear_inc_users_days') * 3600 * 24);
+            $this->di->userTable->clearPending($dat);
+        }
 
         $this->di->uploadTable->cleanUp();
         Am_Mail_Queue::getInstance()->cleanUp();
@@ -2192,7 +2202,7 @@ class Am_App
         if (!defined('DATA_DIR'))
             define('DATA_DIR', ROOT_DIR . '/data');
         if (!defined('AM_VERSION'))
-            define('AM_VERSION', '4.4.2');
+            define('AM_VERSION', '4.4.4');
         if (!defined('AM_BETA'))
             define('AM_BETA', '0' == 1);
     }
@@ -2537,7 +2547,7 @@ class Am_BatchProcessor
      * @param type $max_tm max execution time in seconds
      * @param type $max_mem memory limit in megabytes
      */
-    public function __construct($callback, $max_tm = 20, $max_mem = 64)
+    public function __construct($callback, $max_tm = 20, $max_mem = 128)
     {
         if (!is_callable($callback))
             throw new Am_Exception_InternalError("Not callable callback passed");

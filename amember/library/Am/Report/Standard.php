@@ -39,7 +39,7 @@ class Am_Report_Income extends Am_Report_Date
     function getLines()
     {
         return array(
-            new Am_Report_Line("amt", ___('Payments Amount') . ', ' . Am_Currency::getDefault()),
+            new Am_Report_Line("amt", ___('Payments Amount') . ', ' . Am_Currency::getDefault(), null, array('Am_Currency', 'render'))
         );
     }
 }
@@ -80,9 +80,9 @@ class Am_Report_PaymentVsRefund extends Am_Report_Date
     function getLines()
     {
         return array(
-            new Am_Report_Line("amt", ___('Income') . ', ' . Am_Currency::getDefault()),
-            new Am_Report_Line("pmt", ___('Payment') . ', ' . Am_Currency::getDefault(), '#488f37'),
-            new Am_Report_Line("rfd", ___('Refund') . ', ' . Am_Currency::getDefault(), '#BA2727'),
+            new Am_Report_Line("amt", ___('Income') . ', ' . Am_Currency::getDefault(), null, array('Am_Currency', 'render')),
+            new Am_Report_Line("pmt", ___('Payment') . ', ' . Am_Currency::getDefault(), '#488f37', array('Am_Currency', 'render')),
+            new Am_Report_Line("rfd", ___('Refund') . ', ' . Am_Currency::getDefault(), '#BA2727', array('Am_Currency', 'render')),
         );
     }
 }
@@ -126,7 +126,7 @@ class Am_Report_Paysystems extends Am_Report_Date
         $ret = array();
         foreach ($this->getPaysystems() as $k => $ps)
         {
-            $ret[] = new Am_Report_Line('amt_' . $k, ucfirst($ps));
+            $ret[] = new Am_Report_Line('amt_' . $k, ucfirst($ps), null, array('Am_Currency', 'render'));
         }
         return $ret;
     }
@@ -214,7 +214,7 @@ class Am_Report_Products extends Am_Report_Date
         $ret = array();
         foreach ($this->getProducts() as $k => $ps)
         {
-            $ret[] = new Am_Report_Line('amt_' . $k, ucfirst($ps));
+            $ret[] = new Am_Report_Line('amt_' . $k, ucfirst($ps), null, array('Am_Currency', 'render'));
         }
         return $ret;
     }
@@ -317,7 +317,7 @@ class Am_Report_ProductCategories extends Am_Report_Date
         $ret = array();
         foreach ($this->getCategories() as $k => $ps)
         {
-            $ret[] = new Am_Report_Line('amt_' . $k, ucfirst($ps));
+            $ret[] = new Am_Report_Line('amt_' . $k, ucfirst($ps), null, array('Am_Currency', 'render'));
         }
         return $ret;
     }
@@ -355,9 +355,9 @@ class Am_Report_NewVsExisting extends Am_Report_Date
     function getLines()
     {
         $ret = array();
-        $ret[] = new Am_Report_Line('total', ___('Payments total'));
-        $ret[] = new Am_Report_Line('existing', ___('Payments from existing customers'));
-        $ret[] = new Am_Report_Line('new', ___('Payments from new customers')); // who did not pay earlier in the point period
+        $ret[] = new Am_Report_Line('total', ___('Payments total'), null, array('Am_Currency', 'render'));
+        $ret[] = new Am_Report_Line('existing', ___('Payments from existing customers'), null, array('Am_Currency', 'render'));
+        $ret[] = new Am_Report_Line('new', ___('Payments from new customers'), null, array('Am_Currency', 'render')); // who did not pay earlier in the point period
         return $ret;
     }
 }

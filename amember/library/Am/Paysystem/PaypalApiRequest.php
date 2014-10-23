@@ -158,7 +158,8 @@ class Am_Paysystem_PaypalApiRequest extends Am_HttpRequest
         $this->addPostParameter('BILLINGFREQUENCY', $p->getCount());
         if ($invoice->rebill_times != IProduct::RECURRING_REBILLS)
             $this->addPostParameter('TOTALBILLINGCYCLES', $invoice->rebill_times);
-        $this->addPostParameter('AMT', $invoice->second_total); // bill at end of each payment period
+        $this->addPostParameter('AMT', $invoice->second_total - $invoice->second_tax); // bill at end of each payment period
+        $this->addPostParameter('TAXAMT', $invoice->second_tax);
         $this->addPostParameter('CURRENCYCODE', $invoice->currency); // @todo
         $this->addPostParameter('NOTIFYURL', $this->plugin->getPluginUrl('ipn'));
         $i = 0;
@@ -185,9 +186,9 @@ class Am_Paysystem_PaypalApiRequest extends Am_HttpRequest
     {
         $this->addPostParameter('PAYMENTREQUEST_0_AMT', $invoice->first_total);
         $this->addPostParameter('PAYMENTREQUEST_0_CURRENCYCODE', $invoice->currency); // @todo
-//        $this->addPostParameter('PAYMENTREQUEST_0_ITEMAMT', $invoice->first_subtotal);
+        $this->addPostParameter('PAYMENTREQUEST_0_ITEMAMT', $invoice->first_total - $invoice->first_tax);
 //        $this->addPostParameter('PAYMENTREQUEST_0_SHIPPINGAMT', $invoice->first_shipping);
-//        $this->addPostParameter('PAYMENTREQUEST_0_TAXAMT', $invoice->first_tax);
+        $this->addPostParameter('PAYMENTREQUEST_0_TAXAMT', $invoice->first_tax);
         $this->addPostParameter('PAYMENTREQUEST_0_INVNUM', $invoice->getSecureId('paypal'));
         $this->addPostParameter('PAYMENTREQUEST_0_NOTIFYURL', $this->plugin->getPluginUrl('ipn'));
         $this->addPostParameter('PAYMENTREQUEST_0_PAYMENTACTION', 'Sale');
@@ -196,7 +197,7 @@ class Am_Paysystem_PaypalApiRequest extends Am_HttpRequest
         {
             /* @var $item InvoiceItem */
             $this->addPostParameter('L_PAYMENTREQUEST_0_NAME'.$i, $item->item_title);
-            $this->addPostParameter('L_PAYMENTREQUEST_0_AMT'.$i, $item->first_total);
+            $this->addPostParameter('L_PAYMENTREQUEST_0_AMT'.$i, moneyRound(($item->first_total - $item->first_tax )/ $item->qty));
 //            $this->addPostParameter('L_PAYMENTREQUEST_0_ITEMAMT'.$i, $item->getFirstSubtotal());
 //            $this->addPostParameter('L_PAYMENTREQUEST_0_NUMBER'.$i, $item->item_id);
             $this->addPostParameter('L_PAYMENTREQUEST_0_QTY'.$i, $item->qty);

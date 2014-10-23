@@ -517,7 +517,7 @@
     <field name="desc" type="text" />
     <field name="path" type="varchar" len="255" notnull="0"/>
     <field name="use_layout" type="int" default="0" />
-    <field name="html" type="text" notnull="0" />
+    <field name="html" type="mediumtext" notnull="0" />
     <field name="dattm" type="datetime" notnull="0" />
     <field name="hide" type="smallint" size="1" default="0" />
     <field name="tpl" type="varchar" len="255" notnull="0" />
@@ -745,7 +745,7 @@
     <field name="priority" type="int" default="0"/>
     <field name="last_error" type="varchar" len="255"/>
     <field name="headers" type="blob"/>
-    <field name="body" type="blob"/>
+    <field name="body" type="mediumblob"/>
     <index name="PRIMARY" unique="1">
       <field name="queue_id"/>
     </index>
@@ -1050,6 +1050,7 @@
     <field name="from_billing_plan_id" type="int" />
     <field name="to_billing_plan_id" type="int" />
     <field name="surcharge" type="decimal" len="12,2" default="0.00" />
+    <field name="type" type="varchar" len="32" default="default" />
     <index name="PRIMARY" unique="1">
       <field name="product_upgrade_id"/>
     </index>

@@ -7,7 +7,7 @@
  *        Web: http://www.cgi-central.net
  *    Details: Affiliate management routines
  *    FileName $RCSfile$
- *    Release: 4.4.2 ($Revision$)
+ *    Release: 4.4.4 ($Revision$)
  *
  * Please direct bug reports,suggestions or feedback to the cgi-central forums.
  * http://www.cgi-central.net/forum/
@@ -303,13 +303,11 @@ imageBlank : am_url + "lightbox-blank.gif"
                 $url = $this->getParam('url', '');
                 if (!preg_match('!^https?://!i', $url))
                     $link = sprintf('%s/aff/go/%s', ROOT_URL, urlencode($user->login));
-                else
-                {
-                    if($this->getDi()->config->get('aff.tracking_code') && $this->pageHaveTrackingCode($url))
-                    $link = $this->getRefLink($user->login, $url);
-                    else    
-                    $link = sprintf('%s/aff/go/%s/?cr=%s', ROOT_URL, urlencode($user->login), base64_encode($url));
-                    
+                else {
+                    if ($this->getDi()->config->get('aff.tracking_code') && $this->pageHaveTrackingCode($url))
+                        $link = $this->getRefLink($user->login, $url);
+                    else
+                        $link = sprintf('%s/aff/go/%s/?cr=%s', ROOT_URL, urlencode($user->login), base64_encode($url));
                 }
             }
             else
@@ -325,34 +323,35 @@ imageBlank : am_url + "lightbox-blank.gif"
     {
         $cr = $this->getModule()->getConfig('custom_redirect');
         return ($cr == Bootstrap_Aff::AFF_CUSTOM_REDIRECT_ALLOW_SOME_DENY_OTHERS && $user->aff_custom_redirect) ||
-            ($cr == Bootstrap_Aff::AFF_CUSTOM_REDIRECT_DENY_SOME_ALLOW_OTHERS && !$user->aff_custom_redirect);
+        ($cr == Bootstrap_Aff::AFF_CUSTOM_REDIRECT_DENY_SOME_ALLOW_OTHERS && !$user->aff_custom_redirect);
     }
-    
+
     /**
      * Check whereever given url have tracking code included
      * @param type $url
      */
-    function pageHaveTrackingCode($url){
+    function pageHaveTrackingCode($url)
+    {
         $req = new Am_HttpRequest($url, Am_HttpRequest::METHOD_GET);
-        try{
+        try {
             $resp = $req->send();
-        }catch(Exception $e){
+        } catch (Exception $e) {
             $this->getDi()->errorLogTable->logException($e);
             return false;
         }
-        if(strpos($resp->getBody(), "id='am-ctcs-v1'")!== false)
+        if (strpos($resp->getBody(), "id='am-ctcs-v1'") !== false)
             return true;
-            
+
         return false;
     }
-    
-    
-    function getRefLink($login, $url){
+
+    function getRefLink($login, $url)
+    {
         $url = parse_url($url);
         parse_str(@$url['query'], $query);
         $query['ref'] = $login;
         $url['query'] = http_build_query($query);
-        return sprintf("%s://%s%s%s", $url['scheme'], $url['host'], $url['path']?$url['path']:'/', $url['query']? "?".$url['query'] : '');
+        return sprintf("%s://%s%s%s", $url['scheme'], $url['host'], $url['path'] ? $url['path'] : '/', $url['query'] ? "?" . $url['query'] : '');
     }
 
 }

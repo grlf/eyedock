@@ -16,19 +16,23 @@ enter 0 to disable',
   '%d-th day' => '%d-th day',
   '%d-th subscription day' => '%d-th subscription day',
   '%s Plugins' => '%s Plugins',
-  '%url% will be replaced with actual url of affilate link' => '%url% will be replaced with actual url of affilate link',
-  '- all old members become not-approved' => '- all old members become not-approved',
+  '%sEnable%s and %sconfigure%s external cron if you are using E-Mail Throttle Queue' => '%sEnable%s and %sconfigure%s external cron if you are using E-Mail Throttle Queue',
+  '%sEnable%s and %sconfigure%s external cron if you are using Periodic E-Mails (Autoresponder/Expiration/Pending Notifications)' => '%sEnable%s and %sconfigure%s external cron if you are using Periodic E-Mails (Autoresponder/Expiration/Pending Notifications)',
   '-- Please Select --' => '-- Please Select --',
   '-- Without A Category --' => '-- Without A Category --',
   '..th subscription day (starts from 2)' => '..th subscription day (starts from 2)',
   '100% discount' => '100% discount',
   '<p>For each item in purchase, aMember will look through all rules, from top to bottom. If it finds a matching multiplier, it will be remembered. If it finds a matching custom rule, it takes commission rates from it. If no matching custom rule was found, it uses "Default" commission settings.</p><p>For n-tier affiliates, no rules are used, you can just define percentage of commission earned by previous level.</p>' => '<p>For each item in purchase, aMember will look through all rules, from top to bottom. If it finds a matching multiplier, it will be remembered. If it finds a matching custom rule, it takes commission rates from it. If no matching custom rule was found, it uses "Default" commission settings.</p><p>For n-tier affiliates, no rules are used, you can just define percentage of commission earned by previous level.</p>',
   '<p>Message has been sent successfully. Please wait 2 minutes and check the mailbox <em>%s</em>.<br />There must be a message with subject [Test E-Mail]. Do not forget to check <em>Spam</em> folder.</p><p>If the message does not arrive shortly, contact your webhosting support and ask them to find <br />in <strong>mail.log</strong> what happened with a message sent from <em>%s</em> to <em>%s</em> at %s</p>' => '<p>Message has been sent successfully. Please wait 2 minutes and check the mailbox <em>%s</em>.<br />There must be a message with subject [Test E-Mail]. Do not forget to check <em>Spam</em> folder.</p><p>If the message does not arrive shortly, contact your webhosting support and ask them to find <br />in <strong>mail.log</strong> what happened with a message sent from <em>%s</em> to <em>%s</em> at %s</p>',
+  'A/B Signup Campaign' => 'A/B Signup Campaign',
   'ACTIVE subscription for %s' => 'ACTIVE subscription for %s',
   'ACTIVE subscription for group %s' => 'ACTIVE subscription for group %s',
   'API Keys' => 'API Keys',
   'Accepted Payout Methods' => 'Accepted Payout Methods',
   'Access Method' => 'Access Method',
+  'Access Permissions
+this field will be removed from form if access permission does not match and user will not be able to update this field' => 'Access Permissions
+this field will be removed from form if access permission does not match and user will not be able to update this field',
   'Account Sharing Prevention' => 'Account Sharing Prevention',
   'Account Verification' => 'Account Verification',
   'Action' => 'Action',
@@ -79,7 +83,9 @@ to admin once payment is received',
   'Advanced' => 'Advanced',
   'Advanced Settings' => 'Advanced Settings',
   'Affiliate %s not found' => 'Affiliate %s not found',
-  'Affiliate Can View Sales Details' => 'Affiliate Can View Sales Details',
+  'Affiliate Can View Sales Details
+Leave this checkbox unselected to restrict affiliates from seeing their sales details' => 'Affiliate Can View Sales Details
+Leave this checkbox unselected to restrict affiliates from seeing their sales details',
   'Affiliate Commission' => 'Affiliate Commission',
   'Affiliate Commission Details for' => 'Affiliate Commission Details for',
   'Affiliate Commission Rules' => 'Affiliate Commission Rules',
@@ -138,8 +144,12 @@ apply coupon discount to recurring rebills?',
   'Assign Category' => 'Assign Category',
   'At least one billing plan must be added' => 'At least one billing plan must be added',
   'Authentification' => 'Authentification',
-  'Auto Buffering' => 'Auto Buffering',
-  'Auto Play' => 'Auto Play',
+  'Auto Buffering
+whether loading of clip into player\'s memory should begin straight away. When this is true and autoPlay is false then the clip will automatically stop at the first frame of the video.' => 'Auto Buffering
+whether loading of clip into player\'s memory should begin straight away. When this is true and autoPlay is false then the clip will automatically stop at the first frame of the video.',
+  'Auto Play
+whether the player should start playback immediately upon loading' => 'Auto Play
+whether the player should start playback immediately upon loading',
   'Auto-generated Template Settings' => 'Auto-generated Template Settings',
   'Autoclose Tickets Due to Inactivity' => 'Autoclose Tickets Due to Inactivity',
   'Automatically Login Customer After Signup' => 'Automatically Login Customer After Signup',
@@ -193,6 +203,7 @@ usually 1 choice is quite enough',
   'Blob (unlimited length binary data)' => 'Blob (unlimited length binary data)',
   'Block This IP Address' => 'Block This IP Address',
   'Blocking IP/E-Mail' => 'Blocking IP/E-Mail',
+  'Both Form (signup & member)' => 'Both Form (signup & member)',
   'Briefly unavailable for scheduled maintenance. Check back in a minute.' => 'Briefly unavailable for scheduled maintenance. Check back in a minute.',
   'Browse' => 'Browse',
   'Browse Countries' => 'Browse Countries',
@@ -203,7 +214,9 @@ usually 1 choice is quite enough',
 notify admin when bruteforce attack is detected' => 'Bruteforce Notification
 notify admin when bruteforce attack is detected',
   'Bruteforce Protection' => 'Bruteforce Protection',
-  'Buffer Length' => 'Buffer Length',
+  'Buffer Length
+The amount of video data (in seconds) which should be loaded into Flowplayer\'s memory in advance of playback commencing.' => 'Buffer Length
+The amount of video data (in seconds) which should be loaded into Flowplayer\'s memory in advance of playback commencing.',
   'Build Demo' => 'Build Demo',
   'Building demo records' => 'Building demo records',
   'Button/Link HTML Code' => 'Button/Link HTML Code',
@@ -212,13 +225,20 @@ notify admin when bruteforce attack is detected',
   'Calculate Affiliate Commissions from Totals Including Tax
 by default commission calculated from amounts before tax' => 'Calculate Affiliate Commissions from Totals Including Tax
 by default commission calculated from amounts before tax',
+  'Calculate Commission' => 'Calculate Commission',
+  'Calculate Commission for this Invoice' => 'Calculate Commission for this Invoice',
+  'Campaign Title
+for admin reference' => 'Campaign Title
+for admin reference',
   'Can not find user with such username' => 'Can not find user with such username',
   'Can not find user with such username or email' => 'Can not find user with such username or email',
   'Can not save config for dashboard widget without config form [%s]' => 'Can not save config for dashboard widget without config form [%s]',
   'Can\'t be changed because your server have suhosin extension enabled' => 'Can\'t be changed because your server have suhosin extension enabled',
   'Cancel All Changes in Translations on Current Page' => 'Cancel All Changes in Translations on Current Page',
   'Cancellations' => 'Cancellations',
-  'Cart View (Width x Height)' => 'Cart View (Width x Height)',
+  'Cart View (Width × Height)
+Empty - 50×50 px' => 'Cart View (Width × Height)
+Empty - 50×50 px',
   'Category
 root category of hierarchy which included to shopping cart
 all categories is included by default' => 'Category
@@ -259,9 +279,6 @@ generated coupon code length
 between 5 and 32',
   'Collapse Menu' => 'Collapse Menu',
   'Comma' => 'Comma',
-  'Comment
-for your reference' => 'Comment
-for your reference',
   'Comment for Your Reference' => 'Comment for Your Reference',
   'Commission
 % of commission received by referred affiliate' => 'Commission
@@ -277,6 +294,7 @@ calculated for first customer invoice only',
   'Company Logo for Invoice
 it must be png/jpeg/tiff file (%s)' => 'Company Logo for Invoice
 it must be png/jpeg/tiff file (%s)',
+  'Conditions' => 'Conditions',
   'Config values updated...' => 'Config values updated...',
   'Configuration' => 'Configuration',
   'Configured License Keys' => 'Configured License Keys',
@@ -329,6 +347,9 @@ You can find info how to set up cron job for your installation <a class="link" h
 Most possible external cron job has been set incorrectly. It may cause very serious problems with the script.
 You can find info how to set up cron job for your installation <a class="link" href="http://www.amember.com/docs/Cron" target="_blank">here</a>.',
   'Currency' => 'Currency',
+  'Currency
+you can choose from list of currencies supported by paysystems' => 'Currency
+you can choose from list of currencies supported by paysystems',
   'Currency Exchange Rates' => 'Currency Exchange Rates',
   'Current Server Date and Time' => 'Current Server Date and Time',
   'Currently you see result of the following search' => 'Currently you see result of the following search',
@@ -370,7 +391,9 @@ width&times;height',
   'Default value for field
 (that is default value for inputs, not SQL DEFAULT)' => 'Default value for field
 (that is default value for inputs, not SQL DEFAULT)',
-  'Delay Payout (days)' => 'Delay Payout (days)',
+  'Delay Payout (days)
+number of days that should go through before commision is included to payout report' => 'Delay Payout (days)
+number of days that should go through before commision is included to payout report',
   'Delete Old Records' => 'Delete Old Records',
   'Delete Preset' => 'Delete Preset',
   'Delete Saved Search?' => 'Delete Saved Search?',
@@ -380,11 +403,14 @@ width&times;height',
   'Description
 displayed to visitors on order page below the title' => 'Description
 displayed to visitors on order page below the title',
-  'Detail View (Width x Height)' => 'Detail View (Width x Height)',
+  'Detail View (Width × Height)
+Empty - 400×400 px' => 'Detail View (Width × Height)
+Empty - 400×400 px',
   'Detailed Rebill Report for %s' => 'Detailed Rebill Report for %s',
   'Details' => 'Details',
   'Die and show ugly error message' => 'Die and show ugly error message',
   'Digits and latin letters only please' => 'Digits and latin letters only please',
+  'Disable All Campaigns' => 'Disable All Campaigns',
   'Disable Checking for aMember Updates' => 'Disable Checking for aMember Updates',
   'Disable Customer Account' => 'Disable Customer Account',
   'Disable QuickStart Wizard' => 'Disable QuickStart Wizard',
@@ -425,6 +451,7 @@ here you can disable this function',
 use existing products for demo records' => 'Do not generate products
 use existing products for demo records',
   'Do not include Unsubscribe Link into e-mails' => 'Do not include Unsubscribe Link into e-mails',
+  'Do you really want to Calculate Commission for this invoice? Commission will be added to affiliate account.' => 'Do you really want to Calculate Commission for this invoice? Commission will be added to affiliate account.',
   'Do you really want to change Rebill Date for this invoice?' => 'Do you really want to change Rebill Date for this invoice?',
   'Do you really want to delete this item?' => 'Do you really want to delete this item?',
   'Do you really want to refund payment' => 'Do you really want to refund payment',
@@ -434,7 +461,9 @@ use existing products for demo records',
   'Documentation' => 'Documentation',
   'Does Not Allow to Upload Attachments for Users' => 'Does Not Allow to Upload Attachments for Users',
   'Does Not Quote Message in Reply' => 'Does Not Quote Message in Reply',
-  'Does Not Require Login to Access FAQ Section' => 'Does Not Require Login to Access FAQ Section',
+  'Does Not Require Login to Access FAQ Section
+make it public' => 'Does Not Require Login to Access FAQ Section
+make it public',
   'Does Not Show FAQ Tab in Member Area' => 'Does Not Show FAQ Tab in Member Area',
   'Download Backup / Restore from Backup' => 'Download Backup / Restore from Backup',
   'Download CSV File' => 'Download CSV File',
@@ -476,7 +505,9 @@ used to display name of sender in outgoing e-mails',
   'Email Addresses Separated by Comma' => 'Email Addresses Separated by Comma',
   'Email Admin Regarding Account Sharing' => 'Email Admin Regarding Account Sharing',
   'Email Backup Frequency' => 'Email Backup Frequency',
-  'Email Domain' => 'Email Domain',
+  'Email Domain
+used to generate email address for users' => 'Email Domain
+used to generate email address for users',
   'Email Sending method
 PLEASE DO NOT CHANGE if emailing from aMember works' => 'Email Sending method
 PLEASE DO NOT CHANGE if emailing from aMember works',
@@ -488,17 +519,17 @@ PLEASE DO NOT CHANGE if emailing from aMember works',
   'Email has been send' => 'Email has been send',
   'Email is required if you have enabled Email Backup Feature' => 'Email is required if you have enabled Email Backup Feature',
   'Emails' => 'Emails',
-  'Empty - 200x200 px' => 'Empty - 200x200 px',
-  'Empty - 400x400 px' => 'Empty - 400x400 px',
-  'Empty - 50x50 px' => 'Empty - 50x50 px',
-  'Empty Payout Method Notification to User' => 'Empty Payout Method Notification to User',
-  'Enable Click Tracking Code' => 'Enable Click Tracking Code',
+  'Empty Payout Method Notification to User
+send email to user in case he has commission but did not define payout method yet.
+This email will be sent only once.' => 'Empty Payout Method Notification to User
+send email to user in case he has commission but did not define payout method yet.
+This email will be sent only once.',
+  'Enable Click Tracking Code
+Enable ability to track affiliate clicks on any page on your site' => 'Enable Click Tracking Code
+Enable ability to track affiliate clicks on any page on your site',
   'Enable PDF Invoice
 attach invoice file (.pdf) to Payment Receipt email' => 'Enable PDF Invoice
 attach invoice file (.pdf) to Payment Receipt email',
-  'Enable ability to track affiliate clicks on any page on your site' => 'Enable ability to track affiliate clicks on any page on your site',
-  'Enable and configure external cron (%saMember CP -> Setup -> Advanced%s</a>) if you are using E-Mail Throttle Queue' => 'Enable and configure external cron (%saMember CP -> Setup -> Advanced%s</a>) if you are using E-Mail Throttle Queue',
-  'Enable and configure external cron (%saMember CP -> Setup -> Advanced%s</a>) if you are using Periodic E-Mails (Autoresponder/Expiration/Pending Notifications)' => 'Enable and configure external cron (%saMember CP -> Setup -> Advanced%s</a>) if you are using Periodic E-Mails (Autoresponder/Expiration/Pending Notifications)',
   'Enable plugins if necessary' => 'Enable plugins if necessary',
   'Encrypted Pass' => 'Encrypted Pass',
   'Encrypted Password' => 'Encrypted Password',
@@ -535,10 +566,15 @@ Expiration message will not be sent if:
 </ul>',
   'Expire (maximum expiration date)' => 'Expire (maximum expiration date)',
   'Field' => 'Field',
-  'Field Description' => 'Field Description',
+  'Field Description
+for dispaying on signup and profile editing screen (for user)' => 'Field Description
+for dispaying on signup and profile editing screen (for user)',
   'Field Name' => 'Field Name',
   'Field Title' => 'Field Title',
   'Field Type' => 'Field Type',
+  'Field Type
+sql field will be added to table structure, common field will not, we recommend you to choose second option' => 'Field Type
+sql field will be added to table structure, common field will not, we recommend you to choose second option',
   'Field Values' => 'Field Values',
   'File
 (max filesize %s)' => 'File
@@ -597,11 +633,14 @@ you may get your key in %smembers area%s',
             Please, don\'t forget to chmod it back to 755 after creation of translation',
   'Folder URL' => 'Folder URL',
   'Form Type' => 'Form Type',
+  'Form to Include to Roster' => 'Form to Include to Roster',
   'Forms Editor' => 'Forms Editor',
   'From' => 'From',
   'Future' => 'Future',
   'General' => 'General',
-  'General Affiliate Link Redirect URL' => 'General Affiliate Link Redirect URL',
+  'General Affiliate Link Redirect URL
+It is url of landing page for default affiliate link (which does not related to any banner), home page will be used if you keep it empty' => 'General Affiliate Link Redirect URL
+It is url of landing page for default affiliate link (which does not related to any banner), home page will be used if you keep it empty',
   'General Link' => 'General Link',
   'General Settings' => 'General Settings',
   'Generate' => 'Generate',
@@ -622,12 +661,13 @@ you may get your key in %smembers area%s',
   'Graph Bar' => 'Graph Bar',
   'Graph Line' => 'Graph Line',
   'Gravatar' => 'Gravatar',
-  'HTML Code' => 'HTML Code',
+  'HTML Code
+%url% will be replaced with actual url of affilate link' => 'HTML Code
+%url% will be replaced with actual url of affilate link',
   'HTML E-Mail Unsubscribe Link
 %link% will be replaced to actual unsubscribe URL' => 'HTML E-Mail Unsubscribe Link
 %link% will be replaced to actual unsubscribe URL',
   'Hash' => 'Hash',
-  'Height' => 'Height',
   'Help & Support' => 'Help & Support',
   'Hide' => 'Hide',
   'Hide \'Add/Renew Subscription\' tab (User Menu)
@@ -648,8 +688,8 @@ and show \'Shopping Cart\' tab instead',
   'If only one protected URL, go directly to the URL. Otherwise go to membership page' => 'If only one protected URL, go directly to the URL. Otherwise go to membership page',
   'If you are moving from one payment processor, you can use this page to switch existing subscription from one payment processor to another. It is possible only if full credit card info is stored on aMember side.' => 'If you are moving from one payment processor, you can use this page to switch existing subscription from one payment processor to another. It is possible only if full credit card info is stored on aMember side.',
   'Image' => 'Image',
-  'Image height must be number greater than 0.' => 'Image height must be number greater than 0.',
-  'Image width must be number greater than 0.' => 'Image width must be number greater than 0.',
+  'Image height must be number greater than %d' => 'Image height must be number greater than %d',
+  'Image width must be number greater than %d' => 'Image width must be number greater than %d',
   'Immediately' => 'Immediately',
   'Import E-Mail Templates from XML file' => 'Import E-Mail Templates from XML file',
   'Import Encrypted Password' => 'Import Encrypted Password',
@@ -689,7 +729,11 @@ to check your file structure.',
   'In the File name box, type a name for the file.' => 'In the File name box, type a name for the file.',
   'In the File type list, select %1$sText CSV%2$s and click %1$sSave%2$s. You may see the message box. Click %1$sKeep Current Format%2$s.' => 'In the File type list, select %1$sText CSV%2$s and click %1$sSave%2$s. You may see the message box. Click %1$sKeep Current Format%2$s.',
   'Include Access Periods to PDF Invoice' => 'Include Access Periods to PDF Invoice',
-  'Index Page' => 'Index Page',
+  'Index Page
+%sthis page will be public and do not require any login/password%s
+you can create new pages %shere%s' => 'Index Page
+%sthis page will be public and do not require any login/password%s
+you can create new pages %shere%s',
   'Insert' => 'Insert',
   'Install Updates' => 'Install Updates',
   'Instances Limit
@@ -743,7 +787,6 @@ unsubscribe the customer from:
 * autoresponder messages,
 * subscription expiration notices',
   'It is required to setup a cron job to trigger backup generation' => 'It is required to setup a cron job to trigger backup generation',
-  'It is url of landing page for default affiliate link (which does not related to any banner), home page will be used if you keep it empty' => 'It is url of landing page for default affiliate link (which does not related to any banner), home page will be used if you keep it empty',
   'It will replace all your exising database with backup. Do you really want to proceed?' => 'It will replace all your exising database with backup. Do you really want to proceed?',
   'Items' => 'Items',
   'JWPlayer License Key' => 'JWPlayer License Key',
@@ -773,7 +816,6 @@ unsubscribe the customer from:
   'Last login' => 'Last login',
   'Layout' => 'Layout',
   'Leads' => 'Leads',
-  'Leave this checkbox unselected to restrict affiliates from seeing their sales details' => 'Leave this checkbox unselected to restrict affiliates from seeing their sales details',
   'Length of admin password must be from %d to %d' => 'Length of admin password must be from %d to %d',
   'Length of username must be from %d to %d' => 'Length of username must be from %d to %d',
   'Licensing Method' => 'Licensing Method',
@@ -787,7 +829,9 @@ unsubscribe the customer from:
   'Lines Skipped:' => 'Lines Skipped:',
   'Lines Success:' => 'Lines Success:',
   'Link to reset your password was sent to your Email.' => 'Link to reset your password was sent to your Email.',
-  'List View (Width x Height)' => 'List View (Width x Height)',
+  'List View (Width × Height)
+Empty - 200×200 px' => 'List View (Width × Height)
+Empty - 200×200 px',
   'Loading' => 'Loading',
   'Loading...' => 'Loading...',
   'Local Translations' => 'Local Translations',
@@ -817,8 +861,16 @@ unsubscribe the customer from:
   'Manage Translation of Messages' => 'Manage Translation of Messages',
   'Manually Added' => 'Manually Added',
   'Manually Approve' => 'Manually Approve',
-  'Manually Approve New Invoices' => 'Manually Approve New Invoices',
-  'Manually Approve New Users' => 'Manually Approve New Users',
+  'Manually Approve New Invoices
+manually approve all new invoices' => 'Manually Approve New Invoices
+manually approve all new invoices',
+  'Manually Approve New Users
+manually approve all new users (first payment)
+don\'t enable it if you have huge users base already
+- all old members become not-approved' => 'Manually Approve New Users
+manually approve all new users (first payment)
+don\'t enable it if you have huge users base already
+- all old members become not-approved',
   'Manually Approve Note (New Signup/Invoice)' => 'Manually Approve Note (New Signup/Invoice)',
   'Mark NOT Paid' => 'Mark NOT Paid',
   'Mark Paid' => 'Mark Paid',
@@ -832,7 +884,9 @@ will be included to email to user',
   'Message Text' => 'Message Text',
   'Messages to Customer after Payment' => 'Messages to Customer after Payment',
   'Method' => 'Method',
-  'Minimum Payout' => 'Minimum Payout',
+  'Minimum Payout
+minimal commission amount earned by affiliate to include it to payout report' => 'Minimum Payout
+minimal commission amount earned by affiliate to include it to payout report',
   'Miscellaneous' => 'Miscellaneous',
   'Modules' => 'Modules',
   'Monthly' => 'Monthly',
@@ -930,7 +984,11 @@ to customers. If empty, [Admin E-Mail Address] is used',
   'Overwrite User if Exist User with Same Login' => 'Overwrite User if Exist User with Same Login',
   'Owner' => 'Owner',
   'PDF Invoice' => 'PDF Invoice',
-  'Page Not Found (404)' => 'Page Not Found (404)',
+  'Page Not Found (404)
+%sthis page will be public and do not require any login/password%s
+you can create new pages %shere%s' => 'Page Not Found (404)
+%sthis page will be public and do not require any login/password%s
+you can create new pages %shere%s',
   'Page Peel' => 'Page Peel',
   'Page Where Logout Link was Clicked' => 'Page Where Logout Link was Clicked',
   'Paid' => 'Paid',
@@ -939,6 +997,10 @@ to customers. If empty, [Admin E-Mail Address] is used',
   'Password changed' => 'Password changed',
   'Password must not be equal to username' => 'Password must not be equal to username',
   'Passwords must be the same' => 'Passwords must be the same',
+  'Path' => 'Path',
+  'Path
+will be used to construct user-friendly url, in case of you leave it empty aMember will use id of this page to do it' => 'Path
+will be used to construct user-friendly url, in case of you leave it empty aMember will use id of this page to do it',
   'Path to Folder' => 'Path to Folder',
   'Path/URL' => 'Path/URL',
   'Payment Amount' => 'Payment Amount',
@@ -970,7 +1032,9 @@ only one email will be send for each defined day.
 all email for specific day will be selected and conditions will be checked.
 First email with matched condition will be send and other ignored',
   'Permissions' => 'Permissions',
-  'Player Configuration' => 'Player Configuration',
+  'Player Configuration
+this option is applied only for video files' => 'Player Configuration
+this option is applied only for video files',
   'Please assign the following fields: ' => 'Please assign the following fields: ',
   'Please choose another field name. This name is already used' => 'Please choose another field name. This name is already used',
   'Please choose product' => 'Please choose product',
@@ -1057,8 +1121,8 @@ login at %s' => 'Redirect After Login
 where customer redirected after successful
 login at %s',
   'Redirect After Logout' => 'Redirect After Logout',
+  'Redirect URL' => 'Redirect URL',
   'Redirect to Signup Cart Page by Default' => 'Redirect to Signup Cart Page by Default',
-  'Referer' => 'Referer',
   'Referrer' => 'Referrer',
   'Refund Amount' => 'Refund Amount',
   'Refund Date' => 'Refund Date',
@@ -1077,7 +1141,10 @@ cookie will be stored for ... days',
   'Remove Category' => 'Remove Category',
   'Remove From Dashboard' => 'Remove From Dashboard',
   'Remove Group' => 'Remove Group',
-  'Renewal Group' => 'Renewal Group',
+  'Renew Form (member)' => 'Renew Form (member)',
+  'Renewal Group
+Allows you to set up sequential or parallel subscription periods. Subscriptions from the same group will begin at the end of subscriptions from the same group. Subscriptions from different groups can run side-by-side' => 'Renewal Group
+Allows you to set up sequential or parallel subscription periods. Subscriptions from the same group will begin at the end of subscriptions from the same group. Subscriptions from different groups can run side-by-side',
   'Reparing' => 'Reparing',
   'Repeat Action Handling' => 'Repeat Action Handling',
   'Replace Product' => 'Replace Product',
@@ -1088,7 +1155,9 @@ cookie will be stored for ... days',
   'Require Approval Notification to Admin (New Signup)' => 'Require Approval Notification to Admin (New Signup)',
   'Require Approval Notification to User  (New Signup)' => 'Require Approval Notification to User  (New Signup)',
   'Require Approval Only if Invoice has these Products (Invoice)' => 'Require Approval Only if Invoice has these Products (Invoice)',
-  'Require Strong Password' => 'Require Strong Password',
+  'Require Strong Password
+password should contain at least 2 capital letters, 2 or more numbers and 2 or more special chars' => 'Require Strong Password
+password should contain at least 2 capital letters, 2 or more numbers and 2 or more special chars',
   'Required value' => 'Required value',
   'Reseller Packages' => 'Reseller Packages',
   'Resend' => 'Resend',
@@ -1125,7 +1194,9 @@ root script URL, usually %s',
   'SMTP Username' => 'SMTP Username',
   'SQL (could not be used for multi-select and checkbox fields)' => 'SQL (could not be used for multi-select and checkbox fields)',
   'SQL Date Format' => 'SQL Date Format',
-  'SQL field type' => 'SQL field type',
+  'SQL field type
+if you are unsure, choose first type (string)' => 'SQL field type
+if you are unsure, choose first type (string)',
   'Sales' => 'Sales',
   'Sales Statistic' => 'Sales Statistic',
   'Salt' => 'Salt',
@@ -1135,7 +1206,17 @@ root script URL, usually %s',
   'Saved Echecks' => 'Saved Echecks',
   'Saved Reports' => 'Saved Reports',
   'Saved Search' => 'Saved Search',
-  'Scaling' => 'Scaling',
+  'Scaling
+Setting which defines how video is scaled on the video screen. Available options are:
+<strong>fit</strong>: Fit to window by preserving the aspect ratio encoded in the file\'s metadata.
+<strong>half</strong>: Half-size (preserves aspect ratio)
+<strong>orig</strong>: Use the dimensions encoded in the file. If the video is too big for the available space, the video is scaled using the \'fit\' option.
+<strong>scale</strong>: Scale the video to fill all available space. Ignores the dimensions in the metadata. This is the default setting.' => 'Scaling
+Setting which defines how video is scaled on the video screen. Available options are:
+<strong>fit</strong>: Fit to window by preserving the aspect ratio encoded in the file\'s metadata.
+<strong>half</strong>: Half-size (preserves aspect ratio)
+<strong>orig</strong>: Use the dimensions encoded in the file. If the video is too big for the available space, the video is scaled using the \'fit\' option.
+<strong>scale</strong>: Scale the video to fill all available space. Ignores the dimensions in the metadata. This is the default setting.',
   'Second Period' => 'Second Period',
   'Second Price' => 'Second Price',
   'Second Price
@@ -1173,8 +1254,12 @@ when ticket is closed due to inactivity',
   'Send Cancel Notifications to Admin
 send email to admin when recurring subscription cancelled by member' => 'Send Cancel Notifications to Admin
 send email to admin when recurring subscription cancelled by member',
-  'Send Cancel Notifications to User' => 'Send Cancel Notifications to User',
-  'Send Copy of All Admin Notifications' => 'Send Copy of All Admin Notifications',
+  'Send Cancel Notifications to User
+send email to member when he cancels recurring subscription.' => 'Send Cancel Notifications to User
+send email to member when he cancels recurring subscription.',
+  'Send Copy of All Admin Notifications
+will be used to send copy of email notifications to admin you can specify more then one email separated by comma: test@email.com,test1@email.com,test2@email.com' => 'Send Copy of All Admin Notifications
+will be used to send copy of email notifications to admin you can specify more then one email separated by comma: test@email.com,test1@email.com,test2@email.com',
   'Send Credit Card Rebill Stats to Admin
 Credit Card Rebill Stats will be sent to Admin daily. It works for payment processors like Authorize.Net and PayFlow Pro only' => 'Send Credit Card Rebill Stats to Admin
 Credit Card Rebill Stats will be sent to Admin daily. It works for payment processors like Authorize.Net and PayFlow Pro only',
@@ -1218,25 +1303,15 @@ once FIRST subscripton is completed',
   'Sending Test E-Mail...' => 'Sending Test E-Mail...',
   'Sending e-mail (sent to %d from %d)' => 'Sending e-mail (sent to %d from %d)',
   'Sent' => 'Sent',
+  'Server Timezone' => 'Server Timezone',
   'Session Storage' => 'Session Storage',
   'Set the following admin as owner of ticket' => 'Set the following admin as owner of ticket',
-  'Setting which defines how video is scaled on the video screen. Available options are:
-
-                <strong>fit</strong>: Fit to window by preserving the aspect ratio encoded in the file\'s metadata.
-                <strong>half</strong>: Half-size (preserves aspect ratio)
-                <strong>orig</strong>: Use the dimensions encoded in the file. If the video is too big for the available space, the video is scaled using the \'fit\' option.
-                <strong>scale</strong>: Scale the video to fill all available space. Ignores the dimensions in the metadata. This is the default setting.
-                ' => 'Setting which defines how video is scaled on the video screen. Available options are:
-
-                <strong>fit</strong>: Fit to window by preserving the aspect ratio encoded in the file\'s metadata.
-                <strong>half</strong>: Half-size (preserves aspect ratio)
-                <strong>orig</strong>: Use the dimensions encoded in the file. If the video is too big for the available space, the video is scaled using the \'fit\' option.
-                <strong>scale</strong>: Scale the video to fill all available space. Ignores the dimensions in the metadata. This is the default setting.
-                ',
   'Setup/Configuration' => 'Setup/Configuration',
   'Setup/Configuration : ' => 'Setup/Configuration : ',
   'Shopping Cart Settings' => 'Shopping Cart Settings',
+  'Should be greater than %d' => 'Should be greater than %d',
   'Should be greater than 0' => 'Should be greater than 0',
+  'Should be less then %d' => 'Should be less then %d',
   'Show Error Message' => 'Show Error Message',
   'Show Gravatars in Ticket Conversation' => 'Show Gravatars in Ticket Conversation',
   'Show Search Function in FAQ' => 'Show Search Function in FAQ',
@@ -1246,6 +1321,7 @@ You can use the following placeholders %name_f%, %name_l%
 it will be expanded to first and last name of admin in operation' => 'Signature Text
 You can use the following placeholders %name_f%, %name_l%
 it will be expanded to first and last name of admin in operation',
+  'Signup Form (signup)' => 'Signup Form (signup)',
   'Signup Form Configuration' => 'Signup Form Configuration',
   'Signup Info' => 'Signup Info',
   'Signup Messages' => 'Signup Messages',
@@ -1253,10 +1329,15 @@ it will be expanded to first and last name of admin in operation',
   'Site Title' => 'Site Title',
   'Site is temporarily disabled for maintenance' => 'Site is temporarily disabled for maintenance',
   'Size' => 'Size',
+  'Size
+Width × Height' => 'Size
+Width × Height',
   'Size of input field' => 'Size of input field',
   'Skip' => 'Skip',
   'Skip First Line' => 'Skip First Line',
-  'Skip Index Page if User is Logged-in' => 'Skip Index Page if User is Logged-in',
+  'Skip Index Page if User is Logged-in
+When logged-in user try to access /amember/index page, he will be redirected to /amember/member' => 'Skip Index Page if User is Logged-in
+When logged-in user try to access /amember/index page, he will be redirected to /amember/member',
   'Skip Line if Exist User with Same Login' => 'Skip Line if Exist User with Same Login',
   'So you can manually mark payment as refunded or charged-back. Access will be revoked immediately.' => 'So you can manually mark payment as refunded or charged-back. Access will be revoked immediately.',
   'Software version info' => 'Software version info',
@@ -1317,8 +1398,14 @@ alternative template for signup page',
 alternative template for this page' => 'Template
 alternative template for this page',
   'Template
-alternative template for this video' => 'Template
-alternative template for this video',
+alternative template for this video
+aMember will look for templates in [application/default/views/] folder
+and in theme\'s [/] folder
+and template filename must start with [layout]' => 'Template
+alternative template for this video
+aMember will look for templates in [application/default/views/] folder
+and in theme\'s [/] folder
+and template filename must start with [layout]',
   'Terms Text
 automatically calculated if empty' => 'Terms Text
 automatically calculated if empty',
@@ -1333,7 +1420,6 @@ automatically calculated if empty',
   'Text in your file should be encoded in UTF-8 encoding.' => 'Text in your file should be encoded in UTF-8 encoding.',
   'TextArea' => 'TextArea',
   'The action has been repeated, ipn script response [%s]' => 'The action has been repeated, ipn script response [%s]',
-  'The amount of video data (in seconds) which should be loaded into Flowplayer\'s memory in advance of playback commencing.' => 'The amount of video data (in seconds) which should be loaded into Flowplayer\'s memory in advance of playback commencing.',
   'The code [%s] is already used by signup form #%s, please choose another code' => 'The code [%s] is already used by signup form #%s, please choose another code',
   'The password is entered incorrectly' => 'The password is entered incorrectly',
   'There is %s users with same registration IP Address' => 'There is %s users with same registration IP Address',
@@ -1410,6 +1496,7 @@ How much [pt] skip from top of template before start to output invoice
   'Upgrade Download Problem' => 'Upgrade Download Problem',
   'Upgrade Finished' => 'Upgrade Finished',
   'Upgrade From' => 'Upgrade From',
+  'Upgrade Price Calculation Type' => 'Upgrade Price Calculation Type',
   'Upgrade To' => 'Upgrade To',
   'Upload' => 'Upload',
   'Upload file [email-templates.xml]' => 'Upload file [email-templates.xml]',
@@ -1429,7 +1516,9 @@ Enable old style urls (ex.: signup.php, profile.php)
 Usefull only after upgrade from aMember v3 to keep old links working.
 ',
   'Use first %d IP address octets to determine different IP (%s)' => 'Use first %d IP address octets to determine different IP (%s)',
-  'Use the following product for demo users' => 'Use the following product for demo users',
+  'Use the following product for demo users
+keep it empty to use any products' => 'Use the following product for demo users
+keep it empty to use any products',
   'Use this %slink%s to delete data from aMember v4 database and use clean database for import' => 'Use this %slink%s to delete data from aMember v4 database and use clean database for import',
   'Used For' => 'Used For',
   'Used Rules' => 'Used Rules',
@@ -1520,9 +1609,7 @@ to the \'Target User\' account. \'Source User\' account will be deleted.
 There is no way to undo this operation!',
   'We will submit a request to payment system or you will be redirected to payment system page to submit refund request' => 'We will submit a request to payment system or you will be redirected to payment system page to submit refund request',
   'Weekly' => 'Weekly',
-  'When logged-in user try to access /amember/index page, he will be redirected to /amember/member' => 'When logged-in user try to access /amember/index page, he will be redirected to /amember/member',
   'Widget with Id [%s] has not config form' => 'Widget with Id [%s] has not config form',
-  'Width' => 'Width',
   'Wrong id' => 'Wrong id',
   'Yes, assign category' => 'Yes, assign category',
   'Yes, assign group' => 'Yes, assign group',
@@ -1589,28 +1676,20 @@ and template filename must start with [signup]',
   'do not show pending invoices' => 'do not show pending invoices',
   'do not show refunded payments' => 'do not show refunded payments',
   'does not send zero autoresponder for this access record' => 'does not send zero autoresponder for this access record',
-  'don\'t enable it if you have huge users base already' => 'don\'t enable it if you have huge users base already',
   'downloads within' => 'downloads within',
   'during subscription period' => 'during subscription period',
   'error_log table (used by admin only)' => 'error_log table (used by admin only)',
   'expand details' => 'expand details',
   'filter' => 'filter',
   'first paid at' => 'first paid at',
-  'for dispaying on signup and profile editing screen (for user)' => 'for dispaying on signup and profile editing screen (for user)',
   'hours' => 'hours',
   'if code is present, products will be hidden in shopping cart and this code is required to see these products' => 'if code is present, products will be hidden in shopping cart and this code is required to see these products',
   'if customer uses more than' => 'if customer uses more than',
   'if user enters wrong password' => 'if user enters wrong password',
-  'if you are unsure, choose first type (string)' => 'if you are unsure, choose first type (string)',
   'immediately after subscription is started' => 'immediately after subscription is started',
-  'keep it empty to use any products' => 'keep it empty to use any products',
   'leave it empty in case if you want to show all invoices' => 'leave it empty in case if you want to show all invoices',
   'leave it empty in case of you want this item be available for all users' => 'leave it empty in case of you want this item be available for all users',
   'login, email or name' => 'login, email or name',
-  'make it public' => 'make it public',
-  'manually approve all new invoices' => 'manually approve all new invoices',
-  'manually approve all new users (first payment)' => 'manually approve all new users (first payment)',
-  'minimal commission amount earned by affiliate to include it to payout report' => 'minimal commission amount earned by affiliate to include it to payout report',
   'minutes %sdeny access for user%s and do the following' => 'minutes %sdeny access for user%s and do the following',
   'must be a number in format 99 or 99.99' => 'must be a number in format 99 or 99.99',
   'must be equal or greather than 0' => 'must be equal or greather than 0',
@@ -1621,27 +1700,19 @@ and template filename must start with [signup]',
   'none' => 'none',
   'notification will be sent in case of one of selected payment system was used for invoice' => 'notification will be sent in case of one of selected payment system was used for invoice',
   'notification will be sent in case of one of selected products exits in invoice' => 'notification will be sent in case of one of selected products exits in invoice',
-  'number of days that should go through before commision is included to payout report' => 'number of days that should go through before commision is included to payout report',
   'on expiration day' => 'on expiration day',
   'open in new window' => 'open in new window',
   'or' => 'or',
   'or %smake access free%s' => 'or %smake access free%s',
-  'password should contain at least 2 capital letters, 2 or more numbers and 2 or more special chars' => 'password should contain at least 2 capital letters, 2 or more numbers and 2 or more special chars',
   'put website offline, making it available for admins only' => 'put website offline, making it available for admins only',
   'refund' => 'refund',
   'replace' => 'replace',
   'seconds, he will be forced to wait until next try' => 'seconds, he will be forced to wait until next try',
-  'send email to member when he cancels recurring subscription.' => 'send email to member when he cancels recurring subscription.',
-  'send email to user in case he has commission but did not define payout method yet.
-This email will be sent only once.' => 'send email to user in case he has commission but did not define payout method yet.
-This email will be sent only once.',
   'sending' => 'sending',
   'sent successfully' => 'sent successfully',
-  'sql field will be added to table structure, common field will not, we recommend you to choose second option' => 'sql field will be added to table structure, common field will not, we recommend you to choose second option',
   'switch to show all records' => 'switch to show all records',
   'switch to show only active records' => 'switch to show only active records',
   'tables restored.' => 'tables restored.',
-  'this field will be removed from form if access permission does not match and user will not be able to update this field' => 'this field will be removed from form if access permission does not match and user will not be able to update this field',
   'this item is available for %sall registered customers%s.
 click to %smake this item protected%s
 %sor %smake this item available without login and registration%s
@@ -1657,20 +1728,10 @@ click to %smake this item protected%s
 or %smake log-in required%s
 ',
   'this message will be shown for customer after purchase.' => 'this message will be shown for customer after purchase.',
-  'this option is applied only for video files' => 'this option is applied only for video files',
-  'this page will be public and do not require any login/password' => 'this page will be public and do not require any login/password',
   'times within' => 'times within',
   'type part of product name to filter' => 'type part of product name to filter',
-  'used to generate email address for users' => 'used to generate email address for users',
   'version' => 'version',
   'void' => 'void',
   'when there is a problem with displaying such symbols in the PDF invoice.' => 'when there is a problem with displaying such symbols in the PDF invoice.',
-  'whether loading of clip into player\'s memory should begin straight away. When this is true and autoPlay is false then the clip will automatically stop at the first frame of the video.' => 'whether loading of clip into player\'s memory should begin straight away. When this is true and autoPlay is false then the clip will automatically stop at the first frame of the video.',
-  'whether the player should start playback immediately upon loading' => 'whether the player should start playback immediately upon loading',
-  'will be included to email to user' => 'will be included to email to user',
-  'will be used to construct user-friendly url, in case of you leave it empty aMember will use id of this page to do it' => 'will be used to construct user-friendly url, in case of you leave it empty aMember will use id of this page to do it',
-  'will be used to send copy of email notifications to admin you can specify more then one email separated by comma: test@email.com,test1@email.com,test2@email.com' => 'will be used to send copy of email notifications to admin you can specify more then one email separated by comma: test@email.com,test1@email.com,test2@email.com',
-  'you can choose from list of currencies supported by paysystems' => 'you can choose from list of currencies supported by paysystems',
-  'you can create new pages %shere%s' => 'you can create new pages %shere%s',
   'you can use html markup here' => 'you can use html markup here',
 );

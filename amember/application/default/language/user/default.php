@@ -8,7 +8,6 @@
   '"%s" can only be ordered if you have expired subscription(s) for these products: %s' => '"%s" can only be ordered if you have expired subscription(s) for these products: %s',
   '"%s" cannot be ordered because you have active subscription(s) to: %s' => '"%s" cannot be ordered because you have active subscription(s) to: %s',
   '"%s" cannot be ordered because you have expired subscription(s) to: %s' => '"%s" cannot be ordered because you have expired subscription(s) to: %s',
-  '#' => '#',
   '%d access records&hellip;' => '%d access records&hellip;',
   '%d-Tier Affiliates Commission
 ' => '%d-Tier Affiliates Commission
@@ -23,19 +22,17 @@
   '%s database and tables prefix' => '%s database and tables prefix',
   '%s records on this page are selected. You can choose group operation in select box below or %scancel%s' => '%s records on this page are selected. You can choose group operation in select box below or %scancel%s',
   '%s, you\'ve successfully logged in to Facebook.' => '%s, you\'ve successfully logged in to Facebook.',
-  '(must match your credit card statement delivery address)' => '(must match your credit card statement delivery address)',
-  '(must match your debit card statement delivery address)' => '(must match your debit card statement delivery address)',
+  '%sEnable%s and %sconfigure%s external cron if you are using credit card payment plugins' => '%sEnable%s and %sconfigure%s external cron if you are using credit card payment plugins',
   ', for %d installments' => ', for %d installments',
   ', then ' => ', then ',
   '-- Please select --' => '-- Please select --',
   '-- Select Category --' => '-- Select Category --',
-  '9 digits' => '9 digits',
-  'ABA Routing Number' => 'ABA Routing Number',
+  'A/B Signup' => 'A/B Signup',
+  'ABA Routing Number
+9 digits' => 'ABA Routing Number
+9 digits',
   'API Authentication Information' => 'API Authentication Information',
-  'API Identifier' => 'API Identifier',
-  'API KEY' => 'API KEY',
   'API Token' => 'API Token',
-  'API URL' => 'API URL',
   'Accept Direct Payments
 handle payments made on payment system side
 (without signup to aMember first)' => 'Accept Direct Payments
@@ -48,7 +45,6 @@ will be included into URL to make it unique',
   'Access Denied' => 'Access Denied',
   'Access Log' => 'Access Log',
   'Access Permissions' => 'Access Permissions',
-  'Action on Expire' => 'Action on Expire',
   'Action on Simultaneous Login Attempt' => 'Action on Simultaneous Login Attempt',
   'Actions' => 'Actions',
   'Activate' => 'Activate',
@@ -70,7 +66,9 @@ will be included into URL to make it unique',
 right after signup form has been submitted, subscription will be added only for new users' => 'Add Subscription to the following products
 right after signup form has been submitted, subscription will be added only for new users',
   'Add User' => 'Add User',
-  'Add VAT even if customer is outside of EU' => 'Add VAT even if customer is outside of EU',
+  'Add VAT even if customer is outside of EU
+Locat VAT Rate will be used in order to calculate VAT' => 'Add VAT even if customer is outside of EU
+Locat VAT Rate will be used in order to calculate VAT',
   'Add an \'empty\' option to select box
 to do not choose any products' => 'Add an \'empty\' option to select box
 to do not choose any products',
@@ -83,9 +81,16 @@ to do not choose any products',
   'Add to Basket' => 'Add to Basket',
   'Add user to these groups' => 'Add user to these groups',
   'Add/Renew Subscription' => 'Add/Renew Subscription',
+  'Added During Import' => 'Added During Import',
   'Added between dates:' => 'Added between dates:',
   'Additionaly add access to this product' => 'Additionaly add access to this product',
   'Address Info' => 'Address Info',
+  'Address Info
+(must match your credit card statement delivery address)' => 'Address Info
+(must match your credit card statement delivery address)',
+  'Address Info
+(must match your debit card statement delivery address)' => 'Address Info
+(must match your debit card statement delivery address)',
   'Address Information' => 'Address Information',
   'Admin' => 'Admin',
   'Admin Groups
@@ -100,6 +105,9 @@ assigned to the following groups. This protects
   'Advanced Search' => 'Advanced Search',
   'Advertise our website to your friends and earn money' => 'Advertise our website to your friends and earn money',
   'Affiliate' => 'Affiliate',
+  'Affiliate
+this affiliate will get commission for payment in case of coupon from this batch is used during payment. This affiliate will be assigned to user as default affiliate in case of user has not default affiliate assigned yet.' => 'Affiliate
+this affiliate will get commission for payment in case of coupon from this batch is used during payment. This affiliate will be assigned to user as default affiliate in case of user has not default affiliate assigned yet.',
   'Affiliate Affiliate Link' => 'Affiliate Affiliate Link',
   'Affiliate Agreement' => 'Affiliate Agreement',
   'Affiliate Check - City' => 'Affiliate Check - City',
@@ -109,11 +117,18 @@ assigned to the following groups. This protects
   'Affiliate Check - Street Address' => 'Affiliate Check - Street Address',
   'Affiliate Check - ZIP Code' => 'Affiliate Check - ZIP Code',
   'Affiliate Clicks' => 'Affiliate Clicks',
+  'Affiliate Clicks for' => 'Affiliate Clicks for',
   'Affiliate Clicks/Sales Statistics' => 'Affiliate Clicks/Sales Statistics',
   'Affiliate Coupons' => 'Affiliate Coupons',
   'Affiliate Id#' => 'Affiliate Id#',
   'Affiliate Info' => 'Affiliate Info',
+  'Affiliate Leads' => 'Affiliate Leads',
+  'Affiliate Manager
+this user will be always assigned as 2-tier affiliate for all affiliates' => 'Affiliate Manager
+this user will be always assigned as 2-tier affiliate for all affiliates',
   'Affiliate Payout - Moneybookers Account ID' => 'Affiliate Payout - Moneybookers Account ID',
+  'Affiliate Payout - Okpay Wallet ID' => 'Affiliate Payout - Okpay Wallet ID',
+  'Affiliate Payout - Pagseguro E-Mail address' => 'Affiliate Payout - Pagseguro E-Mail address',
   'Affiliate Payout - Paypal E-Mail address' => 'Affiliate Payout - Paypal E-Mail address',
   'Affiliate Payout - Propay E-Mail address' => 'Affiliate Payout - Propay E-Mail address',
   'Affiliate Payout - WM purse' => 'Affiliate Payout - WM purse',
@@ -127,17 +142,14 @@ assigned to the following groups. This protects
   'Affiliate link with Custom Landing Page' => 'Affiliate link with Custom Landing Page',
   'Affiliate stats' => 'Affiliate stats',
   'Affiliates' => 'Affiliates',
-  'After Purchase Display this content on thank you page' => 'After Purchase Display this content on thank you page',
+  'After Purchase Display this content on thank you page
+You can use %invoice.% and %user.% variables in url eg: %user.login%, %user.email%, %invoice.public_id% etc.' => 'After Purchase Display this content on thank you page
+You can use %invoice.% and %user.% variables in url eg: %user.login%, %user.email%, %invoice.public_id% etc.',
   'After Purchase Redirect User to this URL
 instead of thanks page
 You can use %invoice.% and %user.% variables in url eg: %user.login%, %user.email%, %invoice.public_id% etc.' => 'After Purchase Redirect User to this URL
 instead of thanks page
 You can use %invoice.% and %user.% variables in url eg: %user.login%, %user.email%, %invoice.public_id% etc.',
-  'After actual payment aMember will check user invoice and in case of it contains one of defined
-                product or product from defined product category this OTO will be shown for him instead of ordinary thank you page.
-                In case of you use OTO (Downsell) condition it will be matched if user click NO link in defined offer and this OTO will be shown for user' => 'After actual payment aMember will check user invoice and in case of it contains one of defined
-                product or product from defined product category this OTO will be shown for him instead of ordinary thank you page.
-                In case of you use OTO (Downsell) condition it will be matched if user click NO link in defined offer and this OTO will be shown for user',
   'After first payment has been completed' => 'After first payment has been completed',
   'After the user has been added' => 'After the user has been added',
   'Agreement text' => 'Agreement text',
@@ -145,7 +157,6 @@ You can use %invoice.% and %user.% variables in url eg: %user.login%, %user.emai
   'All %s records on this page are selected' => 'All %s records on this page are selected',
   'All Affiliates' => 'All Affiliates',
   'All Downloads History Report' => 'All Downloads History Report',
-  'All List will be displayed if none selected' => 'All List will be displayed if none selected',
   'All Tickets' => 'All Tickets',
   'All Time' => 'All Time',
   'All Users' => 'All Users',
@@ -193,7 +204,6 @@ such as fixed land line, mobile, VoIP, and invalid phone numbers',
   'An error occurred while cancellation request' => 'An error occurred while cancellation request',
   'An error occurred while handling your payment.' => 'An error occurred while handling your payment.',
   'An internal error happened in the script, please contact webmaster for details' => 'An internal error happened in the script, please contact webmaster for details',
-  'Any Coupon' => 'Any Coupon',
   'Any Product' => 'Any Product',
   'Any product' => 'Any product',
   'Application' => 'Application',
@@ -236,13 +246,24 @@ you have to design entire page in the \'Offer Text\' field',
   'Back' => 'Back',
   'Back to shopping' => 'Back to shopping',
   'Bad URL, enter the correct OpenGate URL' => 'Bad URL, enter the correct OpenGate URL',
-  'Bank Account Name' => 'Bank Account Name',
-  'Bank Account Number' => 'Bank Account Number',
-  'Bank Account Type' => 'Bank Account Type',
+  'Bank Account Name
+name associated with the bank account' => 'Bank Account Name
+name associated with the bank account',
+  'Bank Account Number
+Up to 20 digits' => 'Bank Account Number
+Up to 20 digits',
+  'Bank Account Type
+please select one' => 'Bank Account Type
+please select one',
   'Bank Code' => 'Bank Code',
   'Bank Identification' => 'Bank Identification',
   'Bank Name' => 'Bank Name',
-  'Bank Phone' => 'Bank Phone',
+  'Bank Name
+name of the bank which issued the credit card' => 'Bank Name
+name of the bank which issued the credit card',
+  'Bank Phone
+customer service phone number listed on back of your credit card' => 'Bank Phone
+customer service phone number listed on back of your credit card',
   'Banned Groups
 aMember never touches %s accounts
 assigned to the following groups. This protects
@@ -251,11 +272,17 @@ aMember never touches %s accounts
 assigned to the following groups. This protects
 %s accounts against any aMember activity',
   'Banners and Links' => 'Banners and Links',
+  'Batch for Affiliate Coupons
+new coupons for affiliate will be generated in this batch' => 'Batch for Affiliate Coupons
+new coupons for affiliate will be generated in this batch',
   'Begin' => 'Begin',
   'Begin Date' => 'Begin Date',
-  'Billing Address First and Last name' => 'Billing Address First and Last name',
-  'Billing International Province' => 'Billing International Province',
-  'Billing Name' => 'Billing Name',
+  'Billing International Province
+for international provinces outside of US & Canada include the province name here' => 'Billing International Province
+for international provinces outside of US & Canada include the province name here',
+  'Billing Name
+Billing Address First and Last name' => 'Billing Name
+Billing Address First and Last name',
   'Billing Plan(s) to display' => 'Billing Plan(s) to display',
   'Bonus' => 'Bonus',
   'Bonuses' => 'Bonuses',
@@ -265,6 +292,7 @@ assigned to the following groups. This protects
   'CC Demo' => 'CC Demo',
   'CSRF protection error - form must be submitted within %d minutes after displaying, please repeat' => 'CSRF protection error - form must be submitted within %d minutes after displaying, please repeat',
   'CSV File was not specified' => 'CSV File was not specified',
+  'Campaign' => 'Campaign',
   'Can Operate with Notifications' => 'Can Operate with Notifications',
   'Can Operate with OTO' => 'Can Operate with OTO',
   'Can Operate with User Notes' => 'Can Operate with User Notes',
@@ -275,16 +303,25 @@ assigned to the following groups. This protects
   'Cannot connect to database, check hostname,username and password settings' => 'Cannot connect to database, check hostname,username and password settings',
   'Cannot use FREE payment plugin with the product which cost more than 0.0' => 'Cannot use FREE payment plugin with the product which cost more than 0.0',
   'Cannot validate VAT Id, please try again' => 'Cannot validate VAT Id, please try again',
-  'Card Expire' => 'Card Expire',
-  'Card Issue #' => 'Card Issue #',
-  'Card Start Date' => 'Card Start Date',
-  'Cardholder Name' => 'Cardholder Name',
+  'Card Expire
+Select card expiration date - month and year' => 'Card Expire
+Select card expiration date - month and year',
+  'Card Issue #
+is required for Maestro/Solo/Switch credit cards only' => 'Card Issue #
+is required for Maestro/Solo/Switch credit cards only',
+  'Card Start Date
+is required for Maestro/Solo/Switch credit cards only' => 'Card Start Date
+is required for Maestro/Solo/Switch credit cards only',
+  'Cardholder Name
+cardholder first and last name, exactly as on the card' => 'Cardholder Name
+cardholder first and last name, exactly as on the card',
   'Categories' => 'Categories',
   'Category' => 'Category',
   'Category [%s] not found' => 'Category [%s] not found',
   'Category of question' => 'Category of question',
   'Change' => 'Change',
   'Change Category' => 'Change Category',
+  'Change Manager' => 'Change Manager',
   'Change Owner' => 'Change Owner',
   'Change Password' => 'Change Password',
   'Change Password error' => 'Change Password error',
@@ -311,16 +348,18 @@ it must be %d or more characters in length
 may only contain letters, numbers, and underscores' => 'Choose a Username
 it must be %d or more characters in length
 may only contain letters, numbers, and underscores',
-  'Choose admins to include to roster' => 'Choose admins to include to roster',
+  'Choose admins to include to roster
+You can choose same admin several times to balance tickets accordingly' => 'Choose admins to include to roster
+You can choose same admin several times to balance tickets accordingly',
   'Choose another payment processor and try again' => 'Choose another payment processor and try again',
   'Choose products to include into test invoice' => 'Choose products to include into test invoice',
   'City' => 'City',
+  'City ' => 'City ',
   'Click "Continue" to pay this order using stored credit card %s' => 'Click "Continue" to pay this order using stored credit card %s',
   'Click button to continue' => 'Click button to continue',
   'Click here if you do not want to wait any longer (or if your browser does not automatically forward you).' => 'Click here if you do not want to wait any longer (or if your browser does not automatically forward you).',
   'Click to Assign' => 'Click to Assign',
   'Click to Edit' => 'Click to Edit',
-  'ClickBank' => 'ClickBank',
   'Clicks' => 'Clicks',
   'Close' => 'Close',
   'Close Ticket' => 'Close Ticket',
@@ -331,17 +370,29 @@ may only contain letters, numbers, and underscores',
   'Comment
 for admin reference' => 'Comment
 for admin reference',
+  'Comment
+for your reference' => 'Comment
+for your reference',
+  'Comment
+will be shown above table with users' => 'Comment
+will be shown above table with users',
   'Commission' => 'Commission',
   'Commission Rules' => 'Commission Rules',
   'Commission earned' => 'Commission earned',
   'Commissions' => 'Commissions',
-  'Company Name' => 'Company Name',
+  'Company Name
+the company name associated with the billing address for the transaction' => 'Company Name
+the company name associated with the billing address for the transaction',
   'Complete Payment' => 'Complete Payment',
   'Condition' => 'Condition',
-  'Conditions' => 'Conditions',
+  'Conditions
+After actual payment aMember will check user invoice and in case of it contains one of defined  product or product from defined product category this OTO will be shown for him instead of ordinary thank you page. In case of you use OTO (Downsell) condition it will be matched if user click NO link in defined offer and this OTO will be shown for user' => 'Conditions
+After actual payment aMember will check user invoice and in case of it contains one of defined  product or product from defined product category this OTO will be shown for him instead of ordinary thank you page. In case of you use OTO (Downsell) condition it will be matched if user click NO link in defined offer and this OTO will be shown for user',
   'Conditions/Commissions' => 'Conditions/Commissions',
   'Configured Tax Values' => 'Configured Tax Values',
-  'Confirm E-Mail Address' => 'Confirm E-Mail Address',
+  'Confirm E-Mail Address
+second field will be displayed to enter email address twice' => 'Confirm E-Mail Address
+second field will be displayed to enter email address twice',
   'Confirm New Password' => 'Confirm New Password',
   'Confirm Password' => 'Confirm Password',
   'Confirm Payment' => 'Confirm Payment',
@@ -383,10 +434,8 @@ these categories will be shown in user\'s menu if user has access to resources i
   'Coupon cannot be used because you have expired subscription(s) to: %s' => 'Coupon cannot be used because you have expired subscription(s) to: %s',
   'Coupon code disabled' => 'Coupon code disabled',
   'Coupon code expired' => 'Coupon code expired',
-  'Coupon from Batch : %s' => 'Coupon from Batch : %s',
   'Coupon is not yet active' => 'Coupon is not yet active',
   'Coupon usage limit exceeded' => 'Coupon usage limit exceeded',
-  'Coupon with Code : %s' => 'Coupon with Code : %s',
   'Coupons Batch' => 'Coupons Batch',
   'Create aMember Users By Demand
 silently create customer in aMember if
@@ -399,14 +448,26 @@ the same username and password as for %s',
   'Create account from login form' => 'Create account from login form',
   'Created' => 'Created',
   'Credit Card Code' => 'Credit Card Code',
+  'Credit Card Code
+The "Card Code" is a three- or four-digit security code that is printed on the back of credit cards in the card\'s signature panel (or on the front for American Express cards)' => 'Credit Card Code
+The "Card Code" is a three- or four-digit security code that is printed on the back of credit cards in the card\'s signature panel (or on the front for American Express cards)',
+  'Credit Card Code
+The "Card Code" is a three- or four-digit security code that is printed on the back of credit cards in the card\'s signature panel (or on the front for American Express cards).' => 'Credit Card Code
+The "Card Code" is a three- or four-digit security code that is printed on the back of credit cards in the card\'s signature panel (or on the front for American Express cards).',
   'Credit Card Info' => 'Credit Card Info',
   'Credit Card Number' => 'Credit Card Number',
+  'Credit Card Number
+for example: 1111-2222-3333-4444' => 'Credit Card Number
+for example: 1111-2222-3333-4444',
   'Credit Card Rebills' => 'Credit Card Rebills',
-  'Credit Card Type' => 'Credit Card Type',
+  'Credit Card Type
+please select one' => 'Credit Card Type
+please select one',
   'Credit Cards' => 'Credit Cards',
   'Credits' => 'Credits',
   'Credits Balance' => 'Credits Balance',
   'Credits History' => 'Credits History',
+  'Credits spent by products breakdown' => 'Credits spent by products breakdown',
   'Current password entered incorrectly, please try again' => 'Current password entered incorrectly, please try again',
   'Custom Commission' => 'Custom Commission',
   'Customer account has been automatically locked.' => 'Customer account has been automatically locked.',
@@ -419,7 +480,9 @@ the same username and password as for %s',
   'Date must be in format %s' => 'Date must be in format %s',
   'Date/Time' => 'Date/Time',
   'Date: ' => 'Date: ',
-  'Dates' => 'Dates',
+  'Dates
+date range when notification is shown' => 'Dates
+date range when notification is shown',
   'Day' => 'Day',
   'Days' => 'Days',
   'Deactivate Student' => 'Deactivate Student',
@@ -445,8 +508,12 @@ will have access to the sele
 users created by demand
 will have access to the sele
 (for example all subscriptions expired)',
-  'Default Value for this field' => 'Default Value for this field',
-  'Default unchecked' => 'Default unchecked',
+  'Default Value for this field
+hidden field will be populated with this value' => 'Default Value for this field
+hidden field will be populated with this value',
+  'Default unchecked
+Leave unchecked if you want newsletter default to be checked' => 'Default unchecked
+Leave unchecked if you want newsletter default to be checked',
   'Define Custom Html Message' => 'Define Custom Html Message',
   'Delete' => 'Delete',
   'Delete %s' => 'Delete %s',
@@ -461,7 +528,9 @@ if any fields are selected here',
   'Detail Page Template
 alternative template for detail page' => 'Detail Page Template
 alternative template for detail page',
-  'Did\'t Use ' => 'Did\'t Use ',
+  'Did\'t Use Any Coupon' => 'Did\'t Use Any Coupon',
+  'Did\'t Use Coupon from Batch: %s' => 'Did\'t Use Coupon from Batch: %s',
+  'Did\'t Use Coupon with Code: %s' => 'Did\'t Use Coupon with Code: %s',
   'Digits only please' => 'Digits only please',
   'DirectOne Merchant ID
 your directone 9-digit merchant id' => 'DirectOne Merchant ID
@@ -471,6 +540,9 @@ it is special password which can be set via the Settings page of the Members sec
 it is special password which can be set via the Settings page of the Members section on the DirectOne website',
   'Directory Access' => 'Directory Access',
   'Disable' => 'Disable',
+  'Disable Ability to Update Profile
+in case of user logged in via IP' => 'Disable Ability to Update Profile
+in case of user logged in via IP',
   'Disable online VAT Id Validation' => 'Disable online VAT Id Validation',
   'Discard' => 'Discard',
   'Discount' => 'Discount',
@@ -489,6 +561,7 @@ this discount will be applied to total of invoice. In case of discount is more t
   'Do not add VAT if a valid EU VAT Id entered by foreign customer' => 'Do not add VAT if a valid EU VAT Id entered by foreign customer',
   'Do not add to Login Form' => 'Do not add to Login Form',
   'Do not add to Signup Form' => 'Do not add to Signup Form',
+  'Do not create coupon for affiliate' => 'Do not create coupon for affiliate',
   'Do not show \'Credits Balance\' link at Useful Links' => 'Do not show \'Credits Balance\' link at Useful Links',
   'Do not show \'Credits History\' tab at User Menu' => 'Do not show \'Credits History\' tab at User Menu',
   'Do you really want to %s %s %s records' => 'Do you really want to %s %s %s records',
@@ -497,10 +570,16 @@ this discount will be applied to total of invoice. In case of discount is more t
   'Do you really want to delete record?' => 'Do you really want to delete record?',
   'Do you really want to unsubscribe from %s periodical messages?' => 'Do you really want to unsubscribe from %s periodical messages?',
   'Do you really want to void commission?' => 'Do you really want to void commission?',
-  'Does not Ask Current Password' => 'Does not Ask Current Password',
-  'Does not Confirm Password' => 'Does not Confirm Password',
+  'Does not Ask Current Password
+user will not need to enter his current password to change it' => 'Does not Ask Current Password
+user will not need to enter his current password to change it',
+  'Does not Confirm Password
+second field will not be displayed to enter password twice' => 'Does not Confirm Password
+second field will not be displayed to enter password twice',
   'Does not allow to Copy&Paste to confirmation field' => 'Does not allow to Copy&Paste to confirmation field',
-  'Does not show Agreement Text' => 'Does not show Agreement Text',
+  'Does not show Agreement Text
+display only tick box' => 'Does not show Agreement Text
+display only tick box',
   'Done' => 'Done',
   'Donee' => 'Donee',
   'Donee name' => 'Donee name',
@@ -538,7 +617,6 @@ this discount will be applied to total of invoice. In case of discount is more t
   'Empty response from Sagepay server' => 'Empty response from Sagepay server',
   'Enable' => 'Enable',
   'Enable Debug Mode' => 'Enable Debug Mode',
-  'Enable and configure external cron (%saMember CP -> Setup -> Advanced%s) if you are using credit card payment plugins' => 'Enable and configure external cron (%saMember CP -> Setup -> Advanced%s) if you are using credit card payment plugins',
   'Enabled Modules' => 'Enabled Modules',
   'End' => 'End',
   'Enjoy your membership. Please click %shere%s to access your member\'s area.' => 'Enjoy your membership. Please click %shere%s to access your member\'s area.',
@@ -613,7 +691,6 @@ keep empty to report all files',
   'First & Last Name' => 'First & Last Name',
   'First Name' => 'First Name',
   'First Payment' => 'First Payment',
-  'First match discount with higher priority will be applied' => 'First match discount with higher priority will be applied',
   'Folder %s (%s)' => 'Folder %s (%s)',
   'Folders' => 'Folders',
   'Force Change Password' => 'Force Change Password',
@@ -626,9 +703,7 @@ keep empty to report all files',
   'Free Access' => 'Free Access',
   'Free Access without log-in' => 'Free Access without log-in',
   'Free Signup' => 'Free Signup',
-  'Full URL to API at Your Server' => 'Full URL to API at Your Server',
   'GST (Inclusive Tax)' => 'GST (Inclusive Tax)',
-  'Gateway ID' => 'Gateway ID',
   'Get Link' => 'Get Link',
   'Get Password' => 'Get Password',
   'Get affiliate banners and links' => 'Get affiliate banners and links',
@@ -639,6 +714,9 @@ keep empty to report all files',
   'Gift Voucher Period Of Validity After Creation' => 'Gift Voucher Period Of Validity After Creation',
   'Gift Vouchers' => 'Gift Vouchers',
   'Global Commission' => 'Global Commission',
+  'Global Limit of IP Addresses
+empty or 0 - without limit' => 'Global Limit of IP Addresses
+empty or 0 - without limit',
   'Global Tax' => 'Global Tax',
   'Grantor' => 'Grantor',
   'Grantor\'s Invoice' => 'Grantor\'s Invoice',
@@ -653,6 +731,9 @@ you may drag and drop groups to sort it.
 if there are several groups available for user
 aMember will choose groups that are higher
 in this list as "Primary"',
+  'Groups Priority
+you may drag and drop groups to sort it. if there are several groups available for user aMember will choose groups that are higher in this list as "Primary"' => 'Groups Priority
+you may drag and drop groups to sort it. if there are several groups available for user aMember will choose groups that are higher in this list as "Primary"',
   'HTML Code that will be displayed' => 'HTML Code that will be displayed',
   'HTML Message' => 'HTML Message',
   'HTML text' => 'HTML text',
@@ -668,8 +749,12 @@ in this list as "Primary"',
   'Header
 this content will be included to header' => 'Header
 this content will be included to header',
-  'Header Logo' => 'Header Logo',
-  'Help Desk Url' => 'Help Desk Url',
+  'Header Logo
+keep it empty for default value' => 'Header Logo
+keep it empty for default value',
+  'Help Desk Url
+it must be with https and without slash on the end, for example https://example.zendesk.com' => 'Help Desk Url
+it must be with https and without slash on the end, for example https://example.zendesk.com',
   'Helpdesk' => 'Helpdesk',
   'Helpdesk: Can operate with helpdesk tickets' => 'Helpdesk: Can operate with helpdesk tickets',
   'Helpdesk: Categories' => 'Helpdesk: Categories',
@@ -684,8 +769,9 @@ do not display this item link in members area' => 'Hide
 do not display this item link in members area',
   'Hide Invoice after XX days' => 'Hide Invoice after XX days',
   'Hide Payment Forms and History from SubUsers' => 'Hide Payment Forms and History from SubUsers',
-  'Hide Select' => 'Hide Select',
-  'Hide State?' => 'Hide State?',
+  'Hide Select
+if there is only one choice' => 'Hide Select
+if there is only one choice',
   'Hosted at Activecampaing\'s server' => 'Hosted at Activecampaing\'s server',
   'Housenumber' => 'Housenumber',
   'I Agree' => 'I Agree',
@@ -698,7 +784,6 @@ do not display this item link in members area',
   'If you are a registered member, please %slogin%s' => 'If you are a registered member, please %slogin%s',
   'If you are not registered yet, please %ssignup%s' => 'If you are not registered yet, please %ssignup%s',
   'Import from CSV' => 'Import from CSV',
-  'Important Text' => 'Important Text',
   'Include to Directory' => 'Include to Directory',
   'Include to Directory
 matching users will be displayed in this members directory
@@ -733,7 +818,9 @@ in case of empty all active users will be included',
   'Invoice is expired' => 'Invoice is expired',
   'Invoice not found' => 'Invoice not found',
   'Invoices/Access' => 'Invoices/Access',
-  'Is Affiliate?' => 'Is Affiliate?',
+  'Is Affiliate?
+customer / affiliate status' => 'Is Affiliate?
+customer / affiliate status',
   'Is Gift Voucher?' => 'Is Gift Voucher?',
   'Is Html?' => 'Is Html?',
   'Is Locked' => 'Is Locked',
@@ -746,7 +833,6 @@ in case of empty all active users will be included',
   'JSON Web Token' => 'JSON Web Token',
   'Keywords' => 'Keywords',
   'Label' => 'Label',
-  'Ladesk URL' => 'Ladesk URL',
   'Language' => 'Language',
   'Last 14 Days' => 'Last 14 Days',
   'Last 30 Days' => 'Last 30 Days',
@@ -757,27 +843,29 @@ in case of empty all active users will be included',
   'Last Name' => 'Last Name',
   'Last Week (Mon-Sun)' => 'Last Week (Mon-Sun)',
   'Last Week (Sun-Sat)' => 'Last Week (Sun-Sat)',
-  'Leave default value if you are not sure' => 'Leave default value if you are not sure',
-  'Leave unchecked if you want newsletter default to be checked' => 'Leave unchecked if you want newsletter default to be checked',
+  'Lead' => 'Lead',
   'License Key' => 'License Key',
   'Licenses' => 'Licenses',
   'Licensing Schemes' => 'Licensing Schemes',
   'Lifetime' => 'Lifetime',
   'Like Url' => 'Like Url',
   'Limit' => 'Limit',
-  'Limit Number of Display per User' => 'Limit Number of Display per User',
+  'Limit Number of Display per User
+keep it empty for unlimited' => 'Limit Number of Display per User
+keep it empty for unlimited',
   'Limit of IP Addresses' => 'Limit of IP Addresses',
   'Link' => 'Link',
   'Links' => 'Links',
   'List Page Template
 alternative template for list page' => 'List Page Template
 alternative template for list page',
-  'Lists' => 'Lists',
+  'Lists
+All List will be displayed if none selected' => 'Lists
+All List will be displayed if none selected',
   'Live Edit %s' => 'Live Edit %s',
   'Local VAT Rate
 for example 18.5 (no percent sign)' => 'Local VAT Rate
 for example 18.5 (no percent sign)',
-  'Locat VAT Rate will be used in order to calculate VAT' => 'Locat VAT Rate will be used in order to calculate VAT',
   'Log all API Requests' => 'Log all API Requests',
   'Logged in as %s' => 'Logged in as %s',
   'Login' => 'Login',
@@ -815,6 +903,15 @@ url of page on your site, user will be redirected to this url if click on logo (
   'Merchant Key' => 'Merchant Key',
   'Merchant Secret' => 'Merchant Secret',
   'Message' => 'Message',
+  'Message
+It is last message that will be shown to user before account removal, you can place some special offer here.' => 'Message
+It is last message that will be shown to user before account removal, you can place some special offer here.',
+  'Message
+This message will be shown on accept page. You can clarify situation for user here and provide link to new Agreement text. Placeholder %button% will be replaced with actual button.' => 'Message
+This message will be shown on accept page. You can clarify situation for user here and provide link to new Agreement text. Placeholder %button% will be replaced with actual button.',
+  'Message
+This message will be shown on change password form. You can clarify situation for user here.' => 'Message
+This message will be shown on change password form. You can clarify situation for user here.',
   'Message can not be empty' => 'Message can not be empty',
   'Messages' => 'Messages',
   'Meta Data' => 'Meta Data',
@@ -824,8 +921,6 @@ url of page on your site, user will be redirected to this url if click on logo (
   'Month' => 'Month',
   'Months' => 'Months',
   'Multiplier' => 'Multiplier',
-  'Must be an administrative account' => 'Must be an administrative account',
-  'Must not contain any special characters such as &' => 'Must not contain any special characters such as &',
   'My Country' => 'My Country',
   'My Tickets' => 'My Tickets',
   'NEVER' => 'NEVER',
@@ -870,7 +965,6 @@ must be %d or more characters',
   'Not enough credits to debit' => 'Not enough credits to debit',
   'Not registered yet?' => 'Not registered yet?',
   'Note' => 'Note',
-  'Note: Unenrolling deletes student progress' => 'Note: Unenrolling deletes student progress',
   'Notes' => 'Notes',
   'Nothing, allow simultaneous login for same user from different computers' => 'Nothing, allow simultaneous login for same user from different computers',
   'Notification' => 'Notification',
@@ -916,7 +1010,10 @@ a record on %saMember CP -> Protect Content -> Newsletters%s page',
   'Password should contain at least 2 capital letters, 2 or more numbers and 2 or more special chars' => 'Password should contain at least 2 capital letters, 2 or more numbers and 2 or more special chars',
   'Passwords do not match' => 'Passwords do not match',
   'Paste the following code into the section &lt;head&gt; of your html document.' => 'Paste the following code into the section &lt;head&gt; of your html document.',
-  'Path' => 'Path',
+  'Path
+will be used to construct user-friendly url, in case of you leave it empty aMember will use id of this product to do it' => 'Path
+will be used to construct user-friendly url, in case of you leave it empty aMember will use id of this product to do it',
+  'Path should be unique across all products' => 'Path should be unique across all products',
   'Path to %s' => 'Path to %s',
   'Path to %s Folder' => 'Path to %s Folder',
   'Path to Source Folder' => 'Path to Source Folder',
@@ -948,10 +1045,14 @@ you can use the following tags:
 %s - Invoice Id
 %s - Invoice Total',
   'Payment Link' => 'Payment Link',
-  'Payment Options' => 'Payment Options',
+  'Payment Options
+if none selected, all enabled will be displayed' => 'Payment Options
+if none selected, all enabled will be displayed',
   'Payment System' => 'Payment System',
   'Payment System Description' => 'Payment System Description',
-  'Payment System Domain' => 'Payment System Domain',
+  'Payment System Domain
+Leave default value if you are not sure' => 'Payment System Domain
+Leave default value if you are not sure',
   'Payment System Title' => 'Payment System Title',
   'Payment error: ' => 'Payment error: ',
   'Payment failed' => 'Payment failed',
@@ -1018,7 +1119,7 @@ you can use the following tags:
   'Please enter Street Address' => 'Please enter Street Address',
   'Please enter ZIP code' => 'Please enter ZIP code',
   'Please enter a valid e-mail address' => 'Please enter a valid e-mail address',
-  'Please enter billing  name' => 'Please enter billing  name',
+  'Please enter billing name' => 'Please enter billing name',
   'Please enter cardholder name exactly as on card' => 'Please enter cardholder name exactly as on card',
   'Please enter correct amount' => 'Please enter correct amount',
   'Please enter coupon code' => 'Please enter coupon code',
@@ -1043,7 +1144,6 @@ you can use the following tags:
   'Please enter your current password for validation' => 'Please enter your current password for validation',
   'Please enter your last name' => 'Please enter your last name',
   'Please enter your name' => 'Please enter your name',
-  'Please first enter name' => 'Please first enter name',
   'Please login' => 'Please login',
   'Please note: it is impossible to restore
 your current account after deleting but
@@ -1055,7 +1155,7 @@ you still can signup again as new user.',
   'Please select payment system for payment' => 'Please select payment system for payment',
   'Please select the biller and click button to continue' => 'Please select the biller and click button to continue',
   'Please specifiy donation amount' => 'Please specifiy donation amount',
-  'Please use %sAdd/Renew subscription%s form' => 'Please use %sAdd/Renew subscription%s form',
+  'Please use %sAdd/Renew subscription%s form to order or renew subscription.' => 'Please use %sAdd/Renew subscription%s form to order or renew subscription.',
   'Please wait %d seconds before next login attempt' => 'Please wait %d seconds before next login attempt',
   'Please wait while we process your order...' => 'Please wait while we process your order...',
   'Plugin' => 'Plugin',
@@ -1069,7 +1169,9 @@ you still can signup again as new user.',
   'Preview of Notification' => 'Preview of Notification',
   'Price' => 'Price',
   'Priority' => 'Priority',
-  'Priority of discount' => 'Priority of discount',
+  'Priority of discount
+First match discount with higher priority will be applied' => 'Priority of discount
+First match discount with higher priority will be applied',
   'Proceed to Checkout' => 'Proceed to Checkout',
   'Processing your Invoice' => 'Processing your Invoice',
   'Processing your Transaction' => 'Processing your Transaction',
@@ -1080,9 +1182,13 @@ user should have active access to one of following products in order to personal
 user should have active access to one of following products in order to personal foolder was created',
   'Product %s is incompatible with product %s. Reason: %s' => 'Product %s is incompatible with product %s. Reason: %s',
   'Product Categories' => 'Product Categories',
-  'Product Description' => 'Product Description',
+  'Product Description
+displayed on the shopping cart page' => 'Product Description
+displayed on the shopping cart page',
   'Product Gategories' => 'Product Gategories',
-  'Product Picture' => 'Product Picture',
+  'Product Picture
+for shopping cart pages. Only jpeg, png and gif formats allowed' => 'Product Picture
+for shopping cart pages. Only jpeg, png and gif formats allowed',
   'Product categories
 keep empty to report all categories' => 'Product categories
 keep empty to report all categories',
@@ -1101,9 +1207,19 @@ keep empty to report all products',
   'Purchased Credits' => 'Purchased Credits',
   'Qty' => 'Qty',
   'Quantity' => 'Quantity',
-  'Question1?|Answer1|Answer2|Answer3' => 'Question1?|Answer1|Answer2|Answer3',
-  'Question2?|Answer1|Answer2' => 'Question2?|Answer1|Answer2',
-  'Questions with possible answers' => 'Questions with possible answers',
+  'Questions with possible answers
+one question per line
+question and answers should be
+separated by pipe, for example
+Question1?|Answer1|Answer2|Answer3
+Question2?|Answer1|Answer2
+register of answers does not matter' => 'Questions with possible answers
+one question per line
+question and answers should be
+separated by pipe, for example
+Question1?|Answer1|Answer2|Answer3
+Question2?|Answer1|Answer2
+register of answers does not matter',
   'Quick Filter' => 'Quick Filter',
   'Quick Order' => 'Quick Order',
   'Quickpay parameters' => 'Quickpay parameters',
@@ -1117,9 +1233,18 @@ keep empty to report all products',
   'Record [%s] not found' => 'Record [%s] not found',
   'Records Per Page' => 'Records Per Page',
   'Records that match all these conditions' => 'Records that match all these conditions',
-  'Redirect URL' => 'Redirect URL',
+  'Redirect URL
+aMember will redirect user to this url after account removal, User will be redirected to aMember root url in case of this option is empty' => 'Redirect URL
+aMember will redirect user to this url after account removal, User will be redirected to aMember root url in case of this option is empty',
+  'Redirect URL
+aMember will redirect user to this url after change password. User will be redirected to aMember root url in case of this option is empty' => 'Redirect URL
+aMember will redirect user to this url after change password. User will be redirected to aMember root url in case of this option is empty',
+  'Redirect URL
+aMember will redirect user to this url after user click Accept button. User will be redirected to aMember root url in case of this option is empty' => 'Redirect URL
+aMember will redirect user to this url after user click Accept button. User will be redirected to aMember root url in case of this option is empty',
   'Redirect to NetDebit booking form.' => 'Redirect to NetDebit booking form.',
   'Reference number is:' => 'Reference number is:',
+  'Referer' => 'Referer',
   'Referred Affiliate' => 'Referred Affiliate',
   'Refresh' => 'Refresh',
   'Refresh 3-rd party lists' => 'Refresh 3-rd party lists',
@@ -1198,7 +1323,9 @@ For orders that return a fraud score of 2.5 and above,
  it is recommended to hold for review,
  or require the validation with the Telephone Verification service
 ',
-  'Rows Count per Page at Credits History page' => 'Rows Count per Page at Credits History page',
+  'Rows Count per Page at Credits History page
+empty - it uses global settings' => 'Rows Count per Page at Credits History page
+empty - it uses global settings',
   'Run Report' => 'Run Report',
   'Running %s' => 'Running %s',
   'Save' => 'Save',
@@ -1209,12 +1336,10 @@ For orders that return a fraud score of 2.5 and above,
   'Search by Message' => 'Search by Message',
   'Search by Voucher Code' => 'Search by Voucher Code',
   'Second and Subsequent Payments' => 'Second and Subsequent Payments',
-  'Secret Key' => 'Secret Key',
   'Security code is expired' => 'Security code is expired',
   'Security code is invalid' => 'Security code is invalid',
   'Select a condition to add into search' => 'Select a condition to add into search',
   'Select all %s records matching your search' => 'Select all %s records matching your search',
-  'Select card expiration date - month and year' => 'Select card expiration date - month and year',
   'Select-box (one product can be selected)' => 'Select-box (one product can be selected)',
   'Selectel storage is not configured' => 'Selectel storage is not configured',
   'Self-Service' => 'Self-Service',
@@ -1233,7 +1358,9 @@ if he has not logged in to site for a long time',
   'Shipping Address Information' => 'Shipping Address Information',
   'Shipping Options' => 'Shipping Options',
   'Shipwire Shipping Address Brick' => 'Shipwire Shipping Address Brick',
-  'Shop Id' => 'Shop Id',
+  'Shop Id
+Unique Shop ID in the system' => 'Shop Id
+Unique Shop ID in the system',
   'Shopping Cart' => 'Shopping Cart',
   'Shopping Cart Module. No data input' => 'Shopping Cart Module. No data input',
   'Shopping Cart Module. No product id input' => 'Shopping Cart Module. No product id input',
@@ -1321,7 +1448,9 @@ aMember will never remove these groups from user account
   'Tax Rate
 for example 18.5 (no percent sign)' => 'Tax Rate
 for example 18.5 (no percent sign)',
-  'Tax Rates for Other Countries' => 'Tax Rates for Other Countries',
+  'Tax Rates for Other Countries
+in case of it is different with Local VAT Rate' => 'Tax Rates for Other Countries
+in case of it is different with Local VAT Rate',
   'Tax Title' => 'Tax Title',
   'Tax Value' => 'Tax Value',
   'Terms' => 'Terms',
@@ -1349,9 +1478,7 @@ The cents part of the amount you pass to DirectOne will determine the response c
   'There are no form available for affiliate signup.' => 'There are no form available for affiliate signup.',
   'There are no products available for purchase. Please come back later.' => 'There are no products available for purchase. Please come back later.',
   'There are no products available to order with credits' => 'There are no products available to order with credits',
-  'There is %d active login session for this
-                    user from following IP address(es): %s' => 'There is %d active login session for this
-                    user from following IP address(es): %s',
+  'There is %d active login session for this user from following IP address(es): %s' => 'There is %d active login session for this user from following IP address(es): %s',
   'These files will be available for downloads only for this user on his dashboard' => 'These files will be available for downloads only for this user on his dashboard',
   'This %s is blocked. Please contact site support to find out why' => 'This %s is blocked. Please contact site support to find out why',
   'This Coupon Code is already being used, please select another one' => 'This Coupon Code is already being used, please select another one',
@@ -1364,8 +1491,6 @@ The cents part of the amount you pass to DirectOne will determine the response c
   'This field is a requried field' => 'This field is a requried field',
   'This field is required' => 'This field is required',
   'This is a required field' => 'This is a required field',
-  'This message will be shown on accept page. You can clarify situation for user here and provide link to new Agreement text. Placeholder %button% will be replaced with actual button.' => 'This message will be shown on accept page. You can clarify situation for user here and provide link to new Agreement text. Placeholder %button% will be replaced with actual button.',
-  'This message will be shown on change password form. You can clarify situation for user here.' => 'This message will be shown on change password form. You can clarify situation for user here.',
   'This page will be automatically refreshed within %s' => 'This page will be automatically refreshed within %s',
   'This payment system could not handle payments in [%s] currency' => 'This payment system could not handle payments in [%s] currency',
   'This payment system could not handle zero-total invoices' => 'This payment system could not handle zero-total invoices',
@@ -1381,8 +1506,8 @@ To remove fields, move it back to \'Available Bricks\'.
 To make form multi-page, insert \'PageSeparator\' item into the place where you want page to be split.' => 'To add fields into the form, move item from \'Available Bricks\' to \'Form Bricks\'.
 To remove fields, move it back to \'Available Bricks\'.
 To make form multi-page, insert \'PageSeparator\' item into the place where you want page to be split.',
-  'To add new user groups <a href="%s" target=_top class="link">Click here</a>' => 'To add new user groups <a href="%s" target=_top class="link">Click here</a>',
-  'To assign groups to products <a href="%s" target=_top class="link">Click here</a>' => 'To assign groups to products <a href="%s" target=_top class="link">Click here</a>',
+  'To add new user groups %sClick here%s.' => 'To add new user groups %sClick here%s.',
+  'To assign groups to products %sClick here%s.' => 'To assign groups to products %sClick here%s.',
   'Today' => 'Today',
   'Too many Lost Password requests.. Please wait 180 minutes for retrying' => 'Too many Lost Password requests.. Please wait 180 minutes for retrying',
   'Total' => 'Total',
@@ -1404,7 +1529,6 @@ for recurring subscription aMember notify iDevAffiliate only about initial payme
   'Underscore is not allowed for username' => 'Underscore is not allowed for username',
   'Unenroll Student' => 'Unenroll Student',
   'Unique Clicks' => 'Unique Clicks',
-  'Unique Shop ID in the system' => 'Unique Shop ID in the system',
   'Unit Price' => 'Unit Price',
   'Unknown period unit: %s' => 'Unknown period unit: %s',
   'Unlimited' => 'Unlimited',
@@ -1413,7 +1537,6 @@ for recurring subscription aMember notify iDevAffiliate only about initial payme
   'Unsubscribe from all e-mail messages' => 'Unsubscribe from all e-mail messages',
   'Unsubscribed' => 'Unsubscribed',
   'Unsubscription Confirmation' => 'Unsubscription Confirmation',
-  'Up to 20 digits' => 'Up to 20 digits',
   'Update' => 'Update',
   'Update Credit Card Info' => 'Update Credit Card Info',
   'Update Debit Card Info' => 'Update Debit Card Info',
@@ -1433,9 +1556,13 @@ for recurring subscription aMember notify iDevAffiliate only about initial payme
   'Use another MySQL Db
 use custom host, user, password for %s database connectionUsually you can leave this unchecked' => 'Use another MySQL Db
 use custom host, user, password for %s database connectionUsually you can leave this unchecked',
-  'Use different profile form for subusers' => 'Use different profile form for subusers',
+  'Use different profile form for subusers
+you can configure subusers profile form %shere%s' => 'Use different profile form for subusers
+you can configure subusers profile form %shere%s',
   'Used' => 'Used',
-  'Used ' => 'Used ',
+  'Used Any Coupon' => 'Used Any Coupon',
+  'Used Coupon from Batch: %s' => 'Used Coupon from Batch: %s',
+  'Used Coupon with Code: %s' => 'Used Coupon with Code: %s',
   'Useful Links' => 'Useful Links',
   'User %s is already working on this ticket.' => 'User %s is already working on this ticket.',
   'User %s not found' => 'User %s not found',
@@ -1520,12 +1647,11 @@ only contain small letters, numbers, and underscore',
 in case of coupon is used during payment. This affiliate will be assigned to user as default affiliate in case of user has not default affiliate assigned yet.' => 'You can assign some coupon codes to specific affiliate. This affiliate will get commission for payment
 in case of coupon is used during payment. This affiliate will be assigned to user as default affiliate in case of user has not default affiliate assigned yet.',
   'You can change Number of %sRecords per Page%s in section %sSetup/Configuration%s' => 'You can change Number of %sRecords per Page%s in section %sSetup/Configuration%s',
-  'You can choose same admin several times to balance tickets accordingly' => 'You can choose same admin several times to balance tickets accordingly',
   'You can not merge ordinary user with subuser and vice versa' => 'You can not merge ordinary user with subuser and vice versa',
   'You can not merge subusers of different user' => 'You can not merge subusers of different user',
   'You can remove your account in our system.' => 'You can remove your account in our system.',
   'You can select more than one item - keep "Ctrl" key pressed' => 'You can select more than one item - keep "Ctrl" key pressed',
-  'You can use %invoice.% and %user.% variables in url eg: %user.login%, %user.email%, %invoice.public_id% etc.' => 'You can use %invoice.% and %user.% variables in url eg: %user.login%, %user.email%, %invoice.public_id% etc.',
+  'You can\'t use your affiliate coupon code' => 'You can\'t use your affiliate coupon code',
   'You have %d items in shopping cart' => 'You have %d items in shopping cart',
   'You have %d items in your Basket' => 'You have %d items in your Basket',
   'You have %s credits (%sTransaction History%s)' => 'You have %s credits (%sTransaction History%s)',
@@ -1548,6 +1674,9 @@ in case of coupon is used during payment. This affiliate will be assigned to use
   'Your Account Removal' => 'Your Account Removal',
   'Your Active Subscriptions' => 'Your Active Subscriptions',
   'Your Bank Account Number' => 'Your Bank Account Number',
+  'Your Bank Account Number
+Up to 20 digits' => 'Your Bank Account Number
+Up to 20 digits',
   'Your Basket' => 'Your Basket',
   'Your Credits Balance: ' => 'Your Credits Balance: ',
   'Your Current Password' => 'Your Current Password',
@@ -1563,9 +1692,12 @@ to you at this address' => 'Your E-Mail Address
 a confirmation email will be sent
 to you at this address',
   'Your General Affiliate Link' => 'Your General Affiliate Link',
+  'Your Leads' => 'Your Leads',
   'Your Membership Information' => 'Your Membership Information',
   'Your Message' => 'Your Message',
-  'Your Name' => 'Your Name',
+  'Your Name
+your first and last name' => 'Your Name
+your first and last name',
   'Your Password' => 'Your Password',
   'Your Payment is PENDING & Under Process' => 'Your Payment is PENDING & Under Process',
   'Your Personal Downloads' => 'Your Personal Downloads',
@@ -1593,6 +1725,9 @@ to you at this address',
   'Your payment has been successfully processed.' => 'Your payment has been successfully processed.',
   'Your payment is not yet confirmed by payment system. It may take several minutes to get confirmation of the payment.' => 'Your payment is not yet confirmed by payment system. It may take several minutes to get confirmation of the payment.',
   'Your profile has been updated successfully' => 'Your profile has been updated successfully',
+  'Your sales domain in justclick
+eg. username.justclick.ru' => 'Your sales domain in justclick
+eg. username.justclick.ru',
   'Your subject is too verbose' => 'Your subject is too verbose',
   'Your subscription does not allow access to this media' => 'Your subscription does not allow access to this media',
   'Your subscription has been successfully processed.' => 'Your subscription has been successfully processed.',
@@ -1603,10 +1738,6 @@ to you at this address',
   '[Select country]' => '[Select country]',
   '[Select state]' => '[Select state]',
   '_default_locale' => 'en_US',
-  'aMember CP -> Configuration -> Forms Editor' => 'aMember CP -> Configuration -> Forms Editor',
-  'aMember will redirect user to this url after account removal, User will be redirected to aMember root url in case of this option is empty' => 'aMember will redirect user to this url after account removal, User will be redirected to aMember root url in case of this option is empty',
-  'aMember will redirect user to this url after change password. User will be redirected to aMember root url in case of this option is empty' => 'aMember will redirect user to this url after change password. User will be redirected to aMember root url in case of this option is empty',
-  'aMember will redirect user to this url after user click Accept button. User will be redirected to aMember root url in case of this option is empty' => 'aMember will redirect user to this url after user click Accept button. User will be redirected to aMember root url in case of this option is empty',
   'accepts all major credit cards' => 'accepts all major credit cards',
   'added between %s and %s' => 'added between %s and %s',
   'admin' => 'admin',
@@ -1628,7 +1759,6 @@ useful if something is going wrong',
   'begins' => 'begins',
   'both First and Last name' => 'both First and Last name',
   'card declined' => 'card declined',
-  'cardholder first and last name, exactly as%son the card' => 'cardholder first and last name, exactly as%son the card',
   'check box to use points and get discount' => 'check box to use points and get discount',
   'check it if you want to gift subscription on this product' => 'check it if you want to gift subscription on this product',
   'choose a version' => 'choose a version',
@@ -1637,9 +1767,7 @@ useful if something is going wrong',
   'click to upload' => 'click to upload',
   'commission found by next rules' => 'commission found by next rules',
   'configure' => 'configure',
-  'customer / affiliate status' => 'customer / affiliate status',
-  'customer service phone number listed on back of your credit card' => 'customer service phone number listed on back of your credit card',
-  'date range when notification is shown' => 'date range when notification is shown',
+  'count of paid invoices by signup form' => 'count of paid invoices by signup form',
   'day' => 'day',
   'days' => 'days',
   'delivery confirmation' => 'delivery confirmation',
@@ -1647,30 +1775,19 @@ useful if something is going wrong',
   'different rebill times subscriptions' => 'different rebill times subscriptions',
   'different the first period subscriptions' => 'different the first period subscriptions',
   'different the second period subscriptions' => 'different the second period subscriptions',
-  'display only tick box' => 'display only tick box',
-  'displayed on the shopping cart page' => 'displayed on the shopping cart page',
   'displaying records %d-%d from %d' => 'displaying records %d-%d from %d',
   'download' => 'download',
-  'eFront Administrative Login' => 'eFront Administrative Login',
-  'eFront Password' => 'eFront Password',
   'email' => 'email',
   'email will contain this sentence' => 'email will contain this sentence',
   'empty - use global setting
 if 0 - without limit' => 'empty - use global setting
 if 0 - without limit',
-  'example: http://mydomain.com/efront/www/api2.php' => 'example: http://mydomain.com/efront/www/api2.php',
-  'examples' => 'examples',
   'expiration' => 'expiration',
   'expires' => 'expires',
   'filtered' => 'filtered',
-  'find at OG control panel -> Setting -> Gateways' => 'find at OG control panel -> Setting -> Gateways',
   'for affiliate commission payouts' => 'for affiliate commission payouts',
-  'for example http://example.ladesk.com' => 'for example http://example.ladesk.com',
   'for example: 1111-2222-3333-4444' => 'for example: 1111-2222-3333-4444',
   'for example: 1111222233334444' => 'for example: 1111222233334444',
-  'for international provinces outside of US & Canada include the province name here' => 'for international provinces outside of US & Canada include the province name here',
-  'for shopping cart pages. Only jpeg, png and gif formats allowed' => 'for shopping cart pages. Only jpeg, png and gif formats allowed',
-  'for your reference' => 'for your reference',
   'free' => 'free',
   'generate' => 'generate',
   'have invoice for %s
@@ -1686,25 +1803,15 @@ if 0 - without limit',
   'have subscription for %s
             that expire between %s and %s' => 'have subscription for %s
             that expire between %s and %s',
-  'hidden field will be populated with this value' => 'hidden field will be populated with this value',
   'hide if logged-in' => 'hide if logged-in',
   'hrs' => 'hrs',
   'iDEAL betaling' => 'iDEAL betaling',
-  'if none selected, all enabled will be displayed' => 'if none selected, all enabled will be displayed',
   'if not specified, voucher will be sent to your email' => 'if not specified, voucher will be sent to your email',
-  'if there is only one choice' => 'if there is only one choice',
   'if this box is checked, you will not be displayed in public members directory' => 'if this box is checked, you will not be displayed in public members directory',
-  'in case of it is different with Local VAT Rate' => 'in case of it is different with Local VAT Rate',
   'including pending records' => 'including pending records',
   'internal error, please repeat payment later' => 'internal error, please repeat payment later',
   'ip' => 'ip',
-  'is required for Maestro/Solo/Switch credit cards only' => 'is required for Maestro/Solo/Switch credit cards only',
-  'it must be with https and without slash on the end,
-                for example https://example.zendesk.com' => 'it must be with https and without slash on the end,
-                for example https://example.zendesk.com',
   'just now' => 'just now',
-  'keep it empty for default value' => 'keep it empty for default value',
-  'keep it empty for unlimited' => 'keep it empty for unlimited',
   'labels' => 'labels',
   'limit amount of subscription for this product, keep empty if you do not want to limit amount of subscriptions' => 'limit amount of subscription for this product, keep empty if you do not want to limit amount of subscriptions',
   'lines skipped' => 'lines skipped',
@@ -1714,34 +1821,29 @@ if 0 - without limit',
   'month' => 'month',
   'months' => 'months',
   'more than' => 'more than',
-  'name associated with the bank account' => 'name associated with the bank account',
-  'name of the bank which issued the credit card' => 'name of the bank which issued the credit card',
   'no records' => 'no records',
   'number of active users per product' => 'number of active users per product',
   'number of affiliate program clicks' => 'number of affiliate program clicks',
   'number of users per region' => 'number of users per region',
   'of products' => 'of products',
   'on %d-th day' => 'on %d-th day',
-  'one question per line' => 'one question per line',
   'only First Name' => 'only First Name',
   'only Last Name' => 'only Last Name',
   'only files downloaded by registered users is taken to account' => 'only files downloaded by registered users is taken to account',
   'pay using credit card or PayPal' => 'pay using credit card or PayPal',
   'pay using wire transfer or by sending offline check' => 'pay using wire transfer or by sending offline check',
+  'paysystem IN (%s)' => 'paysystem IN (%s)',
   'please select billing plan to add manual access to users added by demand' => 'please select billing plan to add manual access to users added by demand',
-  'please select one' => 'please select one',
   'product category IN (%s)' => 'product category IN (%s)',
   'products IN (%s)' => 'products IN (%s)',
   'protected area' => 'protected area',
-  'question and answers should be' => 'question and answers should be',
-  'reCaptcha Theme' => 'reCaptcha Theme',
+  'reCaptcha Theme
+%sexamples%s' => 'reCaptcha Theme
+%sexamples%s',
   'records processed.' => 'records processed.',
-  'register of answers does not matter' => 'register of answers does not matter',
   'required value' => 'required value',
   'reset' => 'reset',
   'return' => 'return',
-  'second field will be displayed to enter email address twice' => 'second field will be displayed to enter email address twice',
-  'second field will not be displayed to enter password twice' => 'second field will not be displayed to enter password twice',
   'seconds' => 'seconds',
   'separated by commas for several address, eg:
 12.12.12.12,23.23.23.23,34.34.34.34
@@ -1750,31 +1852,21 @@ separated by hyphen for rage address, eg:
 12.12.12.12,23.23.23.23,34.34.34.34
 separated by hyphen for rage address, eg:
 123.123.123.1-123.123.123.100',
-  'separated by pipe, for example' => 'separated by pipe, for example',
   'signature required' => 'signature required',
   'spent %s %s' => 'spent %s %s',
   'start' => 'start',
   'subscribed to newsletter lists #' => 'subscribed to newsletter lists #',
-  'the company name associated with the%sbilling address for the transaction' => 'the company name associated with the%sbilling address for the transaction',
-  'this affiliate will get commission for payment in case of coupon from this batch is used during payment. This affiliate will be assigned to user as default affiliate in case of user has not default affiliate assigned yet.' => 'this affiliate will get commission for payment in case of coupon from this batch is used during payment. This affiliate will be assigned to user as default affiliate in case of user has not default affiliate assigned yet.',
   'this field is required' => 'this field is required',
-  'to order or renew subscription.' => 'to order or renew subscription.',
   'trackable' => 'trackable',
   'upgrade' => 'upgrade',
   'use 4111-1111-1111-1111 for successful transaction' => 'use 4111-1111-1111-1111 for successful transaction',
   'use this coupon' => 'use this coupon',
-  'user will not need to enter his current password to change it' => 'user will not need to enter his current password to change it',
   'username, e-mail or name contains string [%s]' => 'username, e-mail or name contains string [%s]',
   'value required' => 'value required',
-  'width&times;height' => 'width&times;height',
-  'will be shown above table with users' => 'will be shown above table with users',
-  'will be used to construct user-friendly url, in case of you leave it empty aMember will use id of this product to do it' => 'will be used to construct user-friendly url, in case of you leave it empty aMember will use id of this product to do it',
+  'width×height' => 'width×height',
   'year' => 'year',
   'years' => 'years',
-  'you can configure subusers profile form at' => 'you can configure subusers profile form at',
-  'you can get it from ' => 'you can get it from ',
   'you can get it from ArpReach Unsubscribe form' => 'you can get it from ArpReach Unsubscribe form',
   'you can upload your filese here' => 'you can upload your filese here',
   'you have %d reward points collected' => 'you have %d reward points collected',
-  'your first and last name' => 'your first and last name',
 );

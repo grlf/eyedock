@@ -3,7 +3,7 @@
  * @table paysystems
  * @id eway
  * @title eWay
- * @visible_link http://ewaypayments.com/
+ * @visible_link http://www.eway.com.au/
  * @recurring cc
  * @logo_url eway.png
  * @adult 1
@@ -12,7 +12,7 @@ class Am_Paysystem_Eway extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
 
     const GATEWAY_URL = 'https://www.eway.com.au/gateway_cvn/xmlpayment.asp';
     const GATEWAY_URL_TEST = "https://www.eway.com.au/gateway_cvn/xmltest/testpage.asp";

@@ -9,7 +9,7 @@ function renderNode($id, Am_Record $c, Am_View $view) {
         <a title="%s" href="javascript:;" class="add">%s</a>
         <a title="%s" href="javascript:;" class="del">%s</a>
         </div>
-        <span class="text">%s</span></div>',
+        <span class="text"><strong>%s</strong> <small>(%d)</small></span></div>',
             $id,
             ___('Edit'),
             $view->icon('edit'),
@@ -17,7 +17,8 @@ function renderNode($id, Am_Record $c, Am_View $view) {
             $view->icon('add'),
             ___('Delete'),
             $view->icon('delete'),
-            Am_Controller::escape($c->title)
+            Am_Controller::escape($c->title),
+            $c->pk()
     );
     $out .= '<ul>';
     foreach ($c->getChildNodes() as $child)

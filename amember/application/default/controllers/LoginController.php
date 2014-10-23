@@ -11,7 +11,7 @@
  *        Web: http://www.cgi-central.net
  *    Details: Member display page
  *    FileName $RCSfile$
- *    Release: 4.4.2 ($Revision$)
+ *    Release: 4.4.4 ($Revision$)
  *
  * Please direct bug reports,suggestions or feedback to the cgi-central forums.
  * http://www.cgi-central.net/forum/
@@ -190,18 +190,18 @@ class LoginController extends Am_Controller_Auth
             if ($this->remember_auto || $this->getInt('remember_login')) {
                 $this->setCookie('amember_ru',
                     $user->login,
-                    $this->getDi()->time + $this->getDi()->config->get($this->configBase . '.remember_period', 60) * 3600 * 24, '/', null, false, false, true);
+                    $this->getDi()->time + $this->getDi()->config->get($this->configBase . '.remember_period', 60) * 3600 * 24, '/', $this->getDi()->request->getHttpHost(), false, false, true);
                 $this->setCookie('amember_rp',
                     $user->getLoginCookie(),
-                    $this->getDi()->time + $this->getDi()->config->get($this->configBase . '.remember_period', 60) * 3600 * 24, '/', null, false, false, true);
+                    $this->getDi()->time + $this->getDi()->config->get($this->configBase . '.remember_period', 60) * 3600 * 24, '/', $this->getDi()->request->getHttpHost(), false, false, true);
             }
         return parent::onLogin();
     }
 
     public function logoutAction()
     {
-        $this->setCookie('amember_ru', null, $this->getDi()->time - 100 * 3600 * 24);
-        $this->setCookie('amember_rp', null, $this->getDi()->time - 100 * 3600 * 24);
+        $this->setCookie('amember_ru', null, $this->getDi()->time - 100 * 3600 * 24,'/', $this->getDi()->request->getHttpHost());
+        $this->setCookie('amember_rp', null, $this->getDi()->time - 100 * 3600 * 24,'/', $this->getDi()->request->getHttpHost());
         parent::logoutAction();
     }
 

@@ -29,7 +29,7 @@ class Am_Paysystem_Clickbank extends Am_Paysystem_Abstract
     
     public function __construct(Am_Di $di, array $config)
     {
-        $this->defaultTitle = ___("ClickBank");
+        $this->defaultTitle = "ClickBank";
         $this->defaultDescription = ___("pay using credit card or PayPal");
         parent::__construct($di, $config);
         $di->billingPlanTable->customFields()->add(
@@ -53,6 +53,22 @@ class Am_Paysystem_Clickbank extends Am_Paysystem_Abstract
             )
         );
     }
+
+    public function init()
+    {
+        parent::init();
+        $this->getDi()->blocks->add(new Am_Block('thanks/success', 'ClickBank Statement', 'clickbank-statement', $this, array($this, 'renederStatement')));
+    }
+
+    public function renederStatement(Am_View $v)
+    {
+        if (isset($v->invoice) && $v->invoice->paysys_id == $this->getId()) {
+            return <<<CUT
+<div class="am-clickbank-statement"><strong>Your credit card statement will show a charge from ClickBank or CLKBANK*COM</strong></div>
+CUT;
+        }
+    }
+
     public function isConfigured()
     {
         return strlen($this->getConfig('account'));
@@ -73,29 +89,21 @@ class Am_Paysystem_Clickbank extends Am_Paysystem_Abstract
     public function _initSetupForm(Am_Form_Setup $form)
     {
         $form->addText('account', array('size' => 20, 'maxlength' => 16))
-            ->setLabel("ClickBank account id\n".
+            ->setLabel("ClickBank Account Nickname\n".
                 "your ClickBank username")
             ->addRule('required');
         $form->addText('secret', array('size' => 20, 'maxlength' => 16))
-            ->setLabel("ClickBank secret phrase\n".
-                "defined at clickbank.com -> login -> My Site -> Advanced Tools -> edit -> Secret Key")
+            ->setLabel("Secret Key\n".
+                "defined at clickbank.com -> login -> SETTINGS -> My Site -> Advanced Tools (edit)")
             ->addRule('required');
         $form->addText('clerk_key', array('size' => 50))
             ->setLabel("ClickBank Clerk API Key\n".
-                "defined at clickbank.com -> login -> My Account -> Clerk API Keys -> edit")
+                "defined at clickbank.com -> login -> SETTINGS -> My Account -> Clerk API Keys (edit)")
             ->addRule('required');
         $form->addText('dev_key', array('size' => 50))
             ->setLabel("Developer API Key\n".
-                "defined at clickbank.com -> login -> My Account -> Developer API Keys -> edit")
-            ->addRule('required')
-            ->addRule('callback2', '-- wrong keys --', array($this, 'checkApiKeys'));
-    }
-    function checkApiKeys($vals)
-    {
-        $c = new Am_HttpRequest('https://sandbox.clickbank.com/rest/1.3/sandbox/product/list');
-        $c->setHeader('Accept', 'application/xml')
-          ->setHeader('Authorization', $vals['dev_key'] .':'. $vals['clerk_key']);
-        $res = $c->send();
+                "defined at clickbank.com -> login -> SETTINGS -> My Account -> Developer API Keys (edit)")
+            ->addRule('required');
     }
     
     public function _process(Invoice $invoice, Am_Request $request, Am_Paysystem_Result $result)
@@ -202,6 +210,7 @@ class Am_Paysystem_Clickbank extends Am_Paysystem_Abstract
     {
         return self::REPORTS_REBILL;
     }
+
     public function getReadme()
     {
         return <<<CUT
@@ -220,15 +229,11 @@ class Am_Paysystem_Clickbank extends Am_Paysystem_Abstract
     %root_url%/payment/c-b/thanks
     
  5. Configure Instant Notification URL in your ClickBank account
-    ( Account Settings -> My Site -> Advanced Tools -> Edit )
+    (SETTINGS -> My Site -> Advanced Tools (edit))
     to this URL: %root_url%/payment/c-b/ipn
     Set version to 2.1
     
  6. Run a test transaction to ensure everything is working correctly.
- 
-
-------------------------------------------------------------------------------
-
 CUT;
     }
 }

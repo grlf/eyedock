@@ -60,7 +60,7 @@ class Am_Report_AffStats extends Am_Report_Date
     function getLines()
     {
         return array(
-            new Am_Report_Line("commission", ___('Commission')),
+            new Am_Report_Line("commission", ___('Commission'), null, array('Am_Currency', 'render')),
         );
     }
     public function setAffId($aff_id)

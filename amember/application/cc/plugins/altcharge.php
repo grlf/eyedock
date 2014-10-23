@@ -256,7 +256,9 @@ class Am_Form_CreditCard_AltchargeCheck extends Am_Form_CreditCard
     public function init()
     {
 
-        $name = $this->addGroup()->setLabel(array(___('Your Name'), sprintf(___('your first and last name'))));
+        $name = $this->addGroup()
+            ->setLabel(___("Your Name\n" .
+                'your first and last name'));
         $name->addRule('required', ___('Please enter your name'));
         $name_f = $name->addText('cc_name_f', array('size' => 15));
         $name_f->addRule('required', ___('Please enter first name'))->addRule('regex', ___('Please enter first name'), '|^[a-zA-Z_\' -]+$|');
@@ -299,7 +301,7 @@ CUT
 
 
 
-        $fieldSet = $this->addFieldset(___('Address Info'))->setLabel(array(___('Address Info')));
+        $fieldSet = $this->addFieldset(___('Address Info'))->setLabel(___('Address Info'));
         $street = $fieldSet->addText('cc_street')->setLabel(___('Street Address'))
             ->addRule('required', ___('Please enter Street Address'));
         if (in_array(Am_Paysystem_CreditCard::CC_HOUSENUMBER, $options))
@@ -311,7 +313,9 @@ CUT
             ->addRule('required', ___('Please enter City'));
         if (in_array(Am_Paysystem_CreditCard::CC_PROVINCE_OUTSIDE_OF_US, $options))
         {
-            $province = $fieldSet->addText('cc_province', array('size' => 15))->setLabel(array(___('Billing International Province'), ___('for international provinces outside of US & Canada include the province name here')))
+            $province = $fieldSet->addText('cc_province', array('size' => 15))
+                ->setLabel(___("Billing International Province\n" .
+                    'for international provinces outside of US & Canada include the province name here'))
                 ->addRule('required', ___('Please choose state'));
         }
 
@@ -339,7 +343,7 @@ CUT
                 ->addRule('regex', ___('Please enter phone number'), '|^[\d() +-]+$|');
         }
 
-        $sig = $this->addFieldset(___('Signature'))->setLabel(array(___('Signature')));
+        $sig = $this->addFieldset(___('Signature'))->setLabel(___('Signature'));
         $sig->addElement('html', 'signature')->setHtml(<<<EOSIG
 <div class="sigPad"> <!-- overriding stylesheet for the signature pad -->
 <ul class="sigNav"><li class="clearButton"><a href="#clear">Clear</a></li></ul>

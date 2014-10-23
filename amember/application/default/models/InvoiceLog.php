@@ -49,23 +49,35 @@ class InvoiceLog extends Am_Record
         $h .= "</table>\n";
         return $h;
     }
+
+    function serializeArrayItem(XMLWriter $x, $item)
+    {
+        if (is_array($item)) {
+            $x->startElement('params');
+            foreach ($item as $k => $v) {
+                $x->startElement('p');
+                $x->writeAttribute('name', $k);
+                if (is_array($v)) $x->writeAttribute('type', 'array');
+                $this->serializeArrayItem($x, $v);
+                $x->endElement();
+            }
+            $x->endElement();
+        } else {
+            $x->text(is_scalar($item) ? $item : serialize($item));
+        }
+    }
+
     function serializeItem($vars)
     {
         $x = new XMLWriter();
         $x->openMemory();
         $x->setIndent(true);
         $x->startElement('invoice-log-item');
+
+
         if (is_array($vars)) {
             $x->writeAttribute('type', 'array');
-            $x->startElement('params');
-            foreach ($vars as $k => $v)
-            {
-                $x->startElement('param');
-                $x->writeAttribute('name', $k);
-                $x->text(serialize($v));
-                $x->endElement();
-            }
-            $x->endElement();
+            $this->serializeArrayItem($x, $vars);
         } elseif ($vars instanceof Am_Request) {
             $x->writeAttribute('type', 'incoming-request');
             $vars->toXml($x);
@@ -114,6 +126,9 @@ class InvoiceLog extends Am_Record
                 $x->endElement();
             }
             $x->endElement();
+        } elseif(is_object($vars) && method_exists($vars, 'toArray')) {
+            $x->writeAttribute('type', 'array');
+            $this->serializeArrayItem($x, $vars->toArray());
         } else {
             $x->writeAttribute('type', gettype($vars));
             $x->writeCdata((string)$vars);

@@ -8,7 +8,7 @@
  *        Web: http://www.cgi-central.net
  *    Details: Affiliate commission
  *    FileName $RCSfile$
- *    Release: 4.4.2 ($Revision$)
+ *    Release: 4.4.4 ($Revision$)
  *
  * Please direct bug reports,suggestions or feedback to the cgi-central forums.
  * http://www.cgi-central.net/forum/
@@ -142,7 +142,7 @@ abstract class Am_Grid_Editable_AffBannersAbstract extends Am_Grid_Editable
         $url->addRule('required');
 
         $form->addElement('textarea', 'desc', array('rows' => 10, 'class' => 'el-wide'))
-            ->setLabel(array(___('Description'), ''));
+            ->setLabel(___('Description'));
         $form->addElement('hidden', 'type')
             ->setValue($this->affBannerType);
 
@@ -260,7 +260,7 @@ CUT;
         $upload_id->addRule('required');
 
         $size = $form->addElement('group', 'size')
-                ->setLabel(array(___('Size'), ___('Width') . ' &times ' . ___('Height')));
+                ->setLabel(___("Size\nWidth × Height"));
         $size->setSeparator(' &times; ');
 
         $width = $size->addElement('text', 'width', array('size' => 4));
@@ -318,7 +318,7 @@ class Am_Grid_Editable_Custom extends Am_Grid_Editable_AffBannersAbstract
     protected function _initForm($form)
     {
         $form->addTextarea('html', array('rows' => 10, 'class' => 'el-wide'))
-            ->setLabel(array(___('HTML Code'), ___('%url% will be replaced with actual url of affilate link')))
+            ->setLabel(___("HTML Code\n%url% will be replaced with actual url of affilate link"))
             ->addRule('required');
     }
 
@@ -337,7 +337,7 @@ class Am_Grid_Editable_LightBoxes extends Am_Grid_Editable_AffBannersAbstract
     protected function _initForm($form)
     {
         $upload_id = $form->addElement(new Am_Form_Element_Upload('upload_id', array(), array('prefix' => 'banners')))
-                ->setLabel(array(___('Lightbox Thumbnail Image')))
+                ->setLabel(___('Lightbox Thumbnail Image'))
                 ->setId('lightboxes-upload_id')
                 ->setAllowedMimeTypes(array(
                     'image/png', 'image/jpeg', 'image/tiff', 'image/gif',
@@ -345,7 +345,7 @@ class Am_Grid_Editable_LightBoxes extends Am_Grid_Editable_AffBannersAbstract
         $upload_id->addRule('required');
 
         $upload_big_id = $form->addElement(new Am_Form_Element_Upload('upload_big_id', array(), array('prefix' => 'banners')))
-                ->setLabel(array(___('Lightbox Main Image')))
+                ->setLabel(___('Lightbox Main Image'))
                 ->setId('lightboxes-upload_big_id')
                 ->setAllowedMimeTypes(array(
                     'image/png', 'image/jpeg', 'image/tiff', 'image/gif',
@@ -621,9 +621,9 @@ class Aff_AdminGeneralLinkController extends Am_Controller
     {
         $form = new Am_Form_Admin('aff-general-link');
         $form->addElement('text', 'general_link_url', array('class' => 'el-wide'))
-            ->setLabel(array(___('General Affiliate Link Redirect URL'),
-                ___('It is url of landing page for default affiliate link (which does not related to any banner), ' .
-                    'home page will be used if you keep it empty')))
+            ->setLabel(___("General Affiliate Link Redirect URL\n" .
+                'It is url of landing page for default affiliate link (which does not related to any banner), ' .
+                'home page will be used if you keep it empty'))
             ->setValue($this->getDi()->config->get('aff.general_link_url', ''));
         $form->addSaveButton();
         return $form;

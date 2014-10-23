@@ -40,7 +40,13 @@ $this->enableReports();
             printf("<td>%s</td>\n",
                     $href ? sprintf("<a href='%s'>%s</a>", $this->escape($href), $r->getLabel()) : $r->getLabel());
             foreach ($lines as $i=>$line){
-                printf("<td style='text-align:right'>%s</td>\n", !$r->getValue($line->getKey()) ? '&ndash;' :
+                list($start, $stop) = $result->getQuantity()->getStartStop($r->getKey());
+                
+                $href = sprintf("<td style='text-align:right'><a href='javascript:affDetail(\"%s\", \"%s\", \"%s\")' class='local aff-detail'>%s</a></td>\n",
+                    $start, $stop, $r->getLabel(), '%s');                
+                $nohref = "<td style='text-align:right'>%s</td>\n";
+                
+                printf($line->getKey()=='clicks' && $r->getValue($line->getKey()) > 0 ? $href : $nohref, !$r->getValue($line->getKey()) ? '&ndash;' :
                         (($line->getKey() == 'commission') ?
                             ($r->getValue($line->getKey()) >= 0 ?
                                 Am_Currency::render($r->getValue($line->getKey())) :
@@ -76,6 +82,9 @@ if ($points > 0)
 else
     echo ___('No records found');
 ?>
+<div id="aff-detail">
+</div>
+
 <script type="text/javascript">
 jQuery(document).ready(function($) {
     $("a.detail-close").click(function(){
@@ -88,4 +97,16 @@ function showAffDetails(date)
     jQuery("tr#detail-"+date).toggle();
     jQuery("tr#detail-"+date+":visible .content").load(url.replace(/DATE/, date));
 }
+function affDetail(from, to, label)
+{
+    var url = "<?php j($this->pUrl(
+            'member', 'clicks-detail', 'aff',
+            'from', 'FROMDATE', 'to', 'TODATE'))?>";
+    jQuery("#aff-detail").load(url.replace(/FROMDATE/, encodeURIComponent(from)).replace(/TODATE/, encodeURIComponent(to)), function(){
+        jQuery("#aff-detail").amPopup({
+            title: '<?php __e('Affiliate Clicks for') ?>' + ' ' + label
+        });
+    });
+}
+
 </script>

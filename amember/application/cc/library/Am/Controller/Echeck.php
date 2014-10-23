@@ -20,7 +20,7 @@ class Am_Controller_Echeck extends Am_Controller
      */
     public function processEcheck()
     {
-        $echeck = $this->getDi()->echeckRecord;
+        $echeck = $this->getDi()->echeckRecordRecord;
         $this->form->toEcheckRecord($echeck);
         $echeck->user_id = $this->invoice->user_id;
 
@@ -104,7 +104,7 @@ class Am_Controller_Echeck extends Am_Controller
         if ($this->form->isSubmitted() && $this->form->validate()) 
         {
             $echeck = $this->getDi()->echeckRecord;
-            $this->form->toCcRecord($echeck);
+            $this->form->toEcheckRecord($echeck);
             $echeck->user_id = $this->getDi()->auth->getUserId();
             $result = new Am_Paysystem_Result();
             $this->plugin->storeEcheck($echeck, $result);

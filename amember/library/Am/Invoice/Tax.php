@@ -186,9 +186,12 @@ class Am_Invoice_Tax_Vat extends Am_Invoice_Tax
             ->setLabel(___('Do not add VAT if a valid EU VAT Id entered by foreign customer'));
 
         $form->addAdvCheckbox('add_vat_outside_eu')
-            ->setLabel(array(___('Add VAT even if customer is outside of EU'), ___('Locat VAT Rate will be used in order to calculate VAT')));
+            ->setLabel(___("Add VAT even if customer is outside of EU\n" .
+                'Locat VAT Rate will be used in order to calculate VAT'));
         
-        $fs = $form->addGroup()->setLabel(array(___('Tax Rates for Other Countries'), ___('in case of it is different with Local VAT Rate')));
+        $fs = $form->addGroup()
+            ->setLabel(___("Tax Rates for Other Countries\n" .
+                'in case of it is different with Local VAT Rate'));
 
         foreach ($this->countries as $k => $v) {
             $fs->addText('rate.' . $k, array('class'=>'vat-rate'));

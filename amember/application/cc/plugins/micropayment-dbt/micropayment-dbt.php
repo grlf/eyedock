@@ -12,7 +12,7 @@ class Am_Paysystem_MicropaymentDbt extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
 
     const MCP__DEBITSERVICE_NVP_URL = 'http://webservices.micropayment.de/public/debit/v1.4/nvp/';
     const MCP__DEBITSERVICE_INTERFACE = 'IMcpDebitService_v1_4';
@@ -308,7 +308,9 @@ class Am_Form_MicropaymentDbt extends Am_Form
     public function init() {
         parent::init();
 
-        $name = $this->addGroup()->setLabel(array(___('Cardholder Name'), sprintf(___('cardholder first and last name, exactly as%son the card'), '<br/>')));
+        $name = $this->addGroup()
+            ->setLabel(___("Cardholder Name\n" .
+                'cardholder first and last name, exactly as on the card'));
         $name->addRule('required', ___('Please enter debit card holder name'));
         $name_f = $name->addText('cc_name_f', array('size'=>15));
         $name_f->addRule('required', ___('Please enter debit card holder first name'))->addRule('regex', ___('Please enter debit card holder first name'), '|^[a-zA-Z_\' -]+$|');
@@ -317,7 +319,8 @@ class Am_Form_MicropaymentDbt extends Am_Form
 
         $options = $this->plugin->getFormOptions();
 
-        $company = $this->addText('cc_company')->setLabel(array(___('Bank Code'), '<br/>'));
+        $company = $this->addText('cc_company')
+            ->setLabel(___('Bank Code'));
         
 
         if ($this->formType == self::ADMIN_UPDATE)
@@ -343,7 +346,9 @@ CUT
         }
 
         
-        $fieldSet = $this->addFieldset(___('Address Info'))->setLabel(array(___('Address Info'), ___('(must match your debit card statement delivery address)')));
+        $fieldSet = $this->addFieldset(___('Address Info'))
+            ->setLabel(___("Address Info\n" .
+                '(must match your debit card statement delivery address)'));
         $street = $fieldSet->addText('cc_street')->setLabel(___('Street Address'))
                            ->addRule('required', ___('Please enter Street Address'));
         $city = $fieldSet->addText('cc_city')->setLabel(___('City'))

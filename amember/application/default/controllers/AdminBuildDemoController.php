@@ -25,7 +25,7 @@ class Am_Form_Admin_BuildDemoForm extends Am_Form_Admin {
                 ->setLabel(___('Generate Users Count'))
                 ->setValue(100);
         $this->addText('email_domain')
-                ->setLabel(array(___('Email Domain'), ___('used to generate email address for users')))
+                ->setLabel(___("Email Domain\nused to generate email address for users"))
                 ->setValue('cgi-central.int');
 
         if ($this->isProductsExists()) {
@@ -37,8 +37,8 @@ class Am_Form_Admin_BuildDemoForm extends Am_Form_Admin {
                     ->setId('form-do-not-generate-products');
 
             $this->addMagicSelect('product_ids')
-                ->setLabel(array(___('Use the following product for demo users'),
-                    ___('keep it empty to use any products')))
+                ->setLabel(___("Use the following product for demo users\n" .
+                    'keep it empty to use any products'))
                 ->setId('form-product_ids')
                 ->loadOptions(Am_Di::getInstance()->productTable->getOptions());
 
@@ -69,11 +69,11 @@ CUT;
         }
 
         $this->addText('products_count', array('size'=>3))
-                ->setLabel(array(___('Generate Products Count')))
+                ->setLabel(___('Generate Products Count'))
                 ->setValue(3)
                 ->setId('form-products-count');
 
-        $gr = $this->addGroup()->setLabel(array(___('Invoices Per User')));
+        $gr = $this->addGroup()->setLabel(___('Invoices Per User'));
         $gr->addText('invoices_per_user', array('size'=>3))
                 ->setValue(2);
         $gr->addStatic()->setContent(' +/- ');

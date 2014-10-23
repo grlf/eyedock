@@ -11,7 +11,7 @@
 class Am_Paysystem_Quickpay extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.4.4';
 
     protected $defaultTitle = 'Quickpay';
     protected $defaultDescription = 'Internet Payment Gateway';
@@ -171,7 +171,7 @@ class Am_Paysystem_Quickpay extends Am_Paysystem_CreditCard
         $post_params->protocol = '6';
         $post_params->msgtype = 'recurring';
         $post_params->merchant = $this->getConfig('merchant');
-        $post_params->ordernumber = $invoice->public_id."-".sprintf("%03d", $invoice->getPaymentsCount())."-recurring";
+        $post_params->ordernumber = $invoice->public_id."-".sprintf("%03d", $invoice->getPaymentsCount())."-R";
         $post_params->amount = ($doFirst ? $invoice->first_total : $invoice->second_total) * 100;
         $post_params->currency = $invoice->currency;
         $post_params->autocapture = '1';

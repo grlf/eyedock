@@ -52,4 +52,16 @@ class Am_Form_Profile extends Am_Form implements Am_Form_Bricked
             new Am_Form_Brick_NewPassword,
         );
     }
+
+    public function validate()
+    {
+        $event = new Am_Event_ValidateSavedForm($this->getValue(), $this);
+        Am_Di::getInstance()->hook->call($event);
+        if ($errors = $event->getErrors())
+        {
+            $this->setError($errors[0]);
+            return false;
+        }
+        return parent::validate();
+    }
 }

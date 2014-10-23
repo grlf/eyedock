@@ -35,7 +35,7 @@
  *        Web: http://www.cgi-central.net
  *    Details: Signup Page
  *    FileName $RCSfile$
- *    Release: 4.4.2 ($Revision: 4867 $)
+ *    Release: 4.4.4 ($Revision: 4867 $)
  *
  * Please direct bug reports,suggestions or feedback to the cgi-central forums.
  * http://www.cgi-central.net/forum/
@@ -60,6 +60,7 @@ class Cart_IndexController extends Am_Controller
         $this->view->cart = $this->cart;
 
         $cc = $this->getCategoryCode();
+        $this->view->cc = $cc;
 
         $cats = explode(',', $this->getRequest()->getCookie('am-cart-cats', ''));
         if (!in_array($cc, $cats)) {
@@ -400,7 +401,7 @@ class Cart_IndexController extends Am_Controller
             if ($result->isFailure()) {
                 $this->view->error = ___("Checkout error: ") . current($result->getErrorMessages());
                 $this->cart->getInvoice()->paysys_id = null;
-                $this->_request->set('do-checkout', null);
+                $this->_request->set('do-checkout', 0);
                 return $this->viewBasketAction();
             }
         } while (false);

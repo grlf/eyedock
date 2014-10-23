@@ -70,7 +70,7 @@ class Am_Navigation_User extends Zend_Navigation
             'controller' => 'content',
             'action' => 'c',
             'label' => $node->title,
-            'order' => 500,
+            'order' => 500 + $node->sort_order,
             'params' => array(
                 'id' => $node->pk()
             )
@@ -78,7 +78,7 @@ class Am_Navigation_User extends Zend_Navigation
             'id' => 'content-category-' . $node->pk(),
             'uri' => 'javascript:;',
             'label' => $node->title,
-            'order' => 500,
+            'order' => 500 + $node->sort_order,
         );
 
         $subpages = array();

@@ -116,7 +116,6 @@ all records prior to this date will be removed from selected tables' => '清除�
   'Default Billing Plan' => '默认账单计划',
   'Default Signup' => '默认注册',
   'Default for Members' => '对会员默认',
-  'Delay Payout (days)' => '延迟取款（日）',
   'Delete Old Records' => '删除旧记录',
   'Delimiter' => '定界符',
   'Demo History' => '演示历史',
@@ -177,7 +176,6 @@ PLEASE DO NOT CHANGE if emailing from aMember works' => '电子邮件发送方�
 enter cost of 1 (one) %s' => '汇率
 输入1%s费用',
   'Field' => '栏',
-  'Field Description' => '栏描述',
   'Field Name' => '栏名称',
   'Field Title' => '栏标题',
   'Field Type' => '栏类型',
@@ -259,7 +257,6 @@ price of first period of subscription' => '第一价格
   'Mark Paid' => '标记已支付',
   'Membership' => '会员',
   'Method' => '方法',
-  'Minimum Payout' => '最少取款',
   'Miscellaneous' => '其他',
   'Multiple Order Title
 when user ordering multiple products,
@@ -268,7 +265,6 @@ instead of product name' => '多个订购标题
 当用户订购多个产品
 在支付系统显示下列
 而不是产品名称',
-  'Name must be entered and it may contain lowercase letters, underscores and digits' => '必须输入名字，它可能包含小写字母、下划线和数字',
   'New Autoresponder' => '新自动应答',
   'New Expiration E-Mail' => '新过期电子邮件',
   'New Modules Available' => '可用的新模块',
@@ -329,7 +325,6 @@ will occur at the Second Price' => '重复支付次数
   'Recipients' => '收件人',
   'Records Deleted Sucessfully' => '记录成功删除',
   'Recurring' => '周期性订购',
-  'Referer' => '推荐人',
   'Referrer' => '推荐人',
   'Refund Payment' => '退款',
   'Remember Login
@@ -360,7 +355,6 @@ root script URL, usually %s' => '根链接
   'SMTP Security' => 'SMTP 安全',
   'SMTP Username' => 'SMTP 用户名',
   'SQL (could not be used for multi-select and checkbox fields)' => 'SQL （不能用于多选和复选框栏）',
-  'SQL field type' => 'SQL栏类型',
   'Save This Search' => '保存此搜索',
   'Saved Credit Cards' => '保存的信用卡',
   'Saved Search' => '保存的搜索',
@@ -507,11 +501,9 @@ in order to edit admin record' => '您的密码
   'error_log table (used by admin only)' => '错误日志表格（仅管理员使用）',
   'expand details' => '扩展详情',
   'first paid at' => '首次支付于',
-  'for dispaying on signup and profile editing screen (for user)' => '注册和个人资料编辑页面显示（给用户）',
   'if code is present, products will be hidden in shopping cart and this code is required to see these products' => '如果有代码，产品将被隐藏到购物车，需要代码来查看这些产品',
   'if customer uses more than' => '如果客户使用多于',
   'if user enters wrong password' => '如果用户输入错误密码',
-  'if you are unsure, choose first type (string)' => '如果您不确定，选择第一类型（字符串）',
   'login, email or name' => '登录，电邮或名字',
   'must be a number in format 99 or 99.99' => '必须是格式为99或99.99的数字',
   'must be equal or greather than 0' => '必须等于或大于0',
@@ -523,10 +515,8 @@ in order to edit admin record' => '您的密码
   'put website offline, making it available for admins only' => '将网站离线，只对管理员可用',
   'sending' => '发送中',
   'sent successfully' => '成功发送',
-  'sql field will be added to table structure, common field will not, we recommend you to choose second option' => 'sql栏将被增加到表格结构，而普通栏不会，我们推荐您选第二个选项',
   'switch to show all records' => '切换到显示所有记录',
   'switch to show only active records' => '切换到仅显示有效记录',
   'times within' => '次数在',
   'version' => '版本',
-  'you can choose from list of currencies supported by paysystems' => '您可从支付系统支持的货币列表中选择',
 );

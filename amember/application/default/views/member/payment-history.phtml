@@ -41,8 +41,8 @@ foreach ($payments as $p) $hasRefund = $hasRefund || $p->isRefunded();
                     <?php endif; ?>
                 </td>
                 <td class="am-member-payment-history-items"><?php
-                    $products = $p->getInvoice()->getProducts();
-                    echo join(', ',  array_map(create_function('$p', 'return $p->title;'), $products));
+                    $items = $p->getInvoice()->getItems();
+                    echo join(', ',  array_map(create_function('$i', 'return $i->item_title;'), $items));
                     ?>
                 </td>
                 <td class="am-member-payment-history-paysys"><?php p($p->_paysysName) ?></td>

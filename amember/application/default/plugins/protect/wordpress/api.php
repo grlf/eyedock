@@ -30,7 +30,10 @@ class WordpressAPI{
         $this->PLUGINS_COOKIE_PATH  =   $this->SITECOOKIEPATH."wp-content/plugins";
         
     }
-	function wp_url_filter($url)
+    function getVersion(){
+        return $this->getPlugin()->getConfig('version', Am_Protect_Wordpress::DEFAULT_VERSION);
+    }
+    function wp_url_filter($url)
 	{
 		return preg_replace('|\/$|i', "", $url);
 	}
@@ -197,15 +200,50 @@ class WordpressAPI{
     
     
     function wp_generate_auth_cookie($user_id, $expiration, $scheme = 'auth', Am_Record $user=null){
-	$pass_frag = substr($user->user_pass, 8, 4);
+        $pass_frag = substr($user->user_pass, 8, 4);
+	
+        switch($this->getVersion()){
+            case 4 : 
+                $token = $this->createSessionToken($user_id, $expiration);
+                $key = $this->wp_hash($user->user_login . '|' . $pass_frag . '|' . $expiration .'|'.$token, $scheme);
+            	$hash = hash_hmac( 'sha256', $user->user_login . '|' . $expiration . '|' . $token, $key );
+            	$cookie = $user->user_login . '|' . $expiration . '|' . $token . '|' . $hash;
+                break;
+            default: 
 
-	$key = $this->wp_hash($user->user_login . $pass_frag . '|' . $expiration, $scheme);
-	$hash = hash_hmac('md5', $user->user_login . '|' . $expiration, $key);
-
-	$cookie = $user->user_login . '|' . $expiration . '|' . $hash;
+                $key = $this->wp_hash($user->user_login . $pass_frag . '|' . $expiration, $scheme);
+                $hash = hash_hmac('md5', $user->user_login . '|' . $expiration, $key);
+        
+                $cookie = $user->user_login . '|' . $expiration . '|' . $hash;
+                
+        }
 
 	return $cookie;
     }
+    
+    
+    function getSessions($user_id){
+        
+        $sessions = $this->get_user_meta($user_id, 'session_tokens');
+        
+        if(!is_array($sessions)) 
+            return array();
+        
+        return array_filter($sessions, function($value){ 
+            return $value >time();
+        });
+    }
+    
+    function createSessionToken($user_id,$expiration){
+        $sessions = $this->getSessions($user_id);
+        $token = $this->getPlugin()->getDi()->app->generateRandomString(43);
+        $verifier  = hash('sha256', $token);
+        $sessions[$verifier] = $expiration;
+        $this->update_user_meta($user_id, 'session_tokens', $sessions);
+        return $token;
+    }
+    
+    
     
     function wp_clear_auth_cookie(){
         $cookie_domain = @$_SERVER['HTTP_HOST'];
@@ -233,10 +271,17 @@ class WordpressAPI{
         if(!$user) return false; 
 	$pass_frag = substr($user['user_pass'], 8, 4);
 
-
     $scheme = $cookie['scheme'];
-	$key = $this->wp_hash($cookie['username'] . $pass_frag . '|' . $cookie['expiration'], $scheme);
-	$hash = hash_hmac('md5', $cookie['username'] . '|' . $cookie['expiration'], $key);
+    switch($this->getVersion()){
+        case 4: 
+        	$key = $this->wp_hash($cookie['username'] . '|'.$pass_frag . '|' . $cookie['expiration'] .'|'.$cookie['token'], $scheme);
+            $hash = hash_hmac('sha256', $cookie['username'] . '|' . $cookie['expiration'].'|'.$cookie['token'], $key);
+            break; 
+        default: 
+        	$key = $this->wp_hash($cookie['username'] . $pass_frag . '|' . $cookie['expiration'], $scheme);
+            $hash = hash_hmac('md5', $cookie['username'] . '|' . $cookie['expiration'], $key);
+            break;
+    }
 
 	if ( $cookie['hmac'] != $hash ) {
 		return false;
@@ -271,12 +316,29 @@ class WordpressAPI{
 		$cookie = $_COOKIE[$cookie_name];
 	}
         $cookie_elements = explode('|', $cookie);
-	if ( count($cookie_elements) != 3 )
-		return false;
+	
+        switch($this->getVersion()){
+            case 4 : 
+            	if ( count( $cookie_elements ) !== 4 ) {
+                    return false;
+                }
 
-	list($username, $expiration, $hmac) = $cookie_elements;
+                list( $username, $expiration, $token, $hmac ) = $cookie_elements;
 
-	return compact('username', 'expiration', 'hmac', 'scheme');
+                return compact( 'username', 'expiration', 'token', 'hmac', 'scheme' );
+                
+                break;
+            default: 
+                if ( count($cookie_elements) != 3 )
+            		return false;
+
+            	list($username, $expiration, $hmac) = $cookie_elements;
+
+            	return compact('username', 'expiration', 'hmac', 'scheme');
+                
+                break;
+        }
+        
     }
     
     function is_ssl() {

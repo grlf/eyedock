@@ -9,7 +9,7 @@
  *        Web: http://www.cgi-central.net
  *    Details: Member display page
  *    FileName $RCSfile$
- *    Release: 4.4.2 ($Revision$)
+ *    Release: 4.4.4 ($Revision$)
  *
  * Please direct bug reports,suggestions or feedback to the cgi-central forums.
  * http://www.cgi-central.net/forum/
@@ -129,6 +129,7 @@ class MemberController extends Am_Controller
             $this->getDi()->blocks->remove('member-main-resources');
 
         $this->view->assign('products_expire', $this->getDi()->user->getActiveProductsExpiration());
+        $this->view->assign('products_rebill', $this->getDi()->user->getActiveProductsRebill());
         $this->view->assign('products_begin', $this->getDi()->user->getFutureProductsBeginning());
         
         $this->view->display('member/main.phtml');

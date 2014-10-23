@@ -27,7 +27,7 @@
                 </td>
                 <td class="am-basket-title">
                     <strong><?php p($item->item_title) ?></strong>
-                    <div><?php p($item->tryLoadProduct()->description) ?></div>
+                    <div><?php echo $item->tryLoadProduct()->description ?></div>
                 </td>
                 <td class="am-basket-price"><?php p($cart->getCurrency($item->first_price)) ?></td>
                 <td class="am-basket-qty">
