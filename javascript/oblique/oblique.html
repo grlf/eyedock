@@ -1,0 +1,145 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Oblique!!</title>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+<script type="text/javascript" >jQuery.noConflict();</script>
+
+<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/redmond/jquery-ui.css" type="text/css" media="all"/>
+<link rel="stylesheet" href="oblique.css" type="text/css" media="all"/>
+
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.js"></script>
+<script type="text/javascript" src="http://www.eyedock.com/javascript/jquery/jqueryrotate.js"></script>
+<script type="text/javascript" src="http://www.eyedock.com/javascript/rxClasses/rxField.js"></script>
+<script type="text/javascript" src="http://www.eyedock.com/javascript/rxClasses/RxObject.js"></script>
+<script type="text/javascript" src="oblique.js"></script>
+
+<script defer="defer"></script>
+
+</head>
+<body>
+under construction . . .
+<div id="crosscyldiv">
+    <div id="lenscolumns">
+        <div class='lenscolumn'>
+        	Contact lens power
+        	
+            <div id="cl_lens_container" class='lens_container'>
+              <!--  <div id="cl_lens" class='lens'>&nbsp;
+                    <div id='cl_markings' class='markings'>
+                        <img id='cl_cross' class='cross' src='http://www.eyedock.com/images/crosses/cross.png'
+                        />
+                        <div class='label meridian3_label'></div>
+                        <div class='label meridian12_label'></div>
+                        <div class='label meridian9_label'></div>
+                        <div class='label sph_label'></div>
+                    </div>
+                </div>-->
+                <img id="cl_lens" class="lens" src="http://www.eyedock.com/images/crosses/toric_lens_130.png" />
+                <img id='cl_cross' class='cross' src='http://www.eyedock.com/images/crosses/cross.png' />
+                <div class='label meridianH_label'></div>
+                <div class='label meridianV_label'></div>
+                <div class='label sph_label'></div>
+            </div>
+            
+            <div class="rotate_row">
+            <button id="rotate_left5_btn">&lt;&lt;</button>
+            <button id="rotate_left_btn">&lt;</button>
+            <div id="dir_label">&nbsp;0&deg;</div>
+            <button id="rotate_right_btn">&gt;</button>
+            <button id="rotate_right5_btn">&gt;&gt;</button>
+            </div>
+            <div class="rxRow">
+                <input type="text" id="clRx" class="rxField" />
+                <div class="rxFieldError"></div>
+            </div>
+          
+           
+        </div>
+        <div class='lenscolumn'>
+        	Overrefraction
+            <div id="or_lens_container" class='lens_container'>
+                <!--<div id="or_lens" class='lens'>&nbsp;
+                	<div id='axis_arrow'>  <img src='http://www.eyedock.com/images/crosses/eye-axis-arrows.png'
+                        /></div>
+                    <div id='or_markings' class='markings'>
+                        <img id='or_cross' class='cross' src='http://www.eyedock.com/images/crosses/cross.png'
+                        />
+                        <div class='label meridian3_label'></div>
+                        <div class='label meridian12_label'></div>
+                        <div class='label meridian9_label'></div>
+                        <div class='label sph_label'></div>
+                    </div>
+                </div>-->
+                 
+                <img id="or_lens" class="lens" src="http://www.eyedock.com/images/crosses/eye-axis-scale.png" />
+                <img id='axis_arrow' src='http://www.eyedock.com/images/crosses/eye-axis-arrows.png'/>
+                <img id='or_cross' class='cross' src='http://www.eyedock.com/images/crosses/cross.png'/>
+                <div class='label meridianH_label'></div>
+                <div class='label meridianV_label'></div>
+                        <div class='label sph_label'></div>
+                
+            </div>
+            <div class="rotate_row" id="or_vertexed"></div>
+            <div class="rxRow">
+                <input type="text" id="orRx" class="rxField" />
+             
+                <div class="rxFieldError"></div>
+            </div>
+            <br/>
+        </div>
+        <div class='lenscolumn'>
+        	Suggested trial lens 		
+            <div id="result_lens_container"class='lens_container'>
+                <!--<div id="result_lens" class='lens'>&nbsp;	
+                	
+                    <div id='result_markings' class='markings'>
+                        <img id='result_cross' class='cross' src='http://www.eyedock.com/images/crosses/cross.png'
+                        />
+                        <div class='label meridian3_label'></div>
+                        <div class='label meridian12_label'></div>
+                                <div class='label meridian9_label'></div>
+                        <div class='label sph_label'></div>
+                    </div>
+                </div>-->
+                  <img id="result_lens" class="lens" src="http://www.eyedock.com/images/crosses/toric_lens_130.png" />
+                <img id='result_cross' class='cross' src='http://www.eyedock.com/images/crosses/cross.png' />
+                <div class='label meridianH_label'></div>
+                <div class='label meridianV_label'></div>
+                        <div class='label sph_label'></div>
+            </div>
+             <div class="rotate_row"></div>
+            <div class="rxRow">
+                <input type="text" readonly="readonly" id="xcl_result"  />
+                
+            </div>
+           
+        </div>
+    </div>
+    <div id="oblique-footer">
+    	<div id='info_button'><img src='http://www.eyedock.com/images/buttons/question-button.png'/></div>
+		<button id='oblique-clear_btn'>clear form</button>
+	</div>
+
+	<div id="info_div">
+    <p><em>Purpose: </em> This tool uses your evaluation of a soft toric contact lens and suggests a new trial lens. </p>
+
+<p><em>Instructions:</em></p>
+
+<ol>
+<li>Enter the power of your contact lens in the first box.</li>
+<li>Enter the rotation of the contact lens as you see it on the eye. You can do this with the buttons below the image or by clicking the contact lens itself.</li>
+<li>Enter your overrefraction in the second box.</li>
+</ol>
+
+<p><em>Results:</em> The powers of the suggested lens will appear in the last box.</p>
+
+<p><em>Interpretation: </em> It is assumed that your new trial lens will be of the same brand as the original, and therefore will rotate exactly the same (therefore it's critical that you make an accurate assessment of lens rotation).</p>
+
+<p><em>Explanation:</em> In essence, the calculator first adds the amount of rotation to the axis of the contact lens. This is the only way to know how the power meridians are going to line up with the meridians of the over refraction. Once we know how these meridians relate to each other we can then apply the traditional oblique crossed cylinder equations. After this calculation, we know what power and what meridians make the patient reach their best corrected vision. However, since the trial lens should rotate just like the original, the calculator then subtracts the angle of lens rotation. The final result is a recommendation for a lens that is expected to rotate like the original lens.</p>
+
+    </div>
+</div>
+</body>
+</html>

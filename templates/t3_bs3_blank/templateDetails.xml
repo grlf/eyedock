@@ -98,6 +98,8 @@
 		<position>footer-9</position>
 		<position>footer-10</position>
 		<position>debug</position>
+		<position>com-top</position>
+		<position>com-bottom</position>
 	</positions>
 
 	<config>

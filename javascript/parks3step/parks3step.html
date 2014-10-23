@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>parks3step</title>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script src="parks3step.js"></script>
+
+	<script>
+		jQuery.noConflict();
+	</script>
+	
+	<link rel="stylesheet" type="text/css" href="parks3step.css">
+</head>
+<body>
+
+<div id="parks_container">
+	<img id="right_eye" src="../../images/parks3step/parks_eye_od.png" class="parks_eye parks_od_eye">
+	<img id="right_eye" src="../../images/parks3step/parks_eye_os.png" class="parks_eye parks_os_eye">
+	
+	<div class="eomlabel rm so" id="rso">
+		Superior Oblique (RSO)
+		<img class="line" src='../../images/parks3step/line.png' id='rso_line' />
+		<img class="circle" src='../../images/parks3step/circle.png' id='rso_circle' />
+
+	</div>
+	
+	<div class="eomlabel rm sr id="rsr">
+		Superior Rectus (RSR)
+		<img class="line" src='../../images/parks3step/line.png' id='rsr_line' />
+		<img class="circle" src='../../images/parks3step/circle.png' id='rsr_circle' />
+	
+	</div>
+	
+	<div class="eomlabel rm ir id="rir">
+		Inferior Rectus (RIR)
+		<img class="line" src='../../images/parks3step/line.png' id='rir_line' />
+		<img class="circle" src='../../images/parks3step/circle.png' id='rir_circle' />
+	</div>
+	
+	<div class="eomlabel rm io id="rio">
+		Inferior Oblique (RIO)
+		<img class="line" src='../../images/parks3step/line.png' id='rio_line' />
+		<img class="circle" src='../../images/parks3step/circle.png' id='rio_circle' />
+	</div>
+	
+	<div class="eomlabel lm so id="lso">
+		Superior Oblique (LSO)
+		<img class="line" src='../../images/parks3step/line.png' id='lso_line' />
+		<img class="circle" src='../../images/parks3step/circle.png' id='lso_circle' />
+	</div>
+	
+	<div class="eomlabel lm sr id="lsr">
+		Superior Rectus (LSR)
+			<img class="line" src='../../images/parks3step/line.png' id='lsr_line' />
+		<img class="circle" src='../../images/parks3step/circle.png' id='lsr_circle' />
+	
+	
+	</div>
+	<div class="eomlabel lm ir id="lir">
+		Inferior Rectus (LIR)
+		<img class="line" src='../../images/parks3step/line.png' id='lir_line' />
+		<img class="circle" src='../../images/parks3step/circle.png' id='lir_circle' />
+	</div>
+	
+	<div class="eomlabel lm io id="lio">
+		Inferior Oblique (LIO)
+		<img class="line" src='../../images/parks3step/line.png' id='lio_line' />
+		<img class="circle" src='../../images/parks3step/circle.png' id='lio_circle' />
+	</div>
+	
+	<div class="question q1">Which eye is hyper deviated in primary gaze?</div>
+	<div class="question q2">Is the vertical deviation greater in right gaze or left gaze?</div>
+	<div class="question q3">Is the vertical deviation greater with right head tilt or left head tilt?</div>
+	
+	<a class="parks_btn parks_off rb br1" id="primary_r" onclick='buttonClicked(event)'>Right Hyper</a>
+	<a class="parks_btn parks_off  lb br1" id="primary_l"  onclick='buttonClicked(event)'>Left Hyper</a>
+	<a class="parks_btn parks_off  rb br2" id="gaze_r"  onclick='buttonClicked(event)'>Right Gaze</a>
+	<a class="parks_btn parks_off  lb br2" id="gaze_l"  onclick='buttonClicked(event)'>Left Gaze</a>
+	<a class="parks_btn parks_off  rb br3" id="tilt_r"  onclick='buttonClicked(event)'>Right Tilt</a>
+	<a class="parks_btn parks_off  lb br3" id="tilt_l"  onclick='buttonClicked(event)'>Left Tilt</a>
+	
+	
+</div>
+<div id="parks_discussion">
+	<h3><u><b>Discussion</b></u></h3>
+	<div id="d_primary">
+	<b>Which eye is hyper deviated in primary gaze?</b>
+		<div id="d_primary_r">  
+			<img  src="../../images/parks3step/eom-parks-step-1-right.png" >
+			<p>If the right eye is the hyperdeviated eye we know that muscle that is failing is either responsible for pulling the right eye down or for pulling the left eye up. Our suspects in the right eye are the RSO or RIR. In the left eye it’s the LSR or LIO.<br/>We can eliminate all others as possibilities.</p>
+		</div>
+		<div id="d_primary_l">
+			<img  src="../../images/parks3step/eom-parks-step-1-left.png" >
+		<p>	If the left eye is the hyperdeviated eye we know that muscle that is failing is either responsible for pulling the left eye down or for pulling the right eye up. Our suspects in the right eye are the LSO or LIR. In the left eye it’s the RSR or RIO. <br/>We can eliminate all others as possibilities.</p>
+		</div>
+	</div>
+	<div id="d_gaze">
+		<b>Is the vertical deviation greater in right gaze or left gaze?</b>
+		<div id="d_gaze_r">
+			<img src="../../images/parks3step/eom-parks-step-2-right-gaze.png" >
+			<p>When we look in right gaze we primarily use the right rectus muscles and the left oblique muscles. Therefore our suspects are RSR, RIR, LSO, LIO.<br/>The other four can be eliminated.</p>
+		</div>
+		<div id="d_gaze_l">
+			<img src="../../images/parks3step/eom-parks-step-2-left-gaze.png" >
+			<p>When we look in left gaze we primarily use the left rectus muscles and the right oblique muscles. Therefore our suspects are LSR, LIR, RSO, RIO.<br/>The other four can be eliminated.</p>
+		</div>
+	</div>
+	<div id="d_tilt">
+		<b>Is the vertical deviation greater with right head tilt or left head tilt?</b>
+</p>		<div id="d_tilt_r">
+			<img src="../../images/parks3step/eom-parks-step-3-right-tilt.png" >		
+			<p>When the head is tilted to the right, the right eye needs to turn inward (incyclotorsion) and the left eye needs to turn outward (excyclotorsion). The muscles responsible for these movements are the RSR, RSO and the  LIO, LIR. One of these could be malfunctioning.<br/>The other four can be eliminated.</p>
+		</div>
+		<div id="d_tilt_l">
+			<img src="../../images/parks3step/eom-parks-step-3-left-tilt.png" >		
+
+			<p>When the head is tilted to the left, the right eye needs to turn outward (excyclotorsion) and the left eye needs to turn inward (incyclotorsion). The muscles responsible for these movements are the RIO, RIR and the LSO, LSR. One of these could be malfunctioning.<br/>The other four can be eliminated.</p>
+		</div>
+		
+
+	</div>
+	<div id="d_answer">&nbsp;</div>
+</div>
+
+
+</body>
+</html>

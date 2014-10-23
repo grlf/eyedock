@@ -1,0 +1,5 @@
+tmp/*
+amember/data/cache/*
+logs/*
+images/*
+cache/*

@@ -1,0 +1,174 @@
+#parks_container {
+	position: relative;
+	width: 600px;
+	height: 500px;
+	margin: 20px;
+}
+
+.parks_eye {
+	width: 170px;
+	height: 186px;
+	position: absolute;
+}
+
+.parks_od_eye {
+	top: 50px;
+	left: 119px;
+}
+
+.parks_os_eye {
+	top: 50px;
+	left: 295px;
+}
+
+#parks_eye_label_od {
+ 	left: 180px;
+	width: 20px;
+	font-weight: bold;
+	position: absolute;
+	font-size: 14pt;
+}
+
+#parks_eye_label_os {
+ 	left: 360px;
+	width: 20px;
+	font-weight: bold;
+	position: absolute;
+	font-size: 14pt;
+}
+
+.eomlabel {
+	width: 100px;
+	height: 15px;
+	position: absolute;
+	padding: 8px;
+	color: rgb(0, 0, 0);
+	display: inline;
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 13px;
+	word-wrap: break-word;
+}
+
+.parks_btn {
+	width: 90px;
+	height: 15px;
+	position: absolute;
+	padding: 6px;
+	word-wrap: break-word;
+	display: inline;
+	font-size: 13px;
+	text-align: center;
+	color: rgb(0, 0, 0);
+	cursor: pointer;
+	overflow: visible;
+	-webkit-box-shadow: rgb(0, 0, 0) 1px 1px 2px;
+	box-shadow: rgb(0, 0, 0) 2px 2px 2px;
+}
+
+.parks_btn:hover {
+	background-color: rgb(202, 215, 240);
+}
+
+.parks_on {
+	background-color: white;
+	border: 1px solid black;
+	font-weight: bold;
+	border: 2px solid black;
+}
+
+.parks_off {
+	background-color: rgb(240, 240, 240);;
+	border: 1px solid rgb(160, 160, 160);
+	font-weight: normal;
+	border: 1px soid black;
+}
+
+
+.line {
+	position: absolute; 
+	top: 12px; 
+	left: -5px;
+}
+
+.circle {
+	position: absolute; 
+	top: -8px; 
+	left: -10px;
+}
+
+/*rb= right (eye) buttons, etc */
+.rb {
+	left: 330px;
+}
+
+.lb {
+	left: 460px;
+}
+
+/*br1 = button row 1, etc */
+.br1 {
+	top: 280px;
+}
+
+.br2 {
+	top: 346px;
+}
+
+.br3 {
+	top: 414px;
+}
+
+.question {
+	left: 9px;
+	width: 291px;
+	height: 18px;
+	position: absolute;
+	padding: 8px;
+	overflow: visible;
+	word-wrap: break-word;
+	display: inline;
+	font-family: Helvetica, Arial, sans-serif;
+	z-index: 33;
+	font-size: 16px;
+	color: rgb(0, 0, 0);
+}
+
+
+
+.q1 {
+	top: 276px;
+}
+
+.q2 {
+	top: 342px;
+}
+.q3 {
+	top: 408px;
+}
+
+/* right muscles */
+.rm {
+	left: 14px;
+}
+
+/* left muscles */
+
+.lm {
+	left: 466px;
+}
+
+.so {
+	top: 50px;
+}
+
+.sr {
+	top: 95px;
+}
+
+.ir {
+	top: 166px;
+}
+
+.io {
+	top: 200px;
+}

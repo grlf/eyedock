@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>plaquenil</title>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.js"></script>
+	<script src="plaquenil.js"></script>
+	
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/redmond/jquery-ui.css" type="text/css" media="all" />
+	<link rel="stylesheet" href="plaquenil.css" type="text/css" media="all" />
+</head>
+<body>
+ 
+ 
+ <div id="plaquenilDaily">
+
+	<div align="center"><b><u>"Safe" Daily Dosage Calcs</u></b></div>
+	<div class="row">
+	  <label for="weight">Weight</label>
+	  <input type="text" id="weight_input" class="shortinput" > lbs
+	  <div id="slider-weight" class= "dose_slider"></div>
+
+	  <div id="extraweight"></div>
+	</div>
+
+
+	<div class="row">
+	  <label for="height">Height</label>
+	  <input type="text" id="height_input" class="shortinput" > inches
+	  	<div id="slider-height" class="dose_slider"></div>
+		<div id="extraheight"></div>
+	</div>
+	
+	 	<div id="sex" class="row">
+			<input type="radio" id="female" name="sex" checked="checked"><label for="female">female</label>
+			<input type="radio" id="male" name="sex" ><label for="male">male</label>
+	  </div>
+	
+	<div class="row">
+		<b>BMI:</b> <span id="bmi"> </span>
+	</div>
+	
+	<fieldset class="row">
+	<legend>Result</legend>
+		6.5 mg / kg x <span id="weightResult"> 68.0 </span> kg = <span id="dailyResult"> </span> mg/day.
+		<p>This dosage (and less) would be generally regarded as a safe daily dose.</p>
+		<div id="daily_discussion"></div>
+	</fieldset>
+
+</div>
+
+ <div id="plaquenilCum">
+ 	<div align="center"><b><u>Cumulative Dosage Calcs</u></b></div>
+ 	<div class="row cumRow">
+		<input class="dose" type="text" value="200" size="3"> mg
+		taken
+		<select class="freq">
+			<option value="1">qd</option>
+			<option value="2" selected="selected">bid</option>
+			<option value=".5">qod</option>
+		</select>
+	  
+		for 
+		<select class="time">
+			<option value="1" >1</option>
+			<option value="2" >2</option>
+			<option value="3" >3</option>
+			<option value="4" >4</option>
+			<option value="5" >5</option>
+			<option value="6" >6</option>
+			<option value="7" >7</option>
+			<option value="8" >8</option>
+			<option value="9" >9</option>
+			<option value="10" >10</option>
+			<option value="11" >11</option>
+			<option value="12" >12</option>
+		</select>
+		<select class="months_years">
+			<option value="12" selected="selected">years</option>
+			<option value ="1">months</option>
+		</select>
+		<div class="rowTotal">&nbsp;</div>
+		<div class="removeFilterRow_btn" onclick="removeFilterRow(event);">&nbsp;</div>
+		<div class="clonefilter_btn" onclick="cloneClicked(event);">&nbsp;</div>
+ 	</div>
+ 	<fieldset class="row">
+		<legend>Cumulative Dosage</legend>
+		 <div id="cumAnswer"> total</div>
+		<p>The majority of cases of retinotoxicity have occurred in patients that have had a culmulative dose exceeding 1000g of hydroxychloriquine (Plaquenil).</p>
+
+	<p>This level is reached in about 7 years with the most common daily dose of Plaquenil, 400 mg/day (200 bid).</p>
+
+	</fieldset>
+	
+ </div>
+
+
+<div id="plaquenil_body">
+
+<h3>Plaquenil Risk Calculators</h3>
+
+<p><i>Disclaimer: This tool is designed to help eye care professionals better understand the risk the of retinotoxicity from hydroxychloroquine. Any concerns regarding dosage should be discussed with the prescribing physician.</i><p>
+
+<img alt="plaquenil bottle" src="../../javascript/plaquenil/Plaquenil.jpg">
+
+
+<p><u>Discussion</u> <br/>A risk factor for Plaquenil (hydroxychloroquine) retinotoxicity is a daily dose that exceeds 6.5 mg/kg (or 3.0 mg/kg for chloroquine). The tool on the left simply calculates this threshold based on body weight.</p>
+
+<p>As hydroxychloroquine is not absorbed by adipose tissue it is possible to overestimate the safe daily dose in overweight individuals. For this reason I have provided the option of using the ideal body weight for the safe dosage calculation. This is determined using <a href="http://www.medcalc.com/body.html" target="_blank" title="ideal body mass equations">equations</a>&nbsp;that take into account gender and height.</p>
+
+<p>It's important to understand that the daily dose is only one risk factor for Plaquenil retinotoxicity. Other risk factors include:</p>
+			<ul class="plaquenil-list">
+				<li>
+					Obesity (as described above)</li>
+				<li>
+					Duration of use (cumulative dose) </li>
+				<li>
+					Renal or hepatic functional impairment. Compromised kidney and/or liver function can lead to increased accumulation of hydroxychloroquine in the tissues.</li>
+				<li>
+					Age over 60 years.</li>
+				<li>
+					Preexisting retinal disease</li>
+			</ul>
+
+<p>While a high daily dose is a risk factor for retinotoxicity, <b>cumulative dose</b> appears to be a <b>greater&nbsp;</b>risk factor. The risk of a toxicity sharply increases after 5 years, with majority of cases of retinotoxicity occurring in patients that have had a culmulative dose exceeding 1000g of hydroxychloriquine (Plaquenil).</p>
+
+<p>This level is reached in about 7 years with the most common daily dose of Plaquenil, 400 mg/day (200 bid).
+</p>
+
+<p>The calculator below can be used to calculate a patient's cumulative dose based on their dosage and duration of use. For dosages that have changed over time additional rows can be added to the calculation by pressing the "+" button.</p>
+
+<p><u>Postscript</u><br/>
+While creating this tool I had a number of observations about the calculations. I summarized these thoughts in a <a href="http://www.eyedock.com/index.php?option=com_content&view=article&id=150">blog post</a>. I feel this post illustrates the usefulness of these calculations but also their limitations. I strongly suggest you read it.</p>
+
+ 
+ </div> <!-- end plaquenil body -->
+ 
+
+
+ 
+</body>
+</html>

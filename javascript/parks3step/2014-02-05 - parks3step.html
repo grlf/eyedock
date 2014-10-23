@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>parks3step</title>
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script src="parks3step.js"></script>
+
+	<script>
+		jQuery.noConflict();
+	</script>
+	
+	<link rel="stylesheet" type="text/css" href="parks3step.css">
+</head>
+<body>
+
+<div id="parks_container">
+	<img id="right_eye" src="parks_OD.png" class="parks_eye parks_od_eye">
+	<img id="right_eye" src="parks_OS.png" class="parks_eye parks_os_eye">
+	
+	<div class="eomlabel rm so" id="rso">
+		Superior Oblique
+		<img class="line" src='line.png' id='rso_line' />
+		<img class="circle" src='circle.png' id='rso_circle' />
+
+	</div>
+	
+	<div class="eomlabel rm sr id="rsr">
+		Superior Rectus
+		<img class="line" src='line.png' id='rsr_line' />
+		<img class="circle" src='circle.png' id='rsr_circle' />
+	
+	</div>
+	
+	<div class="eomlabel rm ir id="rir">
+		Inferior Rectus
+		<img class="line" src='line.png' id='rir_line' />
+		<img class="circle" src='circle.png' id='rir_circle' />
+	</div>
+	
+	<div class="eomlabel rm io id="rio">
+		Inferior Oblique
+		<img class="line" src='line.png' id='rio_line' />
+		<img class="circle" src='circle.png' id='rio_circle' />
+	</div>
+	
+	<div class="eomlabel lm so id="lso">
+		Superior Oblique
+		<img class="line" src='line.png' id='lso_line' />
+		<img class="circle" src='circle.png' id='lso_circle' />
+	</div>
+	
+	<div class="eomlabel lm sr id="lsr">
+		Superior Rectus
+			<img class="line" src='line.png' id='lsr_line' />
+		<img class="circle" src='circle.png' id='lsr_circle' />
+	
+	
+	</div>
+	<div class="eomlabel lm ir id="lir">
+		Inferior Rectus
+		<img class="line" src='line.png' id='lir_line' />
+		<img class="circle" src='circle.png' id='lir_circle' />
+	</div>
+	
+	<div class="eomlabel lm io id="lio">
+		Inferior Oblique
+		<img class="line" src='line.png' id='lio_line' />
+		<img class="circle" src='circle.png' id='lio_circle' />
+	</div>
+	
+	<div class="question q1">Which eye is hyper deviated in primary gaze?</div>
+	<div class="question q2">Is the vertical deviation greater in right gaze or left gaze?</div>
+	<div class="question q3">Is the vertical deviation greater with right head tilt or left head tilt?</div>
+	
+	<a class="parks_btn parks_off rb br1" id="primary_r" onclick='buttonClicked(event)'>Right Hyper</a>
+	<a class="parks_btn parks_off  lb br1" id="primary_l"  onclick='buttonClicked(event)'>Left Hyper</a>
+	<a class="parks_btn parks_off  rb br2" id="gaze_r"  onclick='buttonClicked(event)'>Right Gaze</a>
+	<a class="parks_btn parks_off  lb br2" id="gaze_l"  onclick='buttonClicked(event)'>Left Gaze</a>
+	<a class="parks_btn parks_off  rb br3" id="tilt_r"  onclick='buttonClicked(event)'>Right Tilt</a>
+	<a class="parks_btn parks_off  lb br3" id="tilt_l"  onclick='buttonClicked(event)'>Left Tilt</a>
+	
+	
+</div>
+
+</body>
+</html>

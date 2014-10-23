@@ -1,0 +1,127 @@
+.ui-state-default {
+	font-weight: normal !important; 
+}
+
+
+
+.ui-state-active {
+	font-weight: bold !important;
+}
+
+.ui-widget {
+	font-size: 9pt !important;
+}
+
+
+.row {
+	margin: 1em 0;
+	clear: both;
+	position: relative;
+}
+
+.shortinput {
+	width: 3em !important;
+	text-align: center;
+}
+
+#sex label {
+	width: 80px;
+	height: 30px;
+}
+
+.imageLeft {
+	float: left;
+	margin: 2em;
+}
+
+
+#plaquenilDaily {
+	width: 320px;
+	border: 1px solid black;
+	padding: 1em;
+	border-radius: 15px;
+	background-color: #ECF2F5;
+	float: right;
+	margin: 2em;
+}
+
+.dose_slider {
+	width: 180px;
+	float: right;
+	top: 7px;
+}
+
+#extraweight, #extraheight {
+	font-size: smaller;
+	color: gray;
+	position: relative;
+	margin-left: 160px;
+	width: 150px;
+	text-align: center;
+	margin-top: 5px;
+}
+
+#dailyResult {
+	font-weight: bold;
+	font-size: larger;
+}
+
+.green {
+	color: green;
+}
+
+.red {
+	color: red;
+}
+
+.plaquenil_fieldset {
+	border: 1px dotted gray;
+	border-radius: 15px;
+	background-color: #FCFEFF;
+	padding: .5em !important;
+}
+
+#plaquenilCum {
+	clear: both;
+	float: right;
+	width: 400px;
+	border: 1px solid black;
+	padding: 2em;
+	border-radius: 15px;
+	background-color: #ECF2F5;
+	margin: 2em;
+}
+
+.removeFilterRow_btn {
+	background-image:  url('minus_btn.png');
+	width: 25px;
+	height: 20px;
+	background-repeat:no-repeat;
+	background-position:center; 
+	cursor: pointer;
+	display: inline-block;
+}
+
+.clonefilter_btn {
+	background-image: url('plus_btn.png');
+	width: 25px;
+	height: 20px;
+	background-repeat:no-repeat;
+	background-position:center; 
+	/*margin-left: 10px;*/
+	cursor: pointer;
+	display: inline-block;
+}
+
+.rowTotal {
+	width: 40px;
+	display: inline-block;
+	font-size: smaller;
+}
+
+#cumAnswer {
+	font-weight: bold;
+	font-size: larger;
+	width: 360px;
+	text-align: center;
+}

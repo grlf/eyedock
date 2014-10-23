@@ -1,0 +1,152 @@
+.t3-wrapper {
+	background: url(../images/gray_bkgd.jpg) repeat 0 0 scroll transparent;
+	padding-top: 20px;
+}
+.t3-wrapper .container {
+	background: #FFFFFF;
+}
+#t3-header {
+  background: url("../images/header_r.jpg") no-repeat scroll right top #ffffff;
+  height: 165px;
+  overflow: hidden;
+  margin-bottom: -27px;
+  border-top: 2px solid #565f64;
+  border-left: 2px solid #565f64;
+  border-right: 2px solid #565f64;
+}
+
+.custom_topsearch {
+  position: absolute;
+  width: 50%;
+  top: 40px
+}
+.custom_topsearch > form {
+	font-size: 12px;
+	text-align: center;
+	width: 100%;
+}
+.custom_topsearch > form input {
+  width: 100%;
+  left: 0;
+}
+#form-login-username, #form-login-password {
+  float: left;
+  margin-left: 3%;
+  width: 47%;
+}
+#form-login-remember {
+  clear: left;
+  float: left;
+  width: 120px;
+  margin-left: 140px;
+}
+#login-form .btn-primary {
+	padding: 4px 7px;
+}
+#login-form .form-group {
+	margin-bottom: 5px;
+}
+#login-form .checkbox {
+	margin-bottom: 0;
+}
+.control-group {
+  clear: right;
+  float: left;
+  margin-bottom: 5px;
+  width: auto;
+}
+.logo-img {
+  position: relative;
+  z-index: 100;
+}
+.logo {
+	padding-left: 30px;
+}
+.navbar {
+	min-height: initial;
+	border: none;
+}
+.navbar-nav {
+	margin-left: 200px;	
+}
+.navbar .container {
+border-top: 1px solid #8f9ca6;
+border-left: 2px solid #565f64;
+border-right: 2px solid #565f64;
+background: #ffffff; /* Old browsers */
+/* IE9 SVG, needs conditional override of 'filter' to 'none' */
+background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjY0JSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNjY2NjY2MiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+background: -moz-linear-gradient(top,  #ffffff 0%, #ffffff 64%, #cccccc 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(64%,#ffffff), color-stop(100%,#cccccc)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  #ffffff 0%,#ffffff 64%,#cccccc 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  #ffffff 0%,#ffffff 64%,#cccccc 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  #ffffff 0%,#ffffff 64%,#cccccc 100%); /* IE10+ */
+background: linear-gradient(to bottom,  #ffffff 0%,#ffffff 64%,#cccccc 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#cccccc',GradientType=0 ); /* IE6-8 */
+
+}
+.nav-stacked > li {
+	margin-bottom: 4px;
+}
+.nav-stacked > li > a {
+	padding: 0 5px;
+}
+.nav-stacked > li > a:hover, .nav-stacked > li > a:focus {
+  padding: 0 5px;
+}
+
+.module_calcs .module-title {
+  background: url(../images/quick-calc.gif) no-repeat scroll left center #616161;
+  font-size: 18px;
+  margin: 0 0 10px;
+  padding: 10px;
+  text-align: center;
+}
+.module_calcs .module-inner {
+  background: #616161;
+}
+.module_calcs .module-ct {
+	padding: 0;
+}
+.custom_calcs p {
+	
+}
+.custom_calcs a {
+	text-transform: none;
+	color: #2699b6;
+}
+#epocrates_url {
+	width: 75%;
+	float: left;
+}
+#epocratesGo {
+	border: 1px solid #cccccc;
+	border-radius: 5px;
+	display: block;
+	font-size: 14px;
+	height: 34px;
+	line-height: 1.42857;
+	padding: 6px 12px;
+	width: 25%;
+}
+div#b2jcontainer_c29.b2jcontainer {
+	border: none;
+}
+.b2jcontainer h2 {
+	background: none;
+	color: #000000;
+	margin-bottom: 0;
+}
+.t3-logo {
+	display: none;
+}
+.t3-copyright .container {
+	background: url("../images/footer.jpg") repeat scroll 0 0 #ffffff;
+	border-left: 2px solid #565f64;
+	border-right: 2px solid #565f64;
+	border-bottom: 2px solid #565f64;
+	padding: 15px;
+}
+.t3-copyright .pull-right {
+	margin-right: 15px;
+}
