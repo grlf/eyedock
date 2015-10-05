@@ -15,9 +15,9 @@ jimport( 'joomla.plugin.plugin' );
  *
  */
 class  plgSystemJumiRouter extends JPlugin {
-    function __construct(& $subject, $config) {
+    function __construct( $subject, $config) {
         // check to see if we are on frontend to execute plugin
-        $mainframe = &JFactory::getApplication();
+        $mainframe = JFactory::getApplication();
         if($mainframe->isAdmin())
             return;
 
@@ -30,10 +30,10 @@ class  plgSystemJumiRouter extends JPlugin {
      * @access public
      */
     function onAfterInitialise() {
-        $mainframe = &JFactory::getApplication();
+        $mainframe = JFactory::getApplication();
 
-        $uri    =& JURI::getInstance();
-        $router =& $mainframe->getRouter();
+        $uri    = JURI::getInstance();
+        $router = $mainframe->getRouter();
 
         $router->attachParseRule('parseJumiRouter');
 

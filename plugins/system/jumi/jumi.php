@@ -22,7 +22,7 @@ class plgSystemJumi extends JPlugin {
     }
 
     function onAfterRender() {
-      $mainframe = &JFactory::getApplication();
+      $mainframe = JFactory::getApplication();
       if($mainframe->isAdmin())
         return;
 
