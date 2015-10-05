@@ -175,7 +175,7 @@ class AffCommissionTable extends Am_Table {
             SELECT SUM(IF(c.record_type=?,-c.amount,c.amount)) AS _total,
                 a.*
             FROM ?_aff_commission c RIGHT JOIN ?_user a ON a.user_id=c.aff_id
-            WHERE (c.record_type=? OR c.date<?) AND (c.payout_detail_id IS NULL)
+            WHERE (c.record_type=? OR c.date<=?) AND (c.payout_detail_id IS NULL)
             GROUP BY c.aff_id
             HAVING _total > 0 AND _total >= ?  AND a.aff_payout_type > ''
         ", AffCommission::VOID, AffCommission::VOID,
@@ -198,7 +198,7 @@ class AffCommissionTable extends Am_Table {
             $detail = $payouts[$aff->aff_payout_type]->addDetail($aff->pk(), $row['_total']);
             $this->_db->query("UPDATE ?_aff_commission c
                 SET c.payout_detail_id=?d
-                WHERE aff_id=?d AND (c.record_type=? OR c.date<?) AND (c.payout_detail_id IS NULL)
+                WHERE aff_id=?d AND (c.record_type=? OR c.date<=?) AND (c.payout_detail_id IS NULL)
                 ", $detail->pk(),
                 $aff->pk(), AffCommission::VOID, $threseholdDate);
         }
@@ -213,7 +213,7 @@ class AffCommissionTable extends Am_Table {
         }
     }
 
-    function void(AffCommission $comm, $date = null)
+    function void(AffCommission $comm, $date = null, $amount = null)
     {
         $void = $this->getDi()->affCommissionRecord;
         $void->fromRow($comm->toRow());
@@ -223,6 +223,8 @@ class AffCommissionTable extends Am_Table {
         $void->record_type = AffCommission::VOID;
         $void->commission_id_void = $comm->pk();
         $void->is_voided = 0;
+        if ($amount)
+            $void->amount = $amount;
         try {
             $void->insert();
             $comm->updateQuick('is_voided', 1);

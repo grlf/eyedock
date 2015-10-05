@@ -67,6 +67,7 @@ class Am_Controller_CreditCard extends Am_Controller
         $this->view->form = $this->form;
         $this->view->invoice = $this->invoice;
         $this->view->display_receipt = true;
+        $this->view->layoutNoMenu = true;
         $this->view->display('cc/info.phtml');
     }
     public function createForm()

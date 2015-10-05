@@ -10,7 +10,7 @@
 class Am_Paysystem_Paypal extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.0';
 
     public $domain = "";
 
@@ -19,6 +19,7 @@ class Am_Paysystem_Paypal extends Am_Paysystem_Abstract
     
     protected $_canAutoCreate = false;
     protected $_canResendPostback = true;
+    const PAYPAL_PROFILE_ID = 'paypal-profile-id';
     
     public function __construct(Am_Di $di, array $config)
     {
@@ -50,6 +51,10 @@ class Am_Paysystem_Paypal extends Am_Paysystem_Abstract
 
         $form->addText("merchant_id", array('size'=>40))
              ->setLabel(array("Your Merchant ID", "You can get it from Your Account -> Profile"));
+        
+        $form->addText("api_username", array('size'=>40))->setLabeL("API Username");
+        $form->addPassword("api_password")->setLabel("API Password");
+        $form->addText("api_signature", array('size'=>60))->setLabel("API Signature");
         
         $form->addAdvCheckbox("testing")
              ->setLabel("Is it a Sandbox(Testing) Account?");
@@ -100,8 +105,11 @@ class Am_Paysystem_Paypal extends Am_Paysystem_Abstract
             return $err;
         if ($invoice->rebill_times >= 1 && $err = $this->checkPeriod(new Am_Period($invoice->first_period)))
             return array($err);
-        if ($invoice->rebill_times >= 2 && $err = $this->checkPeriod(new Am_Period($invoice->second_period)))
+        if ($invoice->rebill_times == 1 && $invoice->second_period == Am_Period::MAX_SQL_DATE) return;
+        if ($invoice->rebill_times >= 1 && $err = $this->checkPeriod(new Am_Period($invoice->second_period)))
             return array($err);
+        if ($invoice->rebill_times != IProduct::RECURRING_REBILLS && $invoice->rebill_times > 52)
+            return array('PayPal can not handle subscription terms with number of rebills more than 52');
     }
     /**
      * Return error message if period could not be handled by PayPal
@@ -156,30 +164,40 @@ class Am_Paysystem_Paypal extends Am_Paysystem_Abstract
         if ($page_style = $this->getConfig('page_style'))
             $a->page_style = $page_style;
         $a->rm  = 2;
-        if ($invoice->rebill_times)
-        {
+        if ($invoice->rebill_times) {
             $a->cmd           = '_xclick-subscriptions';
             $a->sra = 1;
-            if ($invoice->rebill_times == 1)
+            /** @todo check with rebill times = 1 */
+            $p1 = new Am_Period($invoice->first_period);
+            $p3 = new Am_Period($invoice->second_period == Am_Period::MAX_SQL_DATE ? '5y' : $invoice->second_period);
+            $a->a3 = $invoice->second_total;
+            $a->p3 = $p3->getCount();
+            $a->t3 = $this->getPeriodUnit($p3->getUnit());
+            $a->tax3 = $invoice->second_tax;
+            if($invoice->first_total == $invoice->second_total && 
+                $invoice->first_period == $invoice->second_period && 
+                $invoice->first_tax == $invoice->second_tax)
             {
-                $a->src = 0;
-            } else {
                 $a->src = 1; //Ticket #HPU-80211-470: paypal_r plugin not passing the price properly (or at all)?
                 if ($invoice->rebill_times != IProduct::RECURRING_REBILLS )
-                    $a->srt = $invoice->rebill_times;
+                    $a->srt = $invoice->rebill_times + 1;                    
             }
-            /** @todo check with rebill times = 1 */
-            $a->a1 = $invoice->first_total;
-            $p = new Am_Period($invoice->first_period);
-            $a->p1 = $p->getCount();
-            $a->t1 = $this->getPeriodUnit($p->getUnit());
-            $a->tax1 = $invoice->first_tax;
+            else
+            {
+                if ($invoice->rebill_times == 1)
+                {
+                    $a->src = 0;
+                } else {
+                    $a->src = 1; //Ticket #HPU-80211-470: paypal_r plugin not passing the price properly (or at all)?
+                    if ($invoice->rebill_times != IProduct::RECURRING_REBILLS )
+                        $a->srt = $invoice->rebill_times;
+                }
+                $a->a1 = $invoice->first_total;
+                $a->p1 = $p1->getCount();
+                $a->t1 = $this->getPeriodUnit($p1->getUnit());
+                $a->tax1 = $invoice->first_tax;
+            }
 
-            $a->a3 = $invoice->second_total;
-            $p = new Am_Period($invoice->second_period);
-            $a->p3 = $p->getCount();
-            $a->t3 = $this->getPeriodUnit($p->getUnit());
-            $a->tax3 = $invoice->second_tax;
         } else  {
             $a->cmd           = '_xclick';
             $a->amount = $invoice->first_total - $invoice->first_tax - $invoice->first_shipping;
@@ -218,6 +236,14 @@ CUT;
     
     function getUserCancelUrl(Invoice $invoice)
     {
+        if(
+            $invoice->data()->get(self::PAYPAL_PROFILE_ID) && 
+            $this->getConfig('api_username') && 
+            $this->getConfig('api_password') && 
+            $this->getConfig('api_signature')
+            )
+            return parent::getUserCancelUrl ($invoice);
+        
         return 'https://' . $this->domain . '?' . http_build_query(array(
             'cmd' => '_subscr-find',
             'alias' => $this->getConfig('merchant_id'),
@@ -226,6 +252,14 @@ CUT;
     
     public function getAdminCancelUrl(Invoice $invoice)
     {
+        if(
+            $invoice->data()->get(self::PAYPAL_PROFILE_ID) && 
+            $this->getConfig('api_username') && 
+            $this->getConfig('api_password') && 
+            $this->getConfig('api_signature')
+            )
+            return parent::getAdminCancelUrl ($invoice);
+        
         return 'https://' . $this->domain . '?' . http_build_query(array(
             'cmd' => '_subscr-find',
             'alias' => $this->getConfig('merchant_id'),
@@ -236,6 +270,25 @@ CUT;
     {
         return true;
     }
+    
+    function cancelAction(Invoice $invoice, $actionName, Am_Paysystem_Result $result) {
+        $log = Am_Di::getInstance()->invoiceLogRecord;
+        $log->title = "cancelRecurringPaymentProfile";
+        $log->paysys_id = $this->getId();
+        
+        $apireq = new Am_Paysystem_PaypalApiRequest($this);
+        $apireq->cancelRecurringPaymentProfile($invoice, $invoice->data()->get(self::PAYPAL_PROFILE_ID));
+        $vars = $apireq->sendRequest($log);
+        $log->setInvoice($invoice);
+        $log->update();
+        if($vars['ACK'] != 'Success')
+            throw new Am_Exception_InputError('Transaction was not cancelled. Got error from paypal: '.$vars['L_SHORTMESSAGE0']);
+        
+        $invoice->setCancelled(true);
+        $result->setSuccess();        
+    }
+    
+    
     
 }
 
@@ -251,7 +304,7 @@ class Am_Paysystem_Paypal_Transaction extends Am_Paysystem_Transaction_Paypal
         'country'   =>  'address_country_code',
         'city'      =>  'address_city',
         'user_external_id' => 'payer_id',
-        'invoice_external_id' => array('subscr_id', 'txn_id') ,
+        'invoice_external_id' => array('parent_txn_id', 'subscr_id', 'txn_id') ,
     );
     public function processValidated()
     {
@@ -260,6 +313,7 @@ class Am_Paysystem_Paypal_Transaction extends Am_Paysystem_Transaction_Paypal
                 if ((float)$this->invoice->first_total <= 0) // no payment will be reported
                     if ($this->invoice->status == Invoice::PENDING) // handle only once
                         $this->invoice->addAccessPeriod($this); // add first trial period
+                $this->invoice->data()->set(Am_Paysystem_Paypal::PAYPAL_PROFILE_ID, $this->request->subscr_id)->update();
             break;
             case self::TXN_SUBSCR_EOT:
                 // Stop access only if we have lifetime access within invoice. 
@@ -287,9 +341,29 @@ class Am_Paysystem_Paypal_Transaction extends Am_Paysystem_Transaction_Paypal
                         break;
                     default:
                 }
+                if($this->request->subscr_id)
+                    $this->invoice->data()->set(Am_Paysystem_Paypal::PAYPAL_PROFILE_ID, $this->request->subscr_id)->update();
             break;
         }
         switch($this->request->payment_status){
+           case 'Reversed':
+               if ($originalInvoicePayment  = Am_Di::getInstance()->invoicePaymentTable->findFirstBy(array(
+                   'receipt_id' => $this->request->parent_txn_id,
+                   'invoice_id' => $this->invoice->pk()
+               ))) {
+                    Am_Di::getInstance()->accessTable->deleteBy(array(
+                        'invoice_payment_id' =>$originalInvoicePayment->pk(),
+                    ));
+               }
+               break;
+           case 'Canceled_Reversal':
+               if ($originalInvoicePayment  = Am_Di::getInstance()->invoicePaymentTable->findFirstBy(array(
+                   'receipt_id' => $this->request->parent_txn_id,
+                   'invoice_id' => $this->invoice->pk()
+               ))) {
+                   $this->invoice->addAccessPeriod($this, $originalInvoicePayment->pk());
+               }
+               break;
            case 'Refunded':
            case 'Chargeback':
                $this->invoice->addRefund($this, $this->request->parent_txn_id, $this->getAmount());
@@ -315,11 +389,18 @@ class Am_Paysystem_Paypal_Transaction extends Am_Paysystem_Transaction_Paypal
         if (in_array($this->txn_type, array(self::TXN_CART, self::TXN_SUBSCR_PAYMENT, self::TXN_WEB_ACCEPT)))
         {
             $isFirst = $this->invoice->first_total && !$this->invoice->getPaymentsCount();
+            if($this->invoice->first_total == $this->invoice->second_total && $this->invoice->first_period == $this->invoice->second_period)
+            {
+                $isFirst = false;
+            }
             $expected = $isFirst ? $this->invoice->first_total : $this->invoice->second_total;
             if ($expected > ($amount = $this->getAmount()))
                 throw new Am_Exception_Paysystem_TransactionInvalid("Payment amount is [$amount], expected not less than [$expected]");
         } elseif ($this->txn_type == self::TXN_SUBSCR_SIGNUP) {
-            if ($this->invoice->first_total  != $this->request->get('mc_amount1')) return false;
+            if ($this->invoice->first_total != $this->invoice->second_total || $this->invoice->first_period != $this->invoice->second_period)
+            {
+                if ($this->invoice->first_total  != $this->request->get('mc_amount1')) return false;
+            }
             if (""                           != $this->request->get('mc_amount2')) return false;
             if ($this->invoice->second_total != $this->request->get('mc_amount3')) return false;
             if ($this->invoice->currency != $this->request->get('mc_currency')) return false;
@@ -329,7 +410,10 @@ class Am_Paysystem_Paypal_Transaction extends Am_Paysystem_Transaction_Paypal
                 $p1 = $p1->getCount() . ' ' . $this->plugin->getPeriodUnit($p1->getUnit());
                 $p3 = $p3->getCount() . ' ' . $this->plugin->getPeriodUnit($p3->getUnit());
             } catch (Exception $e) {  }
-            if ($p1  != $this->request->get('period1')) return false;
+            if ($this->invoice->first_total != $this->invoice->second_total || $this->invoice->first_period != $this->invoice->second_period)
+            {
+                if ($p1  != $this->request->get('period1')) return false;
+            }
             if (""   != $this->request->get('period2')) return false;
             if ($p3  != $this->request->get('period3')) return false;
         }

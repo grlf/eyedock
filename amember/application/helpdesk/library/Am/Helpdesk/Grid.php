@@ -15,7 +15,7 @@ class Am_Grid_Editable_Helpdesk extends Am_Grid_Editable
     function renderFilter()
     {
         if ($this->foundRowsBeforeFilter) {
-            return parent::renderFilter ();
+            return parent::renderFilter();
         }
     }
 
@@ -85,20 +85,6 @@ class Am_Grid_Filter_Helpdesk extends Am_Grid_Filter_Abstract
         return '';
     }
 
-    protected function filter($array, $filter)
-    {
-        if (!$filter)
-            return $array;
-        foreach ($array as $k => $v) {
-            if (false === strpos($k, $filter) &&
-                false === strpos($v, $filter)) {
-
-                unset($array[$k]);
-            }
-        }
-        return $array;
-    }
-
 }
 
 class Am_Grid_Action_Ticket extends Am_Grid_Action_Abstract
@@ -122,6 +108,7 @@ class Am_Grid_Action_Ticket extends Am_Grid_Action_Abstract
             $values = $form->getValue();
 
             if (defined('AM_ADMIN')
+                && AM_ADMIN
                 && isset($values['from'])
                 && $values['from'] == 'user') {
 
@@ -146,8 +133,18 @@ class Am_Grid_Action_Ticket extends Am_Grid_Action_Abstract
             $ticket->insert();
             $this->getStrategy()->onAfterInsertTicket($ticket);
 
+            $content = $values['content'];
+            if (defined('AM_ADMIN')
+                && AM_ADMIN) {
+
+                $user = $ticket->getUser();
+                $tpl = new Am_SimpleTemplate;
+                $tpl->assign('user', $user);
+                $content = $tpl->render($content);
+            }
+
             $message = Am_Di::getInstance()->helpdeskMessageRecord;
-            $message->content = $values['content'];
+            $message->content = $content;
             $message->ticket_id = $ticket->pk();
             $message->dattm = Am_Di::getInstance()->sqlDateTime;
             $message = $this->getStrategy()->fillUpMessageIdentity($message);
@@ -189,11 +186,7 @@ class Am_Grid_Action_Ticket extends Am_Grid_Action_Abstract
         $out = sprintf('<h1>%s</h1>', ___('Ticket has been submited'));
         $out .= sprintf('<p>%s <a class="link" href="%s" target="_top"><strong>#%s</strong></a></p>',
                 ___('Reference number is:'),
-                $this->getStrategy()->assembleUrl(array(
-                    'action' => 'view',
-                    'page_id' => 'view',
-                    'ticket' => $ticket->ticket_mask
-                    ), 'inside-pages'),
+                $this->getStrategy()->ticketUrl($ticket),
                 $ticket->ticket_mask
         );
         return $out;
@@ -243,11 +236,7 @@ abstract class Am_Helpdesk_Grid extends Am_Grid_Editable_Helpdesk
 
     public function renderSubject($record)
     {
-        $url = Am_Di::getInstance()->helpdeskStrategy->assembleUrl(array(
-                'page_id' => 'view',
-                'action' => 'view',
-                'ticket' => $record->ticket_mask
-                ), 'inside-pages');
+        $url = Am_Di::getInstance()->helpdeskStrategy->ticketUrl($record);
 
         $category = $record->category_id && $record->c_title ?
             sprintf(' (%s)', Am_Controller::escape($record->c_title)) :

@@ -9,7 +9,7 @@
  */
 class Am_Paysystem_Sagepay extends Am_Paysystem_CreditCard{
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.0';
 
     protected $defaultTitle = 'Sagepay';
     protected $defaultDescription = 'Pay by credit card';
@@ -62,8 +62,22 @@ CUT;
     {
         $u = $invoice->getUser();
         $request = $this->createHttpRequest();
+        $basket = '<basket>';
+        foreach($invoice->getItems() as $item)
+        {
+            $basket .= '<item>';
+            $basket .= '<description>'.$item->item_title.'</description>';
+            $basket .= '<productSku>'.$item->item_id.'</productSku>';
+            $basket .= '<quantity>'.$item->qty.'</quantity>';
+            $basket .= '<unitNetAmount>'.$item->first_price.'</unitNetAmount>';
+            $basket .= '<unitTaxAmount>'.$item->first_tax/$item->qty.'</unitTaxAmount>';
+            $basket .= '<unitGrossAmount>'.$item->first_total/$item->qty.'</unitGrossAmount>';
+            $basket .= '<totalGrossAmount>'.$item->first_total.'</totalGrossAmount>';            
+            $basket .= '</item>';
+        }
+        $basket .= '</basket>';        
         $vars = array(
-            'VPSProtocol'  => '2.23',
+            'VPSProtocol'  => '3.0',
             'TxType'    => 'PAYMENT',
             'Vendor' => $this->getConfig('login'),
             'VendorTxCode' => $invoice->public_id . '-AMEMBER',
@@ -90,6 +104,7 @@ CUT;
 
             'CustomerEMail' => $u->email,
             'Profile' => 'NORMAL',            
+            'BasketXML' => $basket
         );
         if($u->country == 'US'){
             $vars['BillingState'] = $u->state;
@@ -167,7 +182,11 @@ class Am_Paysystem_Transaction_Sagepay extends Am_Paysystem_Transaction_Incoming
             $this->request->get("AddressStatus").
             $this->request->get("PayerStatus").
             $this->request->get("CardType").
-            $this->request->get("Last4Digits")));
+            $this->request->get("Last4Digits").
+            $this->request->get("DeclineCode").
+            $this->request->get("ExpiryDate").
+            $this->request->get("FraudResponse").
+            $this->request->get("BankAuthCode")));
         return $hash == $this->request->get("VPSSignature");
     }
     
@@ -211,11 +230,12 @@ class Am_Paysystem_Transaction_Sagepay_Rebill extends Am_Paysystem_Transaction_C
     public function run(Am_Paysystem_Result $result)
     {
         $request = $this->plugin->createHttpRequest();
+        $paymentsCount = $this->invoice->getPaymentsCount() + 1;
         $vars = array(
-            'VPSProtocol'  => '2.23',
+            'VPSProtocol'  => '3.0',
             'TxType'    => 'REPEAT',
             'Vendor' => $this->getPlugin()->getConfig('login'),
-            'VendorTxCode' => $this->invoice->public_id . 'AMEMBER',
+            'VendorTxCode' => $this->invoice->public_id . '-AMEMBER-' . $paymentsCount,
             'Amount' => number_format($this->invoice->second_total, 2, '.', ''),
             'Currency' => $this->invoice->currency ? $this->invoice->currency : 'USD',
             'Description' =>   $this->invoice->getLineDescription(),

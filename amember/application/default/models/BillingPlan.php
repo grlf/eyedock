@@ -110,6 +110,7 @@ class BillingPlanTable extends Am_Table_WithData {
         return $this->selectObjects("SELECT bp.*, p.title as product_title 
                                      FROM $this->_table bp 
                                      INNER JOIN ?_product p USING (product_id)
+                                     WHERE p.is_archived=0
                                      ORDER BY 0+sort_order,p.title");
     }
 

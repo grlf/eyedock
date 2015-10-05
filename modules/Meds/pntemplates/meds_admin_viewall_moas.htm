@@ -1,0 +1,25 @@
+<!--[include file=meds_admin_menu.htm]-->
+<h2>View All Methods Of Action</h2>
+
+<table class="meds_table_max" cellpadding="3" cellspacing="2">
+    <tr class="meds_table_head">
+        <td>ID</td>
+        <td>Name</td>
+        <td>Comments</td>
+        <td>Actions</td>
+    </tr>
+
+<!--[foreach from=$items key=key item=moa]-->
+    <tr class="meds_row_<!--[cycle values="odd,even"]-->">
+        <td class="align_center"><!--[$moa.moa_id|pnvarprepfordisplay]--></td>
+        <td class="meds_center_strong"><!--[$moa.name|pnvarprepfordisplay]--></td>
+        <td class="align_left"><!--[$moa.comments|pnvarprephtmldisplay]--></td>
+        <td class="align_center">
+            [ <a href="<!--[pnmodurl modname=Meds type=admin func=modify_moa moa_id=$moa.moa_id|pnvarprepfordisplay]-->" title="Edit">Edit</a> ]
+            [ <a href="<!--[pnmodurl modname=Meds type=admin func=delete object=moa id=$moa.moa_id|pnvarprepfordisplay]-->" title="Delete">Delete</a> ]
+        </td>
+    </tr>
+
+<!--[/foreach]-->
+</table>
+<br />

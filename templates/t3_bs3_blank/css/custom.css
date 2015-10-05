@@ -108,6 +108,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', end
 .module_calcs .module-ct {
 	padding: 0;
 }
+.module_calcs #vidPane {display: none;}
 .custom_calcs p {
 	
 }

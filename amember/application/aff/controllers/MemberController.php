@@ -7,7 +7,7 @@
  *        Web: http://www.cgi-central.net
  *    Details: Affiliate pages
  *    FileName $RCSfile$
- *    Release: 4.4.4 ($Revision$)
+ *    Release: 4.7.0 ($Revision$)
  *
  * Please direct bug reports,suggestions or feedback to the cgi-central forums.
  * http://www.cgi-central.net/forum/
@@ -73,9 +73,10 @@ class Aff_MemberController extends Am_Controller
         $rs->setAffId($this->user->user_id);
         $rc = new Am_Report_AffClicks();
         $rc->setAffId($this->user->user_id);
+        $rn = new Am_Report_AffSales();
+        $rn->setAffId($this->user->user_id);
 
         if (!$this->getInt('monthyear')) {
-            $this->view->form = "";
             $firstDate[] = $this->getDi()->db->selectCell("SELECT MIN(date) FROM ?_aff_commission WHERE aff_id=?d", $this->user->user_id);
             $firstDate[] = current(explode(' ', $this->getDi()->db->selectCell("SELECT MIN(`time`) FROM ?_aff_click WHERE aff_id=?d", $this->user->user_id)));
             $rs->setInterval(min($firstDate), 'now')->setQuantity(new Am_Report_Quant_Month());
@@ -85,15 +86,56 @@ class Aff_MemberController extends Am_Controller
                 $ym = date('Ym');
             $start = mktime(0, 0, 0, substr($ym, 4, 2), 1, substr($ym, 0, 4));
             $rs->setInterval(date('Y-m-d 00:00:00', $start), date('Y-m-t 23:59:59', $start))->setQuantity(new Am_Report_Quant_Day());
+            $this->view->period = array(date('Y-m-d 00:00:00', $start), date('Y-m-t 23:59:59', $start));
         }
         $rc->setInterval($rs->getStart(), $rs->getStop())->setQuantity(clone $rs->getQuantity());
+        $rn->setInterval($rs->getStart(), $rs->getStop())->setQuantity(clone $rs->getQuantity());
 
         $result = $rs->getReport();
         $rc->getReport($result);
+        $rn->getReport($result);
 
         $output = new Am_Report_Graph_Line($result);
         $output->setSize('100%', 300);
         $this->view->report = $output->render();
+
+        /* extract data from report to show it in view */
+        $rows = array();
+        $totals = array();
+        $lines = $result->getLines();
+        foreach ($result->getPointsWithValues() as $r) {
+            /* @var $r Am_Report_Point */
+            if ($result->getQuantity()->getId() == 'month') {
+                $hasValue = false;
+                foreach ($lines as $line) {
+                    if ($r->getValue($line->getKey())) {
+                        $hasValue = true;
+                        break;
+                    }
+                }
+                $href = $hasValue ? $this->view->url(array("monthyear"=>$r->getKey())) : '';
+            } elseif ($this->getModule()->getConfig('affiliate_can_view_details')) {
+                $href = "javascript: showAffDetails('{$r->getKey()}')";
+            } else {
+                $href = "";
+            }
+            $rows[$r->getKey()]['date'] = $r->getLabel();
+            $rows[$r->getKey()]['date_href'] = $href;
+            foreach ($lines as $i=>$line){
+                list($start, $stop) = $result->getQuantity()->getStartStop($r->getKey());
+
+                $href = $r->getValue($line->getKey()) > 0 ?
+                    sprintf("javascript:affDetail('%s', '%s', '%s')", $start, $stop, $r->getLabel()) :
+                    null;
+
+                $rows[$r->getKey()][$line->getKey() . '_href'] = $href;
+                $rows[$r->getKey()][$line->getKey()] = $r->getValue($line->getKey());
+
+                $totals[$line->getKey()] = @$totals[$line->getKey()]+$r->getValue($line->getKey());
+            }
+        }
+        $this->view->totals = $totals;
+        $this->view->rows = $rows;
         $this->view->result = $result;
         $this->view->display('aff/stats.phtml');
     }
@@ -131,13 +173,41 @@ class Aff_MemberController extends Am_Controller
         $this->view->payouts = $query->selectAllRecords();
         $this->view->display('aff/payout.phtml');
     }
-    
+
     public function clicksDetailAction()
     {
         $date_from = $this->getFiltered('from');
         $date_to = $this->getFiltered('to');
         $this->view->clicks = $this->getDi()->affClickTable->fetchByDateInterval($date_from, $date_to, $this->getDi()->auth->getUserId());
         $this->view->display('/aff/clicks-detail.phtml');
+
+    }
+    
+    public function keywordsAction()
+    {
+        $ds = new Am_Query($this->getDi()->affKeywordTable);
+        $ds->addField('t.`value`', 'keyword');
+        $ds->addField('count(clicks.log_id)', 'clicks_count');
+        $ds->addField('count(distinct leads.user_id)', 'leads_count');
+        $ds->addField('sum(if(commissions.record_type="commission", 1, 0))', 'sales_count');
+        $ds->addField('sum(if(commissions.record_type="commission", amount, -amount))', 'sales_amount');
+        $ds->addWhere('t.aff_id=?', $this->getDi()->auth->getUserId());
+        $ds->leftJoin('?_aff_click', 'clicks', 't.keyword_id = clicks.keyword_id');
+        $ds->leftJoin('?_aff_commission', 'commissions', 't.keyword_id = commissions.keyword_id');
+        $ds->leftJoin('?_aff_lead', 'leads', 't.keyword_id = leads.keyword_id');
+        $ds->groupBy('keyword_id');
         
+        
+        $grid = new Am_Grid_ReadOnly('_aff_keywords', 'Keywords', $ds, $this->getRequest(), $this->getView());
+        $grid->addField('keyword', ___('Keyword'));
+        $grid->addField('clicks_count', ___('Clicks'));
+        $grid->addField('leads_count', ___('Leads'));
+        $grid->addField('sales_count', ___('Sales'));
+        $grid->addField('sales_amount', ___('Commissions'))->setRenderFunction(
+            function($record){
+                return "<td>". Am_Currency::render($record->sales_amount)."</td>";
+            }
+        );
+        $grid->runWithLayout('aff/keywords.phtml');
     }
 }

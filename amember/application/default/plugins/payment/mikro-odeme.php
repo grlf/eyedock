@@ -11,7 +11,7 @@ class Am_Paysystem_MikroOdeme extends Am_Paysystem_Abstract
 {
 
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.0';
     const WSDL = 'http://vas.mikro-odeme.com/services/msaleservice.asmx?wsdl';
 
     protected $defaultTitle = 'Mikro Ödeme';
@@ -129,7 +129,7 @@ class Am_Paysystem_MikroOdeme extends Am_Paysystem_Abstract
 
     public function isNotAcceptableForInvoice(Invoice $invoice)
     {
-        if ($invoice->rebill_times && ($invoice->rebill_times != '99999'))
+        if ($invoice->rebill_times && ($invoice->rebill_times != IProduct::RECURRING_REBILLS))
             return 'Incorrect Rebill Times setting!';
         if (($invoice->second_total > 0) && ($invoice->second_total != $invoice->first_total))
             return 'First & Second price must be the same in invoice!';

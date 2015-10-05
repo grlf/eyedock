@@ -3,7 +3,6 @@
   '%d days after expiration' => 'sona erdikten %d gün sonra',
   '%d days before expiration' => 'sona ermeden %d gün önce',
   '%d user(s) matches your search' => 'Aramanıza %d kullanıcı(lar) uyuyor',
-  '%d-th day' => '%d. gün',
   '%d-th subscription day' => '%d. üyelik günü',
   'ACTIVE subscription for %s' => '%s için AKTİF abonelik',
   'Access Method' => 'Erişim Metodu',
@@ -15,9 +14,7 @@
   'Add Refund' => 'Ödeme İade Ekle',
   'Add Subscription' => 'Abonelik Ekle',
   'Add User Fields' => 'Alan Ekle',
-  'Added' => 'Eklendi',
   'Additional' => 'İlave',
-  'Additional Fields' => 'Ek Alanlar',
   'Admin Accounts' => 'Yöentici Hesapları',
   'Admin E-Mail Address
 used to send email notifications to admin
@@ -30,7 +27,6 @@ varsayılan gönderen adresi olarak kullanılır',
 to admin once payment is received' => 'Yönetici Ödeme Bilgilendirmeleri
 ödeme gerçekleştikten sonra yöneticiye',
   'Admin Settings' => 'Yönetici Ayarları',
-  'Admin Username' => 'Yönetici Kullanıcı Adı',
   'Administrator Login' => 'Yönetici Girişi',
   'Advanced' => 'Gelişmiş',
   'Advanced Settings' => 'Gelişmiş Ayarlar',
@@ -121,14 +117,12 @@ how many times coupon can be used' => 'Kupon Kullanım Sayısı
 kupon kaç kere kullanılabilir',
   'Create Session Key' => 'Session Anahtarı Oluştur',
   'Create ticket as' => 'Şu şeklide bilet oluştur',
-  'Currency' => 'Döviz',
   'Currency Exchange Rates' => 'Döviz Kurları',
   'Custom Commission Rules added' => 'Özel Komisyon Kuralları Eklendi',
   'Custom Signup Form Title
 keep empty to use default title' => 'Özel Yazılma Form Başlığı
 Varsayılan başlığı boş bırak',
   'Customer' => 'Müşteri',
-  'Dashboard' => 'Gösterge Tablosu',
   'Date to Purge
 all records prior to this date will be removed from selected tables' => 'Arındırma Tarihi
 Seçili tablolardaki bu tarihten önceki bütün kayıtlar silinecektir',
@@ -188,16 +182,13 @@ dışarı giden emaillerde gönderen adı olarak görünür',
   'EXPIRED subscription for %s' => '%s için SONA ERMİŞ abonelik',
   'Edit Custom Commission Rules' => 'Özel Komisyon Kurallarını Düzenle',
   'Edit Groups' => 'Grupları Düzenle',
-  'Email' => 'Email',
   'Email Backup Frequency' => 'Email Yedekleme Frekansı ',
   'Email Sending method
 PLEASE DO NOT CHANGE if emailing from aMember works' => 'Email Gönderme Metodu
 aMember dan email gönderimi çalışıyorsa LÜTFEN DEĞİŞTİRMEYİN',
   'Email Sent' => 'Email gönderildi',
-  'Email Subject' => 'Email Konusu',
   'Email address is required field.' => 'Email adresi gerekli alandır.',
   'Enable plugins if necessary' => 'Gerekliyse eklentileri yükle',
-  'End Date' => 'Bitiş Tarihi',
   'Enter Maintenance Mode' => 'Bakım Moduna Gir',
   'Error Log' => 'Hata Logu',
   'Error/Debug Log' => 'Hata/Debug Logu',
@@ -210,10 +201,8 @@ aMember dan email gönderimi çalışıyorsa LÜTFEN DEĞİŞTİRMEYİN',
   'Exchange Rate
 enter cost of 1 (one) %s' => 'Kur
 1(bir) adetin fiyatını girin %s',
-  'Field' => 'Alan',
   'Field Name' => 'Alan Adı',
   'Field Title' => 'Alan Başlığı',
-  'Field Type' => 'Alan Tipi',
   'Field Values' => 'Alan Değerleri',
   'File is required' => 'Dosya Gereklidir',
   'Filter By Coupon#' => 'Kupon numarasına göre filtrele',
@@ -236,7 +225,6 @@ Aboneliğin ilk döneminin fiyatı',
   'Folder URL' => 'Dizin URLi',
   'Form Type' => 'Form Çeşidi',
   'Forms Editor' => 'Form Düzenleyici',
-  'From' => 'Kimden',
   'Future' => 'Gelecek',
   'General' => 'Genel',
   'General Settings' => 'Genel Ayarlar',
@@ -279,14 +267,12 @@ Mevcut faturalar etkilenmez.
   'Is Disabled?
 disable product ordering, hide it from signup and renewal forms' => 'Devre Dışı mı??
 ürün siparişini devre dışı bırak, kayıt olma ve yenileme formlarında gösterme',
-  'Is Paid?' => 'Ödendi mi?',
   'It is required to setup a cron job to trigger backup generation' => 'Yedekleme oluşturmak için cron job yapılması gereklidir',
   'Languages' => 'Lisanlar',
   'Last %s Customers' => 'Son %s Müşteri',
   'Last available protected url' => 'En son müsait korunan URL',
   'Last existing subscription date of this product' => 'Bu ürün için mevcut en son abone olma tarihi',
   'Last login' => 'Son Giriş',
-  'Leads' => 'Bağlantılar',
   'Length of admin password must be from %d to %d' => 'Yönetici şifresinin uzunluğu %d den %d e kadar olmalıdır',
   'Length of username must be from %d to %d' => 'Kullanıcı adının uzunluğu %d den %d e kadar olmalıdır',
   'Lightbox Main Image' => 'Işık Kutusu Ana Görseli',
@@ -355,7 +341,6 @@ Boşsa [Yönetici Email Adresi] kullanılır',
   'Payment has been successfully refunded' => 'Ödeme başarıyla geri iade edildi',
   'Payout %d Details' => 'Ödeme %d Detayları',
   'Payout Details' => 'Ödeme Detayları',
-  'Payout Method' => 'Ödeme Şekli',
   'Paysystem' => 'Ödeme Sistemi',
   'Permissions' => 'İzinler',
   'Please assign the following fields: ' => 'Lütfen aşağıdaki alanları tahsis edin: ',
@@ -380,7 +365,6 @@ hiçbir şey seçili değilse kuponlar herhangi bir ürünle kullanılabilir.',
   'Protection Method' => 'Koruma Şekli',
   'Quit Maintenance Mode' => 'Bakım Modundan Çık',
   'RadioButtons' => 'SeçenekDüğmeleri',
-  'ReCaptcha' => 'ReCaptcha',
   'Rebill' => 'Tekrar Faturalama',
   'Rebill Second Price until cancelled' => 'İkinci Fiyatı İptal Edilinceye Kadar Çek',
   'Rebill Times
@@ -392,7 +376,6 @@ Bu ikinci fiyatta oluşacak
   'Receipt' => 'Makbuz',
   'Recipients' => 'Alıcılar',
   'Records Deleted Sucessfully' => 'Kayıtlar Başarıyla Silindi',
-  'Recurring' => 'Tekrar Eden',
   'Referrer' => 'Yönlendiren',
   'Refund Amount' => 'Geri Ödeme Miktarı',
   'Refund Payment' => 'Ödemeyi Geri İade Et',
@@ -444,7 +427,6 @@ güvenli URL, genellikle %s',
   'Select a plugin' => 'Bir eklenti seçin',
   'Selected for E-Mailing' => 'Email için Seçili',
   'Semicolon' => 'Noktalı Virgül',
-  'Send' => 'Gönder',
   'Send E-Mail Message' => 'Email Gönder',
   'Send E-Mail Messages' => 'Email mesajları gönder',
   'Send New E-Mail' => 'Yeni Email Gönder',
@@ -469,8 +451,6 @@ once FIRST subscripton is completed' => 'Kaydolma emaili Gönder
   'Signup Form Configuration' => 'Giriş Formu Yapılandırması',
   'Signup Info' => 'Kayıt Bilgileri',
   'Signup Messages' => 'Kaydolma Mesajları',
-  'Signups' => 'Kaydolan Sayısı',
-  'Site Title' => 'Site İsmi',
   'Site is temporarily disabled for maintenance' => 'Site bakım nedeniyle geçici olarak çevrim dışıdır',
   'Size of input field' => 'Girdi alanının boyutu',
   'Skip' => 'Atla',
@@ -481,7 +461,6 @@ once FIRST subscripton is completed' => 'Kaydolma emaili Gönder
   'Source' => 'Kaynak',
   'Space' => 'Boşluk',
   'Standard PHP Sessions' => 'Standart PHP Sessionları',
-  'Start Date' => 'Başlangıç Tarihi',
   'Start Date Calculation
 rules for subscription start date calculation.
 MAX date from alternatives will be chosen.
@@ -514,12 +493,10 @@ Press [Skip] to type it manually from scratch.' => 'Bu email şablonu verilen li
 Şablonu varsayılan lisandan[İngilizce] kopyalamak için [Kopyala]ya basın
 Sıfırdan yazmak için [Atla]ya bas.',
   'This field is requred' => 'Bu alan gereklidir',
-  'Thresehold Date' => 'Eşik Tarihi',
   'Tier' => 'Aşama',
   'Title
 displayed to customers' => 'İsim
 Müşteriler Gösterilen',
-  'To' => 'Kime',
   'To order this product user must have an
 when user orders this subscription, it will be checked
 that user has one from the following subscriptions' => 'Bu ürünü sipariş etmek için kullanıcıda bulunması gereken
@@ -560,7 +537,6 @@ bir kupon kodu kullanıcı tarafından kaç kere kullanılır',
   'Username or e-mail address' => 'Kullanıcı adı ya da email adresi',
   'Users' => 'Kullanıcılar',
   'Valid license key are one-line string,starts with L and ends with X' => 'Geçerli lisans anahtarları tek satırdır, L harfi ile başlar X harfi ile biter',
-  'Validation' => 'Onaylama',
   'Value
 use % as wildcard mask' => 'Değer
 % yi wildcard maskesi olarak kullan',

@@ -72,10 +72,8 @@ abstract class Am_Paysystem_Transaction_CreditCard extends Am_Paysystem_Transact
     {
         if ($this->response->getStatus() != 200)
         {
-            $result->setErrorMessages(array("Received invalid response from payment server: " . $this->response->getStatus()));
-            return false;
+            $result->setFailed(array("Received invalid response from payment server: " . $this->response->getStatus()));
         }
-        return true;
     }
     /** @return InvoiceLog */
     function getInvoiceLog()

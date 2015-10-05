@@ -25,6 +25,17 @@ class Bootstrap_Cart extends Am_Module
         parent::deactivate();
     }
 
+    public function onLoadSignupForm(Am_Event $e) {
+
+        $type = $this->getDi()->auth->getUserId() ? SavedForm::D_MEMBER : SavedForm::D_SIGNUP;
+        if (($r = $e->getReturn()) &&
+            $r->isDefault($type) &&
+            $this->getConfig('redirect_to_cart')) {
+
+            Am_Controller::redirectLocation(REL_ROOT_URL . '/cart');
+        }
+    }
+
     public function onAdminMenu(Am_Event $event)
     {
         $event->getMenu()->addPage(array(

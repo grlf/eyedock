@@ -3,17 +3,17 @@ class Am_Paysystem_Action_HtmlTemplate_Checkout extends Am_Paysystem_Action_Html
 {
     protected $_template;
     protected $_path;
-    
-    public function  __construct($path, $template) 
+
+    public function  __construct($path, $template)
     {
         $this->_template = $template;
         $this->_path = $path;
     }
     public function process(Am_Controller $action = null)
-    {        
+    {
         $action->view->addBasePath($this->_path);
-        
-        $action->view->assign($this->getVars());       
+
+        $action->view->assign($this->getVars());
         $action->renderScript($this->_template);
         throw new Am_Exception_Redirect;
     }
@@ -22,11 +22,11 @@ class Am_Paysystem_Action_HtmlTemplate_Checkout extends Am_Paysystem_Action_Html
 class Am_Paysystem_Checkout extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.0';
 
     protected $defaultTitle = 'Checkout';
     protected $defaultDescription = 'electronic payments';
-    
+
     const URL = 'https://payment.checkout.fi';
     const LOG_PREFIX_ERROR = '[Checkout Payment ERROR]. ';
 
@@ -35,7 +35,7 @@ class Am_Paysystem_Checkout extends Am_Paysystem_Abstract
         'DELAYED', 'COUNTRY', 'CURRENCY', 'DEVICE', 'CONTENT', 'TYPE', 'ALGORITHM', 'DELIVERY_DATE', 'FIRSTNAME', 'FAMILYNAME',
         'ADDRESS', 'POSTCODE', 'POSTOFFICE'
     );
-    
+
     public static $coMapIn = array(
         'VERSION', 'STAMP', 'REFERENCE', 'PAYMENT', 'STATUS', 'ALGORITHM'
     );
@@ -55,7 +55,7 @@ class Am_Paysystem_Checkout extends Am_Paysystem_Abstract
     {
         return self::REPORTS_NOT_RECURRING;
     }
-    
+
     public function getSupportedCurrencies()
     {
         return array('EUR');
@@ -109,7 +109,7 @@ class Am_Paysystem_Checkout extends Am_Paysystem_Abstract
 
         $a = new Am_Paysystem_Action_HtmlTemplate_Checkout($this->getDir(), 'payment-checkout-redirect.phtml');
         $a->xml = $xml;
-        $result->setAction($a);       
+        $result->setAction($a);
     }
 
     public function getMac($map, $data)
@@ -153,7 +153,7 @@ CUT;
 }
 
 class Am_Paysystem_Transaction_Checkout extends Am_Paysystem_Transaction_Incoming
-{	
+{
     public function validateSource()
     {
         $mac = $this->getPlugin()->getMac(Am_Paysystem_Checkout::$coMapIn, $this->request->getParams());

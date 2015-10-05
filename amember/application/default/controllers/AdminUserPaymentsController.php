@@ -1,6 +1,6 @@
 <?php
 
-class Am_Grid_Filter_Payments extends Am_Grid_Filter_Abstract
+class Am_Grid_Filter_UserPayments extends Am_Grid_Filter_Abstract
 {
     public function isFiltered()
     {
@@ -148,13 +148,15 @@ class AdminUserPaymentsController extends Am_Controller
 {
     public function checkAdminPermissions(Admin $admin)
     {
-        return $admin->hasPermission('grid_invoice', 'browse');
+        return $admin->hasPermission('grid_invoice', 'browse') ||
+            $admin->hasPermission('grid_access', 'browse') ||
+            $admin->hasPermission('grid_payment', 'browse');
     }
 
     function preDispatch()
     {
         $this->user_id = intval($this->_request->user_id);
-        if (!in_array($this->_request->getActionName(), array('log', 'invoice')))
+        if (!in_array($this->_request->getActionName(), array('log', 'data', 'invoice')))
         {
             if ($this->user_id <= 0)
                 throw new Am_Exception_InputError("user_id is empty in " . get_class($this));
@@ -174,6 +176,8 @@ class AdminUserPaymentsController extends Am_Controller
 
     public function invoiceDetailsAction()
     {
+        $this->getDi()->authAdmin->getUser()->checkPermission('grid_invoice', 'browse');
+
         $this->getDi()->plugins_payment->loadEnabled();
         $this->view->invoice = $this->getDi()->invoiceTable->load($this->getInt('id'));
         $this->view->display('admin/_user_invoices-details.phtml');
@@ -217,7 +221,7 @@ class AdminUserPaymentsController extends Am_Controller
         }
         $grid->addField(new Am_Grid_Field_Date('refund_dattm', ___('Refunded')))->setFormatDatetime();
         $grid->addField('items', ___('Items'));
-        $grid->setFilter(new Am_Grid_Filter_Payments);
+        $grid->setFilter(new Am_Grid_Filter_UserPayments);
 
         $action = new Am_Grid_Action_Export();
         $action->addField(new Am_Grid_Field('dattm', ___('Date Time')))
@@ -326,7 +330,18 @@ class AdminUserPaymentsController extends Am_Controller
             ->setId('add-invoice-paysys_id')
             ->loadOptions(array(''=>'') + $this->getDi()->paysystemList->getOptions());
 
-        $couponEdit = $form->addText('coupon')->setLabel(___('Coupon'));
+        $couponEdit = $form->addText('coupon')->setLabel(___('Coupon'))->setId('p-coupon');
+
+        $gr = $form->addGroup()
+            ->setLabel(___("Discount\n" .
+                'additional discount to invoice total besides coupon'));
+        $gr->setSeparator(' ');
+        $gr->addStatic()
+            ->setContent(___('First Price'));
+        $gr->addText('d_first', array('size' => 4, 'placeholder' => '0'));
+        $gr->addStatic()
+            ->setContent(___('Second Price'));
+        $gr->addText('d_second', array('size' => 4, 'placeholder' => '0'));
 
         $action = $form->addAdvRadio('_action')
             ->setLabel(___('Action'))
@@ -360,6 +375,14 @@ class AdminUserPaymentsController extends Am_Controller
             }).change();
 
         ');
+        $script = <<<CUT
+        $("input#p-coupon").autocomplete({
+                minLength: 2,
+                source: window.rootUrl + "/admin-coupons/autocomplete"
+        });
+CUT;
+        $form->addScript('script')->setScript($script);
+        $form->addAdvCheckbox('skip_pr', null, array('content' => ___('do not validate product requirements for this invoice')));
         $form->addSaveButton();
         $form->setDataSources(array($this->getRequest()));
 
@@ -390,6 +413,14 @@ class AdminUserPaymentsController extends Am_Controller
                 }
 
                 $invoice->comment = $vars['comment'];
+
+                if ($vars['skip_pr'])
+                    $invoice->toggleValidateProductRequirements(false);
+
+                if ($vars['d_first'] || $vars['d_second']) {
+                    $invoice->setDiscount($vars['d_first'], $vars['d_second']);
+                }
+
                 $invoice->calculate();
 
                 switch ($vars['_action']) {
@@ -407,18 +438,6 @@ class AdminUserPaymentsController extends Am_Controller
                             $vars['_action'], __CLASS__, __METHOD__));
                 }
                 $this->getDi()->adminLogTable->log("Add Invoice (#{$invoice->invoice_id}/{$invoice->public_id}, Billing Terms: " . new Am_TermsText($invoice) . ")", 'invoice', $invoice->invoice_id);
-
-                if ($vars['is_add_payment']) {
-                    if($invoice->first_total<=0){
-                        $invoice->addAccessPeriod(new Am_Paysystem_Transaction_Free($this->getDi()->plugins_payment->get($vars['paysys_id'])));
-                    }else{
-                        $transaction = new Am_Paysystem_Transaction_Manual($this->getDi()->plugins_payment->get($vars['paysys_id']));
-                        $transaction->setAmount($invoice->first_total)
-                            ->setReceiptId($vars['receipt'])
-                            ->setTime(new DateTime($vars['tm_added']));
-                        $invoice->addPayment($transaction);
-                    }
-                }
                 return $this->redirectLocation(REL_ROOT_URL . '/admin-user-payments/index/user_id/' . $this->user_id);
             } // if
         } while (false);
@@ -430,16 +449,13 @@ class AdminUserPaymentsController extends Am_Controller
 
     protected function _addPendingInvoice(Invoice $invoice, Am_Form $form, $vars)
     {
-        if (!$vars['paysys_id']) {
-            $form->getElementById('add-invoice-paysys_id')->setError(___('This field is required for choosen action'));
-            return false;
-        }
-
-        try {
-            $invoice->setPaysystem($vars['paysys_id'], false);
-        } catch (Am_Exception_InputError $e) {
-            $form->setError($e->getMessage());
-            return false;
+        if ($vars['paysys_id']) {
+            try {
+                $invoice->setPaysystem($vars['paysys_id'], false);
+            } catch (Am_Exception_InputError $e) {
+                $form->setError($e->getMessage());
+                return false;
+            }
         }
         $errors = $invoice->validate();
         if ($errors) {
@@ -518,6 +534,8 @@ class AdminUserPaymentsController extends Am_Controller
 
     public function calculateAccessDatesAction()
     {
+        $this->getDi()->authAdmin->getUser()->checkPermission('grid_access', 'insert');
+
         $invoice = $this->getDi()->invoiceRecord;
         $invoice->setUser($this->getDi()->userTable->load($this->user_id));
 
@@ -615,6 +633,15 @@ class AdminUserPaymentsController extends Am_Controller
 
         }
 
+        $this->view->aInvoiceBrowse = $this->getDi()->authAdmin->getUser()->hasPermission('grid_invoice', 'browse');
+        $this->view->aInvoiceInsert = $this->getDi()->authAdmin->getUser()->hasPermission('grid_invoice', 'insert');
+        $this->view->aInvoiceEdit = $this->getDi()->authAdmin->getUser()->hasPermission('grid_invoice', 'edit');
+        $this->view->aInvoiceDelete = $this->getDi()->authAdmin->getUser()->hasPermission('grid_invoice', 'delete');
+        $this->view->aAccessBrowse = $this->getDi()->authAdmin->getUser()->hasPermission('grid_access', 'browse');
+        $this->view->aAccessInsert = $this->getDi()->authAdmin->getUser()->hasPermission('grid_access', 'insert');
+        $this->view->aAccessEdit = $this->getDi()->authAdmin->getUser()->hasPermission('grid_access', 'edit');
+        $this->view->aAccessDelete = $this->getDi()->authAdmin->getUser()->hasPermission('grid_access', 'delete');
+
         $this->view->user_id = $this->user_id;
         $this->view->addForm = $this->getAddForm();
         $this->view->accessRecords = $this->getAccessRecords();
@@ -623,7 +650,7 @@ class AdminUserPaymentsController extends Am_Controller
     }
 
     public function changeAccessDateAction(){
-        $this->getDi()->authAdmin->getUser()->checkPermission('grid_payment', 'edit');
+        $this->getDi()->authAdmin->getUser()->checkPermission('grid_access', 'edit');
 
         $this->_response->setHeader("Content-Type", "application/json", true);
 
@@ -674,96 +701,153 @@ class AdminUserPaymentsController extends Am_Controller
 
     public function refundAction()
     {
-        $this->getDi()->authAdmin->getUser()->checkPermission('grid_payment', 'edit');
+        $this->getDi()->authAdmin->getUser()->checkPermission('grid_payment', 'insert');
 
-        $this->invoice_payment_id = $this->getInt('invoice_payment_id');
-        if (!$this->invoice_payment_id)
-            throw new Am_Exception_InputError("Not payment# submitted");
-        $p = $this->getDi()->invoicePaymentTable->load($this->invoice_payment_id);
-        /* @var $p InvoicePayment */
-        if (!$p)
-            throw new Am_Exception_InputError("No payment found");
-        if ($this->user_id != $p->user_id)
-            throw new Am_Exception_InputError("Payment belongs to another customer");
-        if ($p->isRefunded())
-            throw new Am_Exception_InputError("Payment is already refunded");
-        $amount = sprintf('%.2f', $this->_request->get('amount'));
-        if ($p->amount < $amount)
-            throw new Am_Exception_InputError("Refund amount cannot exceed payment amount");
-        if ($this->_request->getInt('manual'))
-        {
-            switch ($type = $this->_request->getFiltered('type'))
-            {
-                case 'refund':
-                case 'chargeback':
-                    $pl = $this->getDi()->plugins_payment->loadEnabled()->get($p->paysys_id);
-                    if (!$pl)
-                        throw new Am_Exception_InputError("Could not load payment plugin [$pl]");
-                    $invoice = $p->getInvoice();
-                    $transaction = new Am_Paysystem_Transaction_Manual($pl);
-                    $transaction->setAmount($amount);
-                    $transaction->setReceiptId($p->receipt_id . '-manual-'.$type);
-                    $transaction->setTime($this->getDi()->dateTime);
-                    if ($type == 'refund')
-                        $invoice->addRefund($transaction, $p->receipt_id);
-                    else
-                        $invoice->addChargeback($transaction, $p->receipt_id);
-                    break;
-                case 'correction':
-                    $this->getDi()->accessTable->deleteBy(array('invoice_payment_id' => $this->invoice_payment_id));
-                    $invoice = $p->getInvoice();
-                    $p->delete();
-                    $invoice->updateStatus();
-                    break;
-                default:
-                    throw new Am_Exception_InputError("Incorrect refund [type] passed:" . $type );
+        do {
+            $this->invoice_payment_id = $this->getInt('invoice_payment_id');
+            if (!$this->invoice_payment_id) {
+                $res = array(
+                    'success' => false,
+                    'text'    => ___("Not payment# submitted"),
+                );
+                continue;
             }
-            $res = array(
-                'success' => true,
-                'text'    => ___("Payment has been successfully refunded"),
-            );
-        } else { // automatic
-            /// ok, now we have validated $p here
-            $pl = $this->getDi()->plugins_payment->loadEnabled()->get($p->paysys_id);
-            if (!$pl)
-                throw new Am_Exception_InputError("Could not load payment plugin [$pl]");
-            /* @var $pl Am_Paysystem_Abstract */
-            $result = new Am_Paysystem_Result;
-            $pl->processRefund($p, $result, $amount);
-
-            if ($result->isSuccess())
+            $p = $this->getDi()->invoicePaymentTable->load($this->invoice_payment_id);
+            /* @var $p InvoicePayment */
+            if (!$p) {
+                $res = array(
+                    'success' => false,
+                    'text'    => ___("No payment found"),
+                );
+                continue;
+            }
+            if ($this->user_id != $p->user_id) {
+                $res = array(
+                    'success' => false,
+                    'text'    => ___("Payment belongs to another customer"),
+                );
+                continue;
+            }
+            if ($p->isFullRefunded()) {
+                $res = array(
+                    'success' => false,
+                    'text'    => ___("Payment is already refunded"),
+                );
+                continue;
+            }
+            $amount = sprintf('%.2f', $this->_request->get('amount'));
+            if ($p->amount < $amount) {
+                $res = array(
+                    'success' => false,
+                    'text'    => ___("Refund amount cannot exceed payment amount"),
+                );
+                continue;
+            }
+            if ($this->_request->getInt('manual'))
             {
-                $p->getInvoice()->addRefund($result->getTransaction(), $p->receipt_id, $amount);
+                $el = new Am_Form_Element_Date;
 
+                $dattm = $el->convertReadableToSQL($this->_request->get('dattm'));
+                if (!$dattm)
+                    $dattm = sqlDate('now');
+                $dattm .= date(' H:i:s');
+                if ($dattm <  $p->dattm){
+                    $res = array(
+                        'success' => false,
+                        'text'    => ___("Refund date cannot be before payment date"),
+                    );
+                    continue;
+                }
+
+                switch ($type = $this->_request->getFiltered('type'))
+                {
+                    case 'refund':
+                    case 'chargeback':
+                        $pl = $this->getDi()->plugins_payment->loadEnabled()->get($p->paysys_id);
+                        if (!$pl) {
+                            $res = array(
+                                'success' => false,
+                                'text'    => ___("Could not load payment plugin [%s]", $pl),
+                            );
+                            continue 2;
+                        }
+                        $invoice = $p->getInvoice();
+                        $transaction = new Am_Paysystem_Transaction_Manual($pl);
+                        $transaction->setAmount($amount);
+                        $transaction->setReceiptId($p->receipt_id . '-manual-'.$type);
+                        $transaction->setTime(new DateTime($dattm));
+                        if ($type == 'refund')
+                            $invoice->addRefund($transaction, $p->receipt_id);
+                        else
+                            $invoice->addChargeback($transaction, $p->receipt_id);
+                        break;
+                    case 'correction':
+                        $this->getDi()->accessTable->deleteBy(array('invoice_payment_id' => $this->invoice_payment_id));
+                        $invoice = $p->getInvoice();
+                        $p->delete();
+                        $invoice->updateStatus();
+                        break;
+                    default:
+                        $res = array(
+                            'success' => false,
+                            'text'    => ___("Incorrect refund [type] passed: %s", $type),
+                        );
+                        continue 2;
+                }
                 $res = array(
                     'success' => true,
                     'text'    => ___("Payment has been successfully refunded"),
                 );
-            } elseif ($result->isAction()) {
-                $action = $result->getAction();
-                if ($action instanceof Am_Paysystem_Action_Redirect)
-                {
+            } else { // automatic
+                /// ok, now we have validated $p here
+                $pl = $this->getDi()->plugins_payment->loadEnabled()->get($p->paysys_id);
+                if (!$pl){
                     $res = array(
-                        'success' => 'redirect',
-                        'url'     => $result->getUrl(),
+                        'success' => false,
+                        'text'    => ___("Could not load payment plugin [%s]", $pl),
                     );
-                } else {// todo handle other actions if necessary
-                    throw new Am_Exception_NotImplemented("Could not handle refund action " . get_class($action));
+                    continue;
                 }
-            } elseif ($result->isFailure()) {
-                $res = array(
-                    'success' => false,
-                    'text' => join(";", $result->getErrorMessages()),
-                );
+                /* @var $pl Am_Paysystem_Abstract */
+                $result = new Am_Paysystem_Result;
+                $pl->processRefund($p, $result, $amount);
+
+                if ($result->isSuccess())
+                {
+                    if ($transaction = $result->getTransaction()) {
+                        $p->getInvoice()->addRefund($result->getTransaction(), $p->receipt_id, $amount);
+                    }
+
+                    $res = array(
+                        'success' => true,
+                        'text'    => ___("Payment has been successfully refunded"),
+                    );
+                } elseif ($result->isAction()) {
+                    $action = $result->getAction();
+                    if ($action instanceof Am_Paysystem_Action_Redirect)
+                    {
+                        $res = array(
+                            'success' => 'redirect',
+                            'url'     => $result->getUrl(),
+                        );
+                    } else {// todo handle other actions if necessary
+                        throw new Am_Exception_NotImplemented("Could not handle refund action " . get_class($action));
+                    }
+                } elseif ($result->isFailure()) {
+                    $res = array(
+                        'success' => false,
+                        'text' => join(";", $result->getErrorMessages()),
+                    );
+                }
             }
-        }
+        } while (false);
         $this->_response->setHeader("Content-Type", "application/json", true);
         echo $this->getJson($res);
     }
 
     function addaccessAction()
     {
-        $this->getDi()->authAdmin->getUser()->checkPermission('grid_payment', 'insert');
+        $this->getDi()->authAdmin->getUser()->checkPermission('grid_access', 'insert');
 
         $form = $this->createAccessForm();
         if ($form->validate())
@@ -773,6 +857,8 @@ class AdminUserPaymentsController extends Am_Controller
             $access->setForInsert($val);
             unset($access->save);
             $access->user_id = $this->user_id;
+            $access->data()->set('added', $this->getDi()->sqlDateTime);
+            $access->data()->set('admin', $this->getDi()->authAdmin->getUser()->login);
             $access->insert();
             $this->getDi()->adminLogTable->log("Add Access (user #{$access->user_id}, product #{$access->product_id}, {$access->begin_date} - {$access->expire_date})", 'access', $access->access_id);
             if (!$val['does_not_send_autoresponder']) {
@@ -790,7 +876,7 @@ class AdminUserPaymentsController extends Am_Controller
 
     function delaccessAction()
     {
-        $this->getDi()->authAdmin->getUser()->checkPermission('grid_payment', 'delete');
+        $this->getDi()->authAdmin->getUser()->checkPermission('grid_access', 'delete');
 
         $access = $this->getDi()->accessTable->load($this->getInt('id'));
         if ($access->user_id != $this->user_id)
@@ -868,6 +954,8 @@ class AdminUserPaymentsController extends Am_Controller
 
     function startRecurringAction()
     {
+        $this->getDi()->authAdmin->getUser()->checkPermission('grid_invoice', 'edit');
+
         if(!defined('AM_ALLOW_RESTART_CANCELLED'))
         {
             Am_Controller::ajaxResponse(array('ok' => false, 'msg' => ___('Restart is not allowed')));
@@ -886,6 +974,7 @@ class AdminUserPaymentsController extends Am_Controller
     function changeRebillDateAction()
     {
         $this->getDi()->authAdmin->getUser()->checkPermission('grid_invoice', 'edit');
+
         $invoice_id = $this->_request->getInt('invoice_id');
         $form = new Am_Form_Admin;
         $form->addDate('rebill_date');
@@ -921,10 +1010,29 @@ class AdminUserPaymentsController extends Am_Controller
 
     function logAction()
     {
-        $this->getDi()->authAdmin->getUser()->checkPermission(Am_Auth_Admin::PERM_LOGS);
+        $this->getDi()->authAdmin->getUser()->checkPermission(Am_Auth_Admin::PERM_LOGS_INVOICE);
         $invoice = $this->getDi()->invoiceTable->load($this->_request->getInt('invoice_id'));
         $this->getResponse()->setHeader('Content-type', 'text/xml');
         echo $invoice->exportXmlLog();
+    }
+
+    function dataAction()
+    {
+        $this->getDi()->authAdmin->getUser()->checkPermission(Am_Auth_Admin::PERM_LOGS_INVOICE);
+        $invoice = $this->getDi()->invoiceTable->load($this->_request->getInt('invoice_id'));
+        $this->getResponse()->setHeader('Content-type', 'text/xml');
+        $x = new XMLWriter();
+        $x->openMemory();
+        $x->setIndent(true);
+        $x->startElement('invoice-data-items');
+        foreach ($invoice->data()->getAll() as $k => $v) {
+            $x->startElement('item');
+            $x->writeAttribute('name', $k);
+            $x->text($v);
+            $x->endElement();
+        }
+        $x->endElement();
+        echo $x->flush();
     }
 
     function approveAction()
@@ -943,9 +1051,17 @@ class AdminUserPaymentsController extends Am_Controller
     function invoiceAction()
     {
         $this->getDi()->authAdmin->getUser()->checkPermission('grid_invoice', 'browse');
-        $payment = $this->getDi()->invoicePaymentTable->load($this->_request->getInt('payment_id'));
+        if($payment_id = $this->_request->getInt('payment_id'))
+        {
+            $payment = $this->getDi()->invoicePaymentTable->load($this->_request->getInt('payment_id'));
+        }
+        else if($refund_id = $this->_request->getInt('refund_id'))
+        {
+            $payment = $this->getDi()->invoiceRefundTable->load($this->_request->getInt('refund_id'));
+        }
 
-        $pdfInvoice = new Am_Pdf_Invoice($payment);
+        $this->getDi()->plugins_payment->loadEnabled()->getAllEnabled();
+        $pdfInvoice = Am_Pdf_Invoice::create($payment);
         $pdfInvoice->setDi($this->getDi());
 
         $this->_helper->sendFile->sendData($pdfInvoice->render(), 'application/pdf', $pdfInvoice->getFileName());
@@ -953,7 +1069,7 @@ class AdminUserPaymentsController extends Am_Controller
 
     function replaceProductAction()
     {
-        $this->getDi()->authAdmin->getUser()->checkPermission('grid_payment',  'edit');
+        $this->getDi()->authAdmin->getUser()->checkPermission('grid_invoice',  'edit');
 
         $item = $this->getDi()->invoiceItemTable->load($this->_request->getInt('id'));
         $pr = $this->getDi()->productTable->load($item->item_id);

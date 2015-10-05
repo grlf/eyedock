@@ -3,7 +3,6 @@
   '%d days after expiration' => '%d Tage nach Ablauf',
   '%d days before expiration' => '%d Tage vor Ablauf',
   '%d user(s) matches your search' => '%d Benutzer entspricht Ihrer Suche',
-  '%d-th day' => '%d-ter Tag',
   '%d-th subscription day' => '%d-th Zeichnungstag',
   '%s Plugins' => '%s Plugins',
   '-- Please Select --' => '-- Bitte wählen --',
@@ -24,16 +23,15 @@
   'Add Subscription' => 'Abonnement hinzufügen',
   'Add User Fields' => 'Felder hinzufügen',
   'Add points to affiliate for each %s in payment' => 'Punkte zu Partner für jede %s in Zahlungen hinzufügen',
-  'Added' => 'Hinzugefügt',
   'Additional' => 'Zusätzlich',
-  'Additional Fields' => 'Zusätzliche Felder',
-  'Additionally to "Access", add "Invoice" and "Payment" record with given %s amount, like they have really made a payment' => 'Zusätzlich zu "Access", füge Datensatz "Rechnung" und "Zahlung" mit angegebenen Betrag %s hinzu, als ob eine Zahlung gemacht wurde',
+  'Address' => 'Adresse',
   'Admin Accounts' => 'Admin-Accounts',
   'Admin E-Mail Address
 used to send email notifications to admin
 and as default outgoing address' => 'Admin E-Mail-Adresse
 verwendet, um E-Mail-Benachrichtigungen an admin
 sendenund als Standard ausgehende IP-Adresse',
+  'Admin Email' => 'Administrator E-Mail',
   'Admin Free Subscription Notifications
 to admin once free signup is completed' => 'Verwalten kostenloser Abonnement-Benachrichtigungen
 zum Verwalten, sobald kostenlose Registrierung abgeschlossen',
@@ -43,7 +41,6 @@ zum Verwalten, sobald kostenlose Registrierung abgeschlossen',
 to admin once payment is received' => 'Admin Zahlungsbestätigung
 an Admin, sobald die Zahlung eingegangen ist',
   'Admin Settings' => 'Die Einstellungen des Administrators',
-  'Admin Username' => 'Der Benutzername des Administrators',
   'Admin notification' => 'Admin-Benachrichtigung',
   'Admin username must be alphanumeric in small caps' => 'Benutzername des Administrators darf nur kleine, alphanumerische Zeichen enhalten',
   'Administrator Login' => 'Administrator Anmeldung',
@@ -54,11 +51,12 @@ an Admin, sobald die Zahlung eingegangen ist',
   'Affiliate Cookie Lifetime
 days to store cookies about referred affiliate' => 'Lebensdauer Partner-Cookie
 Anzahl Tage, um Cookies über die Partner zu speichern',
+  'Affiliate Information' => 'Partner-Information',
   'Affiliate Registration E-Mail' => 'Partner-Registrierungs-E-Mail',
   'Affiliates Payout Day
 choose a day of month when payout is generated' => 'Partner-Auszahlungs-Tag
 wählen Sie einen Tag im Monat, an dem die Auszahlung erzeugt wird',
-  'Affiliates Signup Type' => 'Partner-Registrierungs-Typ',
+  'Affiliates Signup Type' => 'Partner-Einschreibungstyp',
   'After making any changes to htpasswd protected areas, please run [Utiltites->Rebuild Db] to refresh htpasswd file' => 'Nachdem Sie Änderungen an durch htpasswd geschütze Orte gemacht haben, führen Sie bitte [Nützliche Tools -> DB erneuern] aus, um die htpasswd-Datei zu aktualisieren',
   'All Subscription Period' => 'Alle Abonnement-Zeiträume',
   'All new users automatically become affiliates' => 'Alle neue Benutzer werden automatisch Partner',
@@ -136,6 +134,7 @@ zwischen 5 und 32',
   'Commission
 % of commission received by referred affiliate' => 'Kommission
 % der Kommission vom zugehörigen Partner erhalten',
+  'Commission earned' => 'Kommission verdient',
   'Commission for First Payment
 calculated for first payment in each invoice' => 'Kommission für die erste Zahlung
 berechnet für die erste Zahlung in jeder Rechnung',
@@ -143,9 +142,6 @@ berechnet für die erste Zahlung in jeder Rechnung',
 calculated for first customer invoice only' => 'Kommission für Kostenlose Anmeldung
 wird nur für die ersten Kunden Rechnung berechnet',
   'Commission for Rebills' => 'Kommission für erneuten Rechnungen',
-  'Company Logo for Invoice
-it must be png/jpeg/tiff file (%s)' => 'Firmenlogo für Rechnung
-es muss png / JPEG / TIFF-Datei (%s) werden',
   'Conditions' => 'Konditionen',
   'Configuration' => 'Konfiguration',
   'Configured License Keys' => 'Eingetragene Lizenzschlüssel',
@@ -168,7 +164,7 @@ wie oft ein Coupon verwendet werden kann',
   'Create Folder' => 'Ordner erstellen',
   'Create Session Key' => 'Einmalschlüssel erstellen',
   'Create ticket as' => 'Neues Ticket erstellen als',
-  'Currency' => 'Währung',
+  'Credit' => 'Haben',
   'Currency Exchange Rates' => 'Wechselkurse',
   'Custom Bold Font for Invoice (optional)' => 'Eigene fette Schrift für Rechnung (optional)',
   'Custom Commission Rules added' => 'Benutzerdefinierte Kommissions-Regeln hinzugefügt',
@@ -180,7 +176,6 @@ halten leer zum ursprünglichen Titel verwenden',
   'Customer' => 'Kunde',
   'Customize Dashboard' => 'Startseite personalisieren',
   'Daily' => 'Täglich',
-  'Dashboard' => 'Instrumententafel',
   'Date Time' => 'Uhrzeit',
   'Date to Purge
 all records prior to this date will be removed from selected tables' => 'Datum zur Löschung
@@ -190,9 +185,10 @@ date range when coupon can be used' => 'Datum
 in welchem Zeitraum kann der Coupon benutzt werden',
   'Dates can be in the folowing formats' => 'Datumseinträge können folgende Formate haben',
   'Days to Send' => 'Versanddauer',
+  'Debit' => 'Soll',
   'Default - user clicks a link to become affiliate' => 'Standardeinstellung -  Der Benutzer klickt auf einen Link, um Partner werden',
   'Default Billing Plan' => 'Standard Fakturierungsplan',
-  'Default Commission' => 'Basiskommission',
+  'Default Commission' => 'Standard Kommission',
   'Default Locale' => 'Standard-Gebietsschema',
   'Default Signup' => 'Standard Anmeldung',
   'Default for Members' => 'Standard für Mitglieder',
@@ -218,7 +214,7 @@ when user orders this subscription, it will be checked
 that he has no any from the following subscriptions' => 'Bestellung dieses Produkts Nicht gestatten, wenn Benutzer hat
 wenn der Benutzer Aufträge dieses Abonnement, wird es überprüft werden
 dass er keine jede der folgenden Abos',
-  'Display' => 'Anzeige',
+  'Display' => 'Anzeigen',
   'Display Language Choice' => 'Die Sprachen Wahl zeigen',
   'Display Mode' => 'Anzeigemodus',
   'Display error message' => 'Fehlermeldung anzeigen',
@@ -256,16 +252,14 @@ verwendet werden, um des Namens des Absenders in ausgehenden E-Mails angezeigt',
   'Edit Custom Commission Rules' => 'Benutzerdefinierte Kommissions Regeln editieren',
   'Edit Groups' => 'Gruppen bearbeiten',
   'Edit Messages' => 'Nachrichten bearbeiten',
-  'Email' => 'E-Mail',
+  'Email Address' => 'E-Mail-Adresse',
   'Email Backup Frequency' => 'E-mail Sicherungs Häufigkeit ',
   'Email Sending method
 PLEASE DO NOT CHANGE if emailing from aMember works' => 'E-Mail versenden Methode
 Bitte ändern Sie NICHT, wenn E-Mails aus aMember Werke',
   'Email Sent' => 'E-Mail gesendet',
-  'Email Subject' => 'Email Betreff',
   'Email address is required field.' => 'E-Mail-Adresse ist erforderlich.',
   'Enable plugins if necessary' => 'Plugins aktivieren falls nötig',
-  'End Date' => 'Endzeit',
   'Enter Maintenance Mode' => 'Starten Sie die Aufrechterhaltung',
   'Enter admin password for confirmation' => 'Geben Sie das Admin-Passwort zur Bestätigung ein',
   'Error Log' => 'Fehlerprotokoll',
@@ -279,10 +273,8 @@ Bitte ändern Sie NICHT, wenn E-Mails aus aMember Werke',
   'Exchange Rate
 enter cost of 1 (one) %s' => 'Wechselkurs
 Geben Sie Kosten für 1 (einen) %s',
-  'Field' => 'Feld',
   'Field Name' => 'Feldname',
   'Field Title' => 'Feld Titel',
-  'Field Type' => 'Feldtyp',
   'Field Values' => 'Feldwerte',
   'File
 (max filesize %s)' => 'Datei
@@ -317,7 +309,6 @@ Sie erhalten Ihren Schlüssel im %sMitgliederbereich%s',
   'Folder URL' => 'Ordner-URL',
   'Form Type' => 'Formulartyp',
   'Forms Editor' => 'Formular Editor',
-  'From' => 'Von',
   'Future' => 'Zukunft',
   'General' => 'Allgemein',
   'General Link' => 'Allgemeiner Link',
@@ -374,7 +365,6 @@ Existierende Rechnungen sind nicht betroffen.
   'Is Disabled?
 disable product ordering, hide it from signup and renewal forms' => 'Ist deaktiviert?
 deaktiviere Produktsortierung, entferne sie von Anmeldung und Erneuerungsformularen',
-  'Is Paid?' => 'Ist bezahlt?',
   'Is Unsubscribed?
 if enabled, this will
 unsubscribe the customer from:
@@ -401,7 +391,6 @@ abbestellen den Kunden aus:
   'Last existing subscription date of this product' => 'Letztes bestehendes Abonnement Datum dieses Produkts',
   'Last expiration date in the renewal group' => 'Letztes Ablaufdatum der Erneuerungs-Gruppe',
   'Last login' => 'Letzte Anmeldung',
-  'Leads' => 'Kundenkontakte',
   'Length of admin password must be from %d to %d' => 'Die Länge des Administrator-Passworts muss zwischen %d und %d liegen',
   'Length of username must be from %d to %d' => 'Die Länge des Benutzernames muss zwischen %d und %d liegen',
   'Light Boxes' => 'Lightboxen',
@@ -418,8 +407,8 @@ abbestellen den Kunden aus:
   'Log In' => 'Anmelden',
   'Log Outgoing E-Mail Messages for ... days' => 'Login für ausgehende E-Mail-Nachrichten für ... Tage',
   'Log in' => 'Anmelden',
+  'Logged in as %s' => 'Angemeldet als %s',
   'Login Page' => 'Login Seite',
-  'Login as User' => 'Login als Benutzer',
   'Logs' => 'Logs',
   'Logs: Access' => 'Logs: Zugriff',
   'Logs: Admin Log' => 'Logs: Admin-Log',
@@ -483,7 +472,7 @@ schicken, wenn dieser ein neues Ticket erstellt',
   'OTO - Offer to purchase additional product (with optional discount)' => 'OTO - Angebot weitere Produkte zu kaufen (mit optionaler Ermäßigung)',
   'One field can be assigned to one column only, you assigned following fields to several columns: ' => 'Ein Feld kann nur einer Spalte zugeordnet werden, Sie orndeten folgende Felder verschiedenen Spalten zu:',
   'One field can be assigned to one column only.' => 'Ein Feld kann nur einer Spalte zugeordnet werden.',
-  'Only admin can enable user as an affiliate' => 'Nur der Administrator kann einen Benutzer als Partner aktivieren',
+  'Only admin can enable user as an affiliate' => 'Nur der Administrator kann den Benutzer zum Partner machen',
   'Optional Conditions (By Paysystem)' => 'Optionale Konditionen (bzgl. Bezahlsystem)',
   'Optional Conditions (By Product)' => 'Optionale Konditionen (bzgl. Produkt)',
   'Outgoing Email Address
@@ -492,6 +481,7 @@ to customers. If empty, [Admin E-Mail Address] is used' => 'Ausgehende E-Mail-Ad
 verwendet als Von:-Adresse für das Versenden von E-Mail-Nachrichten
 zu den Kunden. Wenn leer, wird [Admin E-Mail-Adresse] verwendet',
   'Overwrite User if Exist User with Same Login' => 'Überschreiben des Benutzers, wenn ein Benutzer mit gleichen Anmeldung existiert',
+  'PDF Invoice' => 'Rechnung im PDF-Format',
   'Paid' => 'Bezahlt',
   'Password Length' => 'Passwort Länge',
   'Password changed' => 'Passwort geändert',
@@ -505,7 +495,6 @@ zu den Kunden. Wenn leer, wird [Admin E-Mail-Adresse] verwendet',
   'Payment#/Receipt#' => 'Zahlungs-/Rechnungs-Nr.',
   'Payout %d Details' => 'Details Auszahlung %d',
   'Payout Details' => 'Auszahlungs-Details',
-  'Payout Method' => 'Zahlungsmethode',
   'Paysystem' => 'Zahlungssystem',
   'Pending Invoice Notification Rules' => 'Benachrichtigungs-Regeln ausstehender Rechnungen',
   'Permissions' => 'Erlaubnisse',
@@ -545,7 +534,6 @@ Einstiegs- und Folgepreis sind Gesamtsumme der angegebenen Menge',
   'Quit Maintenance Mode' => 'Beenden der Aufrechterhaltung',
   'REST API Documentation' => 'REST API Dokumentation',
   'RadioButtons' => 'Radio Knöpfe',
-  'ReCaptcha' => 'ReCaptcha',
   'Rebill' => 'Erneute Rechnung',
   'Rebill Second Price until cancelled' => 'Erneute Zahlung zweiter Preis bis auf Widerruf',
   'Rebill Times
@@ -559,7 +547,6 @@ auf dem zweiten Preis auftreten wird',
   'Recipients' => 'Empfänger ',
   'Record Type' => 'Datensatztyp',
   'Records Deleted Sucessfully' => 'Datensätze erfolgreich gelöscht',
-  'Recurring' => 'Wiederkehrend',
   'Redirect URL' => 'Redirect URL',
   'Referrer' => 'Der Referrer',
   'Refund Amount' => 'Erstattungsbetrag',
@@ -625,7 +612,6 @@ sichere URL, in der Regel %s',
   'Select option' => 'Option wählen',
   'Selected for E-Mailing' => 'Ausgewählt für E-Mailing',
   'Semicolon' => 'Semikolon',
-  'Send' => 'Senden',
   'Send Cancel Notifications to Admin
 send email to admin when recurring subscription cancelled by member' => 'Kündigungsbestätigung an Admin',
   'Send E-Mail Message' => 'Senden Sie E-Mail Nachricht',
@@ -668,8 +654,6 @@ Diese wird zum Vor- und Nachnamen des zugehörigen Admins hinzugefügt',
   'Signup Form Configuration' => 'Anmeldeformular Konfiguration',
   'Signup Info' => 'Anmeldungs Information',
   'Signup Messages' => 'Anmeldenachrichten',
-  'Signups' => 'Anmeldungen',
-  'Site Title' => 'Titel der Seite',
   'Site is temporarily disabled for maintenance' => 'Seite ist vorübergehend für Wartungsarbeiten deaktiviert',
   'Size' => 'Größe',
   'Size of input field' => 'Größe des Eingabefeldes',
@@ -681,7 +665,6 @@ Diese wird zum Vor- und Nachnamen des zugehörigen Admins hinzugefügt',
   'Source' => 'Quelle',
   'Space' => 'Leerzeichen',
   'Standard PHP Sessions' => 'Standard-PHP-Sitzungen',
-  'Start Date' => 'Anfangsdatum',
   'Start Date Calculation
 rules for subscription start date calculation.
 MAX date from alternatives will be chosen.
@@ -694,6 +677,7 @@ Diese Einstellung hat keine Wirkung für wiederkehrende Abonnements Produktverf�
   'Step %d of %d' => 'Schritt %d von %d',
   'Stop Recurring' => 'Wiederkehrung stoppen',
   'String' => 'Reihung',
+  'Subaffiliate' => 'Subpartner',
   'Submitting...' => 'Einreichen ...',
   'Subscription' => 'Abonnement',
   'Subscription field should have numeric value which represent subscription in current installation. You can find these values at %sManage Products%s page, column #.' => 'Eingabefeld für Abonnement muss numerischen Wert aufweisen, der Abonnement in derzeitiger Installation repräsentiert. Sie finden diese Werte unter %sProdukte verwalten%s, Spalte #.',
@@ -706,7 +690,6 @@ wird zusätzlich angerechnet, wenn Kunde [Von]->[Nach] Plan wechselt
 aMember wird nicht den Einstiegspreis bei der Aufwertung erheben, nutzen Sie den Aufpreis',
   'Table' => 'Tabelle',
   'Tabulation' => 'Tabellierung ',
-  'Tax Id' => 'Steuernummer',
   'Template' => 'Mustervorlage ',
   'Template
 alternative template for signup page' => 'Vorlage
@@ -727,14 +710,12 @@ Press [Skip] to type it manually from scratch.' => 'Diese E-Mail Mustervorlage i
 Drücken Sie [Kopie], um Mustervorlage  von Standardsprache zu kopieren [English]
 Drücken Sie [Auslassen], um  manuell zu tippen.',
   'This field is requred' => 'Dieses Feld ist erforderlich',
-  'Thresehold Date' => 'Datum des Schwellwerts',
-  'Ticket#' => 'Ticket-Nr',
+  'Ticket#' => 'Ticket#',
   'Tier' => 'Ebene',
   'Title
 displayed to customers' => 'Titel
 für Kunden angezeigt',
   'Title of Report for your Reference' => 'Titel des Berichts zur Information',
-  'To' => 'An',
   'To order this product user must have an
 when user orders this subscription, it will be checked
 that user has one from the following subscriptions' => 'Um dieses Produkt  zu bestellen muss der Benutzer über eine verfügen
@@ -773,7 +754,6 @@ dass Benutzer hat eine aus der folgenden Abos',
   'Use Global Settings' => 'Globale Einstellungen nutzen',
   'Use this %slink%s to delete data from aMember v4 database and use clean database for import' => 'Benutze diesen %slink%s, um Daten aus der aMember v4-Datenbank zu löschen und eine bereinigte Datenbank zum Import zu nutzen',
   'Useful for invoices with non-Latin symbols' => 'Nützlich für Rechnungen ohne lateinische Zeichen',
-  'User' => 'Benutzer',
   'User Coupon Usage Count
 how many times a coupon code can be used by customer' => 'Anzahl Verwendungen eines Coupons pro Nutzer
 wie oft ein Coupon pro Nutzer verwendet werden kann',
@@ -784,6 +764,7 @@ wie oft ein Coupon pro Nutzer verwendet werden kann',
   'User had access to the following products' => 'Benutzer hatte Zugang zu den folgenden Produkten',
   'User is locked' => 'Benutzer ist gesperrt',
   'User is not approved' => 'Benutzer ist nicht freigegeben',
+  'User is not found in database' => 'Der Benutzer ist nicht in der Datenbank gefunden',
   'User notification' => 'Nutzer-Benachrichtigung',
   'User-Affiliate Relation Lifetime
 how long (in days) calculate commission for referred affiliate (default: 0 - forever)' => 'Benutzer-Partner-Beziehungsdauer
@@ -794,7 +775,6 @@ Anzahl (in Tagen): berechne Kommissionen für zugehörige Partner (Vorgabe: 0 - 
   'Users Report' => 'Benutzer-Bericht',
   'Utilities' => 'Nützliche Tools',
   'Valid license key are one-line string,starts with L and ends with X' => 'Gültige Lizenzschlüssel sind einzeilig, beginnen mit L und enden mit X',
-  'Validation' => 'Bestätigung',
   'Value
 use % as wildcard mask' => 'Wert
 verwende % als Platzhalter',

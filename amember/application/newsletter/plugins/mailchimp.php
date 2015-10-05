@@ -30,12 +30,17 @@ class Am_Newsletter_Plugin_Mailchimp extends Am_Newsletter_Plugin
                 'Read more: <a href="http://kb.mailchimp.com/article/what-is-ecommerce360-and-how-does-it-work-with-mailchimp/">on mailchimp site</a>'
                 )
             );
-        
+
     }
     /** @return Am_Plugin_Mailchimp */
     function getApi()
     {
         return new Am_Mailchimp_Api($this);
+    }
+
+    function isConfigured()
+    {
+        return (bool) $this->getConfig('api_key');
     }
 
     public function changeEmail(User $user, $oldEmail, $newEmail)

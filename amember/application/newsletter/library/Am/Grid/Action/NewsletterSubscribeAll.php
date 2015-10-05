@@ -34,14 +34,14 @@ class Am_Grid_Action_NewsletterSubscribeAll extends Am_Grid_Action_Abstract
     protected function doSubscribe()
     {
         $batch = new Am_BatchProcessor(array($this, '_handleAll'), 10);
-        $page = $this->grid->getRequest()->getInt('group_page');
+        $page = $this->grid->getRequest()->getInt('group_context');
         if ($batch->run($page))
         {
             echo ___('DONE')."." ;
         } else {
             echo ($page*$this->batchCount). ' ' . ___('records processed.');
             echo $this->getAutoClickScript(5, 'input#group-action-continue');
-            echo $this->renderConfirmationForm(___('Continue'), $page);
+            echo $this->renderContinueForm(___('Continue'), $page);
         }
     }
     

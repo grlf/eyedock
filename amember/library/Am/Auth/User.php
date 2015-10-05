@@ -48,6 +48,7 @@ class Am_Auth_User extends Am_Auth_Abstract
     public function onIpCountExceeded(User $user)
     {
         if ($user->is_locked < 0) return; // auto-lock disabled
+
         if ($this->getDi()->store->get('on-ip-count-exceeded-' . $user->pk())) return; //action already done
         $this->getDi()->store->set('on-ip-count-exceeded-' . $user->pk(), 1, '+20 minutes');
 
@@ -91,6 +92,7 @@ class Am_Auth_User extends Am_Auth_Abstract
             $accessLog = $this->getDi()->accessLogTable;
             $accessLog->logOnce($user->user_id, $ip);
             if (($user->is_locked >=0)
+                        && $user->disable_lock_until < $this->getDi()->sqlDateTime
                         && $accessLog->isIpCountExceeded($user->user_id, $ip))
             {
                 $this->onIpCountExceeded($user);
@@ -117,9 +119,10 @@ class Am_Auth_User extends Am_Auth_Abstract
         {
             $ip = $this->getDi()->request->getClientIp();
             $user->last_ip = preg_replace('/[^0-9.]+/', '', $ip);
+            $user->last_user_agent = @$_SERVER['HTTP_USER_AGENT'];
             $user->last_login = $this->getDi()->sqlDateTime;
             $user->last_session = Zend_Session::getId();
-            $user->updateSelectedFields(array('last_ip', 'last_login', 'last_session'));
+            $user->updateSelectedFields(array('last_ip', 'last_user_agent', 'last_login', 'last_session'));
         }
         $this->getDi()->hook->call(
             new Am_Event_AuthAfterLogin($this->getUser(), $this->plaintextPass));

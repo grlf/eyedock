@@ -2,7 +2,7 @@
 
 /**
  * User menu at top of member controller
- * @package Am_Utils 
+ * @package Am_Utils
  */
 class Am_Navigation_User extends Zend_Navigation
 {
@@ -11,16 +11,52 @@ class Am_Navigation_User extends Zend_Navigation
         $this->addPage(array(
             'id' => 'member',
             'controller' => 'member',
-            'label' => ___('Main Page'),
+            'label' => ___('Dashboard'),
             'order' => 0
         ));
-        $this->addPage(array(
-            'id' => 'add-renew',
-            'controller' => 'signup',
-            'action' => 'index',
-            'label' => ___('Add/Renew Subscription'),
-            'order' => 100,
-        ));
+        $forms = Am_Di::getInstance()->savedFormTable->findBy(array(
+            'type' => SavedForm::T_SIGNUP,
+            'hide' => 0));
+        if (!$forms) {
+            //nop
+        } elseif (count($forms) == 1) {
+            list($f) = $forms;
+            $page = array(
+                'id' => 'add-renew',
+                'controller' => 'signup',
+                'action' => 'index',
+                'route' => 'signup',
+                'label' => ___('Add/Renew Subscription'),
+                'order' => 100,
+            );
+            if (!$f->isDefault(SavedForm::D_MEMBER)) {
+                $page['params'] = array(
+                    'c' => $f->code
+                );
+            }
+            $this->addPage($page);
+        } else {
+            $pages = array();
+            foreach ($forms as $f) {
+                $params = $f->isDefault(SavedForm::D_MEMBER) ?
+                    array() : array('c' => $f->code);
+                $pages[] = array(
+                    'id' => 'add-renew-' . ($f->code ? $f->code : 'default'),
+                    'label' => ___($f->title),
+                    'controller' => 'signup',
+                    'action' => 'index',
+                    'route' => 'signup',
+                    'params' => $params
+                );
+            }
+            $this->addPage(array(
+                'id' => 'add-renew',
+                'uri' => 'javascript:;',
+                'label' => ___('Add/Renew Subscription'),
+                'order' => 100,
+                'pages' => $pages
+            ));
+        }
         $this->addPage(array(
             'id' => 'payment-history',
             'controller' => 'member',
@@ -28,12 +64,49 @@ class Am_Navigation_User extends Zend_Navigation
             'label' => ___('Payments History'),
             'order' => 200,
         ));
-        $this->addPage(array(
-            'id' => 'profile',
-            'controller' => 'profile',
-            'label' => ___('Edit Profile'),
-            'order' => 300,
-        ));
+
+        $forms = Am_Di::getInstance()->savedFormTable->findBy(array(
+            'type' => SavedForm::T_PROFILE,
+            'hide' => 0));
+        if (!$forms) {
+            //nop
+        } elseif (count($forms) == 1) {
+            list($f) = $forms;
+            $page = array(
+                'id' => 'profile',
+                'controller' => 'profile',
+                'route' => 'profile',
+                'label' => ___('Edit Profile'),
+                'order' => 300,
+            );
+            if (!$f->isDefault(SavedForm::D_PROFILE)) {
+                $page['params'] = array(
+                    'c' => $f->code
+                );
+            }
+            $this->addPage($page);
+        } else {
+            $pages = array();
+            foreach ($forms as $f) {
+                $params = $f->isDefault(SavedForm::D_PROFILE) ?
+                    array() : array('c' => $f->code);
+                $pages[] = array(
+                    'id' => 'profile-' . ($f->code ? $f->code : 'default'),
+                    'label' => ___($f->title),
+                    'controller' => 'profile',
+                    'route' => 'profile',
+                    'params' => $params
+                );
+            }
+
+            $this->addPage(array(
+                'id' => 'profile',
+                'uri' => 'javascript:;',
+                'label' => ___('Edit Profile'),
+                'order' => 300,
+                'pages' => $pages
+            ));
+        }
 
         try {
             $user = Am_Di::getInstance()->user;
@@ -54,9 +127,9 @@ class Am_Navigation_User extends Zend_Navigation
 
 
         Am_Di::getInstance()->hook->call(Am_Event::USER_MENU, array(
-            'menu' => $this, 
+            'menu' => $this,
             'user' => $user));
-        
+
         /// workaround against using the current route for generating urls
         foreach (new RecursiveIteratorIterator($this, RecursiveIteratorIterator::SELF_FIRST) as $child)
             if ($child instanceof Zend_Navigation_Page_Mvc && $child->getRoute()===null)

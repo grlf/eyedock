@@ -111,10 +111,11 @@ class Am_Auth_Admin extends Am_Auth_Abstract
             $this->permissions = array();
             foreach (array('_u'  => ___('Users'),
                            '_invoice' => ___('Invoices'), 
-                           '_payment' => ___('Payments'), 
+                           '_payment' => ___('Payments/Refunds'),
                            '_product' => ___('Products'), 
                            '_content' => ___('Content'), 
-                           '_coupon' => ___('Coupons'), 
+                           '_coupon' => ___('Coupons'),
+                           '_access' => ___('Access')
                         ) as $k => $v)
                 $this->permissions['grid'.$k] = array(
                     '__label' => $v,
@@ -125,6 +126,7 @@ class Am_Auth_Admin extends Am_Auth_Abstract
                     'export' => ___('Export'),
                 );
 
+            unset($this->permissions['grid_access']['export']);
             $this->permissions['grid_u']['merge'] = ___('Merge');
             $this->permissions['grid_u']['login-as'] = ___('Login As User');
             

@@ -26,7 +26,7 @@ class AffClickTable extends Am_Table {
         return parent::insert($values, $returnInserted);
     }
     
-    function log(User $aff, AffBanner $banner = null, $referrer = null)
+    function log(User $aff, AffBanner $banner = null, $referrer = null, $keyword_id = null)
     {
         $this->_db->query("INSERT INTO ?_aff_click
             SET
@@ -34,12 +34,14 @@ class AffClickTable extends Am_Table {
                 time=?,
                 banner_id=?d,
                 remote_addr=?,
-                referer=?
+                referer=?,
+                keyword_id = ?
             ", 
             $aff->pk(), 
             $this->getDi()->sqlDateTime,
             $banner ? $banner->pk() : null, 
-            $_SERVER['REMOTE_ADDR'], ($referrer ? $referrer : $_SERVER['HTTP_REFERER'])
+            $_SERVER['REMOTE_ADDR'], ($referrer ? $referrer : $_SERVER['HTTP_REFERER']), 
+            $keyword_id
         );
         return $this->_db->selectCell("SELECT LAST_INSERT_ID()");
     }

@@ -35,7 +35,7 @@
  *        Web: http://www.cgi-central.net
  *    Details: Signup Page
  *    FileName $RCSfile$
- *    Release: 4.4.4 ($Revision: 4867 $)
+ *    Release: 4.7.0 ($Revision: 4867 $)
  *
  * Please direct bug reports,suggestions or feedback to the cgi-central forums.
  * http://www.cgi-central.net/forum/
@@ -217,19 +217,8 @@ class Cart_IndexController extends Am_Controller
     public function choosePaysysAction()
     {
         $this->view->paysystems = array();
-        if(!$this->getModule()->getConfig('paysystems', array()))
-        {
-            foreach ($this->getDi()->paysystemList->getAll() as $ps) {
-                $plugin = $this->getDi()->plugins_payment->get($ps->paysys_id);
-                if (!($err = $plugin->isNotAcceptableForInvoice($this->cart->getInvoice()))) {
-                    $this->view->paysystems[] = $ps;
-                    $enabled[] = $ps->getId();
-                }
-            }
-        }
-        else
-        {
-            $paysystems = $this->getModule()->getConfig('paysystems');
+
+        if ($paysystems = $this->getModule()->getConfig('paysystems', array())) {
             if (!in_array('free', $paysystems)) $paysystems[] = 'free';
             foreach ($paysystems as $paysystem_id) {
                 try{
@@ -240,13 +229,28 @@ class Cart_IndexController extends Am_Controller
                     $this->getDi()->errorLogTable->logException($e);
                     continue;
                 }
+                if ($ps) {//it is enabled now
+                    $plugin = $this->getDi()->plugins_payment->get($ps->paysys_id);
+                    if (!($err = $plugin->isNotAcceptableForInvoice($this->cart->getInvoice()))) {
+                        $this->view->paysystems[] = $ps;
+                        $enabled[] = $ps->getId();
+                    }
+                }
+            }
+        }
+        //fault tolerance: if we did not find any enabled plugin that was configured
+        //just fall back to default behaviour
+        if(!$this->view->paysystems)
+        {
+            foreach ($this->getDi()->paysystemList->getAll() as $ps) {
                 $plugin = $this->getDi()->plugins_payment->get($ps->paysys_id);
                 if (!($err = $plugin->isNotAcceptableForInvoice($this->cart->getInvoice()))) {
                     $this->view->paysystems[] = $ps;
                     $enabled[] = $ps->getId();
                 }
-            }            
+            }
         }
+
         if (!$this->view->paysystems)
             throw new Am_Exception_InternalError("Sorry, no payment plugins enabled to handle this invoice");
         if ($paysys_id = $this->getFiltered('paysys_id')) {
@@ -284,7 +288,7 @@ class Cart_IndexController extends Am_Controller
         $this->view->display('blocks/basket.phtml');
     }
 
-    
+
     public function getProductsQuery(ProductCategory $category = null)
     {
         if (!$this->query) {
@@ -294,18 +298,18 @@ class Cart_IndexController extends Am_Controller
             }
 
             $this->query = $this->getDi()->productTable->createQuery($category ? $category->product_category_id : null, $this->getHiddenCatCodes(), $scope);
-            
+
             if($user = $this->getDi()->auth->getUser())
             {
                 $products = $this->getDi()->productTable->getVisible();
-                
+
                 $filtered = $this->getDi()->productTable->filterProducts(
-                        $products, 
-                        $user->getActiveProductIds(), 
-                        $user->getExpiredProductIds(), 
+                        $products,
+                        $user->getActiveProductIds(),
+                        $user->getExpiredProductIds(),
                         true
                     );
-                
+
                 $hide_pids = array_diff(
                         array_map(function ($p){
                             return $p->pk();
@@ -314,7 +318,7 @@ class Cart_IndexController extends Am_Controller
                             return $p->pk();
                         },$filtered)
                     );
-                 
+
                  if(!empty($hide_pids))
                      $this->query->addWhere('p.product_id not in (?a)', $hide_pids);
             }

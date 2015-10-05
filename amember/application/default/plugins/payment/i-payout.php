@@ -12,7 +12,7 @@
 class Am_Paysystem_IPayout extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.0';
 
     const DATA_KEY = 'ips-id';
 
@@ -163,7 +163,7 @@ class Am_Paysystem_IPayout extends Am_Paysystem_Abstract
     function url()
     {
         return $this->getConfig('testing') ?
-            'https://testewallet.com/eWalletWS/ws_Adapter.aspx' :
+            'https://www.testewallet.com/eWalletWS/ws_Adapter.aspx' :
             'https://www.i-payout.net/eWalletWS/ws_Adapter.aspx';
     }
 

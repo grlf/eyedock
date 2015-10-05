@@ -4,7 +4,7 @@ defined('_JEXEC') or die();
  
 jimport( 'joomla.application.component.view' );
 
-class GplensViewLenses extends JView {
+class GplensViewLenses extends JViewLegacy {
 
 	const GPHOST = 'mysql.eyedock.com';
 	const GPUSER = 'eyedockdatauser';
@@ -13,14 +13,21 @@ class GplensViewLenses extends JView {
 	
 	const LENSIMGURL = 'http://www.eyedock.com/modules/Lenses/pnimages/lens_images/';
 	const LENSPDFURL = 'http://www.eyedock.com/modules/Lenses/pnpdf/';
-
+	
+	protected $pagination;
+	
+	protected $state;
 
 	function display($tpl = null) {
 
-		global $mainframe, $option;
+		global $option;
 		
-		$db	=& JFactory::getDBO();
-		$search	= $mainframe->getUserStateFromRequest( "$option.search", 'search', '', 'string' );
+		$mainframe = JFactory::getApplication();
+		
+		$this->state = $this->get("State");
+		
+		$db	= JFactory::getDBO();
+		$search = $this->state->get('filter.search');
 		if (strpos($search, '"') !== false) {
 			$search = str_replace(array('=', '<'), '', $search);
 		}
@@ -64,8 +71,17 @@ class GplensViewLenses extends JView {
 		$this->assignRef('lenses', $lenses);
 		$this->assignRef('pagination', $pagination);
 		
+		// Include the component HTML helpers.
+		JHtml::addIncludePath(JPATH_COMPONENT . '/helpers/html');
+		
+		$this->sidebar = JHtmlSidebar::render();
+		
+		$this->pagination    = $this->get('Pagination');
+		$this->filterForm    = $this->get('FilterForm');
+		$this->activeFilters = $this->get('ActiveFilters');
+		
 		parent::display($tpl);
 	
-	}	
+	}
 
 }

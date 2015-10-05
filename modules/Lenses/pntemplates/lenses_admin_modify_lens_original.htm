@@ -1,0 +1,304 @@
+<!--[include file=lenses_admin_menu.htm]-->
+
+<script type="text/javascript" src="modules/scribite/pnjavascript/prototype.js"></script>
+
+
+
+
+<form method="post" action="<!--[pnmodurl modname="Lenses" type="admin" func="update_lens"]-->" enctype="application/x-www-form-urlencoded">
+
+    <h3>Modify Lens</h3>
+
+    <div style="padding:10px; border:1px solid #ccc; background:#fafafa;">
+
+        <input type="hidden" name="authid" value="<!--[pnsecgenauthkey module="Lenses"]-->" />
+
+        <input type="hidden" name="lens_data[tid]" value="<!--[$lens_data.tid|pnvarprepfordisplay]-->" />
+
+        <strong style="color:#00f;">GENERAL INFO</strong>
+
+        <div style="padding:10px; border:1px solid #ccc; background:#fff;">
+
+            <strong>Lens Name:</strong><br />
+            <input type="text" name="lens_data[name]" value="<!--[$lens_data.name|pnvarprepfordisplay]-->" size="50" maxlength="" /><br /><br />
+
+            <strong>Aliases:</strong><br />
+            <textarea cols="100" rows="5" type="text" name="lens_data[aliases]"><!--[$lens_data.aliases|pnvarprepfordisplay]--></textarea><br /><br />
+
+            <strong>Company Name:</strong><br />
+            <select name="lens_data[comp_id]" size="1">
+            <!--[foreach from=$opt_companies key=key item=company]-->
+                <option value="<!--[$company.comp_tid|pnvarprepfordisplay]-->"<!--[if $company.comp_tid eq $lens_data.comp_id]--> selected="selected"<!--[/if]--> /><!--[$company.comp_name|pnvarprepfordisplay]--> [<!--[$company.comp_tid|pnvarprepfordisplay]-->]
+            <!--[/foreach]-->
+            </select><br /><br />
+
+            <strong>Material:</strong><br />
+            <select name="lens_data[poly_id]" size="1">
+            <!--[foreach from=$opt_polymers key=key item=polymer]-->
+                <option value="<!--[$polymer.poly_tid|pnvarprepfordisplay]-->"<!--[if $polymer.poly_tid eq $lens_data.poly_id]--> selected="selected"<!--[/if]--> /><!--[$polymer.poly_name|pnvarprepfordisplay]--> (<!--[$polymer.h2o|pnvarprepfordisplay]-->%)[<!--[$polymer.poly_tid|pnvarprepfordisplay]-->]
+            <!--[/foreach]-->
+            </select><br /><br />
+
+            <strong>Visitint:</strong><br />
+            <input type="checkbox" name="lens_data[visitint]" value="1"<!--[if $lens_data.visitint]-->checked="checked"<!--[/if]--> /><br /><br />
+
+            <strong>Extended Wear:</strong><br />
+            <input type="checkbox" name="lens_data[ew]" value="1"<!--[if $lens_data.ew]-->checked="checked"<!--[/if]--> /><br /><br />
+
+            <strong>Center Thickness:</strong><br />
+            <input type="text" name="lens_data[ct]" value="<!--[$lens_data.ct|pnvarprepfordisplay]-->" size="5" maxlength="" /><br /><br />
+
+            <strong>DK Value:</strong><br />
+            <input type="text" name="lens_data[dk]" value="<!--[$lens_data.dk|pnvarprepfordisplay]-->" size="5" maxlength="" /><br /><br />
+
+            <strong>Optic Zone:</strong><br />
+            <input type="text" name="lens_data[oz]" value="<!--[$lens_data.oz|pnvarprepfordisplay]-->" size="5" maxlength="" /><br /><br />
+
+            <strong>Process Text:</strong><br />
+            <input type="text" name="lens_data[process_text]" value="<!--[$lens_data.process_text|pnvarprepfordisplay]-->" size="50" maxlength="" /><br /><br />
+
+            <strong>Process Simple:</strong><br />
+            <select name="lens_data[process_simple]" size="1">
+			<option value="" />unknown
+            <!--[foreach from=$opt_processes item=process]-->
+                <option value="<!--[$process|pnvarprepfordisplay]-->"<!--[if $process eq $lens_data.process_simple]--> selected="selected"<!--[/if]--> /><!--[$process|pnvarprepfordisplay]-->
+            <!--[/foreach]-->
+            </select><br /><br />
+
+            <strong>Quantity:</strong><br />
+            <input type="text" name="lens_data[qty]" value="<!--[$lens_data.qty|pnvarprepfordisplay]-->" size="3" maxlength="" /> per package<br /><br />
+
+            <strong>Replacement Text:</strong><br />
+            <input type="text" name="lens_data[replace_text]" value="<!--[$lens_data.replace_text|pnvarprepfordisplay]-->" size="50" maxlength="" /><br /><br />
+
+            <strong>Replacement Simple:</strong><br />
+            <select name="lens_data[replace_simple]" size="1">
+            <!--[foreach from=$opt_durations item=numdays]-->
+                <option value="<!--[$numdays|pnvarprepfordisplay]-->"<!--[if $numdays eq $lens_data.replace_simple]--> selected="selected"<!--[/if]--> /><!--[$numdays|pnvarprepfordisplay]-->
+            <!--[/foreach]-->
+            </select> days<br /><br />
+
+            <strong>Wear Type:</strong><br />
+            <input type="text" name="lens_data[wear]" value="<!--[$lens_data.wear|pnvarprepfordisplay]-->" size="50" maxlength="" /><br /><br />
+
+            <strong>Price:</strong><br />
+            <textarea cols="60" rows="5" type="text" name="lens_data[price]"><!--[$lens_data.price|pnvarprepfordisplay]--></textarea><br /><br />
+
+
+            <strong>Markings:</strong><br />
+            <input type="text" name="lens_data[markings]" value="<!--[$lens_data.markings|pnvarprepfordisplay]-->" size="50" maxlength="" /><br /><br />
+
+            <strong>Fitting Guide:</strong><br />
+            <input type="text" name="lens_data[fitting_guide]" value="<!--[$lens_data.fitting_guide|pnvarprepfordisplay]-->" size="35" maxlength="" /><br /><br />
+
+            <strong>Lens URL:</strong><br />
+            <input type="text" name="lens_data[website]" value="<!--[$lens_data.website|pnvarprepfordisplay]-->" size="35" maxlength="" /><br /><br />
+
+            <strong>Images:</strong><br />
+            <input type="text" name="lens_data[image]" value="<!--[$lens_data.image|pnvarprepfordisplay]-->" size="80" maxlength="300" />
+            <br /><br />
+
+            <strong>Other Info:</strong><br />
+            <textarea id="lenses_other" name="lens_data[other_info]" ><!--[$lens_data.other_info|pnvarprepfordisplay]--></textarea><br /><br />
+
+            <strong>Discontinued:</strong><br />
+            <input type="checkbox" name="lens_data[discontinued]" value="1"<!--[if $lens_data.discontinued]-->checked="checked"<!--[/if]--> /><br /><br />
+
+            <strong>Display:</strong><br />
+            <input type="checkbox" name="lens_data[display]" value="1"<!--[if $lens_data.display]-->checked="checked"<!--[/if]--> /><br /><br />
+
+
+             
+
+            <strong>Last Updated:</strong><br />
+            <!--[$lens_data.updated|pnvarprepfordisplay]--><br /><br />
+
+        </div>
+
+        <br />
+
+        <strong style="color:#00f;">SPHERE INFO</strong>
+
+        <div style="padding:10px; border:1px solid #ccc; background:#fff;">
+
+            <strong>Base Curves:</strong><br />
+            <input type="checkbox" name="bc[0]" value="flat"<!--[if $bc.flat]-->checked="checked"<!--[/if]--> /> flat<br />
+            <input type="checkbox" name="bc[1]" value="median"<!--[if $bc.med]-->checked="checked"<!--[/if]--> /> med<br />
+            <input type="checkbox" name="bc[2]" value="steep"<!--[if $bc.steep]-->checked="checked"<!--[/if]--> /> steep<br /><br />
+
+            <strong>Highest (<strong style="font-family:courier,monospace;">+</strong>) Power Available:</strong><br />
+            <input type="text" name="lens_data[max_plus]" value="<!--[$lens_data.max_plus|pnvarprepfordisplay]-->" size="6" maxlength="" />
+            <br /><br />
+
+            <strong>Highest (<strong style="font-family:courier,monospace;">-</strong>) Power Available:</strong><br />
+            <input type="text" name="lens_data[max_minus]" value="<!--[$lens_data.max_minus|pnvarprepfordisplay]-->" size="6" maxlength="" />
+            <br /><br />
+
+            <strong>Largest Diameter Available:</strong><br />
+            <input type="text" name="lens_data[max_diam]" value="<!--[$lens_data.max_diam|pnvarprepfordisplay]-->" size="5" maxlength="" /><br /><br />
+
+            <strong>Smallest Diameter Available:</strong><br />
+            <input type="text" name="lens_data[min_diam]" value="<!--[$lens_data.min_diam|pnvarprepfordisplay]-->" size="5" maxlength="" /><br /><br />
+
+            <table>
+                <tr style="background:#fafafa;letter-spacing:3px;font-size:12px;font-weight:bold;color:#c09;">
+                    <td>VARIATIONS</td>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;">Diameter:</td>
+                    <td><input type="text" name="lens_data[diam_1]" value="<!--[$lens_data.diam_1|pnvarprepfordisplay]-->" size="5" maxlength="" /></td>
+                    <td><input type="text" name="lens_data[diam_2]" value="<!--[$lens_data.diam_2|pnvarprepfordisplay]-->" size="5" maxlength="" /></td>
+                    <td><input type="text" name="lens_data[diam_3]" value="<!--[$lens_data.diam_3|pnvarprepfordisplay]-->" size="5" maxlength="" /></td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;">Powers :</td>
+                    <td><input type="text" name="lens_data[powers_1]" value="<!--[$lens_data.powers_1|pnvarprepfordisplay]-->" size="30" maxlength="" /></td>
+                    <td><input type="text" name="lens_data[powers_2]" value="<!--[$lens_data.powers_2|pnvarprepfordisplay]-->" size="30" maxlength="" /></td>
+                    <td><input type="text" name="lens_data[powers_3]" value="<!--[$lens_data.powers_3|pnvarprepfordisplay]-->" size="30" maxlength="" /></td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;">Base Curves:</td>
+                    <td><input type="text" name="lens_data[base_curves_1]" value="<!--[$lens_data.base_curves_1|pnvarprepfordisplay]-->" size="30" maxlength="" /></td>
+                    <td><input type="text" name="lens_data[base_curves_2]" value="<!--[$lens_data.base_curves_2|pnvarprepfordisplay]-->" size="30" maxlength="" /></td>
+                    <td><input type="text" name="lens_data[base_curves_3]" value="<!--[$lens_data.base_curves_3|pnvarprepfordisplay]-->" size="30" maxlength="" /></td>
+                </tr>
+            </table><br />
+
+
+             <input type="checkbox"  value="1" <!--[if $lens_data.sphere_alt]-->checked<!--[/if]-->  onclick="if(this.checked){document.getElementById('alt_sph').style.display='block';}else{document.getElementById('alt_sph').style.display='none';}" />Altenate sphere text?
+            
+            <div id="alt_sph" style="<!--[if !$lens_data.sphere_alt]-->display:none;<!--[/if]--> padding:10px; border:1px solid #ccc; background:#fff;"><span class="lens_warning">*The following box should only be used when a lens's sphere parameters do not fit into the above "sphere info"forms.  If this box is populated, this information will be displayed in place of the above fields.  However, the above fields should still be filled out as well as possible as they are used during database searches.*</span><br />
+                 <textarea id="lenses_sph" name="lens_data[sphere_alt]" ><!--[$lens_data.sphere_alt|pnvarprepfordisplay]--></textarea><br />(HTML tags are allowed in this box)
+            <br /></div>
+
+
+        </div>
+
+        <br />
+
+        <input type="checkbox" name="lens_data[toric]" value="1" onclick="if(this.checked){document.getElementById('toric').style.display='block';}else{document.getElementById('toric').style.display='none';}"<!--[if $lens_data.toric]--> checked="checked"<!--[/if]--> />
+        <strong style="color:#00f;">TORIC LENS?</strong>
+
+        <div id="toric" style="display:<!--[if $lens_data.toric]-->block<!--[else]-->none<!--[/if]-->; padding:10px; border:1px solid #ccc; background:#fff;">
+
+            <strong>Toric Type:</strong><br />
+            <input type="text" name="lens_data[toric_type]" value="<!--[$lens_data.toric_type|pnvarprepfordisplay]-->" size="35" maxlength="" /><br /><br />
+
+            <strong>Toric Type Simple:</strong><br />
+            <select name="lens_data[toric_type_simple]" size="1">
+			<option value="" />unknown
+                <option value="prism ballast" <!--[if $lens_data.toric_type_simple eq 'prism ballast']-->selected <!--[/if]-->/>prism ballast
+                <option value="thin zones" <!--[if $lens_data.toric_type_simple eq 'thin zones']-->selected <!--[/if]-->/>thin zones
+            </select><br /><br />
+
+            <strong>Cylinder Power Text:</strong><br />
+            <input type="text" name="lens_data[cyl_power]" value="<!--[$lens_data.cyl_power|pnvarprepfordisplay]-->" size="80" maxlength="" /><br /><br />
+
+           <strong>Max Cylinder Power:</strong><br />
+            <input type="text" name="lens_data[max_cyl_power]" value="<!--[$lens_data.max_cyl_power|pnvarprepfordisplay]-->" size="8" maxlength="" /><br /><br />
+
+            <strong>Cylinder Axis Text:</strong><br />
+            <input type="text" name="lens_data[cyl_axis]" value="<!--[$lens_data.cyl_axis|pnvarprepfordisplay]-->" size="40" maxlength="" /><br /><br />
+
+           <strong>Cylinder Axis Steps:</strong><br />
+            <input type="text" name="lens_data[cyl_axis_steps]" value="<!--[$lens_data.cyl_axis_steps|pnvarprepfordisplay]-->" size="4" maxlength="" /><br /><br />
+
+           <strong>Most Oblique Axis After 180:</strong><br />
+            <input type="text" name="lens_data[oblique]" value="<!--[$lens_data.oblique|pnvarprepfordisplay]-->" size="4" maxlength="" /><br /><br />
+
+            <input type="checkbox"  value="1" <!--[if $lens_data.cyl_alt]-->checked<!--[/if]--> onclick="if(this.checked){document.getElementById('alt_cyl').style.display='block';}else{document.getElementById('alt_cyl').style.display='none';}" />Altenate Cylinder text?
+
+            <div id="alt_cyl" style="<!--[if !$lens_data.cyl_alt]-->display:none;<!--[/if]--> padding:10px; border:1px solid #ccc; background:#fff;"><span class="lens_warning">*The following box should only be used when a lens's sphere parameters do not fit into the above "Toric Lens" fields.  If this box is populated, this information will be displayed in place of the above fields.  However, the above fields should still be filled out as well as possible as they are used during database searches.*</span><br />
+            <textarea id="lenses_cyl" name="lens_data[cyl_alt]" ><!--[$lens_data.cyl_alt|pnvarprepfordisplay]--></textarea><br /><br />
+           </div>
+        </div>
+
+        <br />
+
+        <input type="checkbox" name="lens_data[bifocal]" value="1" onclick="if(this.checked){document.getElementById('bifocal').style.display='block';}else{document.getElementById('bifocal').style.display='none';}"<!--[if $lens_data.bifocal]--> checked="checked"<!--[/if]--> />
+        <strong style="color:#00f;">BIFOCAL LENS?</strong>
+
+        <div id="bifocal" style="display:<!--[if $lens_data.bifocal]-->block<!--[else]-->none<!--[/if]-->; padding:10px; border:1px solid #ccc; background:#fff;">
+
+             <strong>Bifocal Type:</strong><br />
+            <input type="text" name="lens_data[bifocal_type]" value="<!--[$lens_data.bifocal_type|pnvarprepfordisplay]-->" size="60" maxlength="" /><br /><br />
+
+          <strong>Bifocal Add Powers:</strong><br />
+            <input type="text" name="lens_data[add_text]" value="<!--[$lens_data.add_text|pnvarprepfordisplay]-->" size="80" maxlength="" /><br /><br />
+    
+            <strong>Highest Bifocal Power:</strong><br />
+            <input type="text" name="lens_data[max_add]" value="<!--[$lens_data.max_add|pnvarprepfordisplay]-->" size="6" maxlength="" /><br /><br />
+    
+
+        </div>
+
+        <br />
+
+        <input type="checkbox" name="lens_data[cosmetic]" value="1" onclick="if(this.checked){document.getElementById('cosmetic').style.display='block';}else{document.getElementById('cosmetic').style.display='none';}"<!--[if $lens_data.cosmetic]--> checked="checked"<!--[/if]--> />
+        <strong style="color:#00f;">COSMETIC LENS?</strong>
+        <div id="cosmetic" style="display:<!--[if $lens_data.cosmetic]-->block<!--[else]-->none<!--[/if]-->; padding:10px; border:1px solid #ccc; background:#fff;">
+            <strong>Opaque Colors</strong> <br />
+            <div style="padding-left:7px;">
+               
+                Fancy Names:<br> 
+              <input type="text" name="lens_data[opaque_names]" value="<!--[$lens_data.opaque_names|pnvarprepfordisplay]-->" size="50" maxlength="" />
+				 
+				 <br/>Basic names:</strong><br />
+            <select name="opaque_colors[]" size="8" multiple="multiple">
+            <!--[foreach from=$opaque_selected key=key item=color]-->
+                <option value="<!--[$color|strip:'']-->" selected><!--[$color]--></option>
+            <!--[/foreach]-->
+			 <!--[foreach from=$opaque_not_selected key=key item=color]-->
+                <option value="<!--[$color|strip:'']-->" ><!--[$color]--></option>
+            <!--[/foreach]-->
+			
+            </select><br /><br />
+			
+			<strong>Enhancer Colors</strong> <br />
+            <div style="padding-left:7px;">
+                Fancy Names:<br> 
+              <input type="text" name="lens_data[enh_names]" value="<!--[$lens_data.enh_names|pnvarprepfordisplay]-->" size="50" maxlength="" />
+				 <br/>Basic names:</strong><br />
+            <select name="enh_colors[]" size="8" multiple="multiple">
+            <!--[foreach from=$enh_selected key=key item=color]-->
+                <option value="<!--[$color|strip:'']-->" selected><!--[$color]--></option>
+            <!--[/foreach]-->
+			 <!--[foreach from=$enh_not_selected key=key item=color]-->
+                <option value="<!--[$color|strip:'']-->" ><!--[$color]--></option>
+            <!--[/foreach]-->
+			
+            </select><br /><br />
+				
+          </div>
+            <br />
+            
+				
+          </div>
+        </div>
+
+    </div>
+    
+
+
+    
+      <input type="checkbox"  value="1" onclick="if(this.checked){document.getElementById('alt_entry').style.display='block';}else{document.getElementById('alt_entry').style.display='none';}"  <!--[if $lens_data.redirect]-->checked<!--[/if]--> />Very unique lens?
+            
+            <div id="alt_entry" style="<!--[if !$lens_data.redirect]-->display:none;<!--[/if]--> padding:10px; border:1px solid #ccc; background:#fff;"><span class="lens_warning">*The following box should only be used for very unique lenses that do not otherwise fit into the above fields.  Examples would include the synergeyes and softperm lenses.   If the following box is populated, this information will be displayed in place of nearly all the above fields starting with the "material" field.   However, the above fields should still be filled out as well as possible as they are used during database searches.*</span><br />
+     
+
+     
+     
+     <strong>Special Lens?</strong><br />
+            <textarea id="lenses_all" name="lens_data[redirect]" ><!--[$lens_data.redirect|pnvarprepfordisplay]--></textarea> <br />HTML formatted text is recommended in this text box.  Consider editing in a website editor and then cut-and-paste into this box.
+     </div>
+    
+
+
+     <br /><br /><input type="submit" name="submit" value="Modify Lens" />
+
+</form>
+
+<div>[ <a href="<!--[pnmodurl modname="Lenses" type="admin" func="delete" tid=$lens_data.tid|pnvarprepfordisplay item_type="lens"]-->" title="Delete">Delete</a> ]</div>

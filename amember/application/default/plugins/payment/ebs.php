@@ -9,7 +9,7 @@
  */
 class Am_Paysystem_Ebs extends Am_Paysystem_Abstract{
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.0';
 
     const LIVE_URL ='https://secure.ebs.in/pg/ma/sale/pay';
     protected $defaultTitle = 'Ebs';
@@ -54,7 +54,7 @@ class Am_Paysystem_Ebs extends Am_Paysystem_Abstract{
     {
         
     }
-    public function createThanksTransaction(\Am_Request $request, \Zend_Controller_Response_Http $response, array $invokeArgs)
+    public function createThanksTransaction(Am_Request $request, Zend_Controller_Response_Http $response, array $invokeArgs)
     {
         return new Am_Paysystem_Transaction_Ebs($this, $request, $response, $invokeArgs);
     }
@@ -67,7 +67,7 @@ class Am_Paysystem_Ebs extends Am_Paysystem_Abstract{
 class Am_Paysystem_Transaction_Ebs extends Am_Paysystem_Transaction_Incoming {
     public function __construct(Am_Paysystem_Abstract $plugin, Am_Request $request, Zend_Controller_Response_Http $response, $invokeArgs)
     {
-        $DR = preg_replace("/\s/","+",$request->get('DR'));
+        $DR = preg_replace("/\s/","+",$request->get('DR', $_GET['DR']));
         $rc4 = new Crypt_RC4($plugin->getConfig('secret','ebskey'));
         $QueryString = base64_decode($DR);
         $rc4->decrypt($QueryString);

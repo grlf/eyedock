@@ -78,8 +78,12 @@ abstract class Am_Paysystem_Transaction_Incoming extends Am_Paysystem_Transactio
         if (!$user)
         {
             $user = $userTable->createRecord($userInfo);
-            $user->generateLogin();
-            $user->generatePassword();
+            if(!$user->login)
+                $user->generateLogin();
+            if(!$user->pass)
+                $user->generatePassword();
+            else
+                $user->setPass($user->pass);
             $user->data()->set('external_id', $externalId);
             $user->insert();
             if ($this->getPlugin()->getDi()->config->get('registration_mail'))
@@ -300,6 +304,10 @@ abstract class Am_Paysystem_Transaction_Incoming extends Am_Paysystem_Transactio
         if (!$this->validateSource())
             throw new Am_Exception_Paysystem_TransactionSource("IPN seems to be received from unknown source, not from the paysystem");
         $this->autoCreate();
+        
+        if($this->invoice->paysys_id != $this->getPaysysId())
+            throw new Am_Exception_Paysystem_TransactionInvalid("Invoice was created by another payment plugin.");
+            
         if (empty($this->invoice->_autoCreated) && !$this->validateTerms())
             throw new Am_Exception_Paysystem_TransactionInvalid("Subscriptions terms in the IPN does not match subscription terms in our Invoice");
         if (!$this->validateStatus())

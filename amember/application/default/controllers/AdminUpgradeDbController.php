@@ -7,7 +7,7 @@
 *        Web: http://www.cgi-central.net
 *    Details: upgrade DB from ../amember.sql
 *    FileName $RCSfile$
-*    Release: 4.4.2 ($Revision$)
+*    Release: 4.7.0 ($Revision$)
 *
 * Please direct bug reports,suggestions or feedback to the cgi-central forums.
 * http://www.cgi-central.net/forum/
@@ -30,7 +30,7 @@ class AdminUpgradeDbController extends Am_Controller
             return;
         if (!file_exists(APPLICATION_PATH . '/configs/key.php')) return;
         $key = require_once APPLICATION_PATH . '/configs/key.php';
-        
+
         $cryptNew = $this->getDi()->crypt;
         if ($cryptNew->compareKeySignatures() == 0) return;
         if (!file_exists(APPLICATION_PATH . '/configs/key-old.inc.php')) {
@@ -95,7 +95,7 @@ class AdminUpgradeDbController extends Am_Controller
         ini_set('memory_limit', '256M');
 
         $this->db_version = $this->getDi()->store->get('db_version');
-        
+
         if (defined('AM_DEBUG')) ob_start();
         ?><!DOCTYPE html>
         <html>
@@ -156,6 +156,8 @@ class AdminUpgradeDbController extends Am_Controller
         $this->fixUserStatusTable();
         $this->populateAffAddedField();
         $this->convertFreeWithoutAccessFoldersToLinks();
+        $this->setDefaultProfileForm();
+        $this->hideSignupForms();
         $this->getDi()->hook->call(new Am_Event(Am_Event::DB_UPGRADE, array('version' => $this->db_version)));
 
         $version = AM_VERSION;
@@ -196,17 +198,17 @@ CUT;
                     INSERT IGNORE INTO ?_cc_rebill_temp
                     SELECT * FROM ?_cc_rebill
                 ');
-                
+
                 $db->query("TRUNCATE ?_cc_rebill");
-                
+
                 $db->query('
                     INSERT INTO ?_cc_rebill
                     SELECT * FROM ?_cc_rebill_temp
                 ');
-                
+
                 $db->query("DROP TABLE ?_cc_rebill_temp");
             } catch (Exception $e) {
-                
+
             }
         }
     }
@@ -215,34 +217,34 @@ CUT;
     {
         $this->getDi()->resourceAccessTable->syncSortOrder();
     }
-    
+
     function manuallyApproveInvoices(){
-        if((version_compare($this->db_version, '4.2.4') <0) || 
+        if((version_compare($this->db_version, '4.2.4') <0) ||
             ((version_compare(AM_VERSION, '4.2.7')<=0) && !$this->getDi()->config->get('manually_approve_invoice'))
             )
         {
-            echo "Manually approve old invoices...";     
+            echo "Manually approve old invoices...";
             @ob_end_flush();
-            
+
             $this->getDi()->db->query("update ?_invoice set is_confirmed=1");
             echo "Done<br/>\n";
         }
     }
-    
+
     function checkInvoiceItemTotals()
     {
         if (version_compare($this->db_version, '4.1.8') < 0)
         {
-            echo "Update invoice_item.total columns...";     
+            echo "Update invoice_item.total columns...";
             @ob_end_flush();
             $this->getDi()->db->query("
                 UPDATE ?_invoice_item
-                SET 
+                SET
                     first_total = first_price*qty - first_discount + first_shipping + first_tax,
                     second_total = second_price*qty - second_discount + second_shipping + second_tax
-                WHERE 
+                WHERE
                     ((first_total IS NULL OR first_total = 0) AND first_price > 0)
-                OR 
+                OR
                     ((second_total IS NULL OR second_total = 0) AND second_price > 0)
                 ");
             echo "Done<br>\n";
@@ -252,7 +254,7 @@ CUT;
     {
         if (version_compare($this->db_version, '4.2.0') < 0)
         {
-            echo "Move product.no_tax -> product.tax columns...";     
+            echo "Move product.no_tax -> product.tax columns...";
             @ob_end_flush();
             try {
                 $this->getDi()->db->query("
@@ -260,9 +262,9 @@ CUT;
                 SET tax_group = IF(IFNULL(no_tax, 0) = 0, 0, 1)
                 ");
 //                $this->getDi()->db->query("ALTER TABLE ?_product DROP no_tax");
-            } catch (Am_Exception_Db $e) { } 
-            
-            echo "Move invoice_item.no_tax -> invoice_item.tax_group columns...";     
+            } catch (Am_Exception_Db $e) { }
+
+            echo "Move invoice_item.no_tax -> invoice_item.tax_group columns...";
             @ob_end_flush();
             try {
                $this->getDi()->db->query("
@@ -270,10 +272,10 @@ CUT;
                 SET tax_group = IF(IFNULL(no_tax, 0) = 0, 0, 1)
                 ");
 //                $this->getDi()->db->query("ALTER TABLE ?_invoice_item DROP no_tax");
-            } catch (Am_Exception_Db $e) { } 
+            } catch (Am_Exception_Db $e) { }
             echo "Done<br>\n";
-            
-            echo "Migrate tax settings..."; 
+
+            echo "Migrate tax settings...";
             if ($this->getDi()->config->get('use_tax'))
             {
                 $config = $this->getDi()->config;
@@ -285,7 +287,7 @@ CUT;
                         $config->set('tax.global-tax.rate', $config->get('tax_value'));
                         break;
                     case 2:
-                        $config->set('plugins.tax', array('regional')); 
+                        $config->set('plugins.tax', array('regional'));
                         $config->set('tax.regional.taxes', $config->get('regional_taxes'));
                         break;
                 }
@@ -317,7 +319,7 @@ CUT;
                 foreach ($rows as $row) {
                     $upload_ids = array_merge($upload_ids, explode(',', $row['attachments']));
                 }
-                
+
                 if (count($upload_ids)) {
                     $templates = array();
                     foreach ($upload_ids as $id) {
@@ -357,18 +359,18 @@ CUT;
     function checkResourceAccessEmailTemplates(){
         if (version_compare($this->db_version, '4.1.14') < 0)
         {
-            echo "Update resource access table ...";     
+            echo "Update resource access table ...";
             @ob_end_flush();
             $this->getDi()->db->query("
                     UPDATE ?_resource_access
-                    SET 
+                    SET
                     start_days = (SELECT day FROM ?_email_template WHERE email_template_id=resource_id),
                     stop_days = (SELECT day FROM ?_email_template WHERE email_template_id=resource_id)
                     WHERE resource_type = 'emailtemplate' AND fn='free' and start_days IS NULL
                     ");
             echo "Done<br>\n";
-            
-        }   
+
+        }
     }
 
     function enableSkipIndexPage() {
@@ -630,6 +632,32 @@ CUT;
                     $link->setSortOrder($sort);
                 } catch (Exception $e) {}
             }
+            echo "Done<br>\n";
+        }
+    }
+
+    function setDefaultProfileForm()
+    {
+        if (version_compare($this->db_version, '4.6.4') < 0)
+        {
+            echo "Set Default Profile Form...";
+            if (!$this->getDi()->savedFormTable->getDefault(SavedForm::D_PROFILE)) {
+                $id = $this->getDi()->db->selectCell('SELECT saved_form_id FROM ?_saved_form WHERE type=? LIMIT 1', 'profile');
+                $this->getDi()->savedFormTable->setDefault(SavedForm::D_PROFILE, $id);
+            }
+            echo "Done<br>\n";
+        }
+    }
+
+    public function hideSignupForms()
+    {
+        if (version_compare($this->db_version, '4.7.0') < 0)
+        {
+            echo "Hide Signup Forms from Menu...";
+            $form = $this->getDi()->savedFormTable->getDefault(SavedForm::D_MEMBER);
+            $this->getDi()->db->query('UPDATE ?_saved_form SET hide=1
+                WHERE type=? AND saved_form_id<>?',
+                    SavedForm::T_SIGNUP, $form->pk());
             echo "Done<br>\n";
         }
     }

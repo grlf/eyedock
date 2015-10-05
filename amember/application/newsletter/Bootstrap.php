@@ -19,18 +19,8 @@ class Bootstrap_Newsletter extends Am_Module
         $this->getDi()->plugins->offsetSet('newsletter', $this->getDi()->plugins_newsletter);
     }
 
-    function renderComfirmation(Am_View $view)
-    {
-        return '<div class="am-info" style="display:none" id="unsubscribe-confirm">' .
-            ___('Status of your subscription has been changed.') .
-            '</div>';
-    }
-
     function onInitFinished(Am_Event $event)
     {
-        $this->getDi()->blocks->add(new Am_Block('unsubscribe/before', ___('Comfirmation'), 'unsubscribe-comfirm',
-                    null, array($this, 'renderComfirmation')));
-
         $this->getDi()->blocks->add(
             new Am_Block(array('member/main/left', 'unsubscribe'), ___('Newsletter Subscriptions'),
                 'member-main-newsletter', $this, 'member-main-newsletter.phtml', Am_Block::MIDDLE)

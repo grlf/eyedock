@@ -1,0 +1,268 @@
+<!--[include file=lenses_user_menu.htm]-->
+<br />
+<div style="text-align:center;"><a href="javascript:history.go(-1);" title="Back To Your Search Results">Back to search results</a>
+  | <a href="module-Contact.htm" >Report error</a> |
+   <a href="<!--[pnmodurl modname='Lenses' type='user' ]-->">Lenses main page</a> |
+  <!--[if $saved_lens_count>1]--> <a href="<!--[pnmodurl modname='Lenses' type='user' func='compare_form']-->">Compare recently viewed lenses</a> <!--[/if]-->
+
+   <div style="float:right"><a href="index.php?module=Pagesetter&amp;tid=10&amp;filter=category^sub^151&amp;cv=151">Lenses FAQs</a></div>
+
+</div><br />
+
+<div class="lens_outer">
+
+  <div  style="font-weight:bold; padding:5px; font-size:16pt; text-align:center; letter-spacing: .2em; ">
+       <!--[$lens_data.name|pnvarprepfordisplay]-->
+       <!--[if $lens_data.discontinued]-->
+               <div class="lens_warning">Discontinued lens!</div>
+       <!--[/if]-->
+   </div>
+
+   <div class="lens_inner">
+    
+    <!--[if $lens_data.redirect]-->
+           <!--[*this section will be HTML that will be displayed only for unique lenses that did not fit into the database as it's structured.*]-->
+           <!--[$lens_data.redirect|pnvarprephtmldisplay]-->
+    <!--[else]-->
+        <strong>SPHERICAL POWERS</strong>
+        <table class="lens_max" border="1" cellpadding="3" cellspacing="2">
+ 
+            <tr class="lens_describe">
+                <th>Diameter</th>
+                <th>Base Curves</th>
+                <th>Powers</th>
+            </tr>
+            <tr style="text-align:center;">
+                <td><!--[$lens_data.diam_1|pnvarprepfordisplay]--></td>
+                <td><!--[$lens_data.base_curves_1|pnvarprepfordisplay]--></td>
+                <td><!--[$lens_data.powers_1|pnvarprepfordisplay]--></td>
+            </tr>      
+            <!--[if $lens_data.powers_2 != ""]-->
+            <tr style="text-align:center;">
+                <td><!--[$lens_data.diam_2|pnvarprepfordisplay]--></td>
+                <td><!--[$lens_data.base_curves_2|pnvarprepfordisplay]--></td>
+                <td><!--[$lens_data.powers_2|pnvarprepfordisplay]--></td>
+            </tr>
+            <!--[/if]-->
+            <!--[if $lens_data.powers_3 != ""]-->
+            <tr style="text-align:center;">
+                <td><!--[$lens_data.diam_3|pnvarprepfordisplay]--></td>
+                <td><!--[$lens_data.base_curves_3|pnvarprepfordisplay]--></td>
+                <td><!--[$lens_data.powers_3|pnvarprepfordisplay]--></td>
+            </tr>
+            <!--[/if]-->
+     
+        </table><br /><!--[$lens_data.sph_notes]--><br /><br />
+
+        <!--[if $lens_data.toric]-->
+         <strong>TORIC POWERS</strong>
+        <table class="lens_max" border="1" cellpadding="3" cellspacing="2">
+     
+            <tr class="lens_describe">
+                <th>Toric Type</th>
+                <th>Cylinder Power</th>
+                <th>Cylinder Axis Text</th>
+            </tr>
+            <tr>
+                <td style="text-align:center;"><!--[$lens_data.toric_type|pnvarprepfordisplay]--></td>
+                <td style="text-align:center;"><!--[$lens_data.cyl_power|pnvarprepfordisplay]--></td>
+                <td style="text-align:center;"><!--[$lens_data.cyl_axis|pnvarprephtmldisplay]--></td>
+            </tr>
+          
+        </table>
+        <br /><!--[$lens_data.cyl_notes]--><br /><br />
+        <!--[/if]-->
+       
+        <!--[if $lens_data.bifocal]-->
+         <strong>BIFOCAL POWERS</strong>
+        <table class="lens_max" border="1" cellpadding="3" cellspacing="2">
+            <tr>
+                <th> Bifocal Type: </th>
+                  <td><!--[$lens_data.bifocal_type|pnvarprepfordisplay]--></td>
+            </tr>
+            <tr>
+                  <th> Bifocal Add Powers: </th>
+                  <td><!--[$lens_data.add_text|pnvarprepfordisplay]--></td>
+         </tr>
+       </table><br /><br />
+       <!--[/if]-->
+       
+        <!--[if $lens_data.cosmetic]-->
+         <strong>COSMETIC INFO</strong>
+        <table class="lens_max" border="1" cellpadding="3" cellspacing="2">
+            <tr>
+                <td>
+                    <!--[if $lens_data.enh_names]-->
+                     Enhancer Colors:  <!--[$lens_data.enh_names|pnvarprepfordisplay]--><br />
+                    <!--[/if]-->
+                    <!--[if $lens_data.opaque_names]-->
+                     Opaque Colors:  <!--[$lens_data.opaque_names|pnvarprepfordisplay]-->
+                    <!--[/if]-->
+                </td>
+            </tr>
+        </table><br /><br />
+        <!--[/if]-->
+                
+        <table class="lens_max" border="1" cellpadding="3" cellspacing="0">
+            <tr>
+                <td class="lens_right_strong_bg" width="25%"> Manufacturer:  </td>
+                <td  class="align_left"><span class="lens_helpcue" <!--[popup sticky=true trigger=onClick caption=$lens_data.comp_name|pnvarprepfordisplay text=$lens_data.comp_info]-->><!--[$lens_data.comp_name]--> </span>
+
+
+                </td>
+             
+             <td colspan="2" rowspan="12" width="35%" style="vertical-align:top;text-align:center;border: 0px solid white;">
+                
+                
+                <div style="height: 27em; overflow:auto;">
+                 <!--[if $lens_data.images.0 =="" ]-->
+                       <img src="modules/Lenses/pnimages/lens_images/no-photo.gif" alt="" />
+
+                <!--[else]-->
+                <!--[foreach name=outer item=image from=$lens_data.images]-->
+                  <img style="vertical-align:middle; margin:.5em;"src="modules/Lenses/pnimages/lens_images/<!--[$image|strip:'']-->" alt="" /><br />
+              <!--[/foreach]-->
+               <!--[/if]-->
+              </div>
+           </td>
+     </tr>
+
+                <td class="lens_right_strong_bg"> Material: </td>
+                <td class="align_left"><span <!--[if $lens_data.poly_desc]-->class="lens_helpcue" <!--[popup caption=$lens_data.poly_name|pnvarprepfordisplay trigger=onClick sticky=true text=$lens_data.poly_desc|pnvarprepfordisplay]--><!--[/if]-->><!--[$lens_data.poly_name|pnvarprepfordisplay]--></span></td>
+
+            </tr>
+            <tr>
+                <td class="lens_right_strong_bg"> H<sub>2</sub>O Content: </td>
+                <td class="align_left"><!--[if $lens_data.h2o]--><!--[$lens_data.h2o]-->%<!--[else]-->Not Specified<!--[/if]--></td>
+            </tr>
+            <tr>
+                <td class="lens_right_strong_bg"> FDA Group:  </td>
+                <td class="align_left">
+               <!--[if $lens_data.fda_grp]-->
+                    <span <!--[if $lens_data.fda_grp_desc]-->class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='FDA Group' text=$lens_data.fda_grp_desc]--><!--[/if]-->><!--[$lens_data.fda_grp]--><span><!--[else]-->Not Specified<!--[/if]-->
+                </td>
+            </tr>
+            <tr>
+                <td class="lens_right_strong_bg"> DK:  </td>
+                <td class="align_left">
+                <!--[if $lens_data.dk > 0]--><!--[$lens_data.dk|pnvarprepfordisplay]-->
+                <!--[else]-->Not Specified<!--[/if]-->
+
+                <!--[if $lens_data.dkt]--><span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='dk/t calcs' text='Dk/t is calculated from listed dk and center thickness values. Actual Dk/t will vary.']-->> (dk/t: <!--[$lens_data.dkt|pnvarprepfordisplay|truncate:6]-->)</span><!--[/if]-->
+                </td>
+            </tr>
+            <tr>
+                <td class="lens_right_strong_bg"> CT:  </td>
+                <td class="align_left"><!--[if $lens_data.ct>0]--><!--[$lens_data.ct|pnvarprepfordisplay]-->mm<!--[else]-->Not Specified<!--[/if]--></td>
+            </tr>
+            <tr>
+                <td class="lens_right_strong_bg"> OZ:  </td>
+                <td><!--[if $lens_data.oz>0]--><!--[$lens_data.oz|pnvarprepfordisplay]-->mm<!--[else]-->Not Specified<!--[/if]--></td>
+            </tr>
+            <tr>
+                <td class="lens_right_strong_bg"> EW:  </td>
+                <td class="align_left">
+                    <!--[if $lens_data.ew == 1]-->
+                            <img src="modules/Lenses/pnimages/checkmark.gif" style="border:0;" alt="yes" />
+                    <!--[else]-->
+                           <img src="modules/Lenses/pnimages/no_x.gif" style="border:0;" alt="no" />
+                    <!--[/if]-->
+                </td>
+            </tr>
+            <!--[if $lens_data.cosmetic!=1]-->
+            <tr>
+                <td class="lens_right_strong_bg"> Visibility tint:  </td>
+                <td class="align_left">
+                    <!--[if $lens_data.visitint==1]-->
+                    <img src="modules/Lenses/pnimages/checkmark.gif" style="border:0;" alt="yes" />
+                    <!--[else]-->
+                    <img src="modules/Lenses/pnimages/no_x.gif" style="border:0;" alt="no" />
+                    <!--[/if]-->
+                </td>
+            </tr>
+            <!--[/if]-->
+            <tr>
+                <td class="lens_right_strong_bg"> Manuf. Process: </td>
+                <td class="align_left"><!--[if $lens_data.process_text]--><!--[$lens_data.process_text|pnvarprepfordisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+            </tr>
+            <tr>
+                <td class="lens_right_strong_bg"> Quantity: </td>
+                <td class="align_left"><!--[if $lens_data.qty]--><!--[$lens_data.qty|pnvarprepfordisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+            </tr>
+            <tr>
+                <td class="lens_right_strong_bg"> Replacement: </td>
+                <td class="align_left"><!--[if $lens_data.replace_text]--><!--[$lens_data.replace_text|pnvarprepfordisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+            </tr>
+            <tr>
+                <td class="lens_right_strong_bg"> Wear Type: </td>
+                <td class="align_left"><!--[if $lens_data.wear]--><!--[$lens_data.wear|pnvarprepfordisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+            </tr>
+
+            <tr>
+                <td class="lens_right_strong_bg"> Lens Appearance: </td>
+                <td class="align_left"><!--[if $lens_data.markings]--><!--[$lens_data.markings|pnvarprephtmldisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+            </tr>
+            
+            
+
+        </table>
+        
+        <!--[/if]--><!--[*end non-"redirected" content*]-->
+        
+        <br />
+          
+          
+           <strong>OTHER INFO</strong>
+           <div class="lens_comments">
+                <!--[$lens_data.other_info]--><br />
+
+                <!--[if $lens_data.website]-->Find more information about this lens at its <a href="<!--[$lens_data.website|pnvarprephtmldisplay]-->">website.</a><br /><!--[/if]-->
+
+                <!--[if $lens_data.fitting_guide]-->View this lens's <a href="<!--[$lens_data.fitting_guide|pnvarprephtmldisplay]-->">fitting guide or package insert.</a><!--[/if]-->
+              
+        
+        </div>
+
+         <div style="text-align:right">Last Updated:  <!--[$lens_data.updated|pnvarprepfordisplay]--></div>
+
+      
+</div></div>
+
+
+
+  <div><!--[$lens_data.edit_link]--></div>
+<div style="text-align:right;"><!--[if $edit_lens==true]--><a href="<!--[pnmodurl modname="Lenses" type="admin" func="modify_lens" tid=$lens_data.tid|pnvarprepfordisplay]-->">Edit this lens</a> | <a href="<!--[pnmodurl modname="Lenses" type="admin" func="" ]-->">Lenses Administration</a><!--[/if]--></div>
+
+<script>
+    function hide_cost(){
+        if(document.getElementById('cost').style.display=='none'){ 
+             document.getElementById('cost').style.display='';
+        } else {
+              document.getElementById('cost').style.display='none'; 
+        }
+    }
+</script>
+
+
+<!--[if $lens_data.price !=""]-->
+         <div style="margin:15px 0 0; padding 8px;"><a href="javascript: hide_cost();"  title="Approximate cost">Approximate lens cost</a></div>
+
+  <div id="cost" style="margin: 0px; background-color: #ffffcc; padding: 5px; border: 1px solid gray; display: none;" >
+            <!--[if $lens_data.price !="0.00"]--><!--[$lens_data.price]-->
+            <br />&nbsp;&nbsp;&nbsp;&nbsp;*cost may vary - please contact <!--[$lens_data.comp_name]--> to verify
+            <!--[else]--> unknown<!--[/if]-->
+         </div>
+
+        
+<!--[/if]-->
+
+
+
+
+
+
+
+
+
+
+<!--[$hooks]-->

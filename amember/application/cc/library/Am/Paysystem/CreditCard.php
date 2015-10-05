@@ -5,6 +5,8 @@ abstract class Am_Paysystem_CreditCard extends Am_Paysystem_Abstract
     const ACTION_CC = 'cc';
     const ACTION_UPDATE = 'update';
     const ACTION_CANCEL = 'cancel';
+    const ACTION_CANCEL_PAYMENT = 'cancel-payment'; // user refused to make payment with credit card
+    const ACTION_THANKS = 'thanks';
     
     // form fields contants @see getFormOptions
     const CC_COMPANY                = 'cc_company';
@@ -67,6 +69,10 @@ abstract class Am_Paysystem_CreditCard extends Am_Paysystem_Abstract
                 return $this->updateAction($request, $response, $invokeArgs);
             case self::ACTION_CANCEL:
                 return $this->doCancelAction($request, $response, $invokeArgs);
+            case self::ACTION_CANCEL_PAYMENT: 
+                return $this->cancelPaymentAction($request, $response, $invokeArgs);
+            case self::ACTION_THANKS:
+                return $this->thanksAction($request, $response, $invokeArgs);
             case self::ACTION_CC:
             default:
                 return $this->ccAction($request, $response, $invokeArgs);
@@ -140,6 +146,20 @@ abstract class Am_Paysystem_CreditCard extends Am_Paysystem_Abstract
                 $this->cancelInvoice($invoice);
         $invoice->setCancelled();
         $response->setRedirect(ROOT_SURL . '/member/payment-history');
+    }
+    
+    public function cancelPaymentAction(Am_Request $request, Zend_Controller_Response_Http $response, array $invokeArgs)
+    {
+        $id = $request->getFiltered('id');
+        if (!$id && isset($_GET['id'])) $id = filterId($_GET['id']);
+        $invoice = $this->getDi()->invoiceTable->findFirstByPublicId($id);
+        if (!$invoice) 
+            throw new Am_Exception_InputError("No invoice found [$id]");
+        if ($invoice->user_id != $this->getDi()->auth->getUserId())
+            throw new Am_Exception_InternalError("User tried to access foreign invoice: [$id]");
+        $this->invoice = $invoice;
+        // find invoice and redirect to default "cancel" page
+        $response->setRedirect($this->getCancelUrl());
     }
     
     /**
@@ -356,7 +376,11 @@ abstract class Am_Paysystem_CreditCard extends Am_Paysystem_Abstract
         /** @todo use "reattempt" config **/
         $reattempt = array_filter($this->getConfig('reattempt', array()));
         sort($reattempt);
-        if (!$reattempt) return;
+        if (!$reattempt) {
+            $invoice->updateQuick('status', Invoice::RECURRING_FAILED);
+            $invoice->updateQuick('rebill_date', null);
+            return;
+        }
 
         $first_failure = $invoice->data()->get(self::FIRST_REBILL_FAILURE);
         if (!$first_failure)
@@ -375,7 +399,7 @@ abstract class Am_Paysystem_CreditCard extends Am_Paysystem_Abstract
             return;
         }
         
-        $invoice->updateQuick('rebill_date', date('Y-m-d', strtotime($first_failure) + $day * 24*3600));
+        $invoice->updateQuick('rebill_date', date('Y-m-d', strtotime($first_failure." +$day days")));
 
         $tr = new Am_Paysystem_Transaction_Manual($this);
         if ($invoice->getAccessExpire() < $invoice->rebill_date)
@@ -762,6 +786,7 @@ CUT
     }
     public function cancelAction(Invoice $invoice, $actionName, Am_Paysystem_Result $result)
     {
+        $result->setSuccess();
         $invoice->setCancelled(true);
     }    
     public function getUpdateCcLink($user)

@@ -11,7 +11,7 @@
  *        Web: http://www.cgi-central.net
  *    Details: Member display page
  *    FileName $RCSfile$
- *    Release: 4.4.4 ($Revision$)
+ *    Release: 4.7.0 ($Revision$)
  *
  * Please direct bug reports,suggestions or feedback to the cgi-central forums.
  * http://www.cgi-central.net/forum/
@@ -166,10 +166,9 @@ class LoginController extends Am_Controller_Auth
     public function doLogin()
     {
         /// if there is re-captcha enabled, validate it and remove failed_login records if any
-        if (($cc = $this->getParam('recaptcha_challenge_field'))
-            && ($rr = $this->getParam('recaptcha_response_field'))
+        if (($rr = $this->getParam('g-recaptcha-response'))
             && Am_Recaptcha::isConfigured()
-            && $this->getDi()->recaptcha->validate($cc, $rr)) {
+            && $this->getDi()->recaptcha->validate($rr)) {
             $this->getAuth()->getProtector()->deleteRecord($this->getRequest()->getClientIp());
         }
 
@@ -216,9 +215,7 @@ class LoginController extends Am_Controller_Auth
     {
         $showRecaptcha = Am_Recaptcha::isConfigured() && $this->authResult
             && ($this->authResult->getCode() == Am_Auth_Result::FAILURE_ATTEMPTS_VIOLATION);
-        if ($showRecaptcha) {
-            $recaptcha = $this->getDi()->recaptcha;
-        }
+
         if ($this->isAjax() && $this->getRequest()->isPost()) {
             $ret = array(
                 'ok' => false,
@@ -226,15 +223,12 @@ class LoginController extends Am_Controller_Auth
                 'code' => $this->authResult ? $this->authResult->getCode() : null,
             );
             if ($showRecaptcha) {
-                $ret['recaptcha_key'] = $recaptcha->getPublicKey();
-                $ret['recaptcha_error'] = $recaptcha->getError();
+                $ret['recaptcha_key'] = $this->getDi()->recaptcha->getPublicKey();
             }
             return $this->ajaxResponse($ret);
         }
         $loginUrl = $this->findLoginUrl();
 
-        if ($showRecaptcha)
-            $this->view->recaptcha = $recaptcha->render($this->getDi()->config->get('login_recaptcha_theme', 'red'));
         $this->view->assign('form_action', $loginUrl);
         $this->view->assign('this_config', $this->getDi()->config->get($this->configBase));
         if ($this->isAjax()) {

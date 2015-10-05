@@ -3,7 +3,8 @@
 class Am_Plugin_GoogleAnalytics extends Am_Plugin
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.0';
+    const TRACKED_DATA_KEY = 'google-analytics-done';
 
     protected $id;
     protected $done = false;
@@ -27,7 +28,7 @@ class Am_Plugin_GoogleAnalytics extends Am_Plugin
              <a href=\'http://www.google.com/support/googleanalytics/bin/answer.py?answer=55603\' target=_blank>Where can I find my tracking ID?</a>
              The tracking ID will look like <i>UA-1231231-1</i>.
              Please note - this tracking is only for pages displayed by aMember,
-             pages that are just protected by aMember, cannot be tracked. 
+             pages that are just protected by aMember, cannot be tracked.
              Use '.
              '<a href="http://www.google.com/support/googleanalytics/bin/search.py?query=how+to+add+tracking&ctx=en%3Asearchbox" target=_blank>GA instructions</a>
              how to add tracking code to your own pages.
@@ -36,27 +37,69 @@ class Am_Plugin_GoogleAnalytics extends Am_Plugin
             ->setLabel(array("Include only sales code", "Enable this if you already have tracking code in template"));
         $form->addAdvCheckbox("google_analytics_track_free_signups")
             ->setLabel(array("Track free signups"));
+
+        $form->addSelect("analytics_version")
+            ->setLabel("Analytics Version")
+            ->loadOptions(array(
+                'google' => 'Google Analytics',
+                'universal' => 'Universal Analytics',
+            ));
     }
     function onAfterRender(Am_Event_AfterRender $event)
     {
         if ($this->done) return;
         if (preg_match('/thanks\.phtml$/', $event->getTemplateName()) && $event->getView()->invoice && $event->getView()->payment)
         {
-            $this->done += $event->replace("|</body>|i", $this->getHeader() . 
+            $this->done += $event->replace("|</body>|i", $this->getHeader() .
                     $this->getSaleCode($event->getView()->invoice, $event->getView()->payment) . "</body>", 1);
-        } 
-        elseif (preg_match('/signup\.phtml$/', $event->getTemplateName()))
+            if ($this->done) {
+                $payment = $event->getView()->payment;
+                $payment->data()->set(self::TRACKED_DATA_KEY, 1);
+                $payment->save();
+            }
+        }
+        elseif (preg_match('/signup\/signup.*\.phtml$/', $event->getTemplateName()))
         {
-            $this->done += $event->replace("|</body>|i", $this->getHeader() . 
+            $this->done += $event->replace("|</body>|i", $this->getHeader() .
                     $this->getTrackingCode(). $this->getSignupCode(). "</body>", 1);
-        } 
-        elseif (!preg_match('/\badmin\b/', $t = $event->getTemplateName()) && !$this->getDi()->config->get("google_analytics_only_sales_code"))
-        {
-            $this->done += $event->replace("|</body>|i", $this->getHeader() . $this->getTrackingCode() . "</body>", 1);
+        } else {
+            if ($user_id = $this->getDi()->auth->getUserId()) {
+                $payments = $this->getDi()->invoicePaymentTable->findBy(array(
+                    'user_id' => $user_id,
+                    'dattm' => '>' . sqlTime('-5 days')
+                ));
+                foreach ($payments as $payment) {
+                    if ($payment->data()->get(self::TRACKED_DATA_KEY)) continue;
+
+                    $this->done += $event->replace("|</body>|i", $this->getHeader() .
+                        $this->getSaleCode($payment->getInvoice(), $payment) . "</body>", 1);
+                    if ($this->done) {
+                        $payment->data()->set(self::TRACKED_DATA_KEY, 1);
+                        $payment->save();
+                    }
+                    break;
+                }
+            }
+
+            if (!$this->done && !(defined('AM_ADMIN') && AM_ADMIN) && !$this->getDi()->config->get("google_analytics_only_sales_code")) {
+                $this->done += $event->replace("|</body>|i", $this->getHeader() . $this->getTrackingCode() . "</body>", 1);
+            }
         }
     }
     function getTrackingCode()
     {
+        if($this->getDi()->config->get('analytics_version', 'google') == 'universal')
+        {
+            return <<<CUT
+<script type="text/javascript">
+    ga('create', '{$this->id}', 'auto');
+    ga('send', 'pageview');
+</script>
+<!-- end of GA code -->
+    
+CUT;
+        }
+
         return <<<CUT
 
 <script type="text/javascript">
@@ -74,7 +117,17 @@ CUT;
     }
     function getSaleCode(Invoice $invoice, InvoicePayment $payment)
     {
-        $out = <<<CUT
+        if($this->getDi()->config->get('analytics_version', 'google') == 'universal')
+        {
+            $out = <<<CUT
+<script type="text/javascript">
+    ga('create', '{$this->id}', 'auto');
+    ga('send', 'pageview');
+</script>
+CUT;
+        } else
+        {
+            $out = <<<CUT
 
 <script type="text/javascript">
 if (typeof(_gaq)=='object') { // sometimes google-analytics can be blocked and we will avoid error
@@ -83,12 +136,13 @@ if (typeof(_gaq)=='object') { // sometimes google-analytics can be blocked and w
 }
 </script>
 CUT;
+        }
         if (empty($payment->amount) && !$this->getDi()->config->get('google_analytics_track_free_signups')) {
             return $out;
         } elseif (empty($payment->amount)) {
             $a = array(
                 $invoice->public_id,
-                "",
+                $this->getDi()->config->get('site_title'),
                 0,
                 0,
                 0,
@@ -99,10 +153,10 @@ CUT;
         } else {
             $a = array(
                 $payment->transaction_id,
-                "",
-                $payment->amount,
-                $payment->tax,
-                $payment->shipping,
+                $this->getDi()->config->get('site_title'),
+                $payment->amount - $payment->tax - $payment->shipping,
+                (float)$payment->tax,
+                (float)$payment->shipping,
                 $invoice->getCity(),
                 $invoice->getState(),
                 $invoice->getCountry(),
@@ -110,11 +164,44 @@ CUT;
         }
         $a = implode(",\n", array_map('json_encode', $a));
         $items = "";
-// uncomment to enable items tracking
-//        foreach ($invoice->getItems() as $item)
-//        {
-//            $items .= "['_addItem', '$payment->transaction_id', '$item->item_id', '$item->item_title','', $item->first_total, $item->qty],";
-//        }
+        foreach ($invoice->getItems() as $item)
+        {
+            if($this->getDi()->config->get('analytics_version', 'google') == 'universal')
+            {
+                $it = json_encode(array(
+                    'id' => $payment->transaction_id,
+                    'name' => $item->item_title,
+                    'sku' => $item->item_id,
+                    'price' => moneyRound($item->first_total/$item->qty),
+                    'quantity' => $item->qty,
+                ));
+                $items .= "ga('ecommerce:addItem', $it);\n";
+            } else
+            {
+                $items .= "['_addItem', '$payment->transaction_id', '$item->item_id', '$item->item_title','', $item->first_total, $item->qty],";
+            }
+
+        }
+        if($this->getDi()->config->get('analytics_version', 'google') == 'universal')
+        {
+            $tr = json_encode(array(
+                'id' => $payment->transaction_id,
+                'affiliation' => $this->getDi()->config->get("site_title"),
+                'revenue' => empty($payment->amount) ? 0 : ($payment->amount - $payment->tax - $payment->shipping),
+                'shipping' => empty($payment->amount) ? 0 : $payment->shipping,
+                'tax' => empty($payment->amount) ? 0 : $payment->tax,
+            ));
+            return $out . <<<CUT
+<script type="text/javascript">
+    ga('require', 'ecommerce');
+    ga('ecommerce:addTransaction', $tr);
+    $items
+    ga('ecommerce:send');
+</script>
+<!-- end of GA code -->
+CUT;
+        }
+
         return $out . <<<CUT
 <script type="text/javascript">
 if (typeof(_gaq)=='object') { // sometimes google-analytics can be blocked and we will avoid error
@@ -130,6 +217,20 @@ CUT;
     }
     function getHeader()
     {
+        if($this->getDi()->config->get('analytics_version', 'google') == 'universal')
+        {
+            return <<<CUT
+
+<!-- start of GA code -->
+<script type="text/javascript">
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+</script>
+CUT;
+        }
+
         return <<<CUT
 
 <!-- start of GA code -->

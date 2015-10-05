@@ -72,6 +72,16 @@ class S3
         protected $_exceptionClass = 'S3Exception';
         
 	/**
+     *
+     * @var String AWS region (endpoint will be used based on service region)
+     */
+    protected $region;
+    
+    
+    
+    
+    
+    /**
 	* Constructor - if you're not using the class statically
 	*
 	* @param string $accessKey Access key
@@ -79,14 +89,24 @@ class S3
 	* @param boolean $useSSL Enable SSL
 	* @return void
 	*/
-	public function __construct($accessKey = null, $secretKey = null, $useSSL = false, $endpoint = 's3.amazonaws.com')
+	public function __construct($accessKey = null, $secretKey = null, $useSSL = false, $endpoint = 's3.amazonaws.com', $region='us-east-1')
 	{
 		if ($accessKey !== null && $secretKey !== null)
 			$this->setAuth($accessKey, $secretKey);
 		$this->useSSL = $useSSL;
-		$this->endpoint = $endpoint;
+        $this->setEndpoint($endpoint);
+        $this->region = $region;
+        
 	}
 
+    
+    public function getServiceRegion()
+    {
+        return $this->region;
+    }
+        
+        
+        
         /**
          * It may be used to change request implementation or to mock requests
          * @param S3Request $request This 
@@ -135,6 +155,14 @@ class S3
 		$this->__secretKey = $secretKey;
 	}
 
+    public function getSecretKey()
+    {
+        return $this->__secretKey;
+    }
+    
+    public function getAccessKey(){
+        return $this->__accessKey;
+    }
 
 	/**
 	* Check if AWS keys have been set
@@ -648,7 +676,7 @@ class S3
 	*/
 	public function getObjectInfo($bucket, $uri, $returnInfo = true)
 	{
-		$rest = $this->_getRequest('HEAD', $bucket, $uri, $this->endpoint);
+        $rest = $this->_getRequest('HEAD', $bucket, $uri, $this->endpoint);
 		$rest = $rest->getResponse($this);
 		if ($rest->error === false && ($rest->code !== 200 && $rest->code !== 404))
 			$rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
@@ -995,11 +1023,11 @@ class S3
 	*/
 	public function getAuthenticatedURL($bucket, $uri, $lifetime, $hostBucket = false, $https = false)
 	{
-		$expires = time() + $lifetime;
-		$uri = str_replace('%2F', '/', rawurlencode($uri)); // URI should be encoded (thanks Sean O'Dea)
-		return sprintf(($https ? 'https' : 'http').'://%s/%s?AWSAccessKeyId=%s&Expires=%u&Signature=%s',
-		$hostBucket ? $bucket : $bucket.'.s3.amazonaws.com', $uri, $this->__accessKey, $expires,
-		urlencode($this->__getHash("GET\n\n\n{$expires}\n/{$bucket}/{$uri}")));
+        $uri = str_replace('%2F', '/', rawurlencode($uri)); // URI should be encoded (thanks Sean O'Dea)
+        $r = $this->_getRequest('GET', $bucket, $uri, $this->endpoint);
+        $expires = time() + $lifetime;
+        return $r->getAuthenticatedURL($this, $bucket, $uri, $lifetime, $hostBucket, $https);
+		
 	}
 
 
@@ -1646,7 +1674,7 @@ class S3
 	* @param string $string String to sign
 	* @return string
 	*/
-	protected function __getHash($string)
+	public function __getHash($string)
 	{
 		return base64_encode(extension_loaded('hash') ?
 		hash_hmac('sha1', $string, $this->__secretKey, true) : pack('H*', sha1(
@@ -2041,6 +2069,313 @@ class S3Request_HttpRequest2 extends S3Request
             }
             return $ret;
         }
+        
+        
+    	public function getAuthenticatedURL(S3 $s3, $bucket, $uri, $lifetime, $hostBucket = false, $https = false)
+        {
+    		$expires = $lifetime + time();
+            return sprintf(($https ? 'https' : 'http').'://%s/%s?AWSAccessKeyId=%s&Expires=%u&Signature=%s',
+    		$hostBucket ? $bucket : $bucket.'.s3.amazonaws.com', $uri, $s3->getAccessKey(), $expires,
+    		urlencode($s3->__getHash("GET\n\n\n{$expires}\n/{$bucket}/{$uri}")));
+            
+        }
+}
+
+
+
+class S3Request_HttpRequest4 extends S3Request
+{
+	const DEFAULT_PAYLOAD = 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855';
+
+    public function _getResponse(S3 $s3, $url, $headers, $amz)
+	{
+        $req = new HTTP_Request2($url, $this->verb);
+        if (!$s3->useSSLValidation)
+        {
+            $req->setConfig('ssl_verify_host', false);
+            $req->setConfig('ssl_verify_peer', false);
+        }
+		
+        if ($s3->proxy != null && isset($s3->proxy['host']))
+		{
+            $req->setConfig('proxy_host');
+			$req->setConfig('proxy_host', $s3->proxy['host']);
+			if (isset($s3->proxy['user'], $s3->proxy['pass']) && $proxy['user'] != null && $proxy['pass'] != null)
+                        {
+                            $req->setConfig('proxy_user', $s3->proxy['user']);
+                            $req->setConfig('proxy_password', $s3->proxy['pass']);
+                        }
+		}
+
+		if ($s3->hasAuth())
+		{
+            $headers = http_parse_headers(implode("\n", $headers).$amz."\n");
+            $headers = $this->signRequest($s3, $headers);
+            $req->setHeader($headers);
+        }
+        
+        $req->setConfig('follow_redirects', true);
+        
+		// Request types
+		switch ($this->verb)
+		{
+			case 'GET': break;
+			case 'PUT': case 'POST': // POST only used for CloudFront
+				if ($this->fp !== false)
+				{
+                                    $req->setBody($this->fp);
+				}
+				elseif ($this->data !== false)
+				{
+                                    $req->setBody($this->data);
+				}
+			break;
+		}
+        try {
+            $res = $req->send();
+            $this->response->code = $res->getStatus();
+            $this->response->body = $res->getBody();
+            $this->response->headers = $this->modHeaders($res->getHeader());
+        } catch (HTTP_Request2_Exception $e) {
+            $this->response->error = array(
+                    'code' => $e->getCode(),
+                    'message' => $e->getMessage(),
+                    'resource' => $this->resource
+            );                    
+        }
+		return $this->response;
+	}
+    
+    
+        function modHeaders($headers)
+        {
+            $ret = array();
+            foreach ($headers as $header => $value)
+            {
+                switch (strtolower($header))
+                {
+                    case 'last-modified':
+                        $ret['time'] = strtotime($value);
+                        break;
+                    case 'content-length':
+                        $ret['size'] = (int)$value;
+                        break;
+                    case 'content-type':
+                        $ret['type'] = $value;
+                        break;
+                    case 'etag':
+                        $ret['hash'] = $value{0} == '"' ? substr($value, 1, -1) : $value;
+                        break;
+                    default:
+                        if (preg_match('/^x-amz-meta-.*$/', $header))
+                            $ret[$header] = is_numeric($value) ? (int)$value : $value;            
+                }
+            }
+            return $ret;
+        }
+        
+        
+        function signRequest(S3 $s3, $headers)
+        {
+            
+            unset($headers['Date']);
+            
+            $secretKey = $s3->getSecretKey();
+            $timestamp = time();
+            $longDate = gmdate('Ymd\THis\Z', $timestamp);
+            $headers['x-amz-date'] = $longDate;
+            $shortDate = substr($longDate, 0, 8);
+            
+            $region = $s3->getServiceRegion();
+            $service = 's3';
+            
+            
+            $credentialScope = $this->createScope($shortDate, $region, $service);
+            $payload = $this->getPayload($headers);
+
+            $signingContext = $this->createSigningContext($s3, $headers, $payload);
+            
+            $signingContext['string_to_sign'] = $this->createStringToSign(
+                $longDate,
+                $credentialScope,
+                $signingContext['canonical_request']
+            );
+            
+            $signingKey = $this->getSigningKey($shortDate, $region, $service, $secretKey);
+            $signature = hash_hmac('sha256', $signingContext['string_to_sign'], $signingKey);
+            
+            $headers['Authorization'] = "AWS4-HMAC-SHA256 "
+            . "Credential={$s3->getAccessKey()}/{$credentialScope}, "
+            . "SignedHeaders={$signingContext['signed_headers']}, Signature={$signature}";
+
+            $headers['x-amz-content-sha256'] = $this->getPayload($headers);
+            
+            return $headers;
+            
+        }
+        
+        private function getSigningKey($shortDate, $region, $service, $secretKey)
+        {
+            // Retrieve the hash form the cache or create it and add it to the cache
+            $dateKey = hash_hmac('sha256', $shortDate, 'AWS4' . $secretKey, true);
+            $regionKey = hash_hmac('sha256', $region, $dateKey, true);
+            $serviceKey = hash_hmac('sha256', $service, $regionKey, true);
+            $signingKey = hash_hmac('sha256', 'aws4_request', $serviceKey, true);
+
+            return $signingKey;
+        }
+        
+        
+        private function createStringToSign($longDate, $credentialScope, $creq)
+        {
+            return "AWS4-HMAC-SHA256\n{$longDate}\n{$credentialScope}\n"
+                . hash('sha256', $creq);
+        }
+        
+        function getPayload(&$headers)
+        {
+            return isset($headers['x-amz-content-sha256']) ? $headers['x-amz-content-sha256'] : self::DEFAULT_PAYLOAD;
+        }
+        private function createScope($shortDate, $region, $service)
+        {
+            return $shortDate
+                . '/' . $region
+                . '/' . $service
+                . '/aws4_request';
+        }
+        
+        
+        private function createSigningContext(S3 $s3, $headers, $payload)
+        {
+            $signable = array(
+                'host'        => true,
+                'date'        => true,
+                'content-md5' => true
+            );
+
+                // Normalize the path as required by SigV4 and ensure it's absolute
+            $canon = $this->verb . "\n"
+                    . $this->createCanonicalizedPath($this->uri) . "\n"
+                    . $this->getCanonicalizedQueryString($this->uri) . "\n";
+
+            $canonHeaders = array();
+
+            foreach ($headers  as $key => $values) {
+                $key = strtolower($key);
+                if (isset($signable[$key]) || substr($key, 0, 6) === 'x-amz-') {
+                    $canonHeaders[$key] = $key . ':' . preg_replace('/\s+/', ' ', $values);
+                }
+            }
+
+            ksort($canonHeaders);
+            $signedHeadersString = implode(';', array_keys($canonHeaders));
+            $canon .= implode("\n", $canonHeaders) . "\n\n"
+                . $signedHeadersString . "\n"
+                . $payload;
+
+            return array(
+                'canonical_request' => $canon,
+                'signed_headers'    => $signedHeadersString
+            );
+        }
+        protected function createCanonicalizedPath($uri)
+        {
+            $url = rawurldecode(parse_url($uri, PHP_URL_PATH));
+            $doubleEncoded = rawurlencode(ltrim($url, '/'));
+            
+            return '/' . str_replace('%2F', '/', $doubleEncoded);
+        }
+        private function getCanonicalizedQueryString($uri)
+        {
+            $query = parse_url($uri, PHP_URL_QUERY);
+            parse_str($query, $queryParams);
+            unset($queryParams['X-Amz-Signature']);
+            if (empty($queryParams)) {
+                return '';
+            }
+
+            $qs = '';
+            ksort($queryParams);
+            foreach ($queryParams as $key => $values) {
+                if (is_array($values)) {
+                    sort($values);
+                } elseif ($values === 0) {
+                    $values = array('0');
+                } elseif (!$values) {
+                    $values = array('');
+                }
+
+                foreach ((array) $values as $value) {
+                    $qs .= rawurlencode($key) . '=' . rawurlencode($value) . '&';
+                }
+            }
+
+            return substr($qs, 0, -1);
+        }
+        
+        
+        function transformHeaders($headers, $amz)
+        {
+            $ret = array();
+            foreach($headers as $v){
+                list($h, $hv) = explode(":", $v);
+                $h = trim($h); $hv = trim($hv);
+                $ret[$h] = $hv;
+            }
+            foreach(explode("\n", $amz) as $v){
+                if(!$v) continue;
+                list($h, $hv) = explode(":", $v);
+                $h = trim($h); $hv = trim($hv);
+                $ret[$h] = $hv;
+            }
+            return $ret;
+        }
+        
+    function getAuthenticatedURL(S3 $s3, $bucket, $uri, $lifetime, $hostBucket = false, $https = false)
+    {
+        unset($this->headers['Date']);
+        unset($this->headers['Content-MD5']);
+        $secretKey = $s3->getSecretKey();
+        $timestamp = time();
+        $longDate = gmdate('Ymd\THis\Z', $timestamp);
+        $shortDate = substr($longDate, 0, 8);
+            
+        $region = $s3->getServiceRegion();
+        $service = 's3';
+            
+            
+            
+        $credentialScope = $this->createScope($shortDate, $region, $service);
+
+        $query = parse_url($uri, PHP_URL_QUERY);
+        $queryParams = array();
+        $uri = parse_url($uri, PHP_URL_PATH);
+        $queryParams['X-Amz-Algorithm'] = 'AWS4-HMAC-SHA256';
+        $queryParams['X-Amz-Credential'] = "{$s3->getAccessKey()}/{$credentialScope}";
+        $queryParams['X-Amz-Date'] = $longDate;
+        $queryParams['X-Amz-Expires'] = $lifetime;
+        $queryParams['X-Amz-SignedHeaders'] = 'host';
+        $payload = 'UNSIGNED-PAYLOAD';
+        $this->uri = $uri."?".http_build_query($queryParams);
+        
+        $signingContext = $this->createSigningContext($s3, $this->headers, $payload);
+        $signingContext['string_to_sign'] = $this->createStringToSign(
+               $longDate,
+                $credentialScope,
+                $signingContext['canonical_request']
+        );
+            
+        $signingKey = $this->getSigningKey($shortDate, $region, $service, $secretKey);
+        $signature = hash_hmac('sha256', $signingContext['string_to_sign'], $signingKey);
+        $this->uri .= "&X-Amz-Signature={$signature}";
+        
+            return sprintf(($https ? 'https' : 'http').'://%s/%s',
+    		$hostBucket ? $bucket : $bucket.".".$s3->endpoint, $this->uri
+    		);
+        
+        
+    }
+    
 }
 
 class S3Exception extends Exception {
@@ -2050,4 +2385,47 @@ class S3Exception extends Exception {
 		$this->file = $file;
 		$this->line = $line;
 	}
+}
+
+if (!function_exists('http_parse_headers'))
+{
+    function http_parse_headers($raw_headers)
+    {
+        $headers = array();
+        $key = ''; // [+]
+
+        foreach(explode("\n", $raw_headers) as $i => $h)
+        {
+            $h = explode(':', $h, 2);
+
+            if (isset($h[1]))
+            {
+                if (!isset($headers[$h[0]]))
+                    $headers[$h[0]] = trim($h[1]);
+                elseif (is_array($headers[$h[0]]))
+                {
+                    // $tmp = array_merge($headers[$h[0]], array(trim($h[1]))); // [-]
+                    // $headers[$h[0]] = $tmp; // [-]
+                    $headers[$h[0]] = array_merge($headers[$h[0]], array(trim($h[1]))); // [+]
+                }
+                else
+                {
+                    // $tmp = array_merge(array($headers[$h[0]]), array(trim($h[1]))); // [-]
+                    // $headers[$h[0]] = $tmp; // [-]
+                    $headers[$h[0]] = array_merge(array($headers[$h[0]]), array(trim($h[1]))); // [+]
+                }
+
+                $key = $h[0]; // [+]
+            }
+            else // [+]
+            { // [+]
+                if (substr($h[0], 0, 1) == "\t") // [+]
+                    $headers[$key] .= "\r\n\t".trim($h[0]); // [+]
+                elseif (!$key) // [+]
+                    $headers[0] = trim($h[0]);trim($h[0]); // [+]
+            } // [+]
+        }
+
+        return $headers;
+    }
 }

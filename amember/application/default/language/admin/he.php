@@ -3,7 +3,6 @@
   '%d days after expiration' => '%d ימים לאחר תאריך התפוגה',
   '%d days before expiration' => '%d ימים לפני פקיעה',
   '%d user(s) matches your search' => '%d משתמשים תאמו את החיפוש',
-  '%d-th day' => 'היום ה  %d',
   '%d-th subscription day' => 'מנוי %d ימים',
   '%s Plugins' => '%s תוספים',
   '-- Please Select --' => '--אנא בחר--',
@@ -21,10 +20,7 @@
   'Add Report to My Dashboard' => 'הוסף דוח ללוח',
   'Add Subscription' => 'הוסף מנוי',
   'Add User Fields' => 'הוספת שדות',
-  'Added' => 'נוספו',
   'Additional' => 'נוספים',
-  'Additional Fields' => 'שדות נוספים',
-  'Additionally to "Access", add "Invoice" and "Payment" record with given %s amount, like they have really made a payment' => 'בנוסף לגישה, הוספת חשבונית ותשלום, רשומה עם סכום %s, כאילו באמת נוצר תשלום',
   'Admin Accounts' => 'חשבונות מנהלים',
   'Admin E-Mail Address
 used to send email notifications to admin
@@ -39,7 +35,6 @@ to admin once free signup is completed' => 'התראת מנוי חינם למנ�
 to admin once payment is received' => 'התראות תשלום למנהל
 ברגע שתשלום מתקבל',
   'Admin Settings' => 'אפשרויות מנהל',
-  'Admin Username' => 'שם מנהל',
   'Admin notification' => 'התראת מנהל',
   'Admin username must be alphanumeric in small caps' => 'שם משתמש חייב להיות אלפאנומרי באותיות קטנות',
   'Administrator Login' => 'כניסת מנהל',
@@ -121,6 +116,7 @@ between 5 and 32' => 'אורך קוד
 בין 5 ל - 32',
   'Collapse Menu' => 'הסתר תפריט',
   'Comma' => 'פסיק',
+  'Commission earned' => 'רווח עמלות',
   'Commission for First Payment
 calculated for first payment in each invoice' => 'תשלום עמלה ראשנה',
   'Commission for Free Signup
@@ -147,7 +143,6 @@ how many times coupon can be used' => 'מספר פעמי השימוש עבור �
   'Create Folder' => 'צור ספריה',
   'Create Session Key' => 'צור מפתח מושב',
   'Create ticket as' => 'צור קריאת שירות כ',
-  'Currency' => 'מטבע',
   'Currency Exchange Rates' => 'שער חליפין של מטבע',
   'Custom Commission Rules added' => 'חוק מותאם אישית נוסף',
   'Custom HTML' => 'תוכן HTML מותאם אישית',
@@ -156,7 +151,6 @@ keep empty to use default title' => 'כותרת מותאמת אישית לטופ
   'Customer' => 'לקוח',
   'Customize Dashboard' => 'התאם אישית לוח',
   'Daily' => 'יומי',
-  'Dashboard' => 'לוח מחוונים',
   'Date Time' => 'תאריך זמן',
   'Date to Purge
 all records prior to this date will be removed from selected tables' => 'תאריך לניקוי
@@ -168,6 +162,7 @@ date range when coupon can be used' => 'תאריכים
   'Days to Send' => 'ימים לשליחה',
   'Default - user clicks a link to become affiliate' => 'ברירת מחדל- משתמש לוחץ על קישור על מנת להפוך לחבר בתכנית השותפים',
   'Default Billing Plan' => 'תכנית חיוב ברירת מחדל',
+  'Default Commission' => 'עמלת ברירת מחדל',
   'Default Locale' => 'שפת ברירת מחדל',
   'Default Signup' => 'הרשמת ברירת מחדל',
   'Default for Members' => 'ברירת מחדל לחברים',
@@ -221,16 +216,13 @@ used to display name of sender in outgoing e-mails' => 'שם שולח הדואל
   'EXPIRED subscription for group %s' => 'מנויים פגי תוקף לקבוצה  %s',
   'Edit Custom Commission Rules' => 'ערוך חוק עמלה מותאם אישית',
   'Edit Groups' => 'ערוך קבוצה',
-  'Email' => 'מייל',
   'Email Backup Frequency' => 'תדירות שליחת גיבוי בסיס הנתונים',
   'Email Sending method
 PLEASE DO NOT CHANGE if emailing from aMember works' => 'שיטת שליחת הודעות דואל
 לא לשנות במידה ועובד',
   'Email Sent' => 'מילים שנשלחו',
-  'Email Subject' => 'נושא',
   'Email address is required field.' => 'כתובת מייל נדרשת',
   'Enable plugins if necessary' => 'אפשר תוספים במידת הצורך',
-  'End Date' => 'תאריך סיום',
   'Enter Maintenance Mode' => 'מצב תחזוקה',
   'Enter admin password for confirmation' => 'הזן את סיסמת מנהל לאישור',
   'Error Log' => 'יומן שגיאות',
@@ -244,10 +236,8 @@ PLEASE DO NOT CHANGE if emailing from aMember works' => 'שיטת שליחת ה�
   'Exchange Rate
 enter cost of 1 (one) %s' => 'שער חליפין
 הכנס ערך עבור 1 %s',
-  'Field' => 'שדה',
   'Field Name' => 'שם השדה',
   'Field Title' => 'כותרת שדה',
-  'Field Type' => 'סוג השדה',
   'Field Values' => 'ערך השדה',
   'File
 (max filesize %s)' => 'קובץ
@@ -281,7 +271,6 @@ you may get your key in %smembers area%s' => 'רישיון FlowPlayer
   'Folder URL' => 'מיקום התקיות',
   'Form Type' => 'סוג טופס',
   'Forms Editor' => 'עורך הטפסים',
-  'From' => 'מ',
   'Future' => 'עתידי',
   'General' => 'כללי',
   'General Settings' => 'הגדרות כלליות',
@@ -331,7 +320,6 @@ Existing invoices are not affected.
   'Is Disabled?
 disable product ordering, hide it from signup and renewal forms' => 'מבוטל?
 לבטל הזמנת מוצר, להסתיר אותו מהרשמה וחידוש',
-  'Is Paid?' => 'בוצע תשלום?',
   'It is required to setup a cron job to trigger backup generation' => 'הכרחי להפעיל cron על מנל ליצר גיבויים',
   'JavaScript Code' => 'קוד JavaScript ',
   'Languages' => 'שפה',
@@ -342,7 +330,6 @@ disable product ordering, hide it from signup and renewal forms' => 'מבוטל?
   'Last existing subscription date of this product' => 'תאריך המינוי האחרון של מוצר זה',
   'Last expiration date in the renewal group' => 'תאריך פקיעה אחרון בקבוצת המחדשים',
   'Last login' => 'כניסה אחרונה',
-  'Leads' => 'לידים',
   'Length of admin password must be from %d to %d' => 'אורך סיסמת מנהל חייבת להיות בין %d ל %d',
   'Length of username must be from %d to %d' => 'אורך שם המשתמש חייב להיות בין %d ל %d',
   'Light Boxes' => 'Light Boxes',
@@ -359,8 +346,8 @@ disable product ordering, hide it from signup and renewal forms' => 'מבוטל?
   'Log In' => 'כנס',
   'Log Outgoing E-Mail Messages for ... days' => 'רשום ביומן הודעות דואל ל... ימים',
   'Log in' => 'היכנס',
+  'Logged in as %s' => 'מחובר  כ %s',
   'Login Page' => 'דף כניסה',
-  'Login as User' => 'כנס כמשתמש',
   'Logs' => 'לוגים',
   'Lookup' => 'בדיקה',
   'Lost your password?' => 'סיסמתך אבדה?',
@@ -418,6 +405,7 @@ used as From: address for sending e-mail messages
 to customers. If empty, [Admin E-Mail Address] is used' => 'כתובת דואל יוצאת
 מוצג ללקוח בזמן קבלת מייל',
   'Overwrite User if Exist User with Same Login' => 'דרוס את המשתמש אם קיים משתמש עם כניסה זהה',
+  'PDF Invoice' => 'חשבונית PDF',
   'Paid' => 'שולם',
   'Password Length' => 'אורך סיסמא',
   'Password changed' => 'הסיסמא שונתה',
@@ -430,7 +418,6 @@ to customers. If empty, [Admin E-Mail Address] is used' => 'כתובת דואל 
   'Payment has been successfully refunded' => 'תשלום זוכה בהצלחה',
   'Payout %d Details' => 'פרטי %d תשלום',
   'Payout Details' => 'פרטי תשלום',
-  'Payout Method' => 'שיטת תשלום',
   'Paysystem' => 'מערכת תשלומים',
   'Pending Invoice Notification Rules' => 'הגדרות התראות חשבוניות בהמתנה',
   'Permissions' => 'הרשאות',
@@ -465,7 +452,6 @@ First and Second Price is the total for specified qty' => 'כמות
 מחיר ראשון ושני הינם הסכום הכולל ',
   'Quit Maintenance Mode' => 'הפסק מצב תחזוקה',
   'RadioButtons' => 'RadioButtons',
-  'ReCaptcha' => 'ReCaptcha',
   'Rebill' => 'חייב שנית',
   'Rebill Second Price until cancelled' => 'חייב מחיר שני עד הביטול',
   'Rebill Times
@@ -477,7 +463,6 @@ will occur at the Second Price' => 'מספר חיובים שנית
   'Receipt#' => '#קבלה',
   'Recipients' => 'קבלות',
   'Records Deleted Sucessfully' => 'רשומה נמחקה בהצלחה',
-  'Recurring' => 'מחזורי',
   'Redirect URL' => 'הפנה URL',
   'Referrer' => 'מפנה',
   'Refund Amount' => 'סכום לזיכוי',
@@ -539,7 +524,6 @@ secure URL, usually %s' => 'כתובת בסיס מאובטחת
   'Select option' => 'בחר אפשרות',
   'Selected for E-Mailing' => 'נבחרו עבור מיילים',
   'Semicolon' => 'נקודה ופסיק',
-  'Send' => 'שלח',
   'Send Cancel Notifications to Admin
 send email to admin when recurring subscription cancelled by member' => 'שלח התראת ביטול למנהל',
   'Send E-Mail Message' => 'שלח הודעת מייל',
@@ -572,7 +556,6 @@ once FIRST subscripton is completed' => 'שלח הודעת דואל הרשמה
   'Signup Form Configuration' => 'הגדרות טופס הרשמה',
   'Signup Info' => 'מידע הרשמה',
   'Signup Messages' => 'הודעות הרשמה',
-  'Signups' => 'הרשמות',
   'Site is temporarily disabled for maintenance' => 'אתר אינו פעיל זמנית לצורך התחזוקה',
   'Size' => 'גודל',
   'Size of input field' => 'גודל השדה',
@@ -584,7 +567,6 @@ once FIRST subscripton is completed' => 'שלח הודעת דואל הרשמה
   'Source' => 'מקור',
   'Space' => 'רווח',
   'Standard PHP Sessions' => 'הפעלות PHP סטנדרטיות',
-  'Start Date' => 'תאריך התחלה',
   'Start Date Calculation
 rules for subscription start date calculation.
 MAX date from alternatives will be chosen.
@@ -601,7 +583,6 @@ This settings has no effect for recurring subscriptions' => 'חישוב תארי
   'Surcharge' => 'תשלום נוסף',
   'Table' => 'טבלאות',
   'Tabulation' => 'לווח',
-  'Tax Id' => 'זיהוי מס',
   'Template' => 'תבנית',
   'Template
 alternative template for signup page' => 'תבנית
@@ -620,13 +601,12 @@ Press [Copy] to copy template from default language [English]
 Press [Skip] to type it manually from scratch.' => 'תבנית הדואל לא מוגדרת בשפה זאת
 לחץ העתק על מנת להשתמש בשפה האנגלית או דלג',
   'This field is requred' => 'שדה זה נחוץ',
-  'Thresehold Date' => 'Thresehold תאריך',
+  'Ticket#' => '#קריאת שרות',
   'Tier' => 'מדרגה',
   'Title
 displayed to customers' => 'כותרת
 מוצג ללקוחות',
   'Title of Report for your Reference' => 'כותרת דוח לעיונך',
-  'To' => 'ל',
   'To order this product user must have an
 when user orders this subscription, it will be checked
 that user has one from the following subscriptions' => 'להזמנת מוצר זה ללקוח חייב להיות
@@ -669,13 +649,13 @@ how many times a coupon code can be used by customer' => 'כמה פעמים קו
   'User had access to the following products' => 'למשתמש יש גישה למוצרים הבאים',
   'User is locked' => 'המשתמש נעול',
   'User is not approved' => 'המשתמש לא מאושר',
+  'User is not found in database' => 'שם משתמש לא נמצא בבסיס הנתונים',
   'User notification' => 'התראת לקוחות',
   'Username or E-mail' => 'שם משתמש או מייל',
   'Username or e-mail address' => 'שם משתמש או כתובת מייל',
   'Users' => 'משתמשים',
   'Users Report' => 'דוח משתמשים',
   'Valid license key are one-line string,starts with L and ends with X' => 'מפתח רישיון תקף הוא מחרוזת בת שורה אחת, מתחיל עם L ומסתיים עם X',
-  'Validation' => 'אמות',
   'Value
 use % as wildcard mask' => 'ערך
 השתמש ב % כמסכה כללית',

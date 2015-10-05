@@ -382,6 +382,16 @@ CUT
                 , $title, $title . ' ' . ___('banned')))
                 ->loadOptions($options);
             
+            if($this->plugin->getGroupMode() == Am_Protect_Databased::GROUP_MULTI)
+            $fs->addMagicSelect('super_groups')
+                ->setLabel(___("Super Groups\n"
+                    . "aMember will not remove %s groups from user's account\n"
+                    . "This is useful if  you add additional group to  user  in %s manually\n"
+                    . "and this group is not linked to any aMember product\n"
+                    . "If that additional group is not added to Super groups, \n"
+                    . "it will be removed when aMember updates user account", 
+                    $title . ' '.___('super'), $title))->loadOptions($options);
+            
             $fs->addElement(new Am_Form_Element_SortableList("priority"))
                ->loadOptions($options)
                ->setLabel(___("Groups Priority\n".

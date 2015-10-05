@@ -36,81 +36,99 @@ class Am_Event
     const YEARLY  = 'yearly';
     /** Called when aMember API stack initialization is finished */
     const INIT_FINISHED  = 'initFinished';
-    /** Called when an invoice becomes active_recuirring or paid, or free trial is started 
-     * 
-     *  {@link Invoice Invoice} 
+    /** Called when an invoice becomes active_recuirring or paid, or free trial is started
+     *
+     *  {@link Invoice Invoice}
      *  : invoice
      */
     const INVOICE_STARTED = 'invoiceStarted';
-    
+
     /**
      * Called when invoice status is changed
-     *  
+     *
      * Parameters:
      *  * {@link Invoice Invoice} invoice</li>
      *  * int status - new status of invoice</li>
      *  * int oldStatus - previous status of invoice</li>
-     * 
+     *
      */
     const INVOICE_STATUS_CHANGE = 'invoiceStatusChange';
 
     /**
      * Called just before customer record deletion.
      * By triggering exception from the hook, deletion may be stopped
-     * 
+     *
      *  * {@link User User} user
      */
     const USER_BEFORE_DELETE = 'userBeforeDelete';
     /**
      * Called after customer record deletion.
-     * 
+     *
      *  * {@link User User} user
      */
     const USER_AFTER_DELETE = 'userAfterDelete';
     /**
      * Called before user record is inserted into table
-     * 
+     *
      *  * {@link User User} user
      */
     const USER_BEFORE_INSERT = 'userBeforeInsert';
     /**
      * Called after user record is inserted into table
-     * 
+     *
      *  * {@link User User} user
      */
     const USER_AFTER_INSERT = 'userAfterInsert';
     /**
      * Called before user record is updated in database
-     * 
+     *
      *  * {@link User User} user
      */
     const USER_BEFORE_UPDATE = 'userBeforeUpdate';
     /**
      * Called after user record is updated in database
-     * 
+     *
      *  * {@link User User} user
      */
     const USER_AFTER_UPDATE = 'userAfterUpdate';
     /**
      * Called once value of $user->unsubscribe field is changed
-     * 
+     *
      *  <li>{@link User User} user</li>
      *  <li>int unsubscribed - new value of 'unsubscribed' field</li>
-     * 
+     *
      */
     const USER_UNSUBSCRIBED_CHANGED = 'userUnsubscribedChanged';
+    const GENERATE_LOGIN = 'generateLogin';
     /**
-     * Called after product record deletion.
-     *
-     *  * {@link Product} product
+     * @param Am_Query $query
+     * @param string $filter
+     * @link Am_Event::getReturn()
+     * @link Am_Event::setReturn()
      */
+    const ADMIN_USERS_FILTER_INIT = "adminUsersFilterInit";
+
+    /**
+     * Can be used to customize the autocomplete query
+     * @param Am_Query $query
+     * @param string $term
+     */
+    const ADMIN_USERS_AUTOCOMPLETE = "adminUsersAutocomplete";
+
     /**
      * Called after admin record deletion.
      *
      *  * {@link Admin Admin} admin
      */
     const ADMIN_AFTER_DELETE = 'adminAfterDelete';
+
+    /**
+     * Called after product record deletion.
+     *
+     *  * {@link Product} product
+     */
     const PRODUCT_AFTER_DELETE = 'productAfterDelete';
+
     /**
      * Called just before coupon update
      *
@@ -122,10 +140,10 @@ class Am_Event
     /**
      * Called when customer password is changed, plain-text password
      * is available in this hook
-     * 
+     *
      *  * {@link User User} user
      *  * string password - plain-text password
-     * 
+     *
      *  Event Class: Am_Event_SetPassword
      */
     const SET_PASSWORD = 'setPassword';
@@ -135,20 +153,20 @@ class Am_Event
     const SIGNUP_AFF_ADDED = 'signupAffAdded';
     /** User record is updated after submitting signup form - before payment */
     const SIGNUP_USER_UPDATED  = 'signupUserUpdated';
-    
+
     /** User record is updated after submitting profile form*/
     const PROFILE_USER_UPDATED  = 'profileUserUpdated';
-    
+
     /** Called just before payment record insered into database. Is not called for free subscriptions */
     const PAYMENT_BEFORE_INSERT = 'paymentBeforeInsert';
     /** Payment record insered into database. Is not called for free subscriptions */
     const PAYMENT_AFTER_INSERT = 'paymentAfterInsert';
     /** Payment record with access insered into database. Is not called for free subscriptions. Required to get access records. */
     const PAYMENT_WITH_ACCESS_AFTER_INSERT = 'paymentWithAccessAfterInsert';
-    
-    /** Return array of objects to calculate invoice. 
-     * 
-     * @link Invoice::getCalculators() 
+
+    /** Return array of objects to calculate invoice.
+     *
+     * @link Invoice::getCalculators()
      * @link Am_Event::getReturn()
      * @link Am_Event::setReturn()
      * <code>
@@ -161,24 +179,24 @@ class Am_Event
      * </code>
      */
     const INVOICE_GET_CALCULATORS = 'invoiceGetCalculators';
-    /** 
+    /**
      * Called when invoice calculation is finished
      * @var Invoice invoice
      */
     const INVOICE_CALCULATE = 'invoiceCalculate';
     /**
-     * Check if we can authenticate user by third-party database 
+     * Check if we can authenticate user by third-party database
      * @see Am_Event_AuthCheckLoggedIn
      */
     const AUTH_CHECK_LOGGED_IN = 'authCheckLoggedIn';
     /**
-     * Called upon succesful user login 
+     * Called upon succesful user login
      * @see Am_Event_AuthAfterLogin
      */
     const AUTH_AFTER_LOGIN = 'authAfterLogin';
     /**
      * If user login was failed through aMember users database,
-     * this event allows to create aMember account on-fly and 
+     * this event allows to create aMember account on-fly and
      * login user
      * @see Am_Event_AuthTryLogin
      */
@@ -215,17 +233,23 @@ class Am_Event
     const AUTH_GET_OK_REDIRECT = 'authGetOkRedirect';
     /**
      * Called to get list of member links
-     * @see Am_Event::addReturn() 
+     * @see Am_Event::addReturn()
      */
     const GET_MEMBER_LINKS = 'getMemberLinks';
     /**
      * Called to get list of member links at left
-     * @see Am_Event::addReturn() 
+     * @see Am_Event::addReturn()
      */
     const GET_LEFT_MEMBER_LINKS = 'getLeftMemberLinks';
-    
+
     /**
-     * Called when user receives a subscription to product 
+     * @param User $user
+     * @param array|null $types
+     */
+    const GET_ALLOWED_RESOURCES = 'getAllowedResources';
+
+    /**
+     * Called when user receives a subscription to product
      * he was not subscribed earlier
      * @see Am_Event_SubscriptionAdded
      */
@@ -237,7 +261,7 @@ class Am_Event
     const SUBSCRIPTION_DELETED = 'subscriptionDeleted';
     /**
      * Called once for multiple changes, provides list of
-     * added and deleted products 
+     * added and deleted products
      * @see Am_Event::SUBSCRIPTION_ADDED
      * @see Am_Event::SUBSCRIPTION_DELETED
      * @see Am_Event_SubscriptionChanged
@@ -255,7 +279,7 @@ class Am_Event
      * @deprecated use Am_Event::USER_AFTER_DELETE instead
      */
     const SUBSCRIPTION_REMOVED = 'subscriptionRemoved';
-    
+
     /**
      * Access record inserted
      * NOTE - record may be in not-active state - check dates
@@ -302,14 +326,25 @@ class Am_Event
      */
     const INVOICE_AFTER_CANCEL= 'invoiceAfterCancel';
 
-    
+
     /**
      * Called after invoice payment refund(or chargeback)
      * <li>{@link InvoiceRefund} refund</li>
      */
     const INVOICE_PAYMENT_REFUND= 'invoicePaymentRefund';
-    
-    
+
+
+
+    /**
+     * Called on Invoice validate(before redirect to payment system);
+     * <li>{@link Invoice} invoice</li>
+     */
+    const INVOICE_VALIDATE = 'invoiceValidate';
+
+
+    const SET_DISPLAY_INVOICE_PAYMENT_ID = 'setDisplayInvoicePaymentId';
+    const SET_DISPLAY_INVOICE_REFUND_ID = 'setDisplayInvoiceRefundId';
+
     /**
      * Called to check for username uniquiness
      * @see Am_Event_CheckUniqLogin
@@ -326,6 +361,10 @@ class Am_Event
      */
     const VALIDATE_SAVED_FORM = 'validateSavedForm';
     /**
+     * Called to validate coupon before processing
+     */
+    const VALIDATE_COUPON = 'validateCoupon';
+    /**
      * This hook is executed in global PHP scope to include external libraries
      * for example it is used by WP plugin to include WP API Stack
      */
@@ -335,17 +374,17 @@ class Am_Event
      */
     const GLOBAL_INCLUDES_FINISHED = 'globalIncludesFinished';
     /**
-     * This hook is called from admin-rebuild-db controller 
+     * This hook is called from admin-rebuild-db controller
      * it may be used to add new items into "rebuild" UI
      * @see Am_Event_Rebuild
      */
     const REBUILD = 'rebuild';
     /** Called to get exclusions for aMember database backup
-     *  If your plugin has a table that must not be backed up, 
+     *  If your plugin has a table that must not be backed up,
      *  call $event->addReturn('tablewithoutprefix') on this hook */
     const SKIP_BACKUP = 'skipBackup';
     /**
-     * Mutliple GRID EVENTS are available for product form  
+     * Mutliple GRID EVENTS are available for product form
      */
     const PRODUCT_FORM = 'productForm';
     /**
@@ -367,14 +406,21 @@ class Am_Event
      */
     const EMAIL_TEMPLATE_TAG_SETS = 'emailTemplateTagSets';
     /**
+     * Called to retrive tag options for specific template
+     *
+     * @param string $templateName
+     * @link Am_Mail_TemplateTypes
+     */
+    const EMAIL_TEMPLATE_TAG_OPTIONS = 'emailTemplateTagOptions';
+    /**
      * Called on the thanks page
-     * 
+     *
      * <li>{@link Invoice} invoice (may be null)</li>
      * <li><i>ThanksController</i> controller</li>
      */
     const THANKS_PAGE = 'thanksPage';
     /**
-     * Get list of avaialable admin permissions 
+     * Get list of avaialable admin permissions
      */
     const GET_PERMISSIONS_LIST = 'getPermissionsList';
     /**
@@ -420,11 +466,11 @@ class Am_Event
      */
     const INIT_CONTROLLER_PAGES = 'initControllerPages';
     /**
-     * Load available saved form bricks 
+     * Load available saved form bricks
      */
     const LOAD_BRICKS = 'loadBricks';
     /**
-     * Called on admin menu construction 
+     * Called on admin menu construction
      * <li>{@link Am_Navigation_Admin} menu</li>
      */
     const ADMIN_MENU = 'adminMenu';
@@ -443,7 +489,7 @@ class Am_Event
      */
     const USER_TABS = 'userTabs';
     /**
-     * Called to get available admin user search conditions 
+     * Called to get available admin user search conditions
      */
     const USER_SEARCH_CONDITIONS = 'userSearchConditions';
     /**
@@ -456,15 +502,15 @@ class Am_Event
     const BEFORE_RENDER = 'beforeRender';
     /**
      * Called after view render, you can change output from there
-     * @see Am_Event_AfterRender 
+     * @see Am_Event_AfterRender
      */
-    const AFTER_RENDER = 'afterRender';    
+    const AFTER_RENDER = 'afterRender';
     /** @deprecated, use INIT_ACCESS_TABLES instead */
     const INIT_CONTENT_PAGES = 'initContentPages';
     const INIT_ACCESS_TABLES = 'initAccessTables';
-    
+
     const LOAD_ADMIN_DASHBOARD_WIDGETS = 'loadAdminDashboardWidgets';
-    
+
     /**
      * Add sample data to database (@link AdminBuildController)
      * $user->save() will be called after hook finished
@@ -498,22 +544,22 @@ class Am_Event
     const LOAD_PROFILE_FORM = 'loadProfileForm';
     /**
      * Called when 2 user records are merged
-     * 
+     *
      * @param User $target
      * @param User $source
      */
     const USER_MERGE = 'userMerge';
     /**
      * Called before 2 user records are going to be merged by admin
-     * 
+     *
      * @param User $target
      * @param User $source
      */
     const USER_BEFORE_MERGE = 'userBeforeMerge';
 
     /**
-     * Insert Additional items to admin Clear Old Records controller 
-     * 
+     * Insert Additional items to admin Clear Old Records controller
+     *
      * to utilize, you have to call $event->addReturn($arr, 'mykey'), arr must have
      * a format like this:
      * <code>
@@ -525,8 +571,8 @@ class Am_Event
      * </code>
      */
     const CLEAR_ITEMS = 'clearItems';
-    
-    
+
+
     /**
      *  Add ability to set custom placeholders to mail template.
      *  Am_Mail_Template $template is passed as a parameter;
@@ -538,9 +584,29 @@ class Am_Event
      *  @param Am_SimpleTemplate $template
      *  @param string $body
      *  @param string $subject
+     *  @param Am_Mail $mail
      */
     const MAIL_SIMPLE_TEMPLATE_BEFORE_PARSE = 'mailSimpleTemplateBeforeParse';
-    
+
+    /**
+     * add input elements to form with two leading underscore
+     * 
+     * @param Am_Form_Admin $form
+     */
+    const MAIL_SIMPLE_INIT_FORM = 'mailSimpleInitForm';
+
+    /**
+     * To be used to customize pdf invoice totally
+     * @param Am_Pdf_Invoice $amPdfInvoice
+     * @param Zend_pdf $pdf
+     * @param User $user
+     * @param Invoice $invoice
+     * @param InvoicePayment $payment
+     * @link Am_Event::getReturn()
+     * @link Am_Event::setReturn()
+     */
+    const PDF_INVOICE_BEFORE_RENDER = 'pdfInvoiceBeforeRender';
+
     /**
      * @param stdClass $col
      * @param User $user
@@ -559,25 +625,25 @@ class Am_Event
      */
     const PDF_INVOICE_BEFORE_TABLE = 'pdfInvoiceBeforeTable';
     const PDF_INVOICE_AFTER_TABLE = 'pdfInvoiceAfterTable';
-    
+
     /**
      * Triggered when new invoice created on product upgrade
      * you may change invoice settings before it is passed
      * to paysystem plugin
      */
     const BEFORE_PRODUCT_UPGRADE = 'beforeProductUpgrade';
-    
+
     /**
      * Called immediately before form rendering
      * may be user to change element styles
      * @param Am_Form $form
      */
     const FORM_BEFORE_RENDER = 'formBeforeRender';
-    
+
     /**
      * Called during signup/renewal form display
      * may be used to modify products list in order form
-     * @see Am_Event::getReturn() 
+     * @see Am_Event::getReturn()
      * @see Am_Event::setReturn()
      */
     const SIGNUP_FORM_GET_PRODUCTS = 'signupFormGetProducts';
@@ -586,15 +652,15 @@ class Am_Event
      * may be used to modify products list in order form
      * called AFTER products are filtered according to "require"/"disallow"
      * conditions
-     * @see Am_Event::getReturn() 
+     * @see Am_Event::getReturn()
      * @see Am_Event::setReturn()
      */
     const SIGNUP_FORM_GET_PRODUCTS_FILTERED = 'signupFormGetProductsFiltered';
-    
+
     /**
      * Called during signup/renewal form display
      * may be used to modify paysystem list in order form
-     * @see Am_Event::getReturn() 
+     * @see Am_Event::getReturn()
      * @see Am_Event::setReturn()
      */
     const SIGNUP_FORM_GET_PAYSYSTEMS = 'signupFormGetPaysystems';
@@ -602,18 +668,18 @@ class Am_Event
     /**
      * Triggered before signup data will be processed. (before invoice/user  will be created)
      * @param array $vars  - contains data collected from all signup forms.
-     * May be usefull to make additional checks on data 
-     * 
+     * May be usefull to make additional checks on data
+     *
      */
     const SIGNUP_PAGE_BEFORE_PROCESS = 'signupPageBeforeProcess';
-    
+
     /**
      * Triggered just before redirect to payment system
      * @param Invoice $invoice
      * @param mixed $controller
      */
     const INVOICE_BEFORE_PAYMENT = 'invoiceBeforePayment';
-    
+
     /**
      * Triggered just before redirect to payment system (on signup/renew page)
      * @param Invoice $invoice
@@ -631,7 +697,7 @@ class Am_Event
      * @param Am_Form_Signup $form
      */
     const INVOICE_SIGNUP = 'invoiceSignup';
-    
+
     /**
      * Calculation of product (access) start date on first payment and renewals
      * @param bool isFirstPayment
@@ -667,7 +733,7 @@ class Am_Event
      * @link Am_Event::setReturn()
      */
     const GET_STRONG_PASSWORD_REGEX = 'getStrongPasswordRegex';
-    
+
     /**
      * Ability to change affiliate redirect link, for example to add custom tracking params
      * @param User $aff
@@ -675,7 +741,7 @@ class Am_Event
      * @link Am_Event::setReturn()
      */
     const GET_AFF_REDIRECT_LINK = 'getAffRedirectLink';
-    
+
     /** @var id - if empty, will be detected automatically */
     protected $id;
     /** @var array event-specific variables */
@@ -694,13 +760,13 @@ class Am_Event
         $this->id = $id;
         $this->vars = $vars;
     }
-    
+
     /** @access private */
     public function _setDi(Am_Di $di)
     {
         $this->_di = $di;
     }
-    
+
     /** @return Am_Di */
     public function getDi()
     {
@@ -810,7 +876,7 @@ class Am_Event
         }
         trigger_error("Method [$name] does not exists in " . __CLASS__, E_USER_ERROR);
     }
-    
+
     /**
      * Add return value to be used by main program
      * @param type $val
@@ -826,7 +892,7 @@ class Am_Event
     /**
      * Set entire return values or value
      */
-    public function setReturn($return) 
+    public function setReturn($return)
     {
         $this->return = $return;
     }
@@ -841,10 +907,10 @@ class Am_Event
 }
 
 ////////////////// Abstract classes ///////////////////////////////////////////
-/** 
+/**
  * Abstract class to pass on user-change events
- * 
- * @method User getUser() return user record 
+ *
+ * @method User getUser() return user record
  */
 abstract class Am_Event_User extends Am_Event
 {
@@ -943,7 +1009,7 @@ abstract class Am_Event_AbstractUserUpdate extends Am_Event
 
 //////////// Real Am_Event classes that can be used for hooking //////////////////
 
-/** @method InvoicePayment getPayment() 
+/** @method InvoicePayment getPayment()
  *  @method Invoice getInvoice()
  *  @method User getUser()
  */
@@ -986,8 +1052,8 @@ class Am_Event_InvoiceGetCalculators extends Am_Event
     function insertBeforeTax(Am_Invoice_Calc $calc)
     {
         foreach ($this->return as $k => $v)
-            if ($v instanceof Am_Invoice_Calc_Tax 
-                   || $v instanceof Am_Invoice_Calc_Total 
+            if ($v instanceof Am_Invoice_Calc_Tax
+                   || $v instanceof Am_Invoice_Calc_Total
                    || $v instanceof Am_Invoice_Calc_Shipping)
             {
                 array_splice($this->return, $k, 0, array($calc));
@@ -1006,7 +1072,7 @@ class Am_Event_InvoiceGetCalculators extends Am_Event
     function replace(Am_Invoice_Calc $replacement, Am_Invoice_Calc $replace)
     {
         foreach ($this->return as $k => $v)
-            if ($v === $after)
+            if ($v === $replace)
                 $this->return[$k] = $calc;
     }
     function findByClassName($className)
@@ -1230,10 +1296,10 @@ class Am_Event_GlobalIncludes extends Am_Event
     function get()  {   return $this->includes;   }
 }
 
-class Am_Event_Rebuild extends Am_Event 
+class Am_Event_Rebuild extends Am_Event
 {
     protected $doneString;
-    /** if plugin called this function with a status string, 
+    /** if plugin called this function with a status string,
      *  next iteration of the rebuild will be runned for this plugin
      */
     function setDoneString($doneString)
@@ -1295,7 +1361,7 @@ class Am_Event_Grid extends Am_Event
 class Am_Event_UserTabs extends Am_Event
 {
     protected $tabs;
-    
+
     /** @var bool */
     protected $insert;
     protected $userId;

@@ -43,6 +43,41 @@ class Am_Image
         $this->handler = $clone_handler;
     }
 
+    public function color($red, $green, $blue, $alpha = 0)
+    {
+        return $alpha ?
+            imagecolorallocatealpha($this->handler, $red, $green, $blue, $alpha) :
+            imagecolorallocate($this->handler, $red, $green, $blue);
+    }
+
+    public function width()
+    {
+        return imagesx($this->handler);
+    }
+
+    public function height()
+    {
+        return imagesy($this->handler);
+    }
+
+    public function textWidth($size, $angle, $fontfile, $text)
+    {
+        $r = imagettfbbox($size, $angle, $fontfile, $text);
+        return $r[4];
+    }
+
+    public function textHeight($size, $angle, $fontfile, $text)
+    {
+        $r = imagettfbbox($size, $angle, $fontfile, $text);
+        return $r[1];
+    }
+
+    public function text($size, $angle, $x, $y, $color, $fontfile, $text)
+    {
+        imagettftext($this->handler, $size, $angle, $x, $y, $color, $fontfile, $text);
+        return $this;
+    }
+
     public function resize($width, $height, $resize_type = self::RESIZE_CROP)
     {
         $src_height = imagesy($this->handler);
@@ -56,8 +91,7 @@ class Am_Image
                 $q = max($width / $src_width, $height / $src_height);
                 break;
             default:
-                throw new Am_Exception_InternalError(sprintf('Unknown resize type [%s] in %s->%s',
-                        $resize_type, __CLASS__, __METHOD__));
+                throw new Am_Exception_InternalError(sprintf('Unknown resize type [%s] in %s->%s', $resize_type, __CLASS__, __METHOD__));
         }
 
         $n_width = $src_width * $q;
@@ -101,6 +135,12 @@ class Am_Image
                 throw new Am_Exception_InternalError(sprintf('Unknown MIME type [%s]', $mime));
         }
 
+        return $this;
+    }
+
+    public function flush($mime = 'image/jpeg')
+    {
+        $this->save(null, $mime);
         return $this;
     }
 

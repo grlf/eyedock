@@ -16,7 +16,7 @@ class Am_Paysystem_PaypalExpress extends Am_Paysystem_Abstract
     
     const SANDBOX_URL = "https://www.sandbox.paypal.com/webscr";
     const LIVE_URL = "https://www.paypal.com/webscr";
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.0';
     
     protected $defaultTitle = "PayPal Express";
     protected $defaultDescription = "pay with paypal quickly";
@@ -73,6 +73,11 @@ class Am_Paysystem_PaypalExpress extends Am_Paysystem_Abstract
         
         $apireq->addPostParameter('LOCALECODE', $this->getConfig('localecode', 'US'));
         
+        if ($this->getConfig('brandname'))
+            $apireq->addPostParameter('BRANDNAME', $this->getConfig('brandname'));
+        if ($this->getConfig('landingpage_login'))
+            $apireq->addPostParameter('LANDINGPAGE', 'Login');
+
         $log->add($apireq);
         $response = $apireq->send();
         $log->add($response);
@@ -239,11 +244,13 @@ class Am_Paysystem_PaypalExpress extends Am_Paysystem_Abstract
         $log->setInvoice($payment->getInvoice());
         $log->update();
         
-        if($res['ACK'] != 'Success')
-            throw new Am_Exception_InputError('Transaction was not refunded. Got error from paypal: '.$res['L_SHORTMESSAGE0']);
+        if($res['ACK'] != 'Success') {
+            $result->setFailed('Transaction was not refunded. Got error from paypal: '.$res['L_SHORTMESSAGE0']);
+            return;
+        }
         
-        // We will not add refund record here because it will be handeld by IPN script. 
-        
+        $result->setSuccess();
+        // We will not add refund record here because it will be handeld by IPN script.
     }
     
     

@@ -1,0 +1,500 @@
+<!--[include file=lenses_user_menu.htm]-->
+
+<script language="JavaScript">
+
+	var visitint="";
+	var ew="";
+	var axisstep="";
+	var torictype="";
+
+//a function to parse values from the select input objects
+function getValues (what){
+	if (!document.getElementById(what)) return "";
+	var element=document.getElementById(what);
+	var optionElement;
+	var returnText="";
+	var orCount=0;
+	for (var optionIndex=0; optionIndex < element.options.length; optionIndex++){
+		optionElement=element.options[optionIndex];
+	
+		if (optionElement.selected){
+			if (orCount!=0) returnText+=" or ";
+			if (optionElement.value!=0) returnText+=  optionElement.text;
+			orCount++;
+		}
+	}
+	return returnText;
+}
+
+
+function getRadio(which, what){
+	switch (which){
+		case 'torictype':
+			torictype=what;
+			break;
+		case 'axisstep':
+			axisstep=what;
+			break;
+		case 'torictype':
+			torictype=what;
+			break;
+		case 'visi':
+			visitint=what;
+			break;
+		case 'ew':
+			ew=what;
+			break;
+	
+	}
+	changed();
+	
+}
+
+
+function changed(){
+
+	var findtext= "";
+
+
+	var minus=getValues('search[max_minus]');
+	var plus=getValues('search[max_plus]');
+	var maxdiam=getValues('search[max_diam]');
+	var mindiam=getValues('search[min_diam]');
+	var bc=getValues('bc_simple[]');
+	var comp= getValues('comp_id[]');
+	var replace1= getValues('replace_simple[0]');
+	var replace2= getValues('replace_simple[1]');
+	var dk=getValues('search[dk]');
+	var oz=getValues('search[oz]');
+	var ct=getValues('search[ct]');
+	var process= getValues('process_simple[]');
+	var fda= getValues('fda_grp[]');
+	var h2o= getValues('search[h2o]');
+ 	var opaque= getValues('opaque_names_simple[]');
+	var enh= getValues('enh_names_simple[]');
+	var maxcyl= getValues('search[max_cyl_power]');
+	var oblique= getValues('search[oblique]');
+	var maxadd= getValues('search[max_add]');
+	var bifocaltype= getValues('bifocal_type[]');
+ 
+	if (minus!="") findtext+="minus power at least "+minus+" D, ";
+	if (plus!="")findtext+="plus power at least "+plus+" D, ";
+	if (maxdiam!="")findtext+="diameter at least "+maxdiam+", ";
+	if (mindiam!="")findtext+="diameter at most "+mindiam+", ";
+	if (bc!="")findtext+="comes in a "+bc+" BC, ";
+	if (comp!="")findtext+="manufactured by "+comp+", ";
+	if (replace1=="one day" && replace2=="yearly") replace1="";
+	if (replace1!="" && replace2!="" )findtext+="replaced between "+replace1+" and "+replace2+", ";
+	if (visitint==true) findtext+="has a visibility tint, ";
+	if (ew==true) findtext+="is an EW lens, ";
+	if (dk!="") findtext+="dk is "+dk+", ";
+	if (oz!="")findtext+="OZ is at least "+oz+", ";
+	if (ct!="")findtext+="CT is "+ct+", ";
+	if (process!="")findtext+="is a "+process+" lens, ";
+	if (fda!="")findtext+="is made from FDA "+fda+" material, ";
+	if (h2o!="")findtext+="H2O content "+h2o+", ";
+	<!--[if $terms.cosmetic]-->findtext+="cosmetic lens, ";<!--[/if]-->
+	if (enh!="" || opaque!="") findtext+="in one of these colors: ";
+	if (enh!="")findtext+=enh+", ";
+	if (opaque!="")findtext+=opaque+", ";
+	<!--[if $terms.toric=='toric']-->findtext+="toric lens, ";<!--[/if]-->
+	
+	if (maxcyl!="")findtext+="cylinder power at least "+maxcyl+" D, ";
+	if (oblique!="")findtext+="axis "+oblique+", ";
+	if (axisstep!="")findtext+=axisstep+" or smaller axis steps, ";
+	if (torictype!="")findtext+=torictype+" stabilization, ";
+	<!--[if $terms.bifocal]-->findtext+="bifocal lens, ";<!--[/if]-->
+	if (maxadd!="")findtext+="add power of at least "+maxadd+", ";
+	if (bifocaltype!="")findtext+=bifocaltype+" bifocal, ";
+	
+	document.getElementById("query").innerHTML = "Find me <!--[if $terms.toric=='sphere']-->spherical <!--[/if]-->lenses with these attributes: <br/>"+findtext+"...";
+	
+    document.advForm.display_phrase.value = "with these attributes: ..."+findtext+"";
+	//alert (document.getElementById('display_phrase').value);
+}
+
+</script>
+
+
+
+
+<div style=" margin-bottom:.75em;">
+ [ <a href="javascript:history.go(-1);" title="Change search criterion">Change search criterion</a> ]
+  [<a href="<!--[pnmodurl modname='Lenses' type='user' ]-->">Lens searches main page </a> ]
+ </div>
+<div style="float:right"><a href="index.php?module=Pagesetter&tid=10&filter=category^sub^151&cv=151">Lenses FAQs</a></div>
+
+<h1>Search Wizard - page 2</h1>
+
+ 
+
+
+
+
+<form  method="POST" action="<!--[pnmodurl modname='Lenses' type='user' func='view']-->" name="advForm">
+       
+       <input type="hidden" name="display_phrase" id="display_phrase" value="" >
+
+       <input type="hidden" id="wizard" name="wizard" value="1">
+
+<div style="background-color: #FFFFC1; margin-bottom:2px; border: 1px solid gray; padding:1em;">
+  <div id="query" > Find <!--[if $terms.toric=='sphere']-->spherical <!--[/if]-->lenses with these attributes:  
+  <!--[if $terms.cosmetic]--><br/>cosmetic lens<!--[/if]-->
+  <!--[if $terms.toric=='toric']--><br/>toric lens<!--[/if]-->
+  <!--[if $terms.bifocal]--><br/>bifocal lens<!--[/if]-->
+
+  </div>
+    <div style="text-align:right; margin-top:1.5em;">
+  <input name="search[discontinued]" type="checkbox" id="search[discontinued]" value="=0" checked onChange="changed();">
+    <label for="search[discontinued]">Do not display discontinued lenses<label>
+    
+	<input type='submit' value='Submit'  >
+    <input type='reset' name='Reset' value='Reset'  onClick="document.getElementById('query').innerHTML='Find lenses that...'">
+  </div>
+  </div>
+
+<br/>
+  <!--[if $terms.minus]-->
+  <div   class="searchTerm">Minus sphere power at least
+    <select size="1" name="search[max_minus]" id="search[max_minus]" onChange="changed();">
+      <option selected value="0">any</option>
+      <option value="<=-6.00" >-6.00</option>
+      <option value="<=-8.00" >-8.00</option>
+      <option value="<=-10.00" >-10.00</option>
+      <option value="<=-12.00" >-12.00</option>
+      <option value="<=-15.00" >-15.00</option>
+      <option value="<=-20.00" >-20.00</option>
+    </select>
+  </div>
+  <!--[/if]-->
+  <!--[if $terms.plus]-->
+  <div   class="searchTerm">Plus sphere power at least
+    <select size="1" name="search[max_plus]" id="search[max_plus]"  onChange="changed();">
+      <option selected value="0">any</option>
+      <option value=">=6.00" >+6.00</option>
+      <option value=">=8.00" >+8.00</option>
+      <option value=">=10.00" >+10.00</option>
+      <option value=">=12.00" >+12.00</option>
+      <option value=">=15.00" >+15.00</option>
+      <option value=">=20.00" >+20.00</option>
+    </select>
+  </div>
+  <!--[/if]-->
+  <!--[if $terms.diameter]-->
+  <div   class="searchTerm">Diameter
+    greater than
+    <select size="1" name="search[max_diam]" id="search[max_diam]" onChange="changed();">
+      <option selected value="0">any</option>
+      <option value=">=13.8">13.8mm</option>
+      <option value=">=14.0">14.0mm</option>
+      <option value=">=14.2">14.2mm</option>
+      <option value=">=14.4">14.4mm</option>
+      <option value=">=14.5">14.5mm</option>
+      <option value=">=15.0">15.0mm</option>
+      <option value=">=16.0">15.0mm</option>
+    </select>
+    and less than
+    <select size="1" name="search[min_diam]" id="search[min_diam]" onChange="changed();">
+      <option selected value="0">any</option>
+      <option value="<=13.4">13.4mm</option>
+      <option value="<=13.6">13.6mm</option>
+      <option value="<=13.8">13.8mm</option>
+      <option value="<=14.0">14.0mm</option>
+      <option value="<=14.5">14.5mm</option>
+      <option value="<=15.0">15.0mm</option>
+      <option value="<=16.0">16.0mm</option>
+      <option value="<=18.0">18.0mm</option>
+    </select>
+  </div>
+  <!--[/if]-->
+  <!--[if $terms.bc]-->
+  <input type="hidden"  name="or[]" value="bc_simple">
+  <div   class="searchTerm"><span class="sectionHeader">Base Curve</span>
+
+    <select size="3" multiple="multiple" name="bc_simple[]" id="bc_simple[]" onChange="changed();">
+      <option value=" LIKE '%flat%' ">flat</option>
+      <option  value=" LIKE '%median%' ">median</option>
+      <option  value=" LIKE '%steep%' " >steep</option>
+    </select>
+  </div>
+  <!--[/if]-->
+  <!--[if $terms.company]-->
+  <div   class="searchTerm"><span class="sectionHeader"> Manufacturer</span>
+     <input type="hidden"  name="or[]" value="comp_id">
+    <select size="5" multiple="multiple" name="comp_id[]" id="comp_id[]"  onChange="changed();">
+      <option value="0" selected>any</option>
+      <!--[foreach from=$opt_companies key=key item=company]-->
+      <option value="= <!--[$company.comp_tid]-->" />
+      <!--[$company.comp_name]-->
+      <!--[/foreach]-->
+    </select>
+  </div>
+  <!--[/if]-->
+  <!--[if $terms.replace]-->
+  <div   class="searchTerm">Replacement at least
+    <input type="hidden"  name="and[]" value="replace_simple">
+
+    <select name="replace_simple[0]" id="replace_simple[0]" onChange="changed();">
+      <option value=">=0" selected>one day</option>
+      <option value=">=6">one week</option>
+      <option value=">=12">two weeks</option>
+      <option value=">=27">monthly</option>
+      <option value=">=85">3 months</option>
+      <option value=">=170">6 months</option>
+      <option value=">=350">yearly</option>
+    </select>
+    at most:
+    <select name="replace_simple[1]" id="replace_simple[1]" onChange="changed();">
+      <option value="<=2">one day</option>
+      <option value="<=8">one week</option>
+      <option value="<=16">two weeks</option>
+      <option value="<=35">monthly</option>
+      <option value="<=95">3 months</option>
+      <option value="<=190">6 months</option>
+      <option value="<=400" selected>yearly</option>
+    </select>
+  </div>
+  <!--[/if]-->
+  <!--[if $terms.visi]-->
+  <div   class="searchTerm">Must have visibility tint?
+    <input name="search[visitint]" type="checkbox" id="search[visitint]" value="=1" onClick="if (this.checked){getRadio('visi',true)}else {getRadio('visi',false)};">
+    yes </div>
+  <!--[/if]-->
+  <!--[if $terms.ew]-->
+  <div   class="searchTerm">Extended wear?
+    <input name="search[ew]" type="checkbox" id="search[ew]" value="=1" onClick="if (this.checked){getRadio('ew',true)}else {getRadio('ew',false)};">
+    yes</div>
+  <!--[/if]-->
+  <!--[if $terms.dk]-->
+  <div   class="searchTerm"> dk
+    <select size="1" name="search[dk]" id="search[dk]" onChange="changed();">
+      <option value="<=150">less than 150</option>
+      <option value="<=100">less than 100</option>
+      <option value="<=75">less than 75</option>
+      <option value="<=50">less than 50</option>
+      <option value="<=30">less than 30</option>
+      <option value="<=20">less than 20</option>
+      <option value="<=15">less than 15</option>
+      <option selected value="0">any</option>
+      <option value=">=5">greater than 5</option>
+      <option value=">=10">greater than 10</option>
+      <option value=">=15">greater than 15</option>
+      <option value=">=20">greater than 20</option>
+      <option value=">=30">greater than 30</option>
+      <option value=">=50">greater than 50</option>
+      <option value=">=75">greater than 75</option>
+    </select>
+  </div>
+  <!--[/if]-->
+  <!--[if $terms.oz]-->
+  <div   class="searchTerm"> OZ at least
+    <select size="1" name="search[oz]" id="search[oz]" onChange="changed();">
+      <option selected value="0">any</option>
+      <option value=">=5">5mm</option>
+      <option value=">=6">6mm</option>
+      <option value=">=7">7mm</option>
+      <option value=">=8">8mm</option>
+      <option value=">=9">9mm</option>
+      <option value=">=10">10mm</option>
+      <option value=">=11">11mm</option>
+      <option value=">=12">12mm</option>
+    </select>
+    mm </div>
+  <!--[/if]-->
+  <!--[if $terms.ct]-->
+  <div   class="searchTerm">CT
+    <select size="1" name="search[ct]" id="search[ct]" onChange="changed();">
+      <option value="<= .14" >thinner than .14mm</option>
+      <option value="<= .12" >thinner than .12mm</option>
+      <option value="<= .10" >thinner than .10mm</option>
+      <option value="<= .08" >thinner than .08mm</option>
+      <option value="<= .06" >thinner than .06mm</option>
+      <option value="<= .04" >thinner than .04mm</option>
+      <option selected value="0">any</option>
+      <option value=">= .10" >thicker than .10mm</option>
+      <option value=">= .12" >thicker than .12mm</option>
+      <option value=">= .14" >thicker than .14mm</option>
+      <option value=">= .16" >thicker than .16mm</option>
+      <option value=">= .18" >thicker than .18mm</option>
+      <option value=">= .20" >thicker than .20mm</option>
+    </select>
+  </div>
+  <!--[/if]-->
+  <!--[if $terms.process]-->
+  <div   class="searchTerm"> <span class="sectionHeader">Manufacturing Process</span>
+    <input type="hidden"  name="or[]" value="process_simple">
+    <select name="process_simple[]" id="process_simple[]" multiple='multiple' onChange="changed();">
+      <option value="  LIKE '%mold%' ">molded</option>
+      <option value="  LIKE '%lathe%' ">lathe-cut</option>
+      <option value="  LIKE '%spin%' ">spin-cast </option>
+    </select>
+  </div>
+  <!--[/if]-->
+  <!--[if $terms.material=='fda']-->
+  <div   class="searchTerm"> FDA Group<br>
+
+    <input type="hidden"  name="or[]" value="fda_grp">
+    <select name="fda_grp[]" id="fda_grp[]" multiple='multiple' size="4" onChange="changed();">
+      <option value="=1">Group 1</option>
+      <option value="=2">Group 2</option>
+      <option value="=3">Group 3</option>
+      <option value="=4">Group 4</option>
+    </select>
+  </div>
+  <!--[/if]-->
+  <!--[if $terms.material=='polymer']-->
+  <div   class="searchTerm"> Polymer
+    <select size="1" name="search[poly_id]" id="search[poly_id]" onChange="changed();">
+      <option value="0" selected>any</option>
+      <!--[foreach from=$opt_polymers key=key item=polymer]-->
+      <option value="<!--[$polymer.poly_tid]-->" >
+      <!--[$polymer.poly_name]-->
+      (
+      <!--[$polymer.h2o]-->
+      %)
+      <!--[/foreach]-->
+      </option>
+    </select>
+  </div>
+  <!--[/if]-->
+  <!--[if $terms.material=='h2o']-->
+  <div   class="searchTerm"> H2O Content
+    <select name="search[h2o]" size="1" id="search[h2o]" onChange="changed();">
+      <option value="<=70">less than 70%</option>
+      <option value="<=60">less than 60%</option>
+      <option value="<=50">less than 50%</option>
+      <option value="<=40">less than 40%</option>
+      <option value="<=30">less than 30%</option>
+      <option value="<=20">less than 20%</option>
+      <option selected value="0">any</option>
+      <option value=">=20">greater than 20%</option>
+      <option value=">=30">greater than 30%</option>
+      <option value=">=40">greater than 40%</option>
+      <option value=">=50">greater than 50%</option>
+      <option value=">=60">greater than 60%</option>
+      <option value=">=70">greater than 70%</option>
+    </select>
+  </div>
+  <!--[/if]-->
+  <!--[if $terms.cosmetic]-->
+  <div   class="searchTerm"> <strong>COSMETIC LENS PARAMETERS</strong>
+    <div class="groupedTerm">
+      <input type="hidden" id="search[cosmetic]"  name="search[cosmetic]" value="= 1">
+      <input type="hidden"  name="or[]" value="opaque_names_simple">
+      <input type="hidden"  name="or[]" value="enh_names_simple">
+      Are you looking for specific colors?<br>
+      <select name="opaque_names_simple[]" multiple="multiple" size="8"  onChange="changed();">
+        <option value=" is not null ">any opaque lens
+        <option value=" LIKE '%aqua%' ">opaque-aqua</option>
+        <option value="   LIKE '%amber%' ">opaque-amber</option>
+        <option value="   LIKE '%blue%' ">opaque-blue</option>
+        <option value="   LIKE '%brown%' ">opaque-brown</option>
+        <option value="   LIKE '%gray%' ">opaque-gray</option>
+        <option value="   LIKE '%green%' ">opaque-green</option>
+        <option value="   LIKE '%hazel%' ">opaque-hazel</option>
+        <option value="   LIKE '%honey%' ">opaque-honey</option>
+        <option value="   LIKE '%yellow%' ">opaque-yellow</option>
+        <option value="   LIKE '%violet%' ">opaque-violet</option>
+        <option value="   LIKE '%novelty%'">opaque-novelty</option>
+      </select>
+      <select name="enh_names_simple[]" multiple="multiple" size="8" onChange="changed();">
+        <option value=" is not null ">any enhancer lens
+        <option value=" LIKE '%aqua%' ">enhancer-aqua</option>
+        <option value=" LIKE '%amber%' ">enhancer-amber</option>
+        <option value=" LIKE '%blue%' ">enhancer-blue</option>
+        <option value=" LIKE '%brown%' ">enhancer-brown</option>
+        <option value=" LIKE '%gray%' ">enhancer-gray</option>
+        <option value=" LIKE '%green%' ">enhancer-green</option>
+        <option value=" LIKE '%hazel%' ">enhancer-hazel</option>
+        <option value=" LIKE '%honey%' ">enhancer-honey</option>
+        <option value=" LIKE '%yellow%' ">enhancer-yellow</option>
+        <option value=" LIKE '%violet%' ">enhancer-violet</option>
+        <option value=" LIKE '%novelty%'">enhancer-novelty</option>
+      </select>
+    </div>
+  </div>
+  <!--[else]-->
+  <input type="hidden" id="search[cosmetic]" name="search[cosmetic]" value="=0">
+  <!--[/if]-->
+  <!--[if $terms.toric=='toric']-->
+  <input type="hidden" id="search[toric]" name="search[toric]" value="=1">
+  <div   class="searchTerm"> <strong>TORIC LENS PARAMETERS</strong><br>
+    <!--[if $terms.cyl_power]-->
+    <div class="groupedTerm"> Cylinder power
+      at least:
+      <select  name="search[max_cyl_power]" id="search[max_cyl_power]" onChange="changed();">
+        <option selected>any</option>
+        <option value="<=-2.25">-2.25</option>
+        <option value="<=-2.75">-2.75</option>
+        <option value="<=-3.25">-3.25</option>
+        <option value="<=-5">-5.00</option>
+        <option value="<=-6">-6.00</option>
+      </select>
+    </div>
+    <!--[/if]-->
+    <!--[if $terms.oblique]-->
+    <div  class="groupedTerm"> Need an oblique axis?
+      <select  name="search[oblique]" id="search[oblique]" onChange="changed();">
+        <option value='0' selected>Not necessarily</option>
+        <option value='>=20'>at least 90/180 &plusmn;20&deg;</option>
+        <option value='>=30'>at least 90/180 &plusmn;30&deg;</option>
+        <option value='>=40'>must be full circle</option>
+      </select>
+    </div>
+    <!--[/if]-->
+    <!--[if $terms.axis_steps]-->
+    <div class="groupedTerm"  > Need Small axis steps?
+      <input name="search[cyl_axis_steps]" type="radio" value="0" checked onClick="getRadio('axisstep','');">
+      Nope 
+      <input name="search[cyl_axis_steps]" type="radio" value="<=5" onClick="getRadio('axisstep','5&deg;');">
+      5&deg; 
+      <input name="search[cyl_axis_steps]" type="radio" value="<=1" onClick="getRadio('axisstep','1&deg;');">
+      1&deg; </div>
+    <!--[/if]-->
+    <!--[if $terms.toric_type]-->
+    <div  class="groupedTerm"> Toric design? 
+      <input name="search[toric_type_simple]" type="radio" value=" LIKE '%prism%'" onClick="getRadio('torictype','prism ballast');">
+      prism ballast 
+      <input name="search[toric_type_simple]" type="radio" value=" LIKE '%thin%'" onClick="getRadio('torictype','thin zones');">
+      thin zones 
+      <input name="search[toric_type_simple]" type="radio" value="0" checked onClick="getRadio('torictype','');">
+      Either </div>
+    <!--[/if]-->
+  </div>
+  <!--[else]-->
+  <input type="hidden" id="search[toric]" name="search[toric]" value="=0">
+  <!--[/if]-->
+  <!--[if $terms.bifocal]-->
+  <div class="searchTerm"> <strong>BIFOCAL LENS PARAMETERS</strong>
+    <input type="hidden" id="search[bifocal]"  name="search[bifocal]" value="=1">
+    <!--[if $terms.add]-->
+    <div   class="groupedTerm"> Bifocal power at least
+      <select size="1" name="search[max_add]" id="search[max_add]" onChange="changed();" >
+        <option selected value="0">any</option>
+        <option value=">=1" >+1.00</option>
+        <option value=">=2">+2.00</option>
+        <option value=">=3">+3.00</option>
+        <option value=">=4">+4.00</option>
+      </select>
+    </div>
+    <!--[/if]-->
+    <!--[if $terms.bifocal_type]-->
+    <div   class="groupedTerm"> <span class="sectionHeader">Bifocal Type</span>
+      <input type="hidden"  name="or[bifocal_type]" value="bifocal_type" >
+      <select name="bifocal_type[]" id="bifocal_type[]"  multiple="multiple" size="5" onChange="changed();">
+        <option value=" LIKE '%aspheric%'" >aspheric</option>
+        <option value=" LIKE '%concentric%'" >concentric</option>
+        <option value=" LIKE '%diffractive%'" >diffractive</option>
+        <option value=" LIKE '%monovision%'" >monovision</option>
+        <option value=" LIKE '%translating%'" >translating</option>
+      </select>
+    </div>
+    <!--[/if]-->
+  </div>
+  <!--[else]-->
+  <input type="hidden" id="search[bifocal]" name="search[bifocal]" value="=0">
+  <!--[/if]-->
+  <p >
+    </p>
+
+</form>

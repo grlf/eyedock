@@ -1,7 +1,13 @@
 <?php $title = ___('Import Finished');
 $this->setLayout('admin/layout.phtml'); ?>
 <div class="info">
-    <p><?php __e('To verify import result go to %sBrowse Users%s', '<a class="link" href="' . REL_ROOT_URL . '/admin-users">', '</a>') ?></p>
+    <p><?php __e('To verify import result go to %sBrowse Users%s', '<a class="link" href="' . REL_ROOT_URL . '/admin-users?' . http_build_query(array(
+        '_u_search' => array(
+            'import' => array(
+                    'id' => $import_id
+                )
+        )
+    )). '">', '</a>') ?></p>
     <p><?php __e('Please run %sRebuild Db%s to update status for imported customers',
     '<a class="link" href="' . REL_ROOT_URL . '/admin-rebuild">', '</a>') ?></p>
 </div>

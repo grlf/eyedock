@@ -29,8 +29,7 @@ jQuery(document).ready(function($) {
         vars.e = "<?php j($this->e); ?>";
         <?php endif // end of unsubscribe-without-login code ?>
         $.post(window.rootUrl + "/newsletter/ajax/update-subscription", vars, function(){
-            $('#unsubscribe-confirm').fadeIn();
-            setTimeout(function(){$('#unsubscribe-confirm').fadeOut()}, 2000);
+            amFlashMessage('<?php __e('Status of your subscription has been changed.') ?>');
         });
     });
     $("#checkbox-unsubscribed").change(function(){

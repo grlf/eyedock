@@ -33,6 +33,7 @@ class Am_Grid_Field_Decorator_LiveCheckbox extends Am_Grid_Field_Decorator_Abstr
 
     protected function getContent($obj, Am_Grid_Editable $grid)
     {
+        if (!$this->action->isAvailable($obj)) return;
         $id = $this->action->getIdForRecord($obj);
         $val = $obj->{$this->field->getFieldName()};
         list($url, $params) = $this->divideUrlAndParams($this->action->getUrl($obj, $id));

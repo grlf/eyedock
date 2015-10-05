@@ -1,0 +1,83 @@
+
+.edas-content,
+.edas-company-search,
+.edas-company-lenses{
+ height: 300px;
+}
+
+.edas-tsc-button{
+ width: 33px;
+}
+
+.edas-compare-lenses{
+ width: 181px;
+}
+
+.edas-tabs .edas-tab-title{
+ white-space: nowrap;
+}
+
+#edas-tab-1,
+#edas-tab-2{
+ margin-top: 2px;
+ width: 165px;
+}
+
+.edas-top-search{
+ position: relative;
+ top: 1px;
+}
+
+.edas-company-list{
+ width: 196px;
+ height: 300px;
+}
+
+.edas-parameters{
+ width: 315px;
+}
+
+.edas-parameters-line label{
+ margin-left: -79px;
+}
+
+.edas-parameters-line-slider{
+
+}
+
+.edas-slider-knob{
+ margin-right: 150px;
+}
+
+.edas-slider-short .edas-slider-knob{
+ margin-right: 106px;
+}
+
+#adv-search-reset{
+ width: 33px;
+}
+
+#adv-search-submit{
+ width: 41px;
+}
+
+.edas-compare-top-other{
+ width: 162px;
+}
+
+.edas-compare-top-options{
+ width: 92px;
+}
+
+#eyedock-compare-lenses .edas-top-search-content{
+ width: 360px;
+}
+
+,edas-compare-main,
+.edas-compare-main-content,
+#edas-compare-lens-list,
+.edas-compare-lens-display,
+.edas-compare-lens-head,
+.edas-compare-lens-line{
+ width: 728px;
+}

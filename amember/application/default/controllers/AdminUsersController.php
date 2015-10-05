@@ -13,7 +13,7 @@ class Am_Grid_Action_Group_UserAssignGroup extends Am_Grid_Action_Group_Abstract
             );
     }
 
-    public function renderConfirmationForm($btn = "Yes, assign", $page = null, $addHtml = null)
+    public function renderConfirmationForm($btn = "Yes, assign", $addHtml = null)
     {
         $select = sprintf('<select name="%s__group_id">
             %s
@@ -21,7 +21,7 @@ class Am_Grid_Action_Group_UserAssignGroup extends Am_Grid_Action_Group_Abstract
             $this->grid->getId(),
             Am_Controller::renderOptions(Am_Di::getInstance()->userGroupTable->getSelectOptions())
             );
-        return parent::renderConfirmationForm($this->remove ? ___("Yes, remove group") :  ___("Yes, assign group"), null, $select);
+        return parent::renderConfirmationForm($this->remove ? ___("Yes, remove group") :  ___("Yes, assign group"), $select);
     }
 
     /**
@@ -53,19 +53,16 @@ class Am_Grid_Action_Group_PasswordConfirmedDelete extends Am_Grid_Action_Group_
         parent::__construct($id, $title);
         $this->setTarget('_top');
     }
-    public function renderConfirmationForm($btn = null, $page = null, $addHtml = null)
+    public function renderConfirmationForm($btn = null, $addHtml = null)
     {
         if (!$this->getSession()->login_ok)
             $addHtml = ___('Enter admin password for confirmation') .
             ":<br /><input type='password' name='_admin_pass' size=20/><br /><br />" . $addHtml;
         else
             $addHtml = null;
-        return parent::renderConfirmationForm($btn, $page, $addHtml);
+        return parent::renderConfirmationForm($btn, $addHtml);
     }
-    public function getConfirmationText()
-    {
-        return parent::getConfirmationText();
-    }
+
     public function run()
     {
         if (!$this->getSession()->login_ok)
@@ -94,14 +91,6 @@ class Am_Grid_Action_Group_PasswordConfirmedDelete extends Am_Grid_Action_Group_
     }
 }
 
-
-
-/**
- * This hook allows you to modify user form once it is created
- * you can add/remove elements as you wish
- * Please add additional fields with _ prefix so it does not interfere
- * with User table fields
- */
 class Am_Form_Admin_User extends Am_Form_Admin {
     /** @var User */
     protected $record;
@@ -150,6 +139,28 @@ class Am_Form_Admin_User extends Am_Form_Admin {
 
     function init()
     {
+        if ($this->record->isLoaded() &&
+            $this->record->is_locked == 0 &&
+            $this->record->disable_lock_until &&
+            $this->record->disable_lock_until > Am_Di::getInstance()->sqlDateTime) {
+             $this->addStatic(null, array('class' => 'row-wide'))
+                    ->setContent('<div style="text-align:center">' .
+                        ___('Auto-locking for this customer is temporary disabled until %s',
+                            amDatetime($this->record->disable_lock_until)) . '</span></div>');
+        } elseif ($this->record->isLoaded() && $this->record->is_locked == 0) {
+            $r = Am_Di::getInstance()->accessLogTable->findFirstByUserId($this->record->pk(), 'time DESC');
+            if ($r && Am_Di::getInstance()->accessLogTable->isIpCountExceeded($this->record->pk(), $r->remote_addr)) {
+                $url = Am_Controller::escape(REL_ROOT_URL . '/admin-setup/loginpage');
+                $url_disable = Am_Controller::escape(REL_ROOT_URL . '/admin-users/disable-auto-lock?' . http_build_query(array(
+                    'id' => $this->record->pk(),
+                    'b' => $_SERVER['REQUEST_URI']
+                    )));
+                $this->addStatic(null, array('class' => 'row-wide'))
+                    ->setContent('<div style="text-align:center"><span class="red">' . ___('This user exceeded %sAccount Sharing Prevention%s limits and temporarily locked.', "<a href=\"$url\">", '</a>') . '</span> ' .
+                        ___('You can temporary %sdisable auto-locking for this customer for 1 day%s and allow access for his account.',
+                        "<a href=\"$url_disable\" target=\"_top\" class=\"link\">", '</a>') . '</span></div>');
+            }
+        }
         /* General Settings */
         $fieldSet = $this->addElement('fieldset', 'general', array('id'=>'general', 'label' => ___('General')));
 
@@ -182,8 +193,11 @@ class Am_Form_Admin_User extends Am_Form_Admin {
                     '');
 
             $fieldSet->addStatic('_signup_info', null, array('label' => ___('Signup Info')))->setContent(
-                sprintf('<div>%s%s<time title="%s" datetime="%s">%s</time> %s</div>%s',
+                sprintf('<div>%s%s%s<time title="%s" datetime="%s">%s</time> %s</div>%s',
                         $this->record->remote_addr,
+                        ($this->record->user_agent ? sprintf(' (<span title="%s">%s&hellip;</span>)',
+                            Am_Controller::escape($this->record->user_agent),
+                            Am_Controller::escape(trim(substr($this->record->user_agent,0,12)))) : ''),
                         ___(' at '),
                         Am_Di::getInstance()->view->getElapsedTime($this->record->added),
                         date('c', amstrtotime($this->record->added)),
@@ -212,8 +226,11 @@ class Am_Form_Admin_User extends Am_Form_Admin {
 
             $fieldSet->addStatic('_signin_info', null, array('label' => ___('Last Signin Info')))->setContent(
                 sprintf("<div>%s</div>", $this->record->last_login ?
-                    sprintf('%s%s<time title="%s" datetime="%s">%s</time> %s',
+                    sprintf('%s%s%s<time title="%s" datetime="%s">%s</time> %s',
                         $this->record->last_ip,
+                        ($this->record->last_user_agent ? sprintf(' (<span title="%s">%s&hellip;</span>)',
+                            Am_Controller::escape($this->record->last_user_agent),
+                            Am_Controller::escape(trim(substr($this->record->last_user_agent,0,12)))) : ''),
                         ___(' at '),
                         Am_Di::getInstance()->view->getElapsedTime($this->record->last_login),
                         date('c', amstrtotime($this->record->last_login)),
@@ -270,7 +287,7 @@ CUT
                 ''   => 'No',
                 '1'  => '<span class="red">'.___('Yes, locked').'</span>',
                 '-1' => '<em>'.___('Disable auto-locking for this customer').'</em>',
-            ))->setLabel(___('Is Locked'));
+            ))->setLabel(___('Permanently Locked'));
 
         $fieldSet->addElement('advcheckbox', 'is_approved', array('id' => 'is_approved'))
                  ->setLabel(___('Is Approved'));
@@ -294,8 +311,6 @@ unsubscribe the customer from:
                 'options' => Am_Di::getInstance()->userGroupTable->getOptions()))
             ->setLabel(___('User Groups'));
 
-        if (in_array('vat', (array)Am_Di::getInstance()->config->get('plugins.tax')))
-            $this->addText('tax_id')->setLabel(___('Tax Id'));
 
         $this->addElement('text', 'phone', array('size' => 20))->setLabel(___('Phone Number'));
         /* Address Info */
@@ -427,45 +442,64 @@ class Am_Grid_Action_Group_MassSubscribe extends Am_Grid_Action_Group_Abstract
         parent::__construct('mass_subscribe', ___('Mass Subscribe'));
         $this->setTarget('_top');
     }
-    public function _getProduct($id)
-    {
-        if (!$this->_products[$id])
-        {
-            $this->_products[$id] = Am_Di::getInstance()->productTable->load($id);
-        }
-        return $this->_products[$id];
-    }
+
     public function handleRecord($id, $record)
     {
-        if (!$this->_vars['add_payment'])
-        {
-            $a = $this->grid->getDi()->accessRecord;
-            $a->begin_date = $this->_vars['start_date'];
-            $a->expire_date = $this->_vars['expire_date'];
-            $a->product_id = $this->_vars['product_id'];
-            $a->user_id = $id;
-            $a->insert();
-        } else {
-            $invoice = $this->grid->getDi()->invoiceRecord;
-            $invoice->user_id = $id;
-            $invoice->add($this->_getProduct($this->_vars['product_id']));
+        switch ($this->_vars['action']) {
+            case 'access' :
+                switch($this->_vars['access_type']) {
+                    case 'exact' :
+                        $begin_date = $this->_vars['begine_date'];
+                        $expire_date = $this->_vars['expire_date'];
+                        break;
+                    case 'period' :
+                        $invoice = $this->grid->getDi()->invoiceRecord;
+                        $invoice->setUser($this->grid->getDi()->userTable->load($id));
 
-            // Set item first_total for correct reporting.
+                        $product = $this->grid->getDi()->productTable->load($this->_vars['product_id']);
+                        $begin_date = $product->calculateStartDate($this->grid->getDi()->sqlDate, $invoice);
 
-            $items = $invoice->getItems();
-            $item = $items[0];
-            $item->first_price = $item->first_total = $this->_vars['amount'];
+                        $p = new Am_Period($this->_vars['period']);
+                        $expire_date = $p->addTo($begin_date);
+                        break;
+                }
 
-            $invoice->paysys_id = 'free';
-            $invoice->comment = 'mass-subscribe';
-            $invoice->calculate();
-            $invoice->save();
+                $a = $this->grid->getDi()->accessRecord;
+                $a->begin_date = $begin_date;
+                $a->expire_date = $expire_date;
+                $a->product_id = $this->_vars['product_id'];
+                $a->user_id = $id;
+                $a->comment = $this->_vars['comment'];
+                $a->insert();
+                break;
+            case 'payment' :
+                $invoice = $this->grid->getDi()->invoiceRecord;
+                $invoice->user_id = $id;
+                $invoice->add($this->grid->getDi()->productTable->load($this->_vars['product_id']));
 
-            $tr = new Am_Paysystem_Transaction_Manual($this->grid->getDi()->plugins_payment->loadGet('free'));
-            $tr->setAmount($this->_vars['amount']);
-            $tr->setTime(new DateTime($this->_vars['start_date']));
-            $tr->setReceiptId('mass-subscribe-'. uniqid() . '-' . $invoice->pk());
-            $invoice->addPayment($tr);
+                $items = $invoice->getItems();
+                $item = $items[0];
+                $item->first_price = $item->first_total = $this->_vars['amount'];
+                $item->second_price = $item->second_total = 0;
+                $item->rebill_times = 0;
+                $item->second_period = null;
+
+                $invoice->first_subtotal = $invoice->first_total = $this->_vars['amount'];
+                $invoice->second_subtotal = $invoice->second_total = 0;
+                $invoice->rebill_times = 0;
+                $invoice->second_period = null;
+                $invoice->first_period = $item->first_period;
+
+                $invoice->paysys_id = $this->_vars['paysys_id'];
+                $invoice->comment = $this->_vars['comment'] ? $this->_vars['comment'] : 'mass-subscribe';
+                $invoice->save();
+
+                $tr = new Am_Paysystem_Transaction_Manual($this->grid->getDi()->plugins_payment->loadGet($invoice->paysys_id));
+                $tr->setAmount($this->_vars['amount']);
+                $tr->setTime(new DateTime($this->_vars['dattm']));
+                $tr->setReceiptId('mass-subscribe-'. uniqid() . '-' . $invoice->pk());
+                $invoice->addPayment($tr);
+                break;
         }
     }
 
@@ -478,42 +512,90 @@ class Am_Grid_Action_Group_MassSubscribe extends Am_Grid_Action_Group_Abstract
             $sel = $this->form->addSelect($id . '_product_id')->setLabel(___('Product'));
             $sel->loadOptions(Am_Di::getInstance()->productTable->getOptions(false));
             $sel->addRule('required');
-            $dates = $this->form->addGroup()->setLabel(___('Start and Expiration Dates'));
+
+            $actionElName = $id.'_action';
+            $this->form->addAdvRadio($actionElName)
+                ->setLabel('Action')
+                ->loadOptions(array(
+                    'access' => ___('Add only Access Records'),
+                    'payment' => ___('Add Invoice and Payment/Access Manually')
+                ));
+
+            $fs = $this->form->addFieldset(null, array('id' => 'action-access'));
+
+            $accessTypeElName = $id.'_access_type';
+            $fs->addAdvRadio($accessTypeElName)
+                ->setLabel(___('Access Period'))
+                ->loadOptions(array(
+                    'exact' => ___('Specify Exact Dates'),
+                    'period' => ___('Extend Existing Subscription Period')
+                ));
+            $dates = $fs->addGroup()
+                ->setLabel(___('Start and Expiration Dates'))
+                ->setId('period-exact');
             $dates->setSeparator(' ');
-            $dates->addRule('required');
-            $dates->addDate($id.'_start_date')->addRule('required');
-            $dates->addDate($id.'_expire_date')->addRule('required');
-            $pg = $this->form->addCheckboxedGroup($id.'_add_payment')->setLabel(___('Additionally to "Access", add "Invoice" and "Payment" record with given %s amount, like they have really made a payment', Am_Currency::getDefault()));
-            $pg->addStatic()->setContent('Payment Record amount, eg.: 19.99' . ' ');
-            $pg->addText($id.'_amount', array('size'=>8))->addRule('regex', 'must be a number', '/^(\d+)(\.\d+)?$/');
+            $dates->addDate($id.'_begine_date');
+            $dates->addDate($id.'_expire_date');
+
+            $fs->addPeriod($id.'_period')
+                ->setLabel(___('Period'))
+                ->setId('period-rules');
+
+            $this->form->addScript()
+                ->setScript(<<<CUT
+$(function(){
+    $('#period-rules-u').change(function(){
+        $('#period-rules-c').toggle($(this).val() != "lifetime");
+    }).change();
+    $('[name=$accessTypeElName]').change(function(){
+        $('#row-period-exact').toggle($('[name=$accessTypeElName]:checked').val() == 'exact');
+        $('#row-period-rules').toggle($('[name=$accessTypeElName]:checked').val() == 'period');
+    }).change();
+    $('[name=$actionElName]').change(function(){
+        $('#action-access').toggle($('[name=$actionElName]:checked').val() == 'access');
+        $('#action-payment').toggle($('[name=$actionElName]:checked').val() == 'payment');
+    }).change();
+})
+CUT
+                );
+
+            $fs = $this->form->addFieldset(null, array('id' => 'action-payment'));
+
+            $fs->addSelect($id.'_paysys_id')
+              ->setLabel(___("Payment System"))
+              ->loadOptions($this->grid->getDi()->paysystemList->getOptions());
+            $fs->addText($id.'_amount')
+                ->setlabel(___('Amount'));
+            $fs->addDate($id.'_dattm')
+                ->setLabel(___("Date Of Transaction"));
+
+            $this->form->addText($id.'_comment', array('class'=>'el-wide'))
+                ->setLabel(___("Comment\nfor admin reference"));
+
+            $this->form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(
+                $accessTypeElName => 'exact',
+                $id.'_dattm' => $this->grid->getDi()->sqlDate,
+                $actionElName => 'access')));
             $this->form->addSaveButton(___('Mass Subscribe'));
         }
         return $this->form;
     }
 
-    public function renderConfirmationForm($btn = null, $page = null, $addHtml = null)
+    public function renderConfirmationForm($btn = null, $addHtml = null)
     {
-        if ($page) {
-            return parent::renderConfirmationForm($btn, $page, $addHtml);
-        } else {
-            $this->getForm();
-            $vars = $this->grid->getCompleteRequest()->toArray();
-            $vars[$this->grid->getId() . '_confirm'] = 'yes';
-            if ($page !== null)
-            {
-                $vars[$this->grid->getId() . '_group_page'] = (int)$page;
-            }
-            foreach ($vars as $k => $v)
-                if ($this->form->getElementsByName($k))
-                    unset($vars[$k]);
-            $hiddens = Am_Controller::renderArrayAsInputHiddens($vars);
-            $this->form->addStatic()->setContent($hiddens);
+        $this->getForm();
+        $vars = $this->grid->getCompleteRequest()->toArray();
+        $vars[$this->grid->getId() . '_confirm'] = 'yes';
+        foreach ($vars as $k => $v)
+            if ($this->form->getElementsByName($k))
+                unset($vars[$k]);
+        foreach(Am_Controller::getArrayOfInputHiddens($vars) as $k => $v)
+            $this->form->addHidden($k)->setvalue($v);
 
-            $url_yes = $this->grid->makeUrl(null);
-            $this->form->setAction($url_yes);
-            echo $this->renderTitle();
-            echo (string)$this->form;
-        }
+        $url_yes = $this->grid->makeUrl(null);
+        $this->form->setAction($url_yes);
+        echo $this->renderTitle();
+        echo (string)$this->form;
     }
     public function run()
     {
@@ -548,7 +630,7 @@ class Am_Grid_Action_Merge extends Am_Grid_Action_Abstract {
 
         $login = $form->addText('login');
         $login->setId('login')
-            ->setLabel(___("Username of Source User\nmove information from"));
+            ->setLabel(___("Username of Source User\nmove information from this user to target user, this user will be deleted"));
         $login->addRule('callback', ___('Can not find user with such username'), array($this, 'checkUser'));
         $login->addRule('callback', ___('You can not merge user with itself'), array($this, 'checkIdenticalUser'));
 
@@ -686,8 +768,7 @@ class Am_Grid_Filter_User extends Am_Grid_Filter_Abstract
     {
         $title = Am_Controller::escape(___('Advanced Search'));
         return parent::renderButton().
-          "<span style='margin-left: 1em;'></span>" .
-          "<input type='button' value='$title' onclick='toggleAdvancedSearch(this)'>";
+          "<a class='local' style='margin:0 1em' href='javascript:;' onclick='toggleAdvancedSearch(this)'>$title</a>";
     }
 
     public function  renderFilter()
@@ -739,7 +820,13 @@ class Am_Grid_Filter_User extends Am_Grid_Filter_Abstract
         } elseif (is_string($this->vars['filter']) && $this->vars['filter']){
             $cond = new Am_Query_User_Condition_Filter();
             $cond->setFromRequest(array('filter' => array('val' => $this->vars['filter'])));
-            $query->add($cond);
+            $event = new Am_Event(Am_Event::ADMIN_USERS_FILTER_INIT, array(
+              'query' => $query,
+              'filter' => $this->vars['filter']
+            ));
+            $event->setReturn($cond);
+            Am_Di::getInstance()->hook->call($event);
+            $query->add($event->getReturn());
         } else {
             $query->setFromRequest($grid->getCompleteRequest());
         }
@@ -782,10 +869,38 @@ class Am_Grid_Field_Decorator_Additional extends Am_Grid_Field_Decorator_Abstrac
 
 class AdminUsersController extends Am_Controller_Grid
 {
+
     public function preDispatch()
     {
         parent::preDispatch();
         $this->setActiveMenu($this->getParam('_u_a')=='insert' ? 'users-insert' : 'users-browse');
+    }
+
+    public function disableAutoLockAction()
+    {
+        $this->getDi()->authAdmin->getUser()->checkPermission('grid_u', 'edit');
+        $id = $this->getParam('id');
+        $user = $this->getDi()->userTable->load($id);
+        if (!$user)
+            throw new Am_Exception_InputError;
+        $user->updateQuick('disable_lock_until', sqlTime('+1 day'));
+
+        $b = $this->getParam('b', $this->view->userUrl($user->pk()));
+        Am_Controller::redirectLocation($b);
+    }
+
+    public function deleteAction()
+    {
+        $this->getDi()->authAdmin->getUser()->checkPermission('grid_u', 'delete');
+
+        if ($this->getRequest()->isPost()) {
+            $user = $this->getDi()->userTable->load($this->getParam('id'));
+            $user->delete();
+            $this->redirectLocation(REL_ROOT_URL . '/admin-users');
+        } else {
+            $this->view->user = $this->getDi()->userTable->load($this->getParam('id'));
+            $this->view->display('admin/user-delete.phtml');
+        }
     }
 
     public function getNotConfirmedCount()
@@ -838,6 +953,10 @@ class AdminUsersController extends Am_Controller_Grid
         $q = new Am_Query($this->getDi()->userTable);
         $q->addWhere('(t.login LIKE ?) OR (t.email LIKE ?) OR (t.name_f LIKE ?) OR (t.name_l LIKE ?)',
             $term, $term, $term, $term);
+        $this->getDi()->hook->call(Am_Event::ADMIN_USERS_AUTOCOMPLETE, array(
+            'query' => $q,
+            'term' => $term
+        ));
         $qq = $q->query(0, 10);
         $ret = array();
         while ($r = $this->getDi()->db->fetchRow($qq))
@@ -871,8 +990,8 @@ class AdminUsersController extends Am_Controller_Grid
     public function createGrid()
     {
         $ds = new Am_Query_User;
-        $datetime = $this->getDi()->sqlDateTime;
-        $ds->addField("concat(name_f, ' ', name_l)", 'name')
+        $datetime = $this->getDi()->sqlDate;
+        $ds->addField("concat(u.name_f, ' ', u.name_l)", 'name')
           ->addField('(SELECT COUNT(p.invoice_payment_id) FROM ?_invoice_payment p WHERE p.user_id = u.user_id)',  'payments_count')
           ->addField('ROUND(IFNULL((SELECT SUM(p.amount/p.base_currency_multi) FROM ?_invoice_payment p WHERE p.user_id = u.user_id),0)-' .
                      'IFNULL((SELECT SUM(r.amount/r.base_currency_multi) FROM ?_invoice_refund r WHERE u.user_id=r.user_id),0), 2)',
@@ -880,7 +999,10 @@ class AdminUsersController extends Am_Controller_Grid
           ->addField("(SELECT MAX(expire_date) FROM ?_access ac WHERE ac.user_id = u.user_id)", 'expire')
           ->addField("(SELECT GROUP_CONCAT(title SEPARATOR ', ') FROM ?_access ac
               LEFT JOIN ?_product p USING (product_id)
-              WHERE ac.user_id = u.user_id AND ac.begin_date<='$datetime' AND ac.expire_date>='$datetime')", 'products');
+              WHERE ac.user_id = u.user_id AND ac.begin_date<='$datetime' AND ac.expire_date>='$datetime')", 'products')
+          ->addField("(SELECT GROUP_CONCAT(title SEPARATOR ', ') FROM ?_user_user_group uug
+              LEFT JOIN ?_user_group ug USING (user_group_id)
+              WHERE uug.user_id = u.user_id)", 'ugroup');
         $ds->setOrder("login");
         $grid = new Am_Grid_Editable('_u', ___("Browse Users"), $ds, $this->_request, $this->view);
         $grid->setRecordTitle(array($this, 'getRecordTitle'));
@@ -919,9 +1041,10 @@ class AdminUsersController extends Am_Controller_Grid
         if ($nc_count)
         {
             $grid->actionAdd(new Am_Grid_Action_Url('not-confirmed',
-                    ___("Not Confirmed Users") . "($nc_count)",
+                    ___("Not Confirmed Users") . " ($nc_count)",
                     REL_ROOT_URL . '/admin-users/not-confirmed'))
                 ->setType(Am_Grid_Action_Abstract::NORECORD)
+                ->setCssClass('link')
                 ->setTarget('_top');
         }
         $grid->setFilter(new Am_Grid_Filter_User());
@@ -956,15 +1079,17 @@ class AdminUsersController extends Am_Controller_Grid
 
         $gravatarField = new Am_Grid_Field('gravatar', ___('Gravatar'), false, null, array($this, 'renderGravatar'), '1%');
 
-        $expireField = new Am_Grid_Field_Date('expire', ___('Expire'), false);
+        $expireField = new Am_Grid_Field_Date('expire', ___('Expire'));
         $expireField->setFormatDate();
 
         $productsField = new Am_Grid_Field_Expandable('products', ___('Active Subscriptions'));
         $productsField->setPlaceholder(Am_Grid_Field_Expandable::PLACEHOLDER_SELF_TRUNCATE_END)
-            ->setMaxLength(50);
+            ->setMaxLength(50)
+            ->setGetFunction(function($r, $g, $f) {
+                return strip_tags($r->$f);
+            });
 
         $userGroupField = new Am_Grid_Field('ugroup', ___('User Groups'), false);
-        $userGroupField->setRenderFunction(array($this, 'renderUGroup'));
 
         $action = new Am_Grid_Action_Customize();
         $action->addField(new Am_Grid_Field('user_id', '#', true, '', null, '1%'))
@@ -1004,16 +1129,6 @@ class AdminUsersController extends Am_Controller_Grid
         }
 
         return $action;
-    }
-
-    function renderUGroup(User $u)
-    {
-        $res = array();
-        $options = $this->getDi()->userGroupTable->getOptions();
-        foreach ($u->getGroups() as $id) {
-            $res[] = $options[$id];
-        }
-        return $this->renderTd(implode(", ", $res));
     }
 
     function renderAdditional($record, $fieldName, $controller, $field)
@@ -1061,6 +1176,7 @@ class AdminUsersController extends Am_Controller_Grid
                 ->addField(new Am_Grid_Field('phone', ___('Phone')))
                 ->addField(new Am_Grid_Field('added', ___('Added')))
                 ->addField(new Am_Grid_Field('status', ___('Status')))
+                ->addField(new Am_Grid_Field('ugroup', ___('User Groups')))
                 ->addField(new Am_Grid_Field('products', ___('Active Subscriptions')))
                 ->addField(new Am_Grid_Field('unsubscribed', ___('Unsubscribed')))
                 ->addField(new Am_Grid_Field('lang', ___('Language')))
@@ -1111,7 +1227,7 @@ class AdminUsersController extends Am_Controller_Grid
 
     function getMultiSelect($obj, $controller, $field=null)
     {
-        return implode(':',unserialize($obj->{$field}));
+        return implode(',', (array)@unserialize($obj->{$field}));
     }
 
     public function getDS(Am_Query $ds, $fields) {

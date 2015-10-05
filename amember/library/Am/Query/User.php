@@ -4,7 +4,7 @@
  * Renderable users query
  * @package Am_Query
  */
-class Am_Query_User extends Am_Query_Renderable 
+class Am_Query_User extends Am_Query_Renderable
 {
     protected $template = 'admin/_user-search.phtml';
     function  __construct() {
@@ -17,9 +17,19 @@ class Am_Query_User extends Am_Query_Renderable
         $baseFields = $record->getTable()->getFields();
         foreach ($baseFields as $field => $def){
             $title = ucwords(str_replace('_', ' ',$field));
-            $f = new Am_Query_User_Condition_Field($field, $title, $def->type);
+            $f = new Am_Query_User_Condition_Field($field, $title, $def->type, $def->null == 'YES');
             $this->possibleConditions[] = $f;
         }
+
+        foreach (Am_Di::getInstance()->userTable->customFields()->getAll() as $field)
+        {
+            if((!isset($field->sql) || !$field->sql) && ($field->type!='hidden'))
+            {
+                $f = new Am_Query_User_Condition_Data($field->name, $field->title, $field->type, (isset($field->options)?$field->options:null), $field->isArray());
+                $this->possibleConditions[] = $f;
+            }
+        }
+
         $this->possibleConditions[] = new Am_Query_User_Condition_AddedBetween;
         $this->possibleConditions[] = new Am_Query_User_Condition_HaveSubscriptionTo(null, null, 'any-completed', ___('Subscribed to any of (including expired):'));
         $this->possibleConditions[] = new Am_Query_User_Condition_HaveNoSubscriptionTo(null, 'none-completed', ___('Having no active subscription to:'));
@@ -30,7 +40,10 @@ class Am_Query_User extends Am_Query_Renderable
         $this->possibleConditions[] = new Am_Query_User_Condition_HavePaymentBetween;
         $this->possibleConditions[] = new Am_Query_User_Condition_HaveSubscriptionDate;
         $this->possibleConditions[] = new Am_Query_User_Condition_SpentAmount();
+        $this->possibleConditions[] = new Am_Query_User_Condition_LastSignin();
         $this->possibleConditions[] = new Am_Query_User_Condition_ImportId();
+        $this->possibleConditions[] = new Am_Query_User_Condition_UsedPaysys;
+        $this->possibleConditions[] = new Am_Query_User_Condition_NotUsedPaysys;
         $this->possibleConditions[] = new Am_Query_User_Condition_Usergroup;
         $this->possibleConditions[] = new Am_Query_User_Condition_NoUsergroup;
         // add payment search options
@@ -49,7 +62,7 @@ class Am_Query_User_Condition_Field extends Am_Query_Renderable_Condition_Field
 {
     protected $fieldGroupTitle = 'User Base Fields';
     protected static $knownSelects = null;
-    
+
     public function renderElement(HTML_QuickForm2_Container $form) {
         if (is_null(self::$knownSelects)) {
             self::$knownSelects = array(
@@ -62,7 +75,7 @@ class Am_Query_User_Condition_Field extends Am_Query_Renderable_Condition_Field
                 'email_verified'  => array(0=>___('NO'), 1=>___('YES'))
             );
             foreach (Am_Di::getInstance()->userTable->customFields()->getAll() as $field) {
-                if ($field->sql && in_array($field->type, array('select', 'radio'))) {
+                if (isset($field->sql) && $field->sql && in_array($field->type, array('select', 'radio'))) {
                     self::$knownSelects[$field->name] = $field->options;
                 }
             }
@@ -73,6 +86,180 @@ class Am_Query_User_Condition_Field extends Am_Query_Renderable_Condition_Field
         } else
             return parent::renderElement($form);
     }
+}
+
+class Am_Query_User_Condition_Data extends Am_Query_Condition_Data
+{
+
+
+    protected
+        $title;
+    protected
+        $fieldType;
+    protected
+        $isNull;
+    protected
+        $options;
+    protected
+        $fieldGroupTitle = "Common (data) fields";
+    static
+        $renderOperations = array('=' => '=', '<>' => '<>', 'LIKE' => 'LIKE', 'NOT LIKE' => 'NOT LIKE', 'IN' => 'IN');
+    static protected
+        $validOperations = array('<','<>','=','>','<=','>=','<=>','IS NULL', 'IS NOT NULL', 'LIKE', 'NOT LIKE', 'IN', 'REGEXP');
+
+    protected $alias;
+
+    function __construct($field, $title, $type, $options = null, $checkBlob = false)
+    {
+        $this->field = $field;
+        $this->title = $title;
+        $this->checkBlob = $checkBlob;
+        $this->options = $options;
+        $this->fieldType = $type;
+
+    }
+
+    protected function init($op, $value){
+        if (!in_array($op, self::$validOperations))
+            throw new Am_Exception_InternalError("Invalid operator provided: " . htmlentities($op) . " in ".__METHOD__);
+        $this->op = $op;
+        $this->value = $value;
+    }
+
+    public
+        function setFromRequest(array $input)
+    {
+        $id = $this->getId();
+        if (isset($input[$id]) && ((array_key_exists($id, $input) && is_array($input[$id]['val']) && array_filter($input[$id]['val'])) || (!is_array($input[$id]['val']) && array_filter($input[$id], 'strlen'))))
+        {
+            if (is_array($input[$id]['val']))
+            {
+                $input[$id]['op'] = 'REGEXP';
+            }
+            else
+            {
+                if (empty($input[$id]['op']))
+                    $input[$id]['op'] = '=';
+                if (($input[$id]['op'] == 'LIKE') && (strpos($input[$id]['val'], '%') === false))
+                {
+                    $input[$id]['val'] = '%' . $input[$id]['val'] . '%';
+                }
+
+            }
+            $this->init(@$input[$id]['op'], @$input[$id]['val']);
+            return true;
+        }
+        else
+        {
+            $this->empty = true;
+            $this->op = null;
+        }
+    }
+
+    /**
+     * @return HTML_QuickForm2_Container
+     */
+    public
+        function addGroup(HTML_QuickForm2_Container $form)
+    {
+        $form->options[$this->fieldGroupTitle][$this->getId()] = $this->title;
+        return $form->addGroup($this->getId())
+                ->setLabel($this->title)
+                ->setAttribute('id', $this->getId())
+                ->setAttribute('class', 'searchField empty');
+    }
+
+    public
+        function getId()
+    {
+        return 'data-field-' . $this->field;
+    }
+
+    public
+        function renderElement(HTML_QuickForm2_Container $form)
+    {
+        $group = $this->addGroup($form);
+        switch ($this->fieldType)
+        {
+            case 'checkbox' :
+            case 'multi_select' :
+
+                $group->addMagicSelect('val', null, array('options' => $this->options));
+
+
+                break;
+            default:
+
+                $group->addSelect('op')->loadOptions(self::$renderOperations);
+                $group->addText('val');
+        }
+    }
+
+
+
+    public
+        function isEmpty()
+    {
+        return $this->op === null;
+    }
+
+    public
+        function getDescription()
+    {
+        if(is_array($this->value))
+        {
+            $op = ___('has all values selected');
+            $val = $this->value;
+            if(!is_null($this->options)){
+                array_walk($val, array($this, 'getValue'));
+            }
+
+            $val = htmlentities (join(', ', array_filter ($val)));
+        }
+        else
+        {
+            $val = htmlentities ($this->value);
+            $op = $this->op;
+        }
+        return $this->title . ' ' . $op . ' [' . $val . ']';
+    }
+
+    function getValue(&$value)
+    {
+        $value = $this->options[$value];
+    }
+
+    function _getWhere(Am_Query $q) {
+        if(is_array($this->value))
+        {
+            $parts = array();
+            foreach($this->value as $v)
+            {
+                $parts[] = sprintf(
+                    "(%s.`%s`  REGEXP '.*;s:[0-9]+:\"%s\".*')",
+                    $this->selfAlias(),
+                    ($this->checkBlob ? 'blob' : 'value'),
+                    str_replace('\'', '', $q->escape($v)));
+            }
+            return join(' AND ',$parts);
+
+        }else
+            return parent::_getWhere ($q);
+    }
+
+    private function getAlias(Am_Query $q) {
+        return (is_null($this->tableAlias) ? $q->getAlias() : $this->tableAlias);
+    }
+    function selfAlias()
+    {
+        if(is_null($this->alias)){
+            static $i;
+            $i++;
+            $this->alias = parent::selfAlias().$i;
+        }
+        return $this->alias;
+    }
+
 }
 
 class Am_Query_User_Condition_AddedBetween extends Am_Query_Condition implements Am_Query_Renderable_Condition {
@@ -184,10 +371,217 @@ implements Am_Query_Renderable_Condition
     }
 }
 
+class Am_Query_User_Condition_LastSignin
+extends Am_Query_Condition
+implements Am_Query_Renderable_Condition
+{
+    protected $title;
+    protected $val = null;
+
+    public function __construct()
+    {
+        $this->title = ___('Last Signin');
+    }
+    public function getId() {
+        return 'never-signin';
+    }
+    public function isEmpty() {
+        return !$this->op;
+    }
+    public function renderElement(HTML_QuickForm2_Container $form) {
+       $form->options[___('Misc')][$this->getId()] = $this->title;
+       $group = $form->addGroup($this->getId())
+           ->setLabel($this->title)
+           ->setAttribute('id', $this->getId())
+           ->setAttribute('class', 'searchField empty');
+        $group->addSelect('op')->loadOptions(array('never' => ___('Never'), 'between'=>___('Between Dates')));
+        $group->addDate('from', array('palceholder' => ___('From')));
+        $group->addDate('to', array('palceholder' => ___('To')));
+    }
+
+    public function setFromRequest(array $input)
+    {
+        $this->op = @$input[$this->getId()]['op'];
+        $this->from = @$input[$this->getId()]['from'];
+        $this->to = @$input[$this->getId()]['to'];
+        if ($this->op)
+            return true;
+    }
+
+    function _getWhere(Am_Query $db)
+    {
+        $where = '';
+        switch ($this->op) {
+            case 'never' :
+                $where = '(last_login IS NULL)';
+                break;
+            case 'between' :
+                $from = $this->from ? date('Y-m-d 00:00:00', amstrtotime($this->from)) : sqlTime('- 10 years');
+
+                $to = $this->to ? date('Y-m-d 23:59:59', amstrtotime($this->to)) : sqlTime('tommorow');
+                $where = sprintf('(last_login BETWEEN %s AND %s)',
+                    $db->escape($from), $db->escape($to));
+                break;
+            default:
+                new Am_Exception_InputError("Unknown operation type [$this->op]");
+        }
+        return $where;
+    }
+
+    public function getDescription(){
+        return $this->op == 'never' ?
+            ___('never signin') :
+            ___('last signin between %s and %s', $this->from ? amDate($this->from) : '-',
+                $this->to ? amDate($this->to) : '-');
+    }
+}
+
+class Am_Query_User_Condition_UsedPaysys
+extends Am_Query_Condition
+implements Am_Query_Renderable_Condition
+{
+    protected $title;
+    protected $paysys_id = null;
+
+    public function __construct()
+    {
+        $this->title = ___('Has Used Payment System');
+    }
+    public function getId() {
+        return 'paysys';
+    }
+    public function isEmpty() {
+        return !$this->paysys_id;
+    }
+    public function renderElement(HTML_QuickForm2_Container $form) {
+       $form->options[___('Misc')][$this->getId()] = $this->title;
+       $group = $form->addGroup($this->getId())
+           ->setLabel($this->title)
+           ->setAttribute('id', $this->getId())
+           ->setAttribute('class', 'searchField empty');
+        $options = array();
+        foreach (Am_Di::getInstance()->plugins_payment->loadEnabled()->getAllEnabled() as $pl) {
+            if ($pl->getId() != 'free') $options[$pl->getId()] = $pl->getTitle();
+        }
+        $group->addSelect('paysys_id', array('multiple'=>'multiple', 'size' => 5))
+           ->loadOptions($options);
+    }
+
+    public function setFromRequest(array $input)
+    {
+        $this->paysys_id = @$input[$this->getId()]['paysys_id'];
+        if ($this->paysys_id)
+            return true;
+    }
+
+    function _getWhere(Am_Query $db)
+    {
+        $a = $db->getAlias();
+        $ids = implode(',', array_filter(array_map(array(Am_Di::getInstance()->db, 'escape'), $this->paysys_id)));
+        if (!$ids) return null;
+        return "EXISTS
+            (SELECT * FROM ?_invoice_payment ups
+            WHERE ups.user_id=$a.user_id AND ups.paysys_id IN ($ids))";
+    }
+
+    public function getDescription(){
+        return ___('has used payment system %s', implode(', ', $this->paysys_id));
+    }
+}
+
+class Am_Query_User_Condition_NotUsedPaysys
+extends Am_Query_Condition
+implements Am_Query_Renderable_Condition
+{
+    protected $title;
+    protected $paysys_id = null;
+
+    public function __construct()
+    {
+        $this->title = ___('Has Not Used Payment System');
+    }
+    public function getId() {
+        return 'no-paysys';
+    }
+    public function isEmpty() {
+        return !$this->paysys_id;
+    }
+    public function renderElement(HTML_QuickForm2_Container $form) {
+       $form->options[___('Misc')][$this->getId()] = $this->title;
+       $group = $form->addGroup($this->getId())
+           ->setLabel($this->title)
+           ->setAttribute('id', $this->getId())
+           ->setAttribute('class', 'searchField empty');
+        $options = array();
+        foreach (Am_Di::getInstance()->plugins_payment->getAllEnabled() as $pl) {
+            if ($pl->getId() != 'free') $options[$pl->getId()] = $pl->getTitle();
+        }
+        $group->addSelect('paysys_id', array('multiple'=>'multiple', 'size' => 5))
+           ->loadOptions($options);
+    }
+
+    public function setFromRequest(array $input)
+    {
+        $this->paysys_id = @$input[$this->getId()]['paysys_id'];
+        if ($this->paysys_id)
+            return true;
+    }
+
+    function _getWhere(Am_Query $db)
+    {
+        $a = $db->getAlias();
+        $ids = implode(',', array_filter(array_map(array(Am_Di::getInstance()->db, 'escape'), $this->paysys_id)));
+        if (!$ids) return null;
+        return "NOT EXISTS
+            (SELECT * FROM ?_invoice_payment ups
+            WHERE ups.user_id=$a.user_id AND ups.paysys_id IN ($ids))";
+    }
+
+    public function getDescription(){
+        return ___('has not used payment system %s', implode(', ', $this->paysys_id));
+    }
+}
+
+
+class Am_Query_Condition_Subscription extends Am_Query_Condition
+{
+    function getProductOptions()
+    {
+        $cOptions = array();
+        foreach (Am_Di::getInstance()->productCategoryTable->getAdminSelectOptions() as $id => $title) {
+            $cOptions['c' . $id] = $title;
+        }
+        if ($cOptions) {
+            $options = array(
+                ___('Products') => Am_Di::getInstance()->productTable->getOptions(),
+                ___('Product Categories') => $cOptions
+            );
+        } else {
+            $options = Am_Di::getInstance()->productTable->getOptions();
+        }
+
+        return $options;
+    }
+
+    function extractProductIds($p)
+    {
+        $ret = array();
+        $categoryProduct = Am_Di::getInstance()->productCategoryTable->getCategoryProducts();
+        foreach($p as $id) {
+            if (preg_match('/c([0-9]*)/i', $id, $m)) {
+                $ret = array_merge($ret, $categoryProduct[$m[1]]);
+            } else {
+                $ret[] = $id;
+            }
+        }
+        return array_map('intval', $ret);
+    }
+}
+
 /**
  * Filter users having a subscription
  */
-class Am_Query_User_Condition_HaveSubscriptionTo extends Am_Query_Condition
+class Am_Query_User_Condition_HaveSubscriptionTo extends Am_Query_Condition_Subscription
 implements Am_Query_Renderable_Condition {
     protected $product_ids;
     protected $currentStatus = null;
@@ -225,7 +619,7 @@ implements Am_Query_Renderable_Condition {
         $this->empty = true;
         if (!empty($input[$id]['product_ids']))
         {
-            $this->product_ids = array_map('intval', $input[$id]['product_ids']);
+            $this->product_ids = $this->extractProductIds($input[$id]['product_ids']);
             $this->empty = false;
             return true;
         }
@@ -238,7 +632,7 @@ implements Am_Query_Renderable_Condition {
            ->setAttribute('id', $this->getId())
            ->setAttribute('class', 'searchField empty');
        $group->addSelect('product_ids', array('multiple'=>'multiple', 'size' => 5))
-           ->loadOptions(Am_Di::getInstance()->productTable->getOptions());
+           ->loadOptions($this->getProductOptions());
     }
     public function isEmpty() {
         return $this->empty;
@@ -255,7 +649,7 @@ implements Am_Query_Renderable_Condition {
     }
 }
 
-class Am_Query_User_Condition_HaveNoSubscriptionTo extends Am_Query_Condition
+class Am_Query_User_Condition_HaveNoSubscriptionTo extends Am_Query_Condition_Subscription
 implements Am_Query_Renderable_Condition {
     protected $product_ids;
     protected $currentStatus = null;
@@ -263,7 +657,7 @@ implements Am_Query_Renderable_Condition {
     protected $title = null;
     protected $id;
     protected $empty = true;
-    function __construct(array $product_ids=null, $id=null, $title=null) 
+    function __construct(array $product_ids=null, $id=null, $title=null)
     {
         $this->product_ids = $product_ids ? $product_ids : array();
         $this->id = $id;
@@ -275,8 +669,8 @@ implements Am_Query_Renderable_Condition {
         $a = $db->getAlias();
         $ids = join(',', array_filter(array_map('intval', $this->product_ids)));
         if (!$ids) return null;
-        return "NOT EXISTS 
-            (SELECT * FROM ?_user_status ncmss 
+        return "NOT EXISTS
+            (SELECT * FROM ?_user_status ncmss
             WHERE ncmss.user_id=$a.user_id AND ncmss.product_id IN ($ids) AND ncmss.status = 1)";
     }
     public function getDescription()
@@ -284,7 +678,7 @@ implements Am_Query_Renderable_Condition {
         $ids = $this->product_ids ? 'products # ' . join(',', $this->product_ids) : 'any product';
         return htmlentities(___('have no active subscriptions to %s', $ids));
     }
-    public function renderElement(HTML_QuickForm2_Container $form) 
+    public function renderElement(HTML_QuickForm2_Container $form)
     {
        $form->options[___('User Subscriptions Status')][$this->getId()] = $this->title;
        $group = $form->addGroup($this->getId())
@@ -292,7 +686,7 @@ implements Am_Query_Renderable_Condition {
            ->setAttribute('id', $this->getId())
            ->setAttribute('class', 'searchField empty');
        $group->addSelect('product_ids', array('multiple'=>'multiple', 'size' => 5))
-           ->loadOptions(Am_Di::getInstance()->productTable->getOptions());
+           ->loadOptions($this->getProductOptions());
     }
     public function setFromRequest(array $input)
     {
@@ -301,10 +695,10 @@ implements Am_Query_Renderable_Condition {
         $this->empty = true;
         if (!empty($input[$id]['product_ids']))
         {
-            $this->product_ids = array_map('intval', $input[$id]['product_ids']);
+            $this->product_ids = $this->extractProductIds($input[$id]['product_ids']);
             $this->empty = false;
             return true;
-        } 
+        }
     }
     public function isEmpty()
     {
@@ -312,7 +706,7 @@ implements Am_Query_Renderable_Condition {
     }
 }
 
-class Am_Query_User_Condition_HaveSubscriptionDue extends Am_Query_Condition
+class Am_Query_User_Condition_HaveSubscriptionDue extends Am_Query_Condition_Subscription
 implements Am_Query_Renderable_Condition {
     protected $product_ids = array();
     protected $date_start;
@@ -325,7 +719,7 @@ implements Am_Query_Renderable_Condition {
         $this->product_ids = $this->date_start = $this->date_end = null;
         $this->empty = true;
 
-        $this->product_ids = isset($input[$id]['product_ids']) ? $input[$id]['product_ids'] : array();
+        $this->product_ids = isset($input[$id]['product_ids']) ? $this->extractProductIds($input[$id]['product_ids']) : array();
         $this->date_start = @$input[$id]['date_start'];
         $this->date_end = @$input[$id]['date_end'];
 
@@ -344,7 +738,7 @@ implements Am_Query_Renderable_Condition {
            ->setAttribute('id', $this->getId())
            ->setAttribute('class', 'searchField empty');
        $group->addSelect('product_ids', array('multiple'=>'multiple', 'size' => 5))
-           ->loadOptions(Am_Di::getInstance()->productTable->getOptions());
+           ->loadOptions($this->getProductOptions());
        $group->addDate('date_start');
        $group->addDate('date_end');
     }
@@ -383,7 +777,7 @@ implements Am_Query_Renderable_Condition {
         $this->product_ids = $this->date_start = $this->date_end = null;
         $this->empty = true;
 
-        $this->product_ids = isset($input[$id]['product_ids']) ? $input[$id]['product_ids'] : array();
+        $this->product_ids = isset($input[$id]['product_ids']) ? $this->extractProductIds($input[$id]['product_ids']) : array();
         $this->date_start = @$input[$id]['date_start'];
 
         if ($this->date_start)
@@ -401,7 +795,7 @@ implements Am_Query_Renderable_Condition {
            ->setAttribute('id', $this->getId())
            ->setAttribute('class', 'searchField empty');
        $group->addSelect('product_ids', array('multiple'=>'multiple', 'size' => 5))
-           ->loadOptions(Am_Di::getInstance()->productTable->getOptions());
+           ->loadOptions($this->getProductOptions());
        $group->addDate('date_start');
     }
 
@@ -439,7 +833,7 @@ implements Am_Query_Renderable_Condition {
            ->setAttribute('id', $this->getId())
            ->setAttribute('class', 'searchField empty');
        $group->addSelect('product_ids', array('multiple'=>'multiple', 'size' => 5))
-           ->loadOptions(Am_Di::getInstance()->productTable->getOptions());
+           ->loadOptions($this->getProductOptions());
        $group->addDate('date_start');
        $group->addDate('date_end');
     }
@@ -463,9 +857,9 @@ implements Am_Query_Renderable_Condition {
         $date_end = $db->escape($this->date_end);
         if (!$date_start || !$date_end) return null;
         return "EXISTS (SELECT hspbet.* FROM ?_invoice_payment hspbet , ?_invoice hspbeti, ?_invoice_item hspbetit
-            WHERE hspbet.user_id=$a.user_id 
-                AND hspbet.invoice_id = hspbeti.invoice_id 
-                AND hspbetit.invoice_id=hspbet.invoice_id 
+            WHERE hspbet.user_id=$a.user_id
+                AND hspbet.invoice_id = hspbeti.invoice_id
+                AND hspbetit.invoice_id=hspbet.invoice_id
                 AND $product_cond AND  hspbet.dattm BETWEEN $date_start AND $date_end)";
     }
 }
@@ -481,7 +875,7 @@ implements Am_Query_Renderable_Condition {
            ->setAttribute('id', $this->getId())
            ->setAttribute('class', 'searchField empty');
        $group->addSelect('product_ids', array('multiple'=>'multiple', 'size' => 5))
-           ->loadOptions(Am_Di::getInstance()->productTable->getOptions());
+           ->loadOptions($this->getProductOptions());
        $group->addDate('date_start');
        $group->addDate('date_end');
     }
@@ -505,9 +899,9 @@ implements Am_Query_Renderable_Condition {
         $date_end = $db->escape($this->date_end);
         if (!$date_start || !$date_end) return null;
         return "EXISTS (SELECT hspbet.* FROM ?_invoice_payment hspbet , ?_invoice hspbeti, ?_invoice_item hspbetit
-            WHERE hspbet.user_id=$a.user_id 
-                AND hspbet.invoice_id = hspbeti.invoice_id 
-                AND hspbetit.invoice_id=hspbet.invoice_id 
+            WHERE hspbet.user_id=$a.user_id
+                AND hspbet.invoice_id = hspbeti.invoice_id
+                AND hspbetit.invoice_id=hspbet.invoice_id
                 AND $product_cond AND  hspbeti.tm_cancelled BETWEEN $date_start AND $date_end)";
     }
 }
@@ -659,7 +1053,7 @@ implements Am_Query_Renderable_Condition
 {
     protected $title;
     protected $ids = array();
-    
+
     public function __construct()
     {
         $this->title = ___('Assigned to usergroup');
@@ -682,7 +1076,7 @@ implements Am_Query_Renderable_Condition
     {
         return Am_Di::getInstance()->userGroupTable->getSelectOptions();
     }
-    public function setFromRequest(array $input) 
+    public function setFromRequest(array $input)
     {
         $this->ids = @$input[$this->getId()]['ids'];
         $this->ids = array_filter(array_map('intval', (array)$this->ids));
@@ -705,7 +1099,7 @@ implements Am_Query_Renderable_Condition
     }
 }
 
-class Am_Query_User_Condition_NoUsergroup 
+class Am_Query_User_Condition_NoUsergroup
     extends Am_Query_User_Condition_Usergroup
 {
     public function __construct()
@@ -714,7 +1108,7 @@ class Am_Query_User_Condition_NoUsergroup
     }
     public function getId() {
         return 'no-user-group';
-    }    
+    }
     public function getJoin(Am_Query $q)
     {
         return;
@@ -727,5 +1121,5 @@ class Am_Query_User_Condition_NoUsergroup
         $ids = implode(',', $ids);
         return "NOT EXISTS (SELECT * FROM ?_user_user_group uug WHERE $a.user_id = uug.user_id AND uug.user_group_id IN ($ids))";
     }
-    
+
 }

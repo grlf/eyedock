@@ -104,17 +104,18 @@ class ProductCategoryTable extends Am_Table {
         $exclude_hidden = !empty($options[self::EXCLUDE_HIDDEN]);
         $include_hidden = isset($options[self::INCLUDE_HIDDEN]) ? $options[self::INCLUDE_HIDDEN] : array();
         $root = (isset($options[self::ROOT]) && $options[self::ROOT]) ? $options[self::ROOT] : false;
-        $exclude_disabled = self::USER ? true : false;
+        $exclude_disabled = $type == self::USER ? true : false;
         
         if ($do_count || $exclude_empty)
             $sql = "SELECT pc.product_category_id AS ARRAY_KEY,
                 pc.parent_id AS PARENT_KEY,
                 pc.product_category_id, pc.title, pc.code,
-                COUNT(DISTINCT ppc.product_id) as `count`
+                COUNT(DISTINCT p.product_id) as `count`
                 FROM ?_product_category pc
                     LEFT JOIN ?_product_product_category ppc USING (product_category_id)
                     LEFT JOIN ?_product p ON p.product_id = ppc.product_id
-                    ".($exclude_disabled ? " AND p.is_disabled=0 " : "")."
+                        AND p.is_archived=0
+                        ".($exclude_disabled ? " AND p.is_disabled=0 " : "")."
                 GROUP BY pc.product_category_id
                 ORDER BY parent_id, 0+pc.sort_order";
         else

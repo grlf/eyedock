@@ -1,0 +1,311 @@
+
+.eyedock-lens-detail{
+ position: absolute;
+ top: 0px;
+ left: 0px;
+ width: 100%;
+ height: 100%;
+ background: transparent;
+ z-index: 50;
+}
+
+.edas-ld-content{
+
+}
+
+.edas-ld-top{
+ height: 36px;
+ overflow: hidden;
+}
+
+.edas-ld-top-left{
+ background-image: url('../img/tab-blue-left.gif');
+ background-position: left center;
+ background-repeat: no-repeat;
+ height: 100%;
+}
+
+.edas-ld-top-right{
+ background-image: url('../img/tab-blue-right.gif');
+ background-position: right center;
+ background-repeat: no-repeat;
+ padding: 0 10px;
+ height: 100%;
+}
+
+.edas-ld-top-content{
+ background-image: url('../img/tab-blue-bg.gif');
+ background-position: center center;
+ background-repeat: repeat-x;
+ height: 100%;
+ position: relative;
+}
+
+.edas-ld-close{
+ position: absolute;
+ top: 7px;
+ right: -5px;
+ width: 19px;
+ height: 19px;
+ background-image: url('../img/adv-search-close.gif');
+ cursor: pointer;
+}
+
+.edas-ld-title{
+ font-size: 25px;
+ font-weight: bold;
+ color: white;
+ line-height: 36px;
+}
+
+.edas-ld-main{
+ border: 2px solid #2687ae;
+ background: white;
+}
+
+.edas-ld-main-content{
+ overflow: hidden;
+}
+
+.edas-ld-content-title{
+ padding: 7px 10px;
+ font-size: 14px;
+ font-weight: bold;
+ border-bottom: 1px solid #CCCCCC;
+}
+
+.edas-ld-main-left{
+ float: left;
+ width: 216px;
+}
+
+.edas-ld-main-left-content{
+ padding: 14px 10px 16px 14px;
+}
+
+.edas-ld-company{
+ font-size: 16px;
+ font-weight: bold;
+ padding: 0 0 10px 0;
+ display: inline;
+}
+
+.edas-ld-company-active{
+ cursor: pointer;
+}
+
+.edas-ld-image{
+ border: 1px solid #CCCCCC;
+ text-align: center;
+ margin-top: 15px;
+}
+
+.edas-ld-image img{
+ margin: 0 auto;
+}
+
+.edas-ld-show-images{
+ text-align: center;
+ margin: 3px 0 10px 0;
+}
+
+.edas-ld-images{
+ height: 200px;
+ overflow: auto;
+ text-align: center;
+}
+
+.edas-ld-images div{
+ margin: 5px 0;
+}
+
+.edas-ld-main-right{
+ margin: 0 0 0 216px;
+}
+
+.edas-ld-main-right-content{
+ padding: 14px 14px 16px 0px;
+}
+
+.edas-ld-right-container{
+ border: 1px solid #CCCCCC;
+}
+
+.edas-ld-right-separator{
+ margin-top: 7px;
+}
+
+.edas-ld-right-center{
+ padding: 7px 0;
+}
+
+.edas-ld-container-content{
+ padding: 4px 9px;
+}
+
+.edas-ld-sphere-line{
+ overflow: hidden;
+}
+
+.edas-ld-right-note{
+ padding: 2px 0;
+ font-style: italic;
+ font-size: 12px;
+}
+
+.edas-ld-colors-line{
+ margin: 5px 0;
+}
+
+.edas-ld-colors-label{
+ float: left;
+ width: 115px;
+ text-align: right;
+ font-weight: bold;
+ font-size: 13px;
+}
+
+.edas-ld-colors-value{
+ margin: 0 0 0 120px;
+ font-size: 13px;
+}
+
+.edas-ld-sphere-diam{
+ float: left;
+ width: 190px;
+}
+
+.edas-ld-sphere-bc{
+ float: left;
+ width: 150px;
+}
+
+.edas-ld-sphere-powers{
+ margin: 0 0 0 340px;
+}
+
+.edas-ld-container-label{
+ font-weight: bold;
+ padding: 0 0 3px 0;
+}
+
+.edas-ld-rc-left{
+ float: left;
+ width: 245px;
+}
+
+.edas-ld-rc-right{
+ margin: 0 0 0 254px;
+}
+
+.edas-ld-rc-list{
+ overflow: hidden;
+}
+
+.edas-ld-rc-item{
+ margin: 2px 0;
+ line-height: 16px;
+}
+
+.edas-ld-rc-label{
+ float: left;
+ width: 95px;
+ text-align: right;
+ font-weight: bold;
+}
+
+.edas-ld-rc-value{
+ margin: 0 0 0 105px;
+ text-align: left;
+}
+
+.edas-ld-wholesale-view{
+ text-align: center;
+ padding: 10px 0 3px 0;
+}
+
+.edas-ld-wholesale{
+ padding: 7px;
+ background: #FFFFCC;
+ border: 1px solid #DDDCDC;
+}
+
+.edas-ld-bottom{
+ height: 36px;
+ display: none;
+}
+
+.edas-ld-bottom-left{
+ height: 100%;
+ background-image: url('../img/bottom-left.gif');
+ background-position: left center;
+ background-repeat: no-repeat;
+}
+
+.edas-ld-bottom-right{
+ height: 100%;
+ background-image: url('../img/bottom-right.gif');
+ background-position: right center;
+ background-repeat: no-repeat;
+ padding: 0 7px;
+}
+
+.edas-ld-bottom-content{
+ height: 100%;
+ background-image: url('../img/bottom-bg.gif');
+ background-position: center center;
+ background-repeat: repeat-x;
+}
+
+.edas-popup-link{
+ margin: 0 0 0 2px;
+ color: #01A700;
+ cursor: pointer;
+ font-weight: bold;
+}
+
+.edas-ld-link{
+ text-align: center;
+ margin: 5px 0;
+}
+
+.edas-ld-discontinued{
+ color: red;
+ font-size: 13px;
+ font-style: italic;
+ margin-top: -9px;
+ text-align: center;
+ padding: 0 0 2px 0;
+}
+
+.edas-company-details {
+ position: absolute;
+ top: 82px;
+ left: 47px;
+}
+
+.edas-company-details-companyname {
+ font-weight: bold;
+ font-size: 1.5em;
+}
+
+.edas-address-inline {
+ display: inline;
+}
+
+.edas-popup-interior-link {
+ /*color: #FA0 !important;*/
+ color: #327180; !important;
+ font-weight: bold;
+}
+
+.edas-company-details-block {
+ margin-top: 7px;
+}
+
+.edas-company-details .eyedock-detailed-popup-close {
+ right: 5px;
+ top: 2px;
+ position: relative;
+ float: right;
+}

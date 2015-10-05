@@ -3,7 +3,7 @@
 class Am_Plugin_SubscriptionLimit extends Am_Plugin
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.0';
 
     function init()
     {
@@ -20,6 +20,7 @@ class Am_Plugin_SubscriptionLimit extends Am_Plugin
 
         foreach ($invoice->getItems() as $item)
         {
+            if ($item->item_type != 'product') continue;
             $product = $this->getDi()->productTable->load($item->item_id);
             if (($limit = $product->data()->get('subscription_limit')) &&
                 $limit < $item->qty)
@@ -47,6 +48,7 @@ class Am_Plugin_SubscriptionLimit extends Am_Plugin
         $invoice = $event->getInvoice();
         foreach ($invoice->getItems() as $item)
         {
+            if ($item->item_type != 'product') continue;
             $product = $this->getDi()->productTable->load($item->item_id);
 
             if ($limit = $product->data()->get('subscription_limit'))

@@ -3,7 +3,7 @@
 *     Author: Alex Scott
 *      Email: alex@cgi-central.net
 *        Web: http://www.amember.com/
-*    Release: 4.4.2
+*    Release: 4.7.0
 *    License: LGPL http://www.gnu.org/copyleft/lesser.html
 */
 
@@ -41,7 +41,7 @@ abstract class Am_Grid_Editable_Content extends Am_Grid_Editable
     }
     public function getContentGridId()
     {
-        $id = explode('_', get_class($this));
+        $id = preg_split('#[\\\\_]#', get_class($this));
         $id = strtolower(array_pop($id));
         return $id;
     }

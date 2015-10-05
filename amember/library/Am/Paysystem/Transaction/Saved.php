@@ -16,7 +16,7 @@ class Am_Paysystem_Transaction_Saved implements Am_Paysystem_Transaction_Interfa
     public $UniqId;
     
     
-    function __construct(Am_Paysystem_Transaction_Abstract $transaction){
+    function __construct(Am_Paysystem_Transaction_Interface $transaction){
         $this->Amount       = $transaction->getAmount();
         $this->PaysysId     = $transaction->getPaysysId();
         $this->ReceiptId    = $transaction->getReceiptId();

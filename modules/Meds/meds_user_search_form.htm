@@ -1,0 +1,129 @@
+<!-- saved from url=(0022)http://internet.e-mail -->
+<script language="JavaScript">
+  function changeTab(what){
+
+document.getElementById('aPhrase').style.backgroundColor='#D2E1FE';
+       document.getElementById('aOther').style.backgroundColor='#D2E1FE';
+
+       document.getElementById('phraseDiv').style.display='none';
+       document.getElementById('otherDiv').style.display='none';
+
+       if (what=="phrase"){
+           document.getElementById('aPhrase').style.backgroundColor='white';
+           document.getElementById('phraseDiv').style.display='block';
+       }
+        if (what=="other"){
+           document.getElementById('aOther').style.backgroundColor='white';
+           document.getElementById('otherDiv').style.display='block';
+       }
+  }
+</script>
+
+<!--[if $search.active && !$search]-->
+    <div><strong>Please Select A Field By Which To Search!</strong></div><br />
+<!--[/if]-->
+
+<div>
+  <a href="#" id="aPhrase" class="meds_nav" style="background:#fff;"  onclick="changeTab('phrase');">Search by trade or generic name</a>
+  <a href="#" id="aOther" class="meds_nav" style="background:#d2e1fe;" onclick="changeTab('other');">Advanced Search</a>
+</div>
+
+<div id="phraseDiv" class="medsWhite" >
+  <form  method="post" action="<!--[pnmodurl modname=Meds func=search]-->" enctype="application/x-www-form-urlencoded">
+    <input type="text" name="search[trade]" value="<!--[$search.trade]-->">
+    
+    <input type="hidden" name="active" value="1" />
+    <input type="hidden" name="search[type]" value="phrase" />
+    <input type="submit" name="submit" value="Search" />
+    </form>
+</div>
+
+
+
+<div id="otherDiv" class="medsWhite" style="display:none">
+  <form  method="post" action="<!--[pnmodurl modname=Meds func=search]-->" enctype="application/x-www-form-urlencoded">
+
+      <input type="hidden" name="authid" value="<!--[pnsecgenauthkey module=Meds]-->" />
+      <input type="hidden" name="search[active]" value="1" />
+      <!--<input type="hidden" name="search[type]" value="other" />  -->
+
+
+
+  <table class="max" border="0" cellpadding="3" cellspacing="2">
+      
+  
+          <td class="align_right"><strong>Manufacturer &rarr;</strong></td>
+          <td>
+              <select name="search[comp_id]" size="1">
+                  <option value=""<!--[if !$search.comp_id]--> selected="selected"<!--[/if]--> />Any
+              <!--[foreach from=$companies key=key item=company]-->
+                  <option value="<!--[$company.comp_id|pnvarprepfordisplay]-->"<!--[if $search.comp_id == $company.comp_id]--> selected="selected"<!--[/if]--> /><!--[$company.name|pnvarprepfordisplay]-->
+              <!--[/foreach]-->                
+              </select>
+          </td>
+      </tr>
+      <tr>
+          <td class="align_right"><strong>Preservative &rarr;</strong></td>
+          <td>
+              <select name="search[pres_id]" size="1">
+                  <option value=""<!--[if !$search.pres_id]--> selected="selected"<!--[/if]--> />Any
+              <!--[foreach from=$preserves key=key item=preserve]-->
+                  <option value="<!--[$preserve.pres_id|pnvarprepfordisplay]-->"<!--[if $search.pres_id == $preserve.pres_id]--> selected="selected"<!--[/if]--> /><!--[$preserve.name|pnvarprepfordisplay]-->
+              <!--[/foreach]-->                
+              </select>
+          </td>
+      </tr>
+  
+      
+      <tr>
+          <td class="align_right"><strong>Medication Type &rarr;</strong></td>
+          <td>
+              <select name="search[medType]" size="1">
+                  <option value=""<!--[if !$search.medTypes]--> selected="selected"<!--[/if]--> />Any
+              <!--[foreach from=$medtypes key=key item=type]-->
+                  <option value="<!--[$type|pnvarprepfordisplay]-->"<!--[if $search.medType == $type]--> selected="selected"<!--[/if]--> /><!--[$type|pnvarprepfordisplay]-->
+              <!--[/foreach]-->                
+              </select>
+          </td>
+      </tr>
+      
+  
+      <tr>
+          <td class="align_right"><strong>Methods Of Action &rarr;</strong></td>
+          <td>
+              <select name="search[moa_id]" size="1">
+                  <option value=""<!--[if !$search.moa_id]--> selected="selected"<!--[/if]--> />Any
+              <!--[foreach from=$methods key=key item=moa]-->
+                  <option value="<!--[$moa.moa_id|pnvarprepfordisplay]-->"<!--[if $search.moa_id == $moa.moa_id]--> selected="selected"<!--[/if]--> /><!--[$moa.name|pnvarprepfordisplay]-->
+              <!--[/foreach]-->                
+              </select>
+          </td>
+      </tr>
+      
+      <tr>
+          <td class="align_right"><strong>Pregnancy Class &rarr;</strong></td>
+          <td>
+              <select name="search[preg]" size="1">
+                  <option value=""<!--[if !$search.preg]--> selected="selected"<!--[/if]--> />Any
+              <!--[foreach from=$pregclasses key=key item=preg]-->
+                  <option value="<!--[$preg|pnvarprepfordisplay]-->"<!--[if $search.preg == $preg]--> selected="selected"<!--[/if]--> /><!--[$preg|pnvarprepfordisplay]-->
+              <!--[/foreach]-->                
+              </select>
+          </td>
+      </tr>
+      
+      <tr>
+          <td class="align_right"> <strong>Only return meds available in generic &rarr;</strong></td>
+          <td>
+            <input type="checkbox" value="yes" name="search[generic]" <!--[if $search.generic]--> checked<!--[/if]-->>
+              
+  
+          </td>
+      </tr>
+      <tr>
+          <td style="width:50%;" class="align_right"><input type="submit" name="submit" value="Search" /><input type="reset" name="reset" value="Reset form" /></td>
+          <td style="width:50%;">&nbsp;</td>
+      </tr>
+  </table>
+  </form>
+</div>

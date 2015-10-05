@@ -12,12 +12,14 @@ enter 0 to disable',
   '# of users' => '# of users',
   '%d days after expiration' => '%d days after expiration',
   '%d days before expiration' => '%d days before expiration',
+  '%d products&hellip;' => '%d products&hellip;',
   '%d user(s) matches your search' => '%d user(s) matches your search',
-  '%d-th day' => '%d-th day',
+  '%d-Tier' => '%d-Tier',
   '%d-th subscription day' => '%d-th subscription day',
   '%s Plugins' => '%s Plugins',
   '%sEnable%s and %sconfigure%s external cron if you are using E-Mail Throttle Queue' => '%sEnable%s and %sconfigure%s external cron if you are using E-Mail Throttle Queue',
   '%sEnable%s and %sconfigure%s external cron if you are using Periodic E-Mails (Autoresponder/Expiration/Pending Notifications)' => '%sEnable%s and %sconfigure%s external cron if you are using Periodic E-Mails (Autoresponder/Expiration/Pending Notifications)',
+  '-- Filter by Product --' => '-- Filter by Product --',
   '-- Please Select --' => '-- Please Select --',
   '-- Without A Category --' => '-- Without A Category --',
   '..th subscription day (starts from 2)' => '..th subscription day (starts from 2)',
@@ -30,6 +32,7 @@ enter 0 to disable',
   'API Keys' => 'API Keys',
   'Accepted Payout Methods' => 'Accepted Payout Methods',
   'Access Method' => 'Access Method',
+  'Access Period' => 'Access Period',
   'Access Permissions
 this field will be removed from form if access permission does not match and user will not be able to update this field' => 'Access Permissions
 this field will be removed from form if access permission does not match and user will not be able to update this field',
@@ -53,12 +56,11 @@ this field will be removed from form if access permission does not match and use
   'Add Signature to Response' => 'Add Signature to Response',
   'Add Subscription' => 'Add Subscription',
   'Add User Fields' => 'Add User Fields',
+  'Add only Access Records' => 'Add only Access Records',
   'Add points to affiliate for each %s in payment' => 'Add points to affiliate for each %s in payment',
   'Add to Basket only' => 'Add to Basket only',
-  'Added' => 'Added',
   'Additional' => 'Additional',
-  'Additional Fields' => 'Additional Fields',
-  'Additionally to "Access", add "Invoice" and "Payment" record with given %s amount, like they have really made a payment' => 'Additionally to "Access", add "Invoice" and "Payment" record with given %s amount, like they have really made a payment',
+  'Address' => 'Address',
   'Admin Accounts' => 'Admin Accounts',
   'Admin E-Mail Address
 used to send email notifications to admin
@@ -74,8 +76,8 @@ to admin once free signup is completed',
   'Admin Payment Notifications
 to admin once payment is received' => 'Admin Payment Notifications
 to admin once payment is received',
+  'Admin Recipients' => 'Admin Recipients',
   'Admin Settings' => 'Admin Settings',
-  'Admin Username' => 'Admin Username',
   'Admin notification' => 'Admin notification',
   'Admin username must be alphanumeric in small caps' => 'Admin username must be alphanumeric in small caps',
   'Administrator Login' => 'Administrator Login',
@@ -92,6 +94,7 @@ Leave this checkbox unselected to restrict affiliates from seeing their sales de
   'Affiliate Cookie Lifetime
 days to store cookies about referred affiliate' => 'Affiliate Cookie Lifetime
 days to store cookies about referred affiliate',
+  'Affiliate Id' => 'Affiliate Id',
   'Affiliate Information' => 'Affiliate Information',
   'Affiliate Payout Conversion Rate
 how many credits affiliate should recieve for %s' => 'Affiliate Payout Conversion Rate
@@ -100,6 +103,21 @@ how many credits affiliate should recieve for %s',
 send email to user when his payout is marked as paid' => 'Affiliate Payout Paid Notification to User
 send email to user when his payout is marked as paid',
   'Affiliate Registration E-Mail' => 'Affiliate Registration E-Mail',
+  'Affiliate items count
+trigger this commission if affiliate made more than ... item sales within ... days before the current date
+(only count of items in new invoices is calculated' => 'Affiliate items count
+trigger this commission if affiliate made more than ... item sales within ... days before the current date
+(only count of items in new invoices is calculated',
+  'Affiliate sales amount
+trigger this commission if affiliate made more than ... sales within ... days before the current date
+(only new invoices calculated)' => 'Affiliate sales amount
+trigger this commission if affiliate made more than ... sales within ... days before the current date
+(only new invoices calculated)',
+  'Affiliate sales count
+trigger this commission if affiliate made more than ... sales within ... days before the current date
+(only count of new invoices is calculated)' => 'Affiliate sales count
+trigger this commission if affiliate made more than ... sales within ... days before the current date
+(only count of new invoices is calculated)',
   'Affiliates Payout Day
 choose a day of month when payout is generated' => 'Affiliates Payout Day
 choose a day of month when payout is generated',
@@ -135,15 +153,20 @@ if set to Yes, don\'t ask customer - always remember',
   'Amazon SES Region' => 'Amazon SES Region',
   'Amazon SES Secret Key' => 'Amazon SES Secret Key',
   'American Date Format' => 'American Date Format',
+  'Amount excl. Tax' => 'Amount excl. Tax',
+  'Amount excl. VAT' => 'Amount excl. VAT',
+  'Any Coupon' => 'Any Coupon',
   'Api Key' => 'Api Key',
   'Apply Tax?' => 'Apply Tax?',
+  'Apply this rule if affiliate has active access to' => 'Apply this rule if affiliate has active access to',
   'Apply to recurring?
 apply coupon discount to recurring rebills?' => 'Apply to recurring?
 apply coupon discount to recurring rebills?',
   'Approve' => 'Approve',
+  'Archived Products' => 'Archived Products',
+  'Archived products' => 'Archived products',
   'Assign Category' => 'Assign Category',
   'At least one billing plan must be added' => 'At least one billing plan must be added',
-  'Authentification' => 'Authentification',
   'Auto Buffering
 whether loading of clip into player\'s memory should begin straight away. When this is true and autoPlay is false then the clip will automatically stop at the first frame of the video.' => 'Auto Buffering
 whether loading of clip into player\'s memory should begin straight away. When this is true and autoPlay is false then the clip will automatically stop at the first frame of the video.',
@@ -173,7 +196,9 @@ defines both language and date/number formats',
   'Available Products' => 'Available Products',
   'Available Upgrades' => 'Available Upgrades',
   'Available for users from groups' => 'Available for users from groups',
-  'BCC' => 'BCC',
+  'BCC
+blind carbon copy allows the sender of a message to conceal the person entered in the Bcc field from the other recipients' => 'BCC
+blind carbon copy allows the sender of a message to conceal the person entered in the Bcc field from the other recipients',
   'BEGIN' => 'BEGIN',
   'Back to Dashboard' => 'Back to Dashboard',
   'Back to FAQ List' => 'Back to FAQ List',
@@ -193,6 +218,7 @@ It could not be changed if there are any invoices in database.
 You can edit exchange rate %shere%s',
   'Basket HTML Code' => 'Basket HTML Code',
   'Begin date should be before Expire date' => 'Begin date should be before Expire date',
+  'Bi-Weekly (on %s)' => 'Bi-Weekly (on %s)',
   'Billing' => 'Billing',
   'Billing Terms' => 'Billing Terms',
   'Bind To
@@ -220,8 +246,19 @@ The amount of video data (in seconds) which should be loaded into Flowplayer\'s 
   'Build Demo' => 'Build Demo',
   'Building demo records' => 'Building demo records',
   'Button/Link HTML Code' => 'Button/Link HTML Code',
+  'By Affiliate Active Product' => 'By Affiliate Active Product',
+  'By Affiliate Active Product Category' => 'By Affiliate Active Product Category',
+  'By Affiliate Group Id' => 'By Affiliate Group Id',
+  'By Affiliate Item Sales Count' => 'By Affiliate Item Sales Count',
+  'By Affiliate Sales Amount' => 'By Affiliate Sales Amount',
+  'By Affiliate Sales Count' => 'By Affiliate Sales Count',
+  'By Product' => 'By Product',
+  'By Product Category' => 'By Product Category',
+  'By Used Coupon' => 'By Used Coupon',
+  'By Used Payment System' => 'By Used Payment System',
   'By default each invoice will be set as "Not Approved" ' => 'By default each invoice will be set as "Not Approved" ',
   'CONTINUE' => 'CONTINUE',
+  'Cache Backend' => 'Cache Backend',
   'Calculate Affiliate Commissions from Totals Including Tax
 by default commission calculated from amounts before tax' => 'Calculate Affiliate Commissions from Totals Including Tax
 by default commission calculated from amounts before tax',
@@ -230,6 +267,9 @@ by default commission calculated from amounts before tax',
   'Campaign Title
 for admin reference' => 'Campaign Title
 for admin reference',
+  'Campaign Type' => 'Campaign Type',
+  'CampaignMonitor (Transactional API)' => 'CampaignMonitor (Transactional API)',
+  'Campaignmonitor API Key' => 'Campaignmonitor API Key',
   'Can not find user with such username' => 'Can not find user with such username',
   'Can not find user with such username or email' => 'Can not find user with such username or email',
   'Can not save config for dashboard widget without config form [%s]' => 'Can not save config for dashboard widget without config form [%s]',
@@ -246,6 +286,7 @@ root category of hierarchy which included to shopping cart
 all categories is included by default',
   'Change Configuration Settings' => 'Change Configuration Settings',
   'Change Invoice Rebill Date' => 'Change Invoice Rebill Date',
+  'Change Order' => 'Change Order',
   'Change Password Notification
 send email to user after password change' => 'Change Password Notification
 send email to user after password change',
@@ -270,8 +311,10 @@ send email to user after password change',
   'Clear' => 'Clear',
   'Clear Access Log' => 'Clear Access Log',
   'Clear Incomplete Invoices' => 'Clear Incomplete Invoices',
+  'Clear Incomplete Users' => 'Clear Incomplete Users',
   'Click Tracking Code' => 'Click Tracking Code',
   'Click to Expand' => 'Click to Expand',
+  'Client API ID' => 'Client API ID',
   'Code Length
 generated coupon code length
 between 5 and 32' => 'Code Length
@@ -283,6 +326,7 @@ between 5 and 32',
   'Commission
 % of commission received by referred affiliate' => 'Commission
 % of commission received by referred affiliate',
+  'Commission earned' => 'Commission earned',
   'Commission for First Payment
 calculated for first payment in each invoice' => 'Commission for First Payment
 calculated for first payment in each invoice',
@@ -292,12 +336,16 @@ calculated for first customer invoice only',
   'Commission for Rebills' => 'Commission for Rebills',
   'Commissions Included to Payout' => 'Commissions Included to Payout',
   'Company Logo for Invoice
-it must be png/jpeg/tiff file (%s)' => 'Company Logo for Invoice
-it must be png/jpeg/tiff file (%s)',
+it must be png/jpeg/tiff file, please keep aspect ratio 2:1 (width×height)' => 'Company Logo for Invoice
+it must be png/jpeg/tiff file, please keep aspect ratio 2:1 (width×height)',
   'Conditions' => 'Conditions',
   'Config values updated...' => 'Config values updated...',
   'Configuration' => 'Configuration',
   'Configured License Keys' => 'Configured License Keys',
+  'Confirmed Manually' => 'Confirmed Manually',
+  'Consumer Email' => 'Consumer Email',
+  'Consumer Name' => 'Consumer Name',
+  'Consumer Sales' => 'Consumer Sales',
   'Copy' => 'Copy',
   'Copy Upgrades' => 'Copy Upgrades',
   'Copy from another language' => 'Copy from another language',
@@ -305,6 +353,7 @@ it must be png/jpeg/tiff file (%s)',
   'Could not download file [%s]. Error %s. Please %stry again%s later.' => 'Could not download file [%s]. Error %s. Please %stry again%s later.',
   'Could not fetch upgrades list from remote server. %sTry again%' => 'Could not fetch upgrades list from remote server. %sTry again%',
   'Could not fetch upgrades list. Connection error [%s]' => 'Could not fetch upgrades list. Connection error [%s]',
+  'Could not load payment plugin [%s]' => 'Could not load payment plugin [%s]',
   'Could not move uploaded file' => 'Could not move uploaded file',
   'Could not open folder [%s] to remove .htaccess from it. Do it manually' => 'Could not open folder [%s] to remove .htaccess from it. Do it manually',
   'Could not read XML' => 'Could not read XML',
@@ -312,10 +361,12 @@ it must be png/jpeg/tiff file (%s)',
   'Count all IP as different' => 'Count all IP as different',
   'Count of Licenses' => 'Count of Licenses',
   'Countries/States' => 'Countries/States',
-  'Country Title' => 'Country Title',
+  'Country Confirmed by User' => 'Country Confirmed by User',
+  'Country: %s' => 'Country: %s',
   'Coupon Batch' => 'Coupon Batch',
   'Coupon Code' => 'Coupon Code',
   'Coupon Codes' => 'Coupon Codes',
+  'Coupon From Batch' => 'Coupon From Batch',
   'Coupon used for %d transactions' => 'Coupon used for %d transactions',
   'Coupons' => 'Coupons',
   'Coupons Batches' => 'Coupons Batches',
@@ -346,10 +397,6 @@ Most possible external cron job has been set incorrectly. It may cause very seri
 You can find info how to set up cron job for your installation <a class="link" href="http://www.amember.com/docs/Cron" target="_blank">here</a>.' => 'Cron job has been running last time %s, it is more than 24 hours before.
 Most possible external cron job has been set incorrectly. It may cause very serious problems with the script.
 You can find info how to set up cron job for your installation <a class="link" href="http://www.amember.com/docs/Cron" target="_blank">here</a>.',
-  'Currency' => 'Currency',
-  'Currency
-you can choose from list of currencies supported by paysystems' => 'Currency
-you can choose from list of currencies supported by paysystems',
   'Currency Exchange Rates' => 'Currency Exchange Rates',
   'Current Server Date and Time' => 'Current Server Date and Time',
   'Currently you see result of the following search' => 'Currently you see result of the following search',
@@ -363,9 +410,10 @@ keep empty to use default title' => 'Custom Signup Form Title
 keep empty to use default title',
   'Custom Template Settings' => 'Custom Template Settings',
   'Customer' => 'Customer',
+  'Customer Country' => 'Customer Country',
   'Customize Dashboard' => 'Customize Dashboard',
   'Daily' => 'Daily',
-  'Dashboard' => 'Dashboard',
+  'Data' => 'Data',
   'Date Of Transaction' => 'Date Of Transaction',
   'Date Time' => 'Date Time',
   'Date to Purge
@@ -388,6 +436,7 @@ date range when coupon can be used',
 width&times;height' => 'Default Size
 width&times;height',
   'Default for Members' => 'Default for Members',
+  'Default for Profile' => 'Default for Profile',
   'Default value for field
 (that is default value for inputs, not SQL DEFAULT)' => 'Default value for field
 (that is default value for inputs, not SQL DEFAULT)',
@@ -397,6 +446,7 @@ number of days that should go through before commision is included to payout rep
   'Delete Old Records' => 'Delete Old Records',
   'Delete Preset' => 'Delete Preset',
   'Delete Saved Search?' => 'Delete Saved Search?',
+  'Delete User' => 'Delete User',
   'Delete payment and access record' => 'Delete payment and access record',
   'Delimiter' => 'Delimiter',
   'Demo History' => 'Demo History',
@@ -413,6 +463,7 @@ Empty - 400×400 px',
   'Disable All Campaigns' => 'Disable All Campaigns',
   'Disable Checking for aMember Updates' => 'Disable Checking for aMember Updates',
   'Disable Customer Account' => 'Disable Customer Account',
+  'Disable New Signups' => 'Disable New Signups',
   'Disable QuickStart Wizard' => 'Disable QuickStart Wizard',
   'Disable Visual HTML Editor' => 'Disable Visual HTML Editor',
   'Disable auto-locking for this customer' => 'Disable auto-locking for this customer',
@@ -430,9 +481,15 @@ that he has no any from the following subscriptions' => 'Disallow use of coupon 
 when user uses coupon, it will be checked
 that he has no any from the following subscriptions',
   'Disclaimer of Credit Card Recurring Billing' => 'Disclaimer of Credit Card Recurring Billing',
+  'Discount
+additional discount to invoice total besides coupon' => 'Discount
+additional discount to invoice total besides coupon',
   'Display' => 'Display',
   'Display Language Choice' => 'Display Language Choice',
   'Display Mode' => 'Display Mode',
+  'Display Separate Invoice for Refunds
+Setting affect aMember Control Panel only. User will see regular invoice which includes refund information inside' => 'Display Separate Invoice for Refunds
+Setting affect aMember Control Panel only. User will see regular invoice which includes refund information inside',
   'Display error message' => 'Display error message',
   'Display inside layout
 When displaying to customer, will the
@@ -451,11 +508,15 @@ here you can disable this function',
 use existing products for demo records' => 'Do not generate products
 use existing products for demo records',
   'Do not include Unsubscribe Link into e-mails' => 'Do not include Unsubscribe Link into e-mails',
+  'Do not include records with empty VAT' => 'Do not include records with empty VAT',
   'Do you really want to Calculate Commission for this invoice? Commission will be added to affiliate account.' => 'Do you really want to Calculate Commission for this invoice? Commission will be added to affiliate account.',
+  'Do you really want to Delete User %s?' => 'Do you really want to Delete User %s?',
   'Do you really want to change Rebill Date for this invoice?' => 'Do you really want to change Rebill Date for this invoice?',
+  'Do you really want to delete product?' => 'Do you really want to delete product?',
   'Do you really want to delete this item?' => 'Do you really want to delete this item?',
   'Do you really want to refund payment' => 'Do you really want to refund payment',
   'Do you really want to restart this subscription?' => 'Do you really want to restart this subscription?',
+  'Do you really want to restore product?' => 'Do you really want to restore product?',
   'Do you really want to stop this subscription?' => 'Do you really want to stop this subscription?',
   'Do you really want to void this commission?' => 'Do you really want to void this commission?',
   'Documentation' => 'Documentation',
@@ -466,6 +527,7 @@ make it public' => 'Does Not Require Login to Access FAQ Section
 make it public',
   'Does Not Show FAQ Tab in Member Area' => 'Does Not Show FAQ Tab in Member Area',
   'Download Backup / Restore from Backup' => 'Download Backup / Restore from Backup',
+  'Download CSV' => 'Download CSV',
   'Download CSV File' => 'Download CSV File',
   'Download Upgrades' => 'Download Upgrades',
   'Due Date' => 'Due Date',
@@ -493,6 +555,8 @@ used to display name of sender in outgoing e-mails',
   'E-Mails by Admin Request' => 'E-Mails by Admin Request',
   'E-Mails by User Request' => 'E-Mails by User Request',
   'EU VAT' => 'EU VAT',
+  'EU VAT Report Details' => 'EU VAT Report Details',
+  'EU Vat Report' => 'EU Vat Report',
   'EXPIRED subscription for %s' => 'EXPIRED subscription for %s',
   'EXPIRED subscription for group %s' => 'EXPIRED subscription for group %s',
   'Earn points for %s in payment' => 'Earn points for %s in payment',
@@ -500,8 +564,9 @@ used to display name of sender in outgoing e-mails',
   'Edit Custom Commission Rules' => 'Edit Custom Commission Rules',
   'Edit Groups' => 'Edit Groups',
   'Edit Messages' => 'Edit Messages',
+  'Edit Product' => 'Edit Product',
   'Edit States' => 'Edit States',
-  'Email' => 'Email',
+  'Email Address' => 'Email Address',
   'Email Addresses Separated by Comma' => 'Email Addresses Separated by Comma',
   'Email Admin Regarding Account Sharing' => 'Email Admin Regarding Account Sharing',
   'Email Backup Frequency' => 'Email Backup Frequency',
@@ -512,7 +577,6 @@ used to generate email address for users',
 PLEASE DO NOT CHANGE if emailing from aMember works' => 'Email Sending method
 PLEASE DO NOT CHANGE if emailing from aMember works',
   'Email Sent' => 'Email Sent',
-  'Email Subject' => 'Email Subject',
   'Email Template with Payment Link' => 'Email Template with Payment Link',
   'Email User Regarding Account Sharing' => 'Email User Regarding Account Sharing',
   'Email address is required field.' => 'Email address is required field.',
@@ -533,7 +597,6 @@ attach invoice file (.pdf) to Payment Receipt email',
   'Enable plugins if necessary' => 'Enable plugins if necessary',
   'Encrypted Pass' => 'Encrypted Pass',
   'Encrypted Password' => 'Encrypted Password',
-  'End Date' => 'End Date',
   'Enter Maintenance Mode' => 'Enter Maintenance Mode',
   'Enter admin password for confirmation' => 'Enter admin password for confirmation',
   'Enter title for your new category' => 'Enter title for your new category',
@@ -547,6 +610,7 @@ attach invoice file (.pdf) to Payment Receipt email',
   'European (A4)' => 'European (A4)',
   'European Date Format' => 'European Date Format',
   'Every %s' => 'Every %s',
+  'Exact Period' => 'Exact Period',
   'Exchange Rate' => 'Exchange Rate',
   'Exchange Rate
 enter cost of 1 (one) %s' => 'Exchange Rate
@@ -565,13 +629,13 @@ Expiration message will not be sent if:
     <li>User has unsubscribed from e-mail messages</li>
 </ul>',
   'Expire (maximum expiration date)' => 'Expire (maximum expiration date)',
-  'Field' => 'Field',
+  'Extend Existing Subscription Period' => 'Extend Existing Subscription Period',
+  'FORM' => 'FORM',
   'Field Description
 for dispaying on signup and profile editing screen (for user)' => 'Field Description
 for dispaying on signup and profile editing screen (for user)',
   'Field Name' => 'Field Name',
   'Field Title' => 'Field Title',
-  'Field Type' => 'Field Type',
   'Field Type
 sql field will be added to table structure, common field will not, we recommend you to choose second option' => 'Field Type
 sql field will be added to table structure, common field will not, we recommend you to choose second option',
@@ -595,12 +659,11 @@ sql field will be added to table structure, common field will not, we recommend 
   'Filter by Category' => 'Filter by Category',
   'Filter by Code' => 'Filter by Code',
   'Filter by Counrty Title' => 'Filter by Counrty Title',
+  'Filter by Country' => 'Filter by Country',
   'Filter by IP or Referrer or URL' => 'Filter by IP or Referrer or URL',
   'Filter by Paysystem' => 'Filter by Paysystem',
-  'Filter by Plugin' => 'Filter by Plugin',
   'Filter by Product' => 'Filter by Product',
   'Filter by State Title' => 'Filter by State Title',
-  'Filter by Subject' => 'Filter by Subject',
   'Filter by User/Product' => 'Filter by User/Product',
   'Filter by name or description' => 'Filter by name or description',
   'Filter by record_id or by message' => 'Filter by record_id or by message',
@@ -635,7 +698,6 @@ you may get your key in %smembers area%s',
   'Form Type' => 'Form Type',
   'Form to Include to Roster' => 'Form to Include to Roster',
   'Forms Editor' => 'Forms Editor',
-  'From' => 'From',
   'Future' => 'Future',
   'General' => 'General',
   'General Affiliate Link Redirect URL
@@ -676,15 +738,26 @@ and show \'Shopping Cart\' tab instead',
   'Hide Authentication Widget' => 'Hide Authentication Widget',
   'Hide Choose Category Widget' => 'Hide Choose Category Widget',
   'Hide Product Search Widget' => 'Hide Product Search Widget',
+  'Hide Qty Column in Basket' => 'Hide Qty Column in Basket',
   'Hide Your Basket Widget' => 'Hide Your Basket Widget',
+  'Hide from Dashboard
+do not display this item link in members dashboard
+ This doesn\'t remove link from category.' => 'Hide from Dashboard
+do not display this item link in members dashboard
+ This doesn\'t remove link from category.',
+  'Hide from Menu
+do not include link to this form in members menu' => 'Hide from Menu
+do not include link to this form in members menu',
   'Home Page' => 'Home Page',
   'Hostname' => 'Hostname',
   'Hour' => 'Hour',
+  'I   submitted refund already and only wanted  to add refund record to invoice' => 'I   submitted refund already and only wanted  to add refund record to invoice',
   'I understand that upgrade may overwrite customized PHP files and templates, I have already made a backup of aMember Pro folder and database' => 'I understand that upgrade may overwrite customized PHP files and templates, I have already made a backup of aMember Pro folder and database',
   'IMPORTANT NOTE:' => 'IMPORTANT NOTE:',
   'IMPORTANT NOTE: This will not protect content. If someone know link url, he will be able to open link without a problem. This just control what additional links user will see after login to member\'s area.' => 'IMPORTANT NOTE: This will not protect content. If someone know link url, he will be able to open link without a problem. This just control what additional links user will see after login to member\'s area.',
   'IP' => 'IP',
   'IP within' => 'IP within',
+  'IP(Country)' => 'IP(Country)',
   'If only one protected URL, go directly to the URL. Otherwise go to membership page' => 'If only one protected URL, go directly to the URL. Otherwise go to membership page',
   'If you are moving from one payment processor, you can use this page to switch existing subscription from one payment processor to another. It is possible only if full credit card info is stored on aMember side.' => 'If you are moving from one payment processor, you can use this page to switch existing subscription from one payment processor to another. It is possible only if full credit card info is stored on aMember side.',
   'Image' => 'Image',
@@ -696,6 +769,7 @@ and show \'Shopping Cart\' tab instead',
   'Import Finished' => 'Import Finished',
   'Import Finished. %d templates imported.' => 'Import Finished. %d templates imported.',
   'Import History' => 'Import History',
+  'Import Mode' => 'Import Mode',
   'Import Pre-Defined List of Coupon Codes from CSV File (One coupon code per line)' => 'Import Pre-Defined List of Coupon Codes from CSV File (One coupon code per line)',
   'Import Users' => 'Import Users',
   'Import data. Please wait...' => 'Import data. Please wait...',
@@ -729,6 +803,7 @@ to check your file structure.',
   'In the File name box, type a name for the file.' => 'In the File name box, type a name for the file.',
   'In the File type list, select %1$sText CSV%2$s and click %1$sSave%2$s. You may see the message box. Click %1$sKeep Current Format%2$s.' => 'In the File type list, select %1$sText CSV%2$s and click %1$sSave%2$s. You may see the message box. Click %1$sKeep Current Format%2$s.',
   'Include Access Periods to PDF Invoice' => 'Include Access Periods to PDF Invoice',
+  'Incorrect refund [type] passed: %s' => 'Incorrect refund [type] passed: %s',
   'Index Page
 %sthis page will be public and do not require any login/password%s
 you can create new pages %shere%s' => 'Index Page
@@ -751,6 +826,7 @@ How many simultaneous bindings for license may exists (default - 1)',
   'Invoice Contact information
 included at top, use &lt;br&gt; for new line' => 'Invoice Contact information
 included at top, use &lt;br&gt; for new line',
+  'Invoice Country' => 'Invoice Country',
   'Invoice Footer Note
 This text will be included at bottom to PDF Invoice. You can use all user specific placeholders here eg. %user.login%, %user.name_f%, %user.name_l% etc.' => 'Invoice Footer Note
 This text will be included at bottom to PDF Invoice. You can use all user specific placeholders here eg. %user.login%, %user.name_f%, %user.name_l% etc.',
@@ -760,7 +836,11 @@ This text will be included at bottom to PDF Invoice. You can use all user specif
   'Invoices' => 'Invoices',
   'Invoices Information' => 'Invoices Information',
   'Invoices Per User' => 'Invoices Per User',
+  'Is Affiliate? (0 - No, 1 - Yes)' => 'Is Affiliate? (0 - No, 1 - Yes)',
   'Is Approved' => 'Is Approved',
+  'Is Archived?
+archived product will be removed from all lists' => 'Is Archived?
+archived product will be removed from all lists',
   'Is Disabled' => 'Is Disabled',
   'Is Disabled?
 If you disable this coupons batch, it will
@@ -774,7 +854,6 @@ Existing invoices are not affected.
   'Is Disabled?
 disable product ordering, hide it from signup and renewal forms' => 'Is Disabled?
 disable product ordering, hide it from signup and renewal forms',
-  'Is Paid?' => 'Is Paid?',
   'Is Unsubscribed?
 if enabled, this will
 unsubscribe the customer from:
@@ -806,7 +885,6 @@ unsubscribe the customer from:
   'Last Invoices List' => 'Last Invoices List',
   'Last Payments List' => 'Last Payments List',
   'Last Refunds List' => 'Last Refunds List',
-  'Last Signin' => 'Last Signin',
   'Last Signin Info' => 'Last Signin Info',
   'Last User Logins List' => 'Last User Logins List',
   'Last Users List' => 'Last Users List',
@@ -815,7 +893,6 @@ unsubscribe the customer from:
   'Last expiration date in the renewal group' => 'Last expiration date in the renewal group',
   'Last login' => 'Last login',
   'Layout' => 'Layout',
-  'Leads' => 'Leads',
   'Length of admin password must be from %d to %d' => 'Length of admin password must be from %d to %d',
   'Length of username must be from %d to %d' => 'Length of username must be from %d to %d',
   'Licensing Method' => 'Licensing Method',
@@ -840,13 +917,14 @@ Empty - 200×200 px',
   'Log In' => 'Log In',
   'Log Outgoing E-Mail Messages for ... days' => 'Log Outgoing E-Mail Messages for ... days',
   'Log in' => 'Log in',
+  'Logged in as %s' => 'Logged in as %s',
   'Login As User' => 'Login As User',
   'Login Page' => 'Login Page',
-  'Login as User' => 'Login as User',
   'Logs' => 'Logs',
   'Logs: Access' => 'Logs: Access',
   'Logs: Admin Log' => 'Logs: Admin Log',
   'Logs: Errors' => 'Logs: Errors',
+  'Logs: File Downloads' => 'Logs: File Downloads',
   'Logs: Invoice' => 'Logs: Invoice',
   'Logs: Mail Queue' => 'Logs: Mail Queue',
   'Lookup' => 'Lookup',
@@ -860,7 +938,6 @@ Empty - 200×200 px',
   'Manage Products' => 'Manage Products',
   'Manage Translation of Messages' => 'Manage Translation of Messages',
   'Manually Added' => 'Manually Added',
-  'Manually Approve' => 'Manually Approve',
   'Manually Approve New Invoices
 manually approve all new invoices' => 'Manually Approve New Invoices
 manually approve all new invoices',
@@ -881,7 +958,6 @@ don\'t enable it if you have huge users base already
   'Message
 will be included to email to user' => 'Message
 will be included to email to user',
-  'Message Text' => 'Message Text',
   'Messages to Customer after Payment' => 'Messages to Customer after Payment',
   'Method' => 'Method',
   'Minimum Payout
@@ -902,8 +978,6 @@ instead of product name',
 to number specified in this field. To keep commission untouched, enter 1 or delete this rule' => 'Multiply commission calculated by the following rules
 to number specified in this field. To keep commission untouched, enter 1 or delete this rule',
   'NEVER (oops! no records that it has been running at all!)' => 'NEVER (oops! no records that it has been running at all!)',
-  'Name F' => 'Name F',
-  'Name L' => 'Name L',
   'Name must be entered and it may contain lowercase letters, underscores and digits' => 'Name must be entered and it may contain lowercase letters, underscores and digits',
   'Name of Preset' => 'Name of Preset',
   'Name of template is undefined' => 'Name of template is undefined',
@@ -921,8 +995,11 @@ to number specified in this field. To keep commission untouched, enter 1 or dele
   'New Affiliate Payout to Admin' => 'New Affiliate Payout to Admin',
   'New Autoresponder' => 'New Autoresponder',
   'New Expiration E-Mail' => 'New Expiration E-Mail',
+  'New Form Campaign' => 'New Form Campaign',
   'New Modules Available' => 'New Modules Available',
+  'New Product Welcome E-Mail' => 'New Product Welcome E-Mail',
   'New Rewrite' => 'New Rewrite',
+  'New Theme Campaign' => 'New Theme Campaign',
   'New Ticket Autoresponder to Customer
 aMember will email an autoresponder to user
 each time user create new ticket' => 'New Ticket Autoresponder to Customer
@@ -950,12 +1027,16 @@ leave empty if you want to redirect to default \'No access\' page',
   'No activation' => 'No activation',
   'No more charges' => 'No more charges',
   'No one line found in the file. It looks like file is empty. You can go back and try another file.' => 'No one line found in the file. It looks like file is empty. You can go back and try another file.',
+  'No payment found' => 'No payment found',
   'No protection plugins enabled, please enable new-rewrite or htpasswd at aMember CP -> Setup -> Plugins' => 'No protection plugins enabled, please enable new-rewrite or htpasswd at aMember CP -> Setup -> Plugins',
   'No search name passed' => 'No search name passed',
   'No upgrades to install' => 'No upgrades to install',
+  'Not Applied' => 'Not Applied',
   'Not Approved' => 'Not Approved',
   'Not Approved Users' => 'Not Approved Users',
+  'Not Archived products' => 'Not Archived products',
   'Not Confirmed Users' => 'Not Confirmed Users',
+  'Not payment# submitted' => 'Not payment# submitted',
   'Not-SQL field (default)' => 'Not-SQL field (default)',
   'Number of Invoices to display' => 'Number of Invoices to display',
   'Number of License Reactivations Allowed
@@ -993,29 +1074,31 @@ you can create new pages %shere%s',
   'Page Where Logout Link was Clicked' => 'Page Where Logout Link was Clicked',
   'Paid' => 'Paid',
   'Paper Format' => 'Paper Format',
+  'Partially Refunded' => 'Partially Refunded',
   'Password Length' => 'Password Length',
   'Password changed' => 'Password changed',
   'Password must not be equal to username' => 'Password must not be equal to username',
   'Passwords must be the same' => 'Passwords must be the same',
-  'Path' => 'Path',
   'Path
 will be used to construct user-friendly url, in case of you leave it empty aMember will use id of this page to do it' => 'Path
 will be used to construct user-friendly url, in case of you leave it empty aMember will use id of this page to do it',
+  'Path should be unique' => 'Path should be unique',
   'Path to Folder' => 'Path to Folder',
   'Path/URL' => 'Path/URL',
-  'Payment Amount' => 'Payment Amount',
   'Payment Date' => 'Payment Date',
   'Payment Receipt' => 'Payment Receipt',
+  'Payment belongs to another customer' => 'Payment belongs to another customer',
   'Payment date' => 'Payment date',
   'Payment has been successfully refunded' => 'Payment has been successfully refunded',
+  'Payment is already refunded' => 'Payment is already refunded',
   'Payment#/Receipt#' => 'Payment#/Receipt#',
   'Payments (amount of all payments made by user minus refunds)' => 'Payments (amount of all payments made by user minus refunds)',
+  'Payments/Refunds' => 'Payments/Refunds',
   'Payout' => 'Payout',
   'Payout %d Details' => 'Payout %d Details',
-  'Payout Date' => 'Payout Date',
   'Payout Details' => 'Payout Details',
-  'Payout Method' => 'Payout Method',
   'Paysystem' => 'Paysystem',
+  'Paysystem: %s' => 'Paysystem: %s',
   'Pending Invoice Notification Rules' => 'Pending Invoice Notification Rules',
   'Pending Invoice Notifications to Admin
 only one email will be send for each defined day.
@@ -1031,6 +1114,8 @@ First email with matched condition will be send and other ignored' => 'Pending I
 only one email will be send for each defined day.
 all email for specific day will be selected and conditions will be checked.
 First email with matched condition will be send and other ignored',
+  'Period: %s-%s' => 'Period: %s-%s',
+  'Permanently Locked' => 'Permanently Locked',
   'Permissions' => 'Permissions',
   'Player Configuration
 this option is applied only for video files' => 'Player Configuration
@@ -1053,6 +1138,8 @@ a new password via email.',
   'Please run %sRebuild Db%s to update status for imported customers' => 'Please run %sRebuild Db%s to update status for imported customers',
   'Please select date before today' => 'Please select date before today',
   'Please specify new rebill date: ' => 'Please specify new rebill date: ',
+  'Please specify number greater then zero' => 'Please specify number greater then zero',
+  'Please specify number less then 9999' => 'Please specify number less then 9999',
   'Please upload .ttf file only.' => 'Please upload .ttf file only.',
   'Please upload file [<i>%s</i>]<br />' => 'Please upload file [<i>%s</i>]<br />',
   'Please wait' => 'Please wait',
@@ -1066,6 +1153,15 @@ applicable only for video files',
   'Product Image' => 'Product Image',
   'Product Title' => 'Product Title',
   'Product Upgrades' => 'Product Upgrades',
+  'Product welcome email will be automatically sent immediately after payment received.
+Product welcome email will not be sent if:
+<ul>
+    <li>User has unsubscribed from e-mail messages</li>
+</ul>' => 'Product welcome email will be automatically sent immediately after payment received.
+Product welcome email will not be sent if:
+<ul>
+    <li>User has unsubscribed from e-mail messages</li>
+</ul>',
   'Product: ' => 'Product: ',
   'Products
 coupons can be used with selected products only.
@@ -1079,6 +1175,8 @@ if nothing selected, coupon can be used with any product',
   'Protect Content' => 'Protect Content',
   'Protect Files List' => 'Protect Files List',
   'Protection Method' => 'Protection Method',
+  'Purchase IP' => 'Purchase IP',
+  'Put Chosen Products After' => 'Put Chosen Products After',
   'Quantity
 default - 1, normally you do not need to change it
 First and Second Price is the total for specified qty' => 'Quantity
@@ -1088,13 +1186,10 @@ First and Second Price is the total for specified qty',
   'REST API Documentation' => 'REST API Documentation',
   'RadioButtons' => 'RadioButtons',
   'Re Send Payment Link' => 'Re Send Payment Link',
-  'ReCaptcha' => 'ReCaptcha',
-  'ReCaptcha Theme' => 'ReCaptcha Theme',
-  'ReCaptcha Theme for Login Page' => 'ReCaptcha Theme for Login Page',
   'Rebill' => 'Rebill',
   'Rebill Date' => 'Rebill Date',
   'Rebill Date changed from %s to %s' => 'Rebill Date changed from %s to %s',
-  'Rebill Opereation Completed for %s' => 'Rebill Opereation Completed for %s',
+  'Rebill Operation Completed for %s' => 'Rebill Operation Completed for %s',
   'Rebill Second Price until cancelled' => 'Rebill Second Price until cancelled',
   'Rebill Times
 This is the number of payments which
@@ -1107,13 +1202,13 @@ will occur at the Second Price',
   'Rebuild Db' => 'Rebuild Db',
   'Rebuild Users Database' => 'Rebuild Users Database',
   'Receipt' => 'Receipt',
+  'Receipt ID' => 'Receipt ID',
   'Receipt#' => 'Receipt#',
   'Recipients' => 'Recipients',
   'Record Type' => 'Record Type',
   'Record modified, original dates:' => 'Record modified, original dates:',
   'Records Deleted Sucessfully' => 'Records Deleted Sucessfully',
   'Records per Page (for grids)' => 'Records per Page (for grids)',
-  'Recurring' => 'Recurring',
   'Redirect' => 'Redirect',
   'Redirect After Login
 where customer redirected after successful
@@ -1121,15 +1216,19 @@ login at %s' => 'Redirect After Login
 where customer redirected after successful
 login at %s',
   'Redirect After Logout' => 'Redirect After Logout',
+  'Redirect Default Signup Page to Cart' => 'Redirect Default Signup Page to Cart',
   'Redirect URL' => 'Redirect URL',
-  'Redirect to Signup Cart Page by Default' => 'Redirect to Signup Cart Page by Default',
   'Referrer' => 'Referrer',
   'Refund Amount' => 'Refund Amount',
   'Refund Date' => 'Refund Date',
   'Refund Payment' => 'Refund Payment',
   'Refund Type' => 'Refund Type',
+  'Refund amount cannot exceed payment amount' => 'Refund amount cannot exceed payment amount',
+  'Refund date cannot be before payment date' => 'Refund date cannot be before payment date',
   'Refunds' => 'Refunds',
   'Refunds are not implemented for this payment system. This action will not issue actual refund it will just add refund record in aMember and revoke user access. You must go to payment processor and do actual refund if you did not do it yet.' => 'Refunds are not implemented for this payment system. This action will not issue actual refund it will just add refund record in aMember and revoke user access. You must go to payment processor and do actual refund if you did not do it yet.',
+  'Registration IP(Country)' => 'Registration IP(Country)',
+  'Registrations' => 'Registrations',
   'Remember Login
 remember username/password in cookies' => 'Remember Login
 remember username/password in cookies',
@@ -1142,17 +1241,25 @@ cookie will be stored for ... days',
   'Remove From Dashboard' => 'Remove From Dashboard',
   'Remove Group' => 'Remove Group',
   'Renew Form (member)' => 'Renew Form (member)',
+  'Renew on rebuild' => 'Renew on rebuild',
   'Renewal Group
 Allows you to set up sequential or parallel subscription periods. Subscriptions from the same group will begin at the end of subscriptions from the same group. Subscriptions from different groups can run side-by-side' => 'Renewal Group
 Allows you to set up sequential or parallel subscription periods. Subscriptions from the same group will begin at the end of subscriptions from the same group. Subscriptions from different groups can run side-by-side',
   'Reparing' => 'Reparing',
   'Repeat Action Handling' => 'Repeat Action Handling',
   'Replace Product' => 'Replace Product',
+  'Reply To
+mailbox for replies to message' => 'Reply To
+mailbox for replies to message',
   'Report Bugs' => 'Report Bugs',
+  'Report Dates' => 'Report Dates',
+  'Report Period' => 'Report Period',
   'Report Settings' => 'Report Settings',
   'Report Type' => 'Report Type',
   'Reports' => 'Reports',
+  'Require Approval Notification to Admin' => 'Require Approval Notification to Admin',
   'Require Approval Notification to Admin (New Signup)' => 'Require Approval Notification to Admin (New Signup)',
+  'Require Approval Notification to Affiliate' => 'Require Approval Notification to Affiliate',
   'Require Approval Notification to User  (New Signup)' => 'Require Approval Notification to User  (New Signup)',
   'Require Approval Only if Invoice has these Products (Invoice)' => 'Require Approval Only if Invoice has these Products (Invoice)',
   'Require Strong Password
@@ -1169,6 +1276,7 @@ password should contain at least 2 capital letters, 2 or more numbers and 2 or m
   'Restart Subscription' => 'Restart Subscription',
   'Restart is not allowed' => 'Restart is not allowed',
   'Restore' => 'Restore',
+  'Restore %s' => 'Restore %s',
   'Restore Database from Backup' => 'Restore Database from Backup',
   'Restore Password' => 'Restore Password',
   'Restored Successfully' => 'Restored Successfully',
@@ -1197,7 +1305,6 @@ root script URL, usually %s',
   'SQL field type
 if you are unsure, choose first type (string)' => 'SQL field type
 if you are unsure, choose first type (string)',
-  'Sales' => 'Sales',
   'Sales Statistic' => 'Sales Statistic',
   'Salt' => 'Salt',
   'Save As Preset' => 'Save As Preset',
@@ -1235,6 +1342,7 @@ secure URL, usually %s',
   'Select (Multiple Values)' => 'Select (Multiple Values)',
   'Select (Single Value)' => 'Select (Single Value)',
   'Select Action of Element' => 'Select Action of Element',
+  'Select Condition...' => 'Select Condition...',
   'Select Product(s)
 if nothing selected - all products' => 'Select Product(s)
 if nothing selected - all products',
@@ -1245,12 +1353,14 @@ if nothing selected - all products',
   'Self Service' => 'Self Service',
   'Self-Service Store Configuration' => 'Self-Service Store Configuration',
   'Semicolon' => 'Semicolon',
-  'Send' => 'Send',
   'Send Autoclose Notification to User
 aMember will email an autoresponder to user
 when ticket is closed due to inactivity' => 'Send Autoclose Notification to User
 aMember will email an autoresponder to user
 when ticket is closed due to inactivity',
+  'Send Cancel (due to upgrade) Notifications to User
+send email to member when he cancels recurring subscription due to upgrade.' => 'Send Cancel (due to upgrade) Notifications to User
+send email to member when he cancels recurring subscription due to upgrade.',
   'Send Cancel Notifications to Admin
 send email to admin when recurring subscription cancelled by member' => 'Send Cancel Notifications to Admin
 send email to admin when recurring subscription cancelled by member',
@@ -1268,6 +1378,8 @@ Credit Card Rebill Stats will be sent to Admin daily. It works for payment proce
   'Send E-Mail if customer has subscription (required)' => 'Send E-Mail if customer has subscription (required)',
   'Send E-Mail only if customer has no subscription (optional)' => 'Send E-Mail only if customer has no subscription (optional)',
   'Send E-Mail when subscription expires (required)' => 'Send E-Mail when subscription expires (required)',
+  'Send E-Mail when the next subscription is started (required)' => 'Send E-Mail when the next subscription is started (required)',
+  'Send Grid (Web API)' => 'Send Grid (Web API)',
   'Send New E-Mail' => 'Send New E-Mail',
   'Send Notification When Ticket is Assigned to Admin
 aMember will email a notification to admin
@@ -1285,10 +1397,8 @@ each time admin responds to a user ticket' => 'Send Notification about New Messa
 aMember will email a notification to user
 each time admin responds to a user ticket',
   'Send Notification to Admin When Profile is Changed
-admin will receive an email if user has changed profile
-' => 'Send Notification to Admin When Profile is Changed
-admin will receive an email if user has changed profile
-',
+admin will receive an email if user has changed profile' => 'Send Notification to Admin When Profile is Changed
+admin will receive an email if user has changed profile',
   'Send Registration E-Mail
 once customer completes signup form (before payment)' => 'Send Registration E-Mail
 once customer completes signup form (before payment)',
@@ -1299,6 +1409,8 @@ once FIRST subscripton is completed',
   'Send Test E-Mail' => 'Send Test E-Mail',
   'Send message' => 'Send message',
   'Send reports to my email' => 'Send reports to my email',
+  'SendGrid Password' => 'SendGrid Password',
+  'SendGrid Username' => 'SendGrid Username',
   'Sender' => 'Sender',
   'Sending Test E-Mail...' => 'Sending Test E-Mail...',
   'Sending e-mail (sent to %d from %d)' => 'Sending e-mail (sent to %d from %d)',
@@ -1323,10 +1435,9 @@ You can use the following placeholders %name_f%, %name_l%
 it will be expanded to first and last name of admin in operation',
   'Signup Form (signup)' => 'Signup Form (signup)',
   'Signup Form Configuration' => 'Signup Form Configuration',
+  'Signup IP' => 'Signup IP',
   'Signup Info' => 'Signup Info',
   'Signup Messages' => 'Signup Messages',
-  'Signups' => 'Signups',
-  'Site Title' => 'Site Title',
   'Site is temporarily disabled for maintenance' => 'Site is temporarily disabled for maintenance',
   'Size' => 'Size',
   'Size
@@ -1351,9 +1462,10 @@ to get databases fixed.',
   'Sort order' => 'Sort order',
   'Source' => 'Source',
   'Space' => 'Space',
+  'Specific Coupon' => 'Specific Coupon',
   'Specified folder is already protected. Please alter existing record or choose another folder.' => 'Specified folder is already protected. Please alter existing record or choose another folder.',
+  'Specify Exact Dates' => 'Specify Exact Dates',
   'Standard PHP Sessions' => 'Standard PHP Sessions',
-  'Start Date' => 'Start Date',
   'Start Date Calculation
 rules for subscription start date calculation.
 MAX date from alternatives will be chosen.
@@ -1363,9 +1475,9 @@ MAX date from alternatives will be chosen.
 This settings has no effect for recurring subscriptions',
   'Start and Expiration Dates' => 'Start and Expiration Dates',
   'Started' => 'Started',
-  'State Title' => 'State Title',
   'Step %d of %d' => 'Step %d of %d',
   'Stop Recurring' => 'Stop Recurring',
+  'Street2' => 'Street2',
   'String' => 'String',
   'Subaffiliate' => 'Subaffiliate',
   'Subject is required' => 'Subject is required',
@@ -1383,13 +1495,18 @@ aMember will not charge First Price on upgrade, use Surcharge instead' => 'Surch
 to be additionally charged when customer moves [From]->[To] plan
 aMember will not charge First Price on upgrade, use Surcharge instead',
   'System Info' => 'System Info',
+  'THEME' => 'THEME',
   'Table' => 'Table',
   'Tables to Purge' => 'Tables to Purge',
   'Tabulation' => 'Tabulation',
   'Target User
 move information to' => 'Target User
 move information to',
-  'Tax Id' => 'Tax Id',
+  'Tax Rate' => 'Tax Rate',
+  'Tax information ' => 'Tax information ',
+  'Technical E-Mail Address
+shown on error pages. If empty, [Admin E-Mail Address] is used' => 'Technical E-Mail Address
+shown on error pages. If empty, [Admin E-Mail Address] is used',
   'Template' => 'Template',
   'Template
 alternative template for signup page' => 'Template
@@ -1422,6 +1539,7 @@ automatically calculated if empty',
   'The action has been repeated, ipn script response [%s]' => 'The action has been repeated, ipn script response [%s]',
   'The code [%s] is already used by signup form #%s, please choose another code' => 'The code [%s] is already used by signup form #%s, please choose another code',
   'The password is entered incorrectly' => 'The password is entered incorrectly',
+  'Theme to Include to Roster' => 'Theme to Include to Roster',
   'There is %s users with same registration IP Address' => 'There is %s users with same registration IP Address',
   'This IP is Banned' => 'This IP is Banned',
   'This code can be inserted into any HTML page on your website or into any WordPress post or page' => 'This code can be inserted into any HTML page on your website or into any WordPress post or page',
@@ -1433,8 +1551,18 @@ Press [Skip] to type it manually from scratch.',
   'This field is required for choosen action' => 'This field is required for choosen action',
   'This field is requred' => 'This field is requred',
   'This is necessary to run aMember CP -> Rebuild DB -> Rebuild Core and Invoice database after import' => 'This is necessary to run aMember CP -> Rebuild DB -> Rebuild Core and Invoice database after import',
+  'This rule is for particular affiliate groups
+you can add user groups and assign it to customers in User editing form' => 'This rule is for particular affiliate groups
+you can add user groups and assign it to customers in User editing form',
+  'This rule is for particular payment system' => 'This rule is for particular payment system',
+  'This rule is for particular product categories
+if none specified, rule works for all product categories' => 'This rule is for particular product categories
+if none specified, rule works for all product categories',
+  'This rule is for particular products
+if none specified, rule works for all products' => 'This rule is for particular products
+if none specified, rule works for all products',
+  'This user exceeded %sAccount Sharing Prevention%s limits and temporarily locked' => 'This user exceeded %sAccount Sharing Prevention%s limits and temporarily locked',
   'This user is not a reseller' => 'This user is not a reseller',
-  'Thresehold Date' => 'Thresehold Date',
   'Ticket Categories' => 'Ticket Categories',
   'Ticket#' => 'Ticket#',
   'Tickets Assigned to Me' => 'Tickets Assigned to Me',
@@ -1444,7 +1572,7 @@ displayed to customers' => 'Title
 displayed to customers',
   'Title of Element' => 'Title of Element',
   'Title of Report for your Reference' => 'Title of Report for your Reference',
-  'To' => 'To',
+  'To Pay' => 'To Pay',
   'To Product' => 'To Product',
   'To order this product user must have an
 when user orders this subscription, it will be checked
@@ -1522,8 +1650,8 @@ keep it empty to use any products',
   'Use this %slink%s to delete data from aMember v4 database and use clean database for import' => 'Use this %slink%s to delete data from aMember v4 database and use clean database for import',
   'Used For' => 'Used For',
   'Used Rules' => 'Used Rules',
+  'Used coupon' => 'Used coupon',
   'Useful for invoices with non-Latin symbols' => 'Useful for invoices with non-Latin symbols',
-  'User' => 'User',
   'User Access' => 'User Access',
   'User Coupon Usage Count
 how many times a coupon code can be used by customer' => 'User Coupon Usage Count
@@ -1541,22 +1669,25 @@ default - 120',
   'User has %s Pending Invoices' => 'User has %s Pending Invoices',
   'User is locked' => 'User is locked',
   'User is not approved' => 'User is not approved',
+  'User is not found in database' => 'User is not found in database',
   'User notification' => 'User notification',
   'User-Affiliate Relation Lifetime
 how long (in days) calculate commission for referred affiliate (default: 0 - forever)' => 'User-Affiliate Relation Lifetime
 how long (in days) calculate commission for referred affiliate (default: 0 - forever)',
   'Username Length' => 'Username Length',
   'Username of Source User
-move information from' => 'Username of Source User
-move information from',
+move information from this user to target user, this user will be deleted' => 'Username of Source User
+move information from this user to target user, this user will be deleted',
   'Username or E-mail' => 'Username or E-mail',
   'Username or e-mail address' => 'Username or e-mail address',
   'Users' => 'Users',
   'Users Breakdown' => 'Users Breakdown',
   'Users Report' => 'Users Report',
   'Utilities' => 'Utilities',
+  'VAT Amount' => 'VAT Amount',
+  'VAT ID' => 'VAT ID',
+  'VAT Rate' => 'VAT Rate',
   'Valid license key are one-line string,starts with L and ends with X' => 'Valid license key are one-line string,starts with L and ends with X',
-  'Validation' => 'Validation',
   'Validation Messages to Customer' => 'Validation Messages to Customer',
   'Value
 use % as wildcard mask' => 'Value
@@ -1575,7 +1706,6 @@ e-mail verification for profile form may be enabled
 at aMember CP -> Forms Editor -> Edit, click "configure" on E-Mail brick' => 'Verify New E-Mail Address On Profile Page
 e-mail verification for profile form may be enabled
 at aMember CP -> Forms Editor -> Edit, click "configure" on E-Mail brick',
-  'Version' => 'Version',
   'Version Info' => 'Version Info',
   'Versions for [%s]' => 'Versions for [%s]',
   'Video Player' => 'Video Player',
@@ -1611,6 +1741,7 @@ There is no way to undo this operation!',
   'Weekly' => 'Weekly',
   'Widget with Id [%s] has not config form' => 'Widget with Id [%s] has not config form',
   'Wrong id' => 'Wrong id',
+  'Yes, Delete User' => 'Yes, Delete User',
   'Yes, assign category' => 'Yes, assign category',
   'Yes, assign group' => 'Yes, assign group',
   'Yes, do not e-mail this customer for any reasons' => 'Yes, do not e-mail this customer for any reasons',
@@ -1657,6 +1788,7 @@ and in theme\'s [signup/] folder
 and template filename must start with [signup]',
   'access log table (used by admin only)' => 'access log table (used by admin only)',
   'add category' => 'add category',
+  'added at %s by %s' => 'added at %s by %s',
   'admin log table (used by admin only)' => 'admin log table (used by admin only)',
   'after' => 'after',
   'allow max' => 'allow max',
@@ -1667,6 +1799,7 @@ and template filename must start with [signup]',
   'browse' => 'browse',
   'change' => 'change',
   'check expired subscriptions too' => 'check expired subscriptions too',
+  'check future subscriptions too' => 'check future subscriptions too',
   'collapse details' => 'collapse details',
   'created at' => 'created at',
   'days after expiration' => 'days after expiration',
@@ -1675,17 +1808,18 @@ and template filename must start with [signup]',
   'do not show disabled products' => 'do not show disabled products',
   'do not show pending invoices' => 'do not show pending invoices',
   'do not show refunded payments' => 'do not show refunded payments',
+  'do not validate product requirements for this invoice' => 'do not validate product requirements for this invoice',
   'does not send zero autoresponder for this access record' => 'does not send zero autoresponder for this access record',
   'downloads within' => 'downloads within',
   'during subscription period' => 'during subscription period',
   'error_log table (used by admin only)' => 'error_log table (used by admin only)',
   'expand details' => 'expand details',
-  'filter' => 'filter',
   'first paid at' => 'first paid at',
   'hours' => 'hours',
   'if code is present, products will be hidden in shopping cart and this code is required to see these products' => 'if code is present, products will be hidden in shopping cart and this code is required to see these products',
   'if customer uses more than' => 'if customer uses more than',
   'if user enters wrong password' => 'if user enters wrong password',
+  'immediately after product is purchased' => 'immediately after product is purchased',
   'immediately after subscription is started' => 'immediately after subscription is started',
   'leave it empty in case if you want to show all invoices' => 'leave it empty in case if you want to show all invoices',
   'leave it empty in case of you want this item be available for all users' => 'leave it empty in case of you want this item be available for all users',
@@ -1694,9 +1828,9 @@ and template filename must start with [signup]',
   'must be a number in format 99 or 99.99' => 'must be a number in format 99 or 99.99',
   'must be equal or greather than 0' => 'must be equal or greather than 0',
   'must be equal or greather than 0.0' => 'must be equal or greather than 0.0',
-  'must be greater than 0' => 'must be greater than 0',
   'new' => 'new',
   'next 30 days' => 'next 30 days',
+  'no' => 'no',
   'none' => 'none',
   'notification will be sent in case of one of selected payment system was used for invoice' => 'notification will be sent in case of one of selected payment system was used for invoice',
   'notification will be sent in case of one of selected products exits in invoice' => 'notification will be sent in case of one of selected products exits in invoice',
@@ -1704,7 +1838,11 @@ and template filename must start with [signup]',
   'open in new window' => 'open in new window',
   'or' => 'or',
   'or %smake access free%s' => 'or %smake access free%s',
+  'period' => 'period',
+  'prorate existing license for rebuilds (do not generate new license)' => 'prorate existing license for rebuilds (do not generate new license)',
   'put website offline, making it available for admins only' => 'put website offline, making it available for admins only',
+  'reCAPTCHA' => 'reCAPTCHA',
+  'reCAPTCHA Theme for Login Page' => 'reCAPTCHA Theme for Login Page',
   'refund' => 'refund',
   'replace' => 'replace',
   'seconds, he will be forced to wait until next try' => 'seconds, he will be forced to wait until next try',
@@ -1730,8 +1868,11 @@ or %smake log-in required%s
   'this message will be shown for customer after purchase.' => 'this message will be shown for customer after purchase.',
   'times within' => 'times within',
   'type part of product name to filter' => 'type part of product name to filter',
+  'undefined' => 'undefined',
+  'unknown' => 'unknown',
   'version' => 'version',
   'void' => 'void',
   'when there is a problem with displaying such symbols in the PDF invoice.' => 'when there is a problem with displaying such symbols in the PDF invoice.',
+  'yes' => 'yes',
   'you can use html markup here' => 'you can use html markup here',
 );

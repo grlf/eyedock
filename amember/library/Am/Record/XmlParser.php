@@ -3,7 +3,7 @@
 *     Author: Alex Scott
 *      Email: alex@cgi-central.net
 *        Web: http://www.amember.com/
-*    Release: 4.4.2
+*    Release: 4.7.0
 *    License: LGPL http://www.gnu.org/copyleft/lesser.html
 */
 
@@ -149,7 +149,6 @@ class Am_Record_XmlParser_Worker
     function start($tag, $attributes)
     {
         if (!$this->table) return;
-        $name = @$attributes['name'];
         switch ($tag)
         {
             case 'row':
@@ -168,7 +167,6 @@ class Am_Record_XmlParser_Worker
     function end($tag, $attributes, $cdata)
     {
         if (!$this->table) return;
-        $name = @$attributes['name'];
         switch ($tag)
         {
             case 'row':

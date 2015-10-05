@@ -2,12 +2,14 @@
 // This plugin implements the handling of Upload
 // works together with AdminUploadController
 //
-(function( $ ){
+(function($){
     var methods = {
-        init : function( options ) {
+        init : function(options) {
             return this.each(function(){
                 var $this = $(this);
-                if ($this.data('upload')) return; // the plugin has been initialized already               
+                if ($this.data('upload')) {
+                    return; // the plugin has been initialized already
+                }
 
                 var params = $.extend({
                     onChange : function(filesCount) {},
@@ -16,6 +18,7 @@
                     onSelect : function(){},
                     onSubmit : function(){},
                     fileMime : false, // A list of file MIME types that are allowed for upload.
+                    fileMaxSize : false, //Maximum file size in bytes
                     fileBrowser : true, //whether init file browser
                     urlUpload : '/admin-upload/upload',
                     urlGet : '/admin-upload/get'
@@ -29,10 +32,11 @@
                 var end = name.substr(name.length-2, 2);
                 var info = $this.upload('info');
                 var error = $this.upload('error');
+                var i;
 
                 var $el = $this.closest('.element');
-                $el.prepend($('<input type="hidden">').attr('name', name));
-                for (var i=0; i < error.length; i++) {
+                $el.prepend($('<input type="hidden" value="-1">').attr('name', name));
+                for (i=0; i < error.length; i++) {
                     var $span = $('<span class="error"></span>').text(error[i]);
                     $el.append($span);
                 }
@@ -40,16 +44,18 @@
                 if (end=='[]') {
                     $this.data('multiple', 1);
                 }
-                    
+
                 $this.upload('drawUpload');
-                
+
                 if ($this.attr('value')) {
                     if ($this.data('multiple')) {
                         var values = $this.attr('value').split(',');
-                        for (var i=0; i<values.length; i++) {
-                            $this.upload('drawFile', info[values[i]])
+                        for (i=0; i<values.length; i++) {
+                            info[values[i]].upload_id = values[i];
+                            $this.upload('drawFile', info[values[i]]);
                         }
                     } else {
+                        info[$this.attr('value')].upload_id = $this.attr('value');
                         $(this).upload('drawFile', info[$this.attr('value')]);
                     }
                 }
@@ -74,7 +80,7 @@
             this.data('count', this.upload('count')-1);
         }
         ,
-        count : function count() {
+        count : function() {
             return this.data('count') ? this.data('count') : 0;
         }
         ,
@@ -89,19 +95,18 @@
             attr('target', '_top');
 
             $this.before(
-                $div.append($aFile.append(info.name)).append(' (' + info.size_readable + ')'
-                    ).append(' [').append($a).append(']').append(
-                    $('<input type="hidden" />').
-                    attr('name', $this.attr('name')).
-                    attr('value', info.upload_id)
-                    ));
+                $div.append($aFile.append(info.name)).append(' (' + info.size_readable + ')').
+                    append(' [').append($a).append(']').append(
+                        $('<input type="hidden" />').
+                            attr('name', $this.attr('name')).
+                            attr('value', info.upload_id)));
             $a.click(function(){
                 $(this).closest('div').remove();
                 $this.upload('decreaseCount');
                 $this.upload('destroyUploader');
                 $this.upload('drawUpload');
                 $this.data('params').onChange.call($this, $this.upload('count'));
-            })
+            });
             $this.data('params').onFileDraw.call($this, info);
             $this.upload('increaseCount');
             $this.upload('drawUpload');
@@ -121,10 +126,7 @@
             }
             var $uploader = $this.upload('getUploader');
             $this.before(
-                $wrapper.append(
-                    $uploader
-                    ).append($a)
-                );
+                    $wrapper.append($uploader).append($a));
             $this.data('params').fileBrowser && $a.before(' ');
             var $div = $('<div></div>');
             $('body').append($div);
@@ -142,7 +144,7 @@
                         position : ['center', 100],
                         buttons : {
                             Cancel : function(){
-                                $(this).dialog("close")
+                                $(this).dialog("close");
                             }
                         },
                         open : function(){
@@ -152,7 +154,7 @@
                             }, function(data, textStatus, jqXHR){
                                 $div.empty().append(data);
                                 $(".grid-wrap").ngrid();
-                            })
+                            });
                         },
                         close : function() {
                             $div.empty();
@@ -163,22 +165,22 @@
 
 
                 $a.bind('mouseover mouseout', function(){
-                    $a.toggleClass('hover')
-                })
+                    $a.toggleClass('hover');
+                });
             }
-            
+
             $this.upload('initUploader', $uploader);
         }
         ,
         addFile: function(info) {
             var $this = this;
-            
+
             if (!info.ok) {
                 alert('Error: ' + info.error);
                 $this.upload('drawUpload');
                 return;
-            } else if ($this.data('params').fileMime
-                && $.inArray(info.mime, $this.data('params').fileMime) == -1) {
+            } else if ($this.data('params').fileMime &&
+                $.inArray(info.mime, $this.data('params').fileMime) == -1) {
 
                 alert('Incorrect file type : ' +
                     info.mime +
@@ -200,7 +202,7 @@
             return this.data("error");
         }
         ,
-        destroyUploader : function () {
+        destroyUploader : function() {
             var $this = this;
 
             //remove setInterval to avoide mempry leak
@@ -212,7 +214,7 @@
             $('#uploader-form-' + $this.attr('id')).remove();
         }
         ,
-        getUploader : function () {
+        getUploader : function() {
             var $this = this;
             var aUpload = $('<span>upload</span>');
             var $uploader = $('<div class="upload-control-upload"></div>').css({
@@ -238,22 +240,31 @@
                 id : 'uploader-form-' + uploaderId
             }).css({
                 margin: 0,
-                padding: 0,
-            })
+                padding: 0
+            });
 
             var $input_hidden = $('<input />').attr({
                 name : 'prefix',
                 value : $this.data('prefix'),
                 type : 'hidden'
-            })
+            });
 
             var $input_hidden_secure = $('<input />').attr({
                 name : 'secure',
                 value : $this.data('secure'),
                 type : 'hidden'
-            })
+            });
 
-            $form.append($input).append($input_hidden).append($input_hidden_secure);
+            $form.append($input_hidden).append($input_hidden_secure);
+            if ($this.data('params').fileMaxSize) {
+                var $input_hidden_limit = $('<input />').attr({
+                    name : 'MAX_FILE_SIZE',
+                    value : $this.data('params').fileMaxSize,
+                    type : 'hidden'
+                });
+                $form.append($input_hidden_limit);
+            }
+            $form.append($input);
 
             var $frame = $('<iframe></iframe>').attr({
                 name : 'uploader-iframe-' + uploaderId,
@@ -279,16 +290,18 @@
                     width : $uploader.outerWidth(),
                     height : $uploader.outerHeight()
                 });
-            }, 100)
+            }, 100);
 
             //emulate onresize event
             var intervalId = setInterval(function(){
-                if ($div.css('width')!=$uploader.outerWidth())
+                if ($div.css('width')!=$uploader.outerWidth()) {
                     $div.css('width', $uploader.outerWidth());
+                }
 
-                if ($div.css('height')!=$uploader.outerHeight())
+                if ($div.css('height')!=$uploader.outerHeight()) {
                     $div.css('height', $uploader.outerHeight());
-            }, 250)
+                }
+            }, 250);
             //remember inetrval id to clear setInterval in destructure
             $uploader.data('intervalId', intervalId);
 
@@ -301,8 +314,8 @@
             });
 
             $input.bind('mouseover mouseout', function(){
-                $uploader.toggleClass('hover')
-            })
+                $uploader.toggleClass('hover');
+            });
 
             $uploader.mousemove(function(e){
                 $div.css({
@@ -317,7 +330,7 @@
 
                 $this.data('params').onSubmit.call($this);
 
-                $uploader.find('span').empty().append('Uploading...').addClass('uploading')
+                $uploader.find('span').empty().append('Uploading...').addClass('uploading');
 
                 $form.submit();
 
@@ -346,14 +359,14 @@
 
     };
 
-    $.fn.upload = function( method ) {
+    $.fn.upload = function(method) {
         if ( methods[method] ) {
-            return methods[method].apply( this, Array.prototype.slice.call( arguments, 1 ));
-        } else if ( typeof method === 'object' || ! method ) {
-            return methods.init.apply( this, arguments );
+            return methods[method].apply( this, Array.prototype.slice.call(arguments, 1));
+        } else if (typeof method === 'object' || ! method) {
+            return methods.init.apply(this, arguments);
         } else {
-            $.error( 'Method ' +  method + ' does not exist on jQuery.upload' );
+            $.error('Method ' +  method + ' does not exist on jQuery.upload');
         }
     };
 
-})( jQuery );
+})(jQuery);

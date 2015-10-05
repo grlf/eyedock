@@ -12,6 +12,7 @@ class Am_Form_Setup_Aff extends Am_Form_Setup
     {
          $this->addSelect('aff.signup_type', null, array('help-id' => '#Affiliate_Options'))
              ->setLabel(___("Affiliates Signup Type"))
+             ->setId('aff-signup-type')
              ->loadOptions(
                  array (
                    '' => ___('Default - user clicks a link to become affiliate'),
@@ -20,13 +21,43 @@ class Am_Form_Setup_Aff extends Am_Form_Setup
                  )
          );
 
+         $form = Am_Di::getInstance()->savedFormTable->findFirstByType('aff');
+         $edit_label = Am_Controller::escape(___('Edit'));
+         $edit_url = REL_ROOT_URL . '/admin-saved-form?' . http_build_query(array(
+             '_s_a' => 'edit',
+             '_s_b' => REL_ROOT_URL . '/admin-setup/aff',
+             '_s_id' => $form->pk()
+         ));
+         $edit_url = Am_Controller::escape($edit_url);
+         $this->addStatic()
+             ->setLabel(___('Affiliate Signup Form'))
+             ->setContent(<<<CUT
+<a href="$edit_url" class="link" id="aff-signup-form-edit">$edit_label</a>
+CUT
+             );
+         $this->addElement('email_link', 'aff.manually_approve', array('rel' => 'aff-approve'))
+             ->setLabel(___("Require Approval Notification to Affiliate"));
+         $this->addElement('email_link', 'aff.manually_approve_admin', array('rel' => 'aff-approve'))
+             ->setLabel(___("Require Approval Notification to Admin"));
+
+         $this->addScript()->setScript(<<<CUT
+$(function(){
+    $('#aff-signup-type').change(function(){
+        $('[rel=aff-approve]').closest('.row').toggle($(this).val() == 2);
+        $('#aff-signup-form-edit').closest('.row').toggle($(this).val() != 1)
+    }).change();
+})
+CUT
+);
+
          $this->addElement('email_checkbox', 'aff.registration_mail')
              ->setLabel(___("Affiliate Registration E-Mail"));
 
          $this->setDefault('aff.cookie_lifetime', 365);
          $this->addInteger('aff.cookie_lifetime', null, array('help-id' => '#Affiliate_Options'))
              ->setLabel(___("Affiliate Cookie Lifetime\n" .
-                 "days to store cookies about referred affiliate"));
+                 "days to store cookies about referred affiliate"))
+             ->addRule('regex', ___('Please specify number less then 9999'), '/^[0-9]{0,4}$/');
 
          $this->addInteger('aff.commission_days')
              ->setLabel(___("User-Affiliate Relation Lifetime\n".
@@ -58,6 +89,9 @@ class Am_Form_Setup_Aff extends Am_Form_Setup
              $wd = Zend_Registry::get('Am_Locale')->getWeekdayNames();
              for ($i=0;$i<7;$i++) {
                 $el->addOption(___('Every %s', $wd[$i]), $i.'w');
+             }
+             for ($i=0;$i<7;$i++) {
+                $el->addOption(___('Bi-Weekly (on %s)', $wd[$i]), $i.'W');
              }
 
          $fs->addElement('email_link', 'aff.new_payouts')
@@ -132,7 +166,7 @@ class Am_Form_Setup_Aff extends Am_Form_Setup
          $this->addAdvCheckbox('aff.affiliate_can_view_details', null, array('help-id' => '#Affiliate_Payout_Options'))
             ->setLabel(___("Affiliate Can View Sales Details\n" .
                 'Leave this checkbox unselected to restrict affiliates from seeing their sales details'));
-         
+
          $this->addSelect('aff.custom_redirect')
             ->setLabel(___("Allow Affiliates to redirect Referrers to any url"))
             ->loadOptions(
@@ -143,17 +177,18 @@ class Am_Form_Setup_Aff extends Am_Form_Setup
                 ));
          $this->addHtmlEditor('aff.intro')
                  ->setLabel(___("Intro Text on Affiliate Info Page"));
-         
+
          $this->addAdvCheckbox('aff.tracking_code')
              ->setLabel(___("Enable Click Tracking Code\n" .
                  'Enable ability to track affiliate clicks on any page on your site'));
 
+         $root_url = ROOT_URL;
          $code = htmlentities(Am_Di::getInstance()->modules->loadGet('aff')->getClickJs());
          $this->addHTML('tracking_code')->setHTML(<<<EOT
-To track affiliate referrals on any page of your site your site pages have to contain click tracking code. Insert this JS code to the footer on every  site's page  just before &lt;/body&gt; tag: 
+To track affiliate referrals on any page of your site your site pages have to contain click tracking code. Insert this JS code to the footer on every site's page just before &lt;/body&gt; tag:
 <div class='info'><pre>{$code}</pre></div>
-    
-             
+Then your affiliate can use any url of your site as affiliate link. They just need to append GET parameter <strong>?ref=username</strong> to it eg.
+$root_url/signup<strong>?ref=username</strong> where username is actual username of affiliate.
 EOT
          )->setLabel(___('Click Tracking Code'));
         $this->addScript()->setScript(<<<CUT
@@ -165,7 +200,7 @@ $(function(){
 CUT
 );
 
-         
+
     }
     public function beforeSaveConfig(Am_Config $before, Am_Config $after)
     {

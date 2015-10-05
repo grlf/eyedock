@@ -117,13 +117,13 @@ abstract class ResourceAbstract extends Am_Record
             SELECT DISTINCT ?
             FROM 
                 ?_resource_access ra 
-            WHERE ra.fn = 'product_category_id' AND ra.resource_id=?d AND ra.id = ?
+            WHERE ra.fn = 'product_category_id' AND ra.resource_id=?d AND ra.id = ? AND ra.resource_type = ?
             
             UNION 
 
             SELECT DISTINCT `id`
             FROM ?_resource_access ra
-            WHERE ra.fn = 'product_id' AND ra.resource_id=?d
+            WHERE ra.fn = 'product_id' AND ra.resource_id=?d AND ra.resource_type = ?
             
             UNION 
             
@@ -134,8 +134,8 @@ abstract class ResourceAbstract extends Am_Record
                 ?_resource_access ra ON ppc.product_category_id = ra.id
             WHERE ra.fn = 'product_category_id' AND ra.resource_id=?d and ra.resource_type =?
         ", 
-            ResourceAccess::ANY_PRODUCT, $this->pk(), ResourceAccess::ANY_PRODUCT, 
-            $this->pk(), 
+            ResourceAccess::ANY_PRODUCT, $this->pk(), ResourceAccess::ANY_PRODUCT, $this->getAccessType(),
+            $this->pk(), $this->getAccessType(),
             $this->pk(), $this->getAccessType());
         
         if ($ret && ($ret[0] == ResourceAccess::ANY_PRODUCT)) return ResourceAccess::ANY_PRODUCT;

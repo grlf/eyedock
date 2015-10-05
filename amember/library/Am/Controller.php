@@ -307,7 +307,7 @@ class Am_Controller extends Zend_Controller_Action
         // some hosts disallow redirect without full URL
         if (!preg_match('#^http#', $url)) {
             $u = parse_url(ROOT_URL);
-            $url = $u['scheme'] . '://' . $u['host'] . $url;
+            $url = $u['scheme'] . '://' . $u['host'] . ((isset($u['port']) && $u['port'] != 80) ? ":{$u['port']}" : '') . $url;
         }
         if (APPLICATION_ENV != 'testing') {
             header("Location: " . preg_replace('/[\r\n]+/', '', $url));
@@ -375,11 +375,11 @@ class Am_Controller extends Zend_Controller_Action
                         $ret,
                         self::getArrayOfInputHiddens(
                             $v,
-                            $parentK ? $parentK . '[' . self::escape($k) . ']' : self::escape($k)
+                            $parentK ? $parentK . '[' . $k . ']' : $k
                         )
                 );
             else
-                $ret[$parentK ? ($parentK . "[" . self::escape($k) . "]") : self::escape($k)] = self::escape($v);
+                $ret[$parentK ? ($parentK . "[" . $k . "]") : $k] = $v;
         return $ret;
     }
 
@@ -399,7 +399,18 @@ class Am_Controller extends Zend_Controller_Action
 
     static private function _getCookieDomain($d)
     {
-        if ($d === null || $d == 'localhost')
+        if ($d === null)
+            return null;
+        
+        $d = strtolower(trim(preg_replace('/(\:\d+)$/', '', $d)));
+        
+        if($d == 'localhost')
+            return null;
+        
+        if(preg_match('/\.(dev|local)$/', $d)) 
+            return null;
+        
+        if(filter_var($d, FILTER_VALIDATE_IP))
             return null;
 
         try {

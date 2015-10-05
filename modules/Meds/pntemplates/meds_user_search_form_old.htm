@@ -1,0 +1,80 @@
+<!--[if $search.active && !$search.comp_id && !$search.pres_id && !$search.chem_id && !$search.moa_id]-->
+    <div><strong>Please Select A Field By Which To Search</strong></div><br />
+<!--[/if]-->
+<form method="post" action="<!--[pnmodurl modname=Meds func=search]-->" enctype="application/x-www-form-urlencoded" class="x">
+<div>
+    <input type="hidden" name="authid" value="<!--[pnsecgenauthkey module=Meds]-->" />
+    <input type="hidden" name="search[active]" value="1" />
+    <input type="hidden" name="search[comp_id]" value="<!--[$search.comp_id|pnvarprepfordisplay]-->" />
+    <input type="hidden" name="search[pres_id]" value="<!--[$search.pres_id|pnvarprepfordisplay]-->" />
+    <input type="hidden" name="search[chem_id]" value="<!--[$search.chem_id|pnvarprepfordisplay]-->" />
+    <input type="hidden" name="search[moa_id]"  value="<!--[$search.moa_id|pnvarprepfordisplay]-->" />
+</div>
+
+<table class="max" cellpadding="0" cellspacing="0">
+    <tr>
+        <td class="meds_width_50">&nbsp;</td>
+        <td>
+            <table class="meds_table_max" style="border:1px solid #aaa;" cellpadding="3" cellspacing="2">
+                <tr>
+                    <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td class="meds_right_strong">Manufacturers &rarr;</td>
+                    <td>
+                        <select name="search[comp_id]" size="1">
+                            <option value=""<!--[if !$search.comp_id]--> selected="selected"<!--[/if]--> />
+                        <!--[foreach from=$companies key=key item=company]-->
+                            <option value="<!--[$company.comp_id|pnvarprepfordisplay]-->"<!--[if $search.comp_id == $company.comp_id]--> selected="selected"<!--[/if]--> /><!--[$company.name|pnvarprepfordisplay]-->
+                        <!--[/foreach]-->                
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="meds_right_strong">Preservatives &rarr;</td>
+                    <td>
+                        <select name="search[pres_id]" size="1">
+                            <option value=""<!--[if !$search.pres_id]--> selected="selected"<!--[/if]--> />
+                        <!--[foreach from=$preserves key=key item=preserve]-->
+                            <option value="<!--[$preserve.pres_id|pnvarprepfordisplay]-->"<!--[if $search.pres_id == $preserve.pres_id]--> selected="selected"<!--[/if]--> /><!--[$preserve.name|pnvarprepfordisplay]-->
+                        <!--[/foreach]-->                
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="meds_right_strong">Chemicals &rarr;</td>
+                    <td>
+                        <select name="search[chem_id]" size="1">
+                            <option value=""<!--[if !$search.chem_id]--> selected="selected"<!--[/if]--> />
+                        <!--[foreach from=$chemicals key=key item=chem]-->
+                            <option value="<!--[$chem.chem_id|pnvarprepfordisplay]-->"<!--[if $search.chem_id == $chem.chem_id]--> selected="selected"<!--[/if]--> /><!--[$chem.name|pnvarprepfordisplay]-->
+                        <!--[/foreach]-->                
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="meds_right_strong">Methods Of Action &rarr;</td>
+                    <td>
+                        <select name="search[moa_id]" size="1">
+                            <option value=""<!--[if !$search.moa_id]--> selected="selected"<!--[/if]--> />
+                        <!--[foreach from=$methods key=key item=moa]-->
+                            <option value="<!--[$moa.moa_id|pnvarprepfordisplay]-->"<!--[if $search.moa_id == $moa.moa_id]--> selected="selected"<!--[/if]--> /><!--[$moa.name|pnvarprepfordisplay]-->
+                        <!--[/foreach]-->                
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;"><input type="submit" name="submit" value="Search" /></td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><img src="{image-path}spacer.gif" style="width:150px;height:1px;border:0;" alt="" /></td>
+                    <td class="max">&nbsp;</td>
+                </tr>
+            </table>
+        </td>
+        <td class="meds_width_50">&nbsp;</td>
+    </tr>
+</table>
+
+</form>

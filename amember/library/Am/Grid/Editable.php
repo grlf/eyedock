@@ -3,7 +3,7 @@
 *     Author: Alex Scott
 *      Email: alex@cgi-central.net
 *        Web: http://www.amember.com/
-*    Release: 4.4.2
+*    Release: 4.7.0
 *    License: LGPL http://www.gnu.org/copyleft/lesser.html
 */
 
@@ -305,7 +305,8 @@ class Am_Grid_Editable extends Am_Grid_ReadOnly
         $out = '<div class="norecord-actions">' . PHP_EOL;
         foreach ($actions as $action)
         {
-            $out .= sprintf('<a class="button" id="%s" href="%s" %s>%s</a>' . PHP_EOL,
+            $out .= sprintf('<a class="%s" id="%s" href="%s" %s>%s</a>' . PHP_EOL,
+                $action->getCssClass(),
                 $this->getCssClass() . '-' . $action->getId() . '-button',
                 $this->escape($action->getUrl()),
                 !is_null($action->getTarget()) ? sprintf('target="%s" ', $action->getTarget()) : '',

@@ -17,7 +17,7 @@
  * @see Am_Table
  * @package Am_Invoice
  */
-class InvoiceRefund extends Am_Record 
+class InvoiceRefund extends Am_Record_WithData
 {
     /** @var Invoice */
     protected $_invoice;
@@ -28,7 +28,7 @@ class InvoiceRefund extends Am_Record
     /** quickly after the order - ACCESS will be revoked */
     const VOID = 2; 
 
-    public function setFromTransaction(Invoice $invoice, Am_Paysystem_Transaction_Abstract $transaction, $refundType)
+    public function setFromTransaction(Invoice $invoice, Am_Paysystem_Transaction_Interface $transaction, $refundType)
     {
         $this->dattm  = $transaction->getTime()->format('Y-m-d H:i:s');
         $this->invoice_id       = $invoice->invoice_id;
@@ -36,7 +36,7 @@ class InvoiceRefund extends Am_Record
         $this->user_id        = $invoice->user_id;
         $this->currency         = $invoice->currency;
         $this->amount           = $transaction->getAmount();
-        $this->paysys_id        = $transaction->getPlugin()->getId();
+        $this->paysys_id        = $transaction->getPaysysId();
         $this->receipt_id       = $transaction->getReceiptId();
         $this->transaction_id   = $transaction->getUniqId();
         $this->refund_type      = $refundType;
@@ -49,7 +49,10 @@ class InvoiceRefund extends Am_Record
             $this->base_currency_multi = 1.0;
         else
             $this->base_currency_multi = $this->getDi()->currencyExchangeTable->getRate($this->currency, sqlDate($this->dattm));
+        
+        
         $ret = parent::insert($reload);
+        $this->setDisplayInvoiceId();
         $this->getDi()->hook->call('refundAfterInsert', array(
             'invoice' => $this->getInvoice(),
             'refund'  => $this,
@@ -66,12 +69,34 @@ class InvoiceRefund extends Am_Record
             $this->_invoice = $this->getDi()->invoiceTable->load($this->invoice_id);
         return $this->_invoice;
     }
+    
+    /**
+     * 
+     * Set Invoice ID wich will be displayed in pdf invoice
+     */
+    
+    protected function setDisplayInvoiceId()
+    {
+        $e = new Am_Event(Am_Event::SET_DISPLAY_INVOICE_REFUND_ID,array('record'=>$this));
+        $e->setReturn($this->getInvoice()->public_id . '/' . $this->receipt_id);
+        $this->getDi()->hook->call($e);
+        $this->display_invoice_id =  $e->getReturn();
+        $this->updateSelectedFields('display_invoice_id');
+        
+    }
+    
+    function getDisplayInvoiceId()
+    {
+        return $this->display_invoice_id ? $this->display_invoice_id : ($this->getInvoice()->public_id . '/' . $this->receipt_id);
+    }
+    
+    
 }
 
 /**
  * @package Am_Invoice
  */
-class InvoiceRefundTable extends Am_Table {
+class InvoiceRefundTable extends Am_Table_WithData {
     protected $_key = 'invoice_refund_id';
     protected $_table = '?_invoice_refund';
     protected $_recordClass = 'InvoiceRefund';
@@ -91,6 +116,10 @@ class InvoiceRefundTable extends Am_Table {
             ir.invoice_public_id AS public_id
             FROM ?_invoice_refund ir
             LEFT JOIN ?_user u USING (user_id)
-            ORDER BY ir.invoice_refund_id DESC LIMIT ?d", $num);
+            ORDER BY ir.dattm DESC LIMIT ?d", $num);
+    }
+    
+    function getRefundsCount($invoiceId){
+        return $this->_db->selectCell("SELECT COUNT(*) FROM ?_invoice_refund WHERE invoice_id=?d", $invoiceId);
     }
 }

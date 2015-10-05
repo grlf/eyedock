@@ -66,8 +66,9 @@
 	top: -10px;
 	left: 308px;
 	height: 17px;
-	font-size: smaller;
+	font-size: 10px;
 	padding: 2px;
+    line-height: 1.22em;
 }
 
 .ui-autocomplete {
@@ -177,7 +178,7 @@ label.ui-widget {
 }
 
 
-input.adv-rounded {
+#ed-lenses-searchForm input.adv-rounded {
 	border: 1px solid #CDE1F3;;
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;
@@ -191,7 +192,7 @@ input.adv-rounded {
 	-webkit-appearance: none;
 	background-color : #eaf4fd; 
 }
-input.adv-rounded:focus {
+#ed-lenses-searchForm input.adv-rounded:focus {
 	border-color: #5da3cc;
 }
 

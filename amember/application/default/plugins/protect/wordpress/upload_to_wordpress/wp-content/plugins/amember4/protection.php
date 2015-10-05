@@ -76,7 +76,7 @@ class am4Protection extends am4Plugin{
         if(empty($action)) $action = 'login';
         switch($action){
             case 'page' : $url = get_page_link($settings->{$type.'_action'.$is_cat.'_page'}); break;
-            case 'redirect'  : $url = $settings->{$type.'_action'.$is_cat.'_redirect'.$is_cat}; break;
+            case 'redirect'  : $url = $settings->{$type.'_action'.$is_cat.'_redirect'}; break;
             case 'login'    : 
                 $url = $api->isLoggedIn() ? $api->getSignupURL() : am4PluginsManager::getLoginURL(true); 
                 break;
@@ -100,6 +100,13 @@ class am4Protection extends am4Plugin{
         $type = $access->isLoggedIn() ? "user" : "guest";
         // handle blog protection;
         if($settings->{'protected'} && !defined('AM_VERSION')){
+            //handle exclude from protection
+            if(is_single() || is_page() || (@$wp->query_vars['pagename'] && ($post  = get_page_by_path(@$wp->query_vars['pagename'])))){
+                $post = !empty($post) ? $post :  @$GLOBALS['wp_query']->post;
+                $psettings = new am4_Settings_Post_Meta($post->ID);
+                if($psettings->{'exclude_protection'})
+                    return;
+            }
             if((!$access->isLoggedIn()) || ($access->isLoggedIn() && !$this->haveAccess(am4AccessRequirement::createRequirements($settings->{'access'}), $settings))){
                 // First check if user try to access page that he is redirected to
                 if(!(($settings->{$type.'_action'} == 'page') 
@@ -113,6 +120,9 @@ class am4Protection extends am4Plugin{
         }
         if(is_single() || is_page() || (@$wp->query_vars['pagename'] && ($post  = get_page_by_path(@$wp->query_vars['pagename'])))){
             $post = !empty($post) ? $post :  @$GLOBALS['wp_query']->post;
+            $psettings = new am4_Settings_Post_Meta($post->ID);
+            if($psettings->{'exclude_protection'})
+                return;
             $settings = $this->getPostAccess($post);
             if($settings->{'protected'} && !$this->haveAccess($r = $this->getPostRequirements($post), $settings)){
                 $this->makeRedirect($type, $settings);
@@ -213,8 +223,7 @@ class am4Protection extends am4Plugin{
         }
         $posts = array_merge($posts);
         return $posts;
-    }
-    
+    }    
     
     function filter_TheContent($content){
         $api = am4PluginsManager::getAPI();
@@ -283,7 +292,7 @@ class am4Protection extends am4Plugin{
     function haveAccess($requirements, am4_Settings_Abstract $settings){
         $access = new am4UserAccess();
         if($settings->{'affiliate'} && $access->isAffiliate()) return true;
-        return $access->anyTrue($requirements);
+        return $settings->{'require_all'} ?  $access->allTrue($requirements) : $access->anyTrue($requirements);
     }
     
 }

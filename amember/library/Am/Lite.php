@@ -108,6 +108,11 @@ class Am_Lite
         return $this->getConfigValue('root_surl') . '/profile';
     }
 
+    public function getSendpassURL()
+    {
+        return $this->getConfigValue('root_surl') . '/login?sendpass';
+    }
+    
     public function getLoginURL($redirect = null)
     {
         $params = array();
@@ -120,7 +125,7 @@ class Am_Lite
 
         $query = http_build_query($params, '', '&');
         return $this->getConfigValue('root_surl')
-            . '/login/'
+            . '/login'
             . ($query ? '?' . $query : '');
     }
 
@@ -810,11 +815,13 @@ class Am_Lite
                                 break 2;
                             break;
                         case 'R': /* reference  */
+                        case 'r': /* reference  */
+                            $key = $str[$q];
                             $q+= 2;
                             for ($id = ''; ($q < $endptr) && ($str[$q] != ';'); $q++)
                                 $id .= $str[$q];
                             $q++;
-                            $serialized .= 'R:' . ($id + 1) . ';'; /* increment pointer because of outer array */
+                            $serialized .= $key.':' . ($id + 1) . ';'; /* increment pointer because of outer array */
                             if ($level == 0)
                                 break 2;
                             break;

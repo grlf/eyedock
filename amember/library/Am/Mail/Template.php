@@ -8,20 +8,21 @@
 class Am_Mail_Template extends ArrayObject
 {
     const TO_ADMIN = '|TO-ADMIN|';
-    
+    protected $admins;
+
     /** @var array */
     protected $template = array();
     /** @var Am_Mail */
     protected $mail;
-    
+
     protected $_mailPeriodic = Am_Mail::REGULAR;
-    
+
     public function __construct($tplId = null, $lang = null)
     {
         $this->setFlags(self::ARRAY_AS_PROPS);
         $this->setArray(array(
             'site_title' => Am_Di::getInstance()->config->get('site_title'),
-            'root_url'   => ROOT_URL, 
+            'root_url'   => ROOT_URL,
             'admin_email' => Am_Di::getInstance()->config->get('admin_email'),
         ));
     }
@@ -41,7 +42,7 @@ class Am_Mail_Template extends ArrayObject
            $this->$k = $v;
        return $this;
     }
-    function setTemplate($format, $subject, $bodyText, $bodyHtml, $attachments, $id, $name)
+    function setTemplate($format, $subject, $bodyText, $bodyHtml, $attachments, $id, $name, $layout = null)
     {
         // switch bodyText/bodyHtml based on format
         if (($format == 'text') && empty($bodyText))
@@ -52,7 +53,7 @@ class Am_Mail_Template extends ArrayObject
             $bodyHtml = $bodyText;
             $bodyText = null;
         }
-        
+
         $this->template = array(
             'format' => $format,
             'subject' => $subject,
@@ -61,39 +62,50 @@ class Am_Mail_Template extends ArrayObject
             'attachments' => $attachments,
             'id' => $id,
             'name' => $name,
+            'layout' => $layout
         );
     }
     /** @return Am_Mail */
     function getMail()
     {
         if (!$this->mail)
-            $this->mail = new Am_Mail;
+            $this->mail = Am_Di::getInstance()->mail;;
         return $this->mail;
     }
     public function addTo($email, $name)
     {
         $this->getMail()->addTo($email, $name);
     }
-    
+
     function parse()
     {
-        
         Am_Di::getInstance()->hook->call(Am_Event::MAIL_TEMPLATE_BEFORE_PARSE, array('template' =>$this));
-        if($this->getMailPeriodic() == Am_Mail::REGULAR) $this->getMail()->addUnsubscribeLink (Am_Mail::LINK_USER);
-            
-        if ($text = $this->template['bodyText'])
-            $this->getMail()->setBodyText($this->_parse($text) , 'utf-8');
-        if ($text = $this->template['bodyHtml'])
-            $this->getMail()->setBodyHtml($this->_parse($text) , 'utf-8');
+        if($this->getMailPeriodic() == Am_Mail::REGULAR) $this->getMail()->addUnsubscribeLink(Am_Mail::LINK_USER);
 
-        if ($this->template['format'] == EmailTemplate::FORMAT_MULTIPART)
-            $this->getMail()->setType(Zend_Mime::MULTIPART_ALTERNATIVE);        
-        
-        $this->getMail()->setSubject($this->_parse($this->template['subject']));
-        
+        $subject = $this->_parse($this->template['subject']);
+        $this->getMail()->setSubject($subject);
+
+        $layout = $this->template['layout'];
+
+        if ($_text = $this->template['bodyText']) {
+            $text = $this->_parse($_text, $layout);
+            $this->getMail()->setBodyText($text);
+        }
+        if ($_html = $this->template['bodyHtml']) {
+            $html = $this->_parse($_html, $layout);
+            $text = strip_tags($this->_parse($_html));
+
+            $html = strpos($html, '<html') === false ?
+                "<html><head><title>$subject</title></head><body>$html</body></html>" :
+                $html;
+
+            $this->getMail()->setBodyHtml($html);
+            $this->getMail()->setBodyText($text);
+        }
+
         $this->parseAttachments();
     }
-    
+
     protected function parseAttachments()
     {
         if(in_array($this->template['name'],array(EmailTemplate::AUTORESPONDER, EmailTemplate::EXPIRE)))
@@ -115,47 +127,64 @@ class Am_Mail_Template extends ArrayObject
                     Zend_Mime::DISPOSITION_ATTACHMENT, Zend_Mime::ENCODING_BASE64, $file->getName());
         }
     }
-    
-    protected function _parse($text)
+
+    protected function _parse($text, $layout = null)
     {
         $tpl = new Am_SimpleTemplate();
         $tpl->assignStdVars();
         $tpl->assign($this->getArrayCopy());
         $tpl->assign(get_object_vars($this));
-        return $tpl->render($text);
+        $text = $tpl->render($text);
+        if ($layout) {
+            $tpl->assign('content', $text);
+            $text = $tpl->render($layout);
+        }
+        return $text;
     }
-    
+
     function send($recepient, $transport = null)
     {
         if (!$this->template)
             throw new Am_Exception_InternalError("Template was not set in " . __METHOD__);
-        
-        
+
+
         if ($recepient instanceof User)
         {
             $this->getMail()->addTo($email = $recepient->email, $recepient->getName());
         } elseif ($recepient instanceof Admin) {
             $this->getMail()->addTo($email = $recepient->email, $recepient->getName());
         } elseif ($recepient===self::TO_ADMIN) {
-            $this->getMail()->toAdmin();
+            $name = Am_Di::getInstance()->config->get('site_title') . ' Admin';
+            if($this->admins)
+            {
+                if(in_array(-1, explode(',',$this->admins)))
+                    $this->addTo(Am_Di::getInstance()->config->get('admin_email'), Am_Di::getInstance()->config->get('site_title') . ' Admin');
+                foreach (Am_Di::getInstance()->adminTable->loadIds(explode(',',$this->admins)) as $admin)
+                    $this->getMail()->addTo($admin->email, $name);
+
+                if ($copyAdmin = Am_Di::getInstance()->config->get('copy_admin_email'))
+                    foreach (preg_split("/[,;]/", $copyAdmin) as $copy)
+                        if ($email) $this->getMail()->addBcc($copy);
+            } else
+                $this->getMail()->toAdmin();
         } else {
             $this->getMail()->addTo($email = $recepient);
         }
 
         $this->parse();
-        
+
         $this->getMail()->setPeriodic($this->getMailPeriodic());
         try {
             $this->getMail()->send($transport);
-        } catch (Exception $e) { 
-            // Catch all exceptions here. If there is an issue with template, 
-            // other parts of the script should not be affected. 
+        } catch (Exception $e) {
+            // Catch all exceptions here. If there is an issue with template,
+            // other parts of the script should not be affected.
             Am_Di::getInstance()->errorLogTable->log($e);
             trigger_error("Could not send message to [$email] - error happened: " . $e->getMessage(), E_USER_WARNING);
         }
-        
+
     }
-    
+
     /**
      * Shortcut to email subscribed admins
      */
@@ -163,7 +192,7 @@ class Am_Mail_Template extends ArrayObject
     {
         $this->send(self::TO_ADMIN);
     }
-    
+
     function getMailPeriodic()
     {
         return $this->_mailPeriodic;
@@ -172,7 +201,7 @@ class Am_Mail_Template extends ArrayObject
     {
         $this->_mailPeriodic = $periodic;
     }
-    
+
     /**
      * @return Am_Mail_Template|null null if no template found
      */
@@ -188,21 +217,23 @@ class Am_Mail_Template extends ArrayObject
         } elseif ($throwException)
             throw new Am_Exception_Configuration("No e-mail template found for [$id,$lang]");
     }
-    
+
     /** @return Am_Mail_Template */
     static function createFromEmailTemplate(EmailTemplate $et)
     {
         $t = new self;
         $t->setTemplate(
-            $et->format, 
-            $et->subject, 
-            $et->plain_txt, 
+            $et->format,
+            $et->subject,
+            $et->plain_txt,
             $et->txt,
             $et->attachments,
             $et->email_template_id . '-' . $et->name . '-' . $et->lang,
-            $et->name
+            $et->name,
+            $et->getLayout()
         );
 
+        $t->admins = $et->recipient_admins;
         $rec = Am_Mail_TemplateTypes::getInstance()->find($et->name);
         if ($rec)
             $t->setMailPeriodic($rec['mailPeriodic']);
@@ -211,10 +242,13 @@ class Am_Mail_Template extends ArrayObject
         if ($bcc) {
             $t->getMail()->addBcc($bcc);
         }
+        if ($et->reply_to && ($admin = $et->getDi()->adminTable->load($et->reply_to, false))) {
+            $t->getMail()->setReplyTo($admin->email, $admin->getName());
+        }
 
         return $t;
     }
-    
+
     function getConfig()
     {
         return $this->template;

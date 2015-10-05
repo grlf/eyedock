@@ -5,13 +5,13 @@ class Am_Form_Echeck extends Am_Form
     const USER_UPDATE = 'user-update';
     const ADMIN_UPDATE = 'admin-update';
     const ADMIN_INSERT = 'admin-insert';
-    
+
     protected $payButtons = array();
-    
+
     /** @var Am_Paysystem_CreditCard */
     protected $plugin;
     protected $formType = self::PAYFORM;
-    
+
     public function __construct(Am_Paysystem_Echeck $plugin, $formType = self::PAYFORM)
     {
         $this->plugin = $plugin;
@@ -24,7 +24,7 @@ class Am_Form_Echeck extends Am_Form
         );
         parent::__construct('ec');
     }
-    
+
     public function init()
     {
         parent::init();
@@ -32,6 +32,7 @@ class Am_Form_Echeck extends Am_Form
         $name = $this->addGroup()
             ->setLabel(___("Your Name\n" .
                 'your first and last name'));
+        $name->setSeparator(' ');
         $name->addRule('required', ___('Please enter your name'));
 
         $name->addText('echeck_name_f', array('size' => 15))
@@ -49,7 +50,7 @@ class Am_Form_Echeck extends Am_Form
             $group->addStatic()->setContent('<div>');
             $group->addStatic('echeck');
             $group->addText('echeck_ban', array('autocomplete' => 'off', 'maxlength' => 20, 'style' => 'display:none'))
-                ->addRule('regex', ___('Invalid Bank Account Number'), '/^[0-9]{1,20}$/');
+                ->addRule('regex', ___('Invalid Bank Account Number'), '/^[a-zA-Z0-9]{1,20}$/');
 
             $group->addScript("")->setScript(<<<CUT
 $(function(){
@@ -69,14 +70,14 @@ CUT
                 ->setLabel(___("Your Bank Account Number\n" .
                     'Up to 20 digits'))
                 ->addRule('required', ___('Please enter Account Number'))
-                ->addRule('regex', ___('Invalid Account Number'), '/^[0-9]{1,20}$/');
+                ->addRule('regex', ___('Invalid Account Number'), '/^[a-zA-Z0-9]{1,20}$/');
         }
-        
+
         $this->addText('echeck_aba', array('autocomplete' => 'off', 'maxlength' => 9))
             ->setLabel(___("ABA Routing Number\n" .
                 '9 digits'))
             ->addRule('required', ___('Please enter Routing Number'))
-            ->addRule('regex', ___('Invalid Routing Number'), '/^[0-9]{9}$/');
+            ->addRule('regex', ___('Invalid Routing Number'), '/^[a-zA-Z0-9]{1,9}$/');
 
         $options = $this->plugin->getFormOptions();
 
@@ -167,7 +168,7 @@ CUT
                         ->addRule('regex', ___('Please enter phone number'), '|^[\d() +-]+$|');
             }
         }
-        
+
         $buttons = $this->addGroup();
         $buttons->addSubmit('_echeck_', array('value' =>
             '    '

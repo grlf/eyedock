@@ -9,7 +9,7 @@ function renderNode($id, Am_Record $c, Am_View $view) {
         <a title="%s" href="javascript:;" class="add">%s</a>
         <a title="%s" href="javascript:;" class="del">%s</a>
         </div>
-        <span class="text"><strong>%s</strong> <small>(%d)</small></span></div>',
+        <span class="text"><strong class="c-title" title="Title">%s</strong> <small>(#<span class="c-id" title="ID">%d</span>)</small></span></div>',
             $id,
             ___('Edit'),
             $view->icon('edit'),
@@ -116,11 +116,14 @@ echo str_replace('999', 'TPL', renderNode(999, $tmpl, $this));
                             var id = data.id;
                             if (nodes[id]) // existing category updated
                             {
-                                $('#node-'+id+' > div span.text').text(data.title);
+                                $('#node-'+id+' > div .c-title').text(data.title);
+                                $('#node-'+id+' > div .c-id').text(data.id);
                             } else { // new category added
                                 var tpl = $("li#node-TPL").html();
-                                tpl = tpl.replace(/TITLE/, data.title);
-                                findRoot(data.parent_id).append('<li id="node-'+id+'">' + tpl + '</li>');
+                                var $el = $('<li id="node-'+id+'">' + tpl + '</li>');
+                                $el.find('.c-title').text(data.title);
+                                $el.find('.c-id').text(data.id);
+                                findRoot(data.parent_id).append($el);
                             }
                             nodes[id] = data;
                             $("#node-form").dialog("close");

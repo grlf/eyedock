@@ -14,7 +14,7 @@ define('EYEDOCK_SCL_IMG_URL', JPATH_ROOT.DS.'/components/com_pnlenses/images/');
 /**
  *  Component Controller
  */
-class PnlensesController extends JController
+class PnlensesController extends JControllerLegacy
 {
 
 	function display() {

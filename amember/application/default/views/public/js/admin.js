@@ -7,14 +7,13 @@ $(document).ready(function(){
     $(document).on("click","._collapsible_ ._head_", function(){
         $(this).closest("._item_").toggleClass('_open_');
     });
-    $(".grid-wrap").ngrid();
 
     $('#admin-login').submit(function(){
         //$('#admin-login').hide();
         $.ajax({
             global: false,
             type : 'POST',
-            url: $('#admin-login form').attr('action'), 
+            url: $('#admin-login form').attr('action'),
             data: $('#admin-login input').serializeArray(),
             complete: function (response)
             {
@@ -47,7 +46,7 @@ $(document).ready(function(){
     }
 
     $(document).ajaxComplete(function(event,request, settings){
-        if (request.status == 402) 
+        if (request.status == 402)
         {
             var vars = $.parseJSON(request.responseText);
             $('#admin-login .error').text(vars['err'] ? vars['err'] : null);
@@ -72,7 +71,7 @@ $(document).ready(function(){
     $(document).on('click',"a.email-template", function() {
         var $div = $('<div style="display:none;" id="email-template-popup"></div>');
         $('body').append($div);
-        
+
         var url = this.href;
         var actionUrl = url.replace(/\?.*$/, '');
         var getQuery= url.replace(/^.*?\?/, '');
@@ -110,7 +109,7 @@ $(document).ready(function(){
                 $div.remove();
             }
         });
-            
+
         $.ajax({
             type : 'post',
             data : getQuery,
@@ -121,14 +120,28 @@ $(document).ready(function(){
                 $div.dialog("open");
             }
         });
-        
+
         return false;
     })
 
     $(".admin-menu").adminMenu(window.amActiveMenuID);
+    initElements();
+
+    $(document).ajaxComplete(function(){
+        //allow ajax handler to do needed tasks before convert elements
+        setTimeout(initElements, 100);
+    })
+
+    // scroll to error message if any
+    var errors = $(".errors:visible:first,.error:visible:first");
+    if (errors.length)
+        $("html, body").scrollTop(Math.floor(errors.offset().top));
+});
+
+function initElements(){
     $(".magicselect").magicSelect();
     $(".magicselect-sortable").magicSelect({sortable:true});
-    
+
     $(".am-combobox").chosen({
         disable_search_threshold : 10,
         search_contains :   true
@@ -138,7 +151,7 @@ $(document).ready(function(){
         search_contains :   true,
         width :  "300px"
     });
-    
+
     if (window.amLangCount>1) {
         $('.translate').translate();
     }
@@ -147,28 +160,8 @@ $(document).ready(function(){
     $('.reupload').reupload();
     $('input[type=file].styled').fileStyle();
     initDatepicker();
-    $(document).ajaxComplete(function(){
-        //allow ajax handler to do needed tasks before convert elements
-        setTimeout(function(){
-            $(".magicselect").magicSelect();
-            $(".magicselect-sortable").magicSelect({sortable:true});
-            if (window.amLangCount>1) {
-                $('.translate').translate();
-            }
-            $('input.options-editor').optionsEditor();
-            $('.upload').upload();
-            $('.reupload').reupload();
-            $('input[type=file].styled').fileStyle();
-            initDatepicker();
-            $(".grid-wrap").ngrid();
-        }, 100);
-    })
-    
-    // scroll to error message if any
-    var errors = $(".errors:visible:first,.error:visible:first");
-    if (errors.length) 
-        $("html, body").scrollTop(Math.floor(errors.offset().top));
-});
+    $(".grid-wrap").ngrid();
+}
 
 function flashError(msg){
     return flash(msg, 'error', 5000);
@@ -296,7 +289,7 @@ function initCkeditor(textareaId, options)
             }
         }
     };
-    
+
     return CKEDITOR.replace(textareaId, $.extend(defaultOptions, options));
 }
 function initDatepicker(selector, params)

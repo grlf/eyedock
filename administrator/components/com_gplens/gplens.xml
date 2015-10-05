@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="3.1" method="upgrade">
+	<name>com_gplens</name>
+	<author>Eyedock</author>
+	<creationDate>Unknown</creationDate>
+	<copyright>(C) 2005 - 2014 Open Source Matters. All rights reserved.
+	</copyright>
+	<license>GNU General Public License version 2 or later; see
+		LICENSE.txt</license>
+	<authorEmail>admin@joomla.org</authorEmail>
+	<authorUrl>www.joomla.org</authorUrl>
+	<version>3.0.0</version>
+	<description>COM_GPLENS_XML_DESCRIPTION</description>
+
+	<administration>
+		<menu img="class:gplens">com_gplens</menu>
+		<submenu>
+			<!--
+				Note that all & must be escaped to &amp; for the file to be valid
+				XML and be parsed by the installer
+			-->
+			<menu link="option=com_gplens" img="class:gplens"
+				alt="GP Lens">com_gplens</menu>
+			<menu link="option=com_gpmaterial"
+				img="class:gpmaterial" alt="GP Material">com_gpmaterial</menu>
+			<menu link="option=com_gplab"
+				img="class:gplab" alt="GP Labs">com_gplab</menu>
+			<menu link="option=com_materialcompany"
+				img="class:materialcompany" alt="GP Material Companies">com_gpmaterialcompany</menu>
+		</submenu>
+		<files folder="admin">
+			<filename>access.xml</filename>
+			<filename>gplens.php</filename>
+			<filename>config.xml</filename>
+			<filename>controller.php</filename>
+			<filename>index.html</filename>
+			<folder>controllers</folder>
+			<folder>helpers</folder>
+			<folder>models</folder>
+			<folder>tables</folder>
+			<folder>views</folder>
+		</files>
+		<languages folder="admin">
+			<language tag="en-GB">language/en-GB.com_gplens.ini</language>
+			<language tag="en-GB">language/en-GB.com_gplens.sys.ini</language>
+		</languages>
+	</administration>
+</extension>
+

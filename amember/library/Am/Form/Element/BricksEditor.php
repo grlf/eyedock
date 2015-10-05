@@ -2,7 +2,7 @@
 
 /**
  * An admin UI element to handle visual bricks configuration
- * 
+ *
  * @package Am_SavedForm
  */
 class Am_Form_Element_BricksEditor extends HTML_QuickForm2_Element
@@ -10,7 +10,7 @@ class Am_Form_Element_BricksEditor extends HTML_QuickForm2_Element
     const ALL = 'all';
     const ENABLED = 'enabled';
     const DISABLED = 'disabled';
-    
+
     protected $bricks = array();
     protected $value = array();
     /** @var Am_Form_Bricked */
@@ -72,9 +72,9 @@ class Am_Form_Element_BricksEditor extends HTML_QuickForm2_Element
             if (!$brick->isMultiple()) continue;
             $found = false;
             foreach ($disabled as $dBrick)
-                if ($dBrick->getClass() == $brick->getClass()) { $found = true; break;}; 
+                if ($dBrick->getClass() == $brick->getClass()) { $found = true; break;};
             // create new disabled brick of same class
-            if (!$found) 
+            if (!$found)
                 $this->getBrick($brick->getClass(), null);
         }
     }
@@ -85,7 +85,7 @@ class Am_Form_Element_BricksEditor extends HTML_QuickForm2_Element
      */
     public function getBrick($class, $id)
     {
-        if 
+        if
         (  !isset($this->bricks[$class][$id])
             && isset($this->bricks[$class])
             && current($this->bricks[$class])->isMultiple()
@@ -108,7 +108,7 @@ class Am_Form_Element_BricksEditor extends HTML_QuickForm2_Element
         foreach ($this->value as $row)
             if (!empty($row['id']))
                 $enabled[ ] = $row['id'];
-        
+
         $ret = array();
         foreach ($this->bricks as $class => $bricks)
             foreach ($bricks as $id => $b)
@@ -133,7 +133,7 @@ class Am_Form_Element_BricksEditor extends HTML_QuickForm2_Element
 
     public function render(HTML_QuickForm2_Renderer $renderer)
     {
-        $renderer->getJavascriptBuilder()->addLibrary('bricks-editor', 'bricks-editor.js', 
+        $renderer->getJavascriptBuilder()->addLibrary('bricks-editor', 'bricks-editor.js',
             REL_ROOT_URL . '/application/default/views/public/js');
         return parent::render($renderer);
     }
@@ -145,10 +145,10 @@ class Am_Form_Element_BricksEditor extends HTML_QuickForm2_Element
             $enabled .= $this->renderBrick($brick, true) . "\n";
         foreach ($this->getBricks(self::DISABLED) as $brick)
             $disabled .= $this->renderBrick($brick, false) . "\n";
-        
+
         $hidden = is_string($this->value) ? $this->value : Am_Controller::getJson($this->value);
         $hidden = Am_Controller::escape($hidden);
-        
+
         $name = $this->getName();
         $formBricks = ___("Form Bricks (drag to right to remove)");
         $availableBricks = ___("Available Bricks (drag to left to add)");
@@ -157,18 +157,21 @@ class Am_Form_Element_BricksEditor extends HTML_QuickForm2_Element
             "To remove fields, move it back to 'Available Bricks'.\n".
             "To make form multi-page, insert 'PageSeparator' item into the place where you want page to be split.")
            );
-        
-        
-        return $this->getCss() . <<<CUT
-<input type="hidden" name="$name" value="$hidden">
-<div class='header-signup-form'>$formBricks</div>
-<div class='header-available-fields'>$availableBricks</div>
-<div style='clear: both'></div>
-<div id='bricks-enabled' class='connectedSortable'>
-$enabled
+
+        $filter = $this->renderFilter();
+        return $this->getCss() . $this->getJs() . <<<CUT
+    <input type="hidden" name="$name" value="$hidden">
+    <div class="brick-section">
+    <div class='brick-header'><h3>$formBricks</h3> $filter</div>
+    <div id='bricks-enabled' class='connectedSortable'>
+    $enabled
+    </div>
 </div>
-<div id='bricks-disabled' class='connectedSortable'>
-$disabled
+<div class="brick-section brick-section-available">
+    <div class='brick-header'><h3>$availableBricks</h3> $filter</div>
+    <div id='bricks-disabled' class='connectedSortable'>
+    $disabled
+    </div>
 </div>
 <div style='clear: both'></div>
 <div class='brick-comment'>$comments</div>
@@ -190,7 +193,7 @@ CUT;
             $out .= (string) $form;
             $out .= "</div>\n\n";
         }
-        
+
         $form = new Am_Form_Admin;
         $form->addElement('textarea', '_tpl', array('rows' => 2, 'class' => 'el-wide'))->setLabel('-label-');
         $out .= "<div id='brick-labels' style='display:none'>\n";
@@ -209,8 +212,9 @@ CUT;
             'id' => $brick->getId(),
             'class' => "brick $class " . $brick->getClass(),
             'data-class' => $brick->getClass(),
+            'data-title' => strtolower($brick->getName())
         );
-        if ($brick->haveConfigForm()) 
+        if ($brick->haveConfigForm())
         {
             $attr['data-config'] = Am_Controller::getJson($brick->getConfigArray());
             $configure = "<a class='configure local' href='javascript:;'>" . ___('configure') . "</a>";
@@ -222,18 +226,18 @@ CUT;
             $class = $brick->getCustomLabels() ? 'labels custom-labels' : 'labels';
             $labels = "<a class='$class local' href='javascript:;'>" . ___('labels') . "</a>";
         }
-        
+
         if ($brick->isMultiple())
             $attr['data-multiple'] = "1";
-        
+
         if ($brick->hideIfLoggedInPossible() == Am_Form_Brick::HIDE_DESIRED)
             $attr['data-hide'] = $brick->hideIfLoggedIn() ? 1 : 0;
-        
-        
+
+
         $attrString = "";
         foreach ($attr as $k => $v)
             $attrString .= " $k=\"".htmlentities($v, ENT_QUOTES, 'UTF-8', true)."\"";
-        
+
         $checkbox = $this->renderHideIfLoggedInCheckbox($brick);
         return "<div $attrString>
         <strong class=\"brick-title\">{$brick->getName()}</strong>
@@ -242,12 +246,29 @@ CUT;
         $checkbox
         </div>";
     }
-    
+
+    public function renderFilter()
+    {
+        $l_filter = Am_Controller::escape(___('filter'));
+        $l_placeholder = Am_Controller::escape(___('type part of brick name to filter'));
+        return <<<CUT
+<span><a href="javascript:;" class="input-brick-filter-link local closed">$l_filter</a></span>
+<div class="input-brick-filter-wrapper">
+    <div class="input-brick-filter-inner-wrapper">
+        <input class="input-brick-filter"
+               type="text"
+               name="q"
+               autocomplete="off"
+               placeholder="$l_placeholder" />
+        <div class="input-brick-filter-empty">&nbsp;</div>
+    </div>
+</div>
+CUT;
+    }
+
     protected function renderHideIfLoggedInCheckbox(Am_Form_Brick $brick)
     {
-        if (($this->brickedForm instanceof Am_Form_Signup) 
-            // do not display checkboxes if that form is JUST for signup and not for payment
-            && (!empty($this->bricks['product']) || !empty($this->bricks['paysystem'])))
+        if (($this->brickedForm->isHideBricks()))
         {
             if ($brick->hideIfLoggedInPossible() != Am_Form_Brick::HIDE_DONT)
             {
@@ -260,9 +281,9 @@ CUT;
                     $disabled = "disabled='disabled'";
                 } else {
                     $disabled = "";
-                    $checked = $brick->hideIfLoggedIn() ? "checked='checked'" : '';    
+                    $checked = $brick->hideIfLoggedIn() ? "checked='checked'" : '';
                 }
-                return 
+                return
                     "<span class='hide-if-logged-in'><input type='checkbox'".
                     " id='chkbox-$checkbox_id' value=1 $checked $disabled />" .
                     " <label for='chkbox-$checkbox_id'>" . ___('hide if logged-in') . "</label></span>\n";
@@ -270,24 +291,61 @@ CUT;
         }
     }
 
+    public function getJs()
+    {
+        return <<<CUT
+<script type="text/javascript">
+$(function(){
+    $('.input-brick-filter-link').click(function(){
+        $('.input-brick-filter-wrapper', $(this).closest('.brick-section')).toggle();
+        if ($(this).hasClass('closed'))
+            $('.input-brick-filter-wrapper input', $(this).closest('.brick-section')).focus();
+        $(this).toggleClass('opened closed')
+        $('.input-brick-filter', $(this).closest('.brick-section')).val('').change();
+    });
+    $(document).on('keyup change','.input-brick-filter', function(){
+         var \$context = $(this).closest('.brick-section');
+         $('.input-brick-filter-empty', \$context).toggle($(this).val().length != 0);
+
+         if ($(this).val()) {
+             $('.brick', \$context).hide();
+             $('.brick[data-title*="' + $(this).val().toLowerCase() + '"]', \$context).show();
+         } else {
+             $('.brick', \$context).show();
+         }
+    })
+
+    $('.input-brick-filter-empty').click(function(){
+        $(this).closest('.input-brick-filter-wrapper').find('.input-brick-filter').val('').change();
+        $(this).hide();
+    })
+
+});
+</script>
+CUT;
+    }
+
     public function getCss()
     {
         $id = $this->getId();
+        $declined = Am_Di::getInstance()->view->_scriptImg('icons/decline-d.png');
+        $decline = Am_Di::getInstance()->view->_scriptImg('icons/decline.png');
         return <<<CUT
 <style type="text/css">
-#bricks-enabled,
-#bricks-disabled {
-    width: 45%;
-    padding: 10px;
-    float: left;
-}
-
 .brick {
     border: solid 1px #a1a1a1;
     margin: 2px;
     padding: 3px 5px;
-    background: #EDEDED;
+    background: #ededed;
     cursor: move;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.brick-title {
+    font-weight: normal;
+    color: black
 }
 
 .page-separator {
@@ -298,12 +356,14 @@ CUT;
     background: #D3DCE3;
 }
 
-.header-signup-form,
-.header-available-fields {
-    width: 45%;
+.brick-section {
+    width: 40%;
     padding: 10px;
     float: left;
-    font-weight: bold;
+}
+
+.brick-section.brick-section-available {
+    width: 55%;
 }
 
 .brick-comment {
@@ -319,10 +379,21 @@ CUT;
     margin-bottom: 20px;
 }
 
+#bricks-disabled {
+    overflow: hidden;
+}
+
 #bricks-disabled a.configure,
 #bricks-disabled a.labels,
 #bricks-disabled .hide-if-logged-in {
     display: none;
+}
+
+#bricks-disabled .brick {
+    float: left;
+    width: 45%;
+    overflow: hidden;
+    white-space: nowrap
 }
 
 a.configure,
@@ -335,6 +406,58 @@ a.labels {
 a.labels.custom-labels {
     color: #360;
 }
+
+/* Filter */
+
+.brick-header {
+    margin-bottom:0.8em;
+}
+.brick-header h3 {
+    display: inline;
+}
+
+.input-brick-filter-wrapper {
+    overflow: hidden;
+    padding: 0.4em;
+    border: 1px solid #C2C2C2;
+    border-radius: 5px;
+    margin-bottom: 1em;
+    display: none;
+}
+
+.input-brick-filter-inner-wrapper {
+    position: relative;
+    padding-right:15px;
+}
+
+.input-brick-filter-empty {
+    position: absolute;
+    top:0;
+    right:0;
+    width: 20px;
+    cursor: pointer;
+    opacity: .3;
+    background: url("$declined") no-repeat center center transparent;
+}
+
+.input-brick-filter-empty:hover {
+   opacity: 1;
+   background-image: url("$decline");
+}
+
+input.input-brick-filter {
+    padding:0;
+    margin:0;
+    border: none;
+    width:100%;
+}
+
+input.input-brick-filter:focus {
+    border: none;
+    outline: 0;
+    background: none;
+}
+
 </style>
 CUT;
     }

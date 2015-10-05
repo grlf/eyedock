@@ -7,7 +7,7 @@
  *        Web: http://www.cgi-central.net
  *    Details: Affiliate management routines
  *    FileName $RCSfile$
- *    Release: 4.4.4 ($Revision$)
+ *    Release: 4.7.0 ($Revision$)
  *
  * Please direct bug reports,suggestions or feedback to the cgi-central forums.
  * http://www.cgi-central.net/forum/
@@ -84,7 +84,7 @@ class Am_BannerRenderer_TextLink extends Am_BannerRenderer
 
     public function getCode()
     {
-        return sprintf('<a href="%s">%s</a>',
+        return sprintf('<a href="%s" rel="nofollow">%s</a>',
             $this->getUrl(),
             $this->affBanner->title
         );
@@ -109,7 +109,7 @@ class Am_BannerRenderer_Banner extends Am_BannerRenderer
     {
         $upload = Am_Di::getInstance()->uploadTable->load($this->affBanner->upload_id);
 
-        return sprintf('<a href="%s"><img src="%s" border=0 alt="%s" %s %s></a>',
+        return sprintf('<a href="%s" rel="nofollow"><img src="%s" border=0 alt="%s" %s %s></a>',
             $this->getUrl(),
             ROOT_URL . '/file/get/path/' . $upload->getPath() . '/i/' . Am_Di::getInstance()->auth->getUserId(),
             Am_Controller::escape($this->affBanner->title),
@@ -127,7 +127,7 @@ class Am_BannerRenderer_Lightbox extends Am_BannerRenderer
     {
         $upload = Am_Di::getInstance()->uploadTable->load($this->affBanner->upload_id);
         $upload_big = Am_Di::getInstance()->uploadTable->load($this->affBanner->upload_big_id);
-        return sprintf('<a href="%s" rel="lightbox" rev="%s" title="%s"><img src="%s" border=0 alt="%s"></a>',
+        return sprintf('<a href="%s" rel="lightbox nofollow" rev="%s" title="%s"><img src="%s" border=0 alt="%s"></a>',
             ROOT_URL . '/file/get/path/' . $upload_big->getPath() . '/i/' . Am_Di::getInstance()->auth->getUserId(),
             $this->getUrl(),
             $this->affBanner->title,
@@ -239,44 +239,11 @@ imageBlank : am_url + "lightbox-blank.gif"
 
     public function enableAffAction()
     {
-        if ($this->getDi()->config->get('aff.signup_type') == 2) {
-            throw new Am_Exception_AccessDenied('Signup disabled in config');
-        }
-
-        $user = $this->getDi()->user;
-        if (!$user->is_affiliate) {
-            if (!$this->checkAffAgreementIfRequired($user))
-                return;
-            $user->is_affiliate = 1;
-            $user->update();
-        }
-
-        return $this->linksAction();
-    }
-
-    public function checkAffAgreementIfRequired(User $user)
-    {
-        $signupForm = $this->getDi()->savedFormTable->getByType('aff');
-        if (!$signupForm)
-            return true;
-
-        foreach ($signupForm->getBricks() as $brick)
-            if ($brick instanceof Am_Form_Brick_Agreement) {
-                $form = new Am_Form('aff');
-                $brick->insertBrick($form);
-                $form->addSubmit('agree', array('value' => ___('Continue')));
-
-                if ($form->validate())
-                    return true;
-
-                $view = $this->view;
-                $view->title = $this->getDi()->config->get('site_title');
-                $view->content = (string) $form;
-                $view->display('layout.phtml');
-                return false;
-            }
-
-        return true;
+//        if ($this->getDi()->config->get('aff.signup_type') == 2) {
+//            throw new Am_Exception_AccessDenied('Signup disabled in config');
+//        }
+        //backwards
+        $this->_redirect('/aff/signup');
     }
 
     public function statsAction()

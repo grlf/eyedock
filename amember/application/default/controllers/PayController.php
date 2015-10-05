@@ -11,8 +11,9 @@ class PayController extends Am_Controller
             throw new Am_Exception_InternalError(
                 sprintf('Unknow invoice [%s] or invoice is already processed',
                     filterId($this->getParam('secure_id'))));
-
-        if ($invoice->due_date < sqlDate('now'))
+        if (!$invoice->due_date && (sqlDate($invoice->tm_added) < sqlDate("-" . Invoice::DEFAULT_DUE_PERIOD . " days")))
+            throw new Am_Exception_InputError(___('Invoice is expired'));
+        elseif ($invoice->due_date && ($invoice->due_date < sqlDate('now')))
             throw new Am_Exception_InputError(___('Invoice is expired'));
 
         $form = new Am_Form();
@@ -53,10 +54,6 @@ class PayController extends Am_Controller
                 $invoice->save();
             }
 
-            $err = $invoice->validate();
-            if ($err)
-                throw new Am_Exception_InputError($err[0]);
-
             $payProcess = new Am_Paysystem_PayProcessMediator($this, $invoice);
             $result = $payProcess->process();
 
@@ -65,6 +62,7 @@ class PayController extends Am_Controller
                     filterId($invoice->public_id)));
         }
 
+        $this->view->layoutNoMenu = true;
         $this->view->display('pay.phtml');
     }
 

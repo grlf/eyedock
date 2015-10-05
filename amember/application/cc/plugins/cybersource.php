@@ -11,7 +11,7 @@ class Am_Paysystem_Cybersource extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.0';
 
     const URL_LIVE = 'https://ics2ws.ic3.com/commerce/1.x/transactionProcessor/CyberSourceTransaction_1.90.wsdl';
     const URL_TEST = "https://ics2wstest.ic3.com/commerce/1.x/transactionProcessor/CyberSourceTransaction_1.90.wsdl";
@@ -205,10 +205,8 @@ class Am_Paysystem_Transaction_CreditCard_Cybersource extends Am_Paysystem_Trans
     {
         if (empty($this->response))
         {
-            $result->setErrorMessages(array("Received empty response from payment server"));
-            return false;
+            $result->setFailed(array("Received empty response from payment server"));
         }
-        return true;
     }
 
     public function run(Am_Paysystem_Result $result)

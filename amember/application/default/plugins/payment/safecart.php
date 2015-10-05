@@ -9,7 +9,7 @@
  */
 class Am_Paysystem_Safecart extends Am_Paysystem_Abstract{
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.0';
 
     protected $defaultTitle = 'SafeCart';
     protected $defaultDescription = 'Credit card & Paypal';
@@ -17,6 +17,7 @@ class Am_Paysystem_Safecart extends Am_Paysystem_Abstract{
     
     function _initSetupForm(Am_Form_Setup $form) {
         $form->addText("username")->setLabel('Your SafeCart username');
+        $form->addText('auth_token')->setLabel('Auth Token');
         return $form;
     }
 
@@ -82,6 +83,10 @@ class Am_Paysystem_Safecart extends Am_Paysystem_Abstract{
 CUT;
     }
     
+    function canAutoCreate(){
+        return true;
+    }
+    
 }
 
 
@@ -99,11 +104,16 @@ class Am_Paysystem_Transaction_Safecart extends Am_Paysystem_Transaction_Incomin
     }
     
     public function getUniqId() {
-        return (string)$this->xml->attributes()->id;
+        return implode('-', array((string)$this->xml->attributes()->id, (string)$this->xml->attributes()->ref));
     }
     
     public function validateSource() {
-        $this->_checkIp($this->ip);
+//        $this->_checkIp($this->ip);
+        $signature = base64_encode(hash_hmac('sha256', $this->req, $this->getPlugin()->getConfig('auth_token')));
+        if (!($this->request->getHeader('X-Revenuewire-Signature') && $this->request->getHeader('X-Revenuewire-Signature')=== $signature)) {
+            return false;
+        }
+        
         if($this->xml === false){
             throw new Am_Exception_Paysystem_TransactionInvalid("Invalid input type. Make sure that postback notifications type is set to XML");
         }
@@ -117,6 +127,7 @@ class Am_Paysystem_Transaction_Safecart extends Am_Paysystem_Transaction_Incomin
     public function findInvoiceId(){
         $data = (string) $this->xml->extra->request;
         parse_str(urldecode($data), $req);
+    
         return @$req['payment_id'];
     }
 
@@ -150,6 +161,31 @@ class Am_Paysystem_Transaction_Safecart extends Am_Paysystem_Transaction_Incomin
         parent::setInvoiceLog($log);
         $this->getPlugin()->logOther('SAFECART IPN:', $this->req);
     }
-
+    function autoCreateGetProducts(){
+        $products = array();
+        foreach($this->xml->products->item as $item){
+            $sku = (string) $item->attributes()->sku;
+            $bp = $this->getPlugin()->getDi()->billingPlanTable->findFirstByData('safecart_sku', $sku);
+            if(!$bp) continue;
+            $products[] = $bp->getProduct();
+        }
+        return $products; 
+    }
+    
+    function generateInvoiceExternalId(){
+        return (string) $this->xml->attributes()->id;
+    }
+    
+    function generateUserExternalId(array $userInfo){
+        return md5($userInfo['email']);
+    }
+    
+    function fetchUserInfo(){
+        $ret = array();
+        list($ret['name_f'], $ret['name_l']) = explode(" ", (string) $this->xml->customer->name);
+        if(empty($ret['name_l']))  $ret['name_l'] = '';
+        $ret['email'] = (string) $this->xml->customer->email;
+        return $ret;
+    }
     
 }

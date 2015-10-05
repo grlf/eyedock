@@ -4,7 +4,9 @@ defined('_JEXEC') or die ('Restricted Access');
 
 jimport('joomla.application.component.controller');
 
-class GplensController extends JController {
+class GplensController extends JControllerLegacy {
+	
+	protected $context = 'com_gplens';
 
 	function __construct($default = array()) {
 	

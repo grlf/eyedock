@@ -7,7 +7,7 @@
 *        Web: http://www.cgi-central.net
 *    Details: Configuration
 *    FileName $RCSfile$
-*    Release: 4.4.2 ($Revision$)
+*    Release: 4.7.0 ($Revision$)
 *
 * Please direct bug reports,suggestions or feedback to the cgi-central forums.
 * http://www.cgi-central.net/forum/
@@ -151,8 +151,6 @@ class AdminSetupController extends Am_Controller
         {
             $mgr->loadEnabled()->getAllEnabled();
         }
-        // tax plugins is a special case
-        $this->getDi()->plugins_tax->getAllEnabled();
         
         $event = new Am_Event_SetupForms($this);
         $this->getDi()->hook->call($event);

@@ -13,7 +13,7 @@
 class Am_Paysystem_Paymentwall extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.0';
 
     protected $defaultTitle = 'Paymentwall';
     protected $defaultDescription = 'Pay via Paymentwall';
@@ -116,10 +116,15 @@ class Am_Paysystem_Paymentwall extends Am_Paysystem_Abstract
 
     function directAction(Am_Request $request, Zend_Controller_Response_Http $response, array $invokeArgs)
     {
-        if ($request->getActionName() == 'ipn') {
-            echo 'OK';
+        try{
+            parent::directAction($request, $response, $invokeArgs);
         }
-        return parent::directAction($request, $response, $invokeArgs);
+        catch(Am_Exception $e)
+        {
+            $this->getDi()->errorLogTable->logException($e);
+            print "OK";
+            exit();            
+        }
     }
 
     function processRefund(InvoicePayment $payment, Am_Paysystem_Result $result, $amount)

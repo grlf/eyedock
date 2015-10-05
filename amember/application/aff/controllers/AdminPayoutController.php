@@ -91,6 +91,7 @@ class Am_Grid_Action_PayoutMarkPaid extends Am_Grid_Action_Group_Abstract
             Am_Di::getInstance()->db->query("UPDATE ?_aff_payout_detail SET is_paid=1 
                 WHERE payout_detail_id IN (?a)",
                 $ids);
+        $this->runHooksIfNecessary($ids, $this->grid->getCompleteRequest()->get('payout_id'));
         $this->sendEmailsIfNecessary($ids, $this->grid->getCompleteRequest()->get('payout_id'));
         echo $this->renderDone();
     }
@@ -98,6 +99,21 @@ class Am_Grid_Action_PayoutMarkPaid extends Am_Grid_Action_Group_Abstract
     public function handleRecord($id, $record)
     {
         //nop
+    }
+    protected function runHooksIfNecessary($ids, $payout_id)
+    {
+        $di = Am_Di::getInstance();
+        if (!$di->hook->have(Bootstrap_Aff::AFF_PAYOUT_PAID)) return;
+        $payout = $di->affPayoutTable->load($payout_id);
+        foreach ($ids as $id) {
+            $payout_detail = $di->affPayoutDetailTable->load($id);
+            $user = $di->userTable->load($payout_detail->aff_id);
+            $di->hook->call(Bootstrap_Aff::AFF_PAYOUT_PAID, array(
+                'user' => $user,
+                'payout' => $payout,
+                'payoutDetail' => $payout_detail
+            ));
+        }
     }
     /**
      * @param array $ids ids of payout details
@@ -153,7 +169,6 @@ class Am_Grid_Action_PayoutMarkNotPaid extends Am_Grid_Action_Group_Abstract
 
 class Aff_AdminPayoutController extends Am_Controller_Grid
 {
-
     public function checkAdminPermissions(Admin $admin)
     {
         return $admin->hasPermission(Bootstrap_Aff::ADMIN_PERM_ID);
@@ -167,11 +182,13 @@ class Aff_AdminPayoutController extends Am_Controller_Grid
         $ds->addField('SUM(amount)', 'paid');
         $ds->setOrder('date', 'DESC');
         $grid = new Am_Grid_Editable('_payout', ___('Payouts'), $ds, $this->_request, $this->view);
+        $grid->setEventId('gridAffPayout');
         $grid->setPermissionId(Bootstrap_Aff::ADMIN_PERM_ID);
         $grid->actionsClear();
         $grid->addField(new Am_Grid_Field_Date('date', ___('Payout Date')))->setFormatDate();
         $grid->addField(new Am_Grid_Field_Date('thresehold_date', ___('Thresehold Date')))->setFormatDate();
-        $grid->addField('type', ___('Payout Method'));
+        $grid->addField(new Am_Grid_Field_Enum('type', ___('Payout Method')))
+            ->setTranslations(Am_Aff_PayoutMethod::getAvailableOptions());
         $grid->addField('total', ___('Total to Pay'))->setGetFunction(array($this, 'getAmount'));
         $grid->addField('paid', ___('Total Paid'))->setGetFunction(array($this, 'getAmount'));
         //$grid->actionAdd(new Am_Grid_Action_Url('run', ___('Run'), '__ROOT__/aff/admin-payout/run?payout_id=__ID__'));
@@ -203,6 +220,8 @@ class Aff_AdminPayoutController extends Am_Controller_Grid
 
     function viewAction()
     {
+        Am_Aff_PayoutMethod::static_addFields();
+
         // display payouts list date | method | total | paid |
         $id = $this->getInt('payout_id');
 
@@ -216,6 +235,7 @@ class Aff_AdminPayoutController extends Am_Controller_Grid
         $ds->addWhere('t.payout_id=?d', $id);
 
         $grid = new Am_Grid_Editable('_d', ___("Payout %d Details", $id), $ds, $this->_request, $this->view);
+        $grid->setEventId('gridAffPayoutDetail');
         $grid->setPermissionId(Bootstrap_Aff::ADMIN_PERM_ID);
         $grid->addCallback(Am_Grid_Editable::CB_RENDER_TABLE, array($this, 'addBackLink'));
 
@@ -224,7 +244,8 @@ class Aff_AdminPayoutController extends Am_Controller_Grid
             ->addDecorator(new Am_Grid_Field_Decorator_Link($userUrl->userUrl('{user_id}'), '_top'));
         $grid->addField('name_f', ___('First Name'));
         $grid->addField('name_l', ___('Last Name'));
-        $grid->addField('type', ___('Payout Method'));
+        $grid->addField(new Am_Grid_Field_Enum('type', ___('Payout Method')))
+            ->setTranslations(Am_Aff_PayoutMethod::getAvailableOptions());
         $grid->addField('amount', ___('Amount'))->setGetFunction(array($this, 'getAmount'));
 //        $grid->addField('receipt_id', ___('Receipt Id'));
         $grid->addField(new Am_Grid_Field_Enum('is_paid', ___('Is Paid?')))
@@ -259,8 +280,10 @@ class Aff_AdminPayoutController extends Am_Controller_Grid
         foreach ($obj->data()->getAll() as $k => $v) {
             if (strpos($k, $pattern) !== 0)
                 continue;
+
+            $field = $this->getDi()->userTable->customFields()->get($k);
             $out .= sprintf("<strong>%s</strong> : %s <br />\n",
-                    Am_Controller::escape(ucfirst(substr($k, strlen($pattern)))),
+                    Am_Controller::escape($field ? $field->title : ucfirst(substr($k, strlen($pattern)))),
                     Am_Controller::escape($v));
         }
         return $out ? $out : '-no details-';

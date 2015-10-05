@@ -1,0 +1,345 @@
+<!--[include file=lenses_admin_menu.htm]-->
+
+<form method="post" action="<!--[pnmodurl modname="Lenses" type="admin" func="insert_lens"]-->" enctype="application/x-www-form-urlencoded">
+
+    <h3>Add New Lens </h3>
+
+    <div style="padding:10px; border:1px solid #ccc; background:#fafafa;">
+
+        <input type="hidden" name="authid" value="<!--[pnsecgenauthkey module="Lenses"]-->" />
+    
+        <input type="hidden" name="lens_data[tid]" value="<!--[$lens_data.tid]-->" />
+
+        <strong style="color:#00f;">GENERAL INFO</strong>
+        
+        <div style="padding:10px; border:1px solid #ccc; background:#fff;">
+    
+          
+
+            <strong>Lens Name:</strong><br />
+            <input type="text" name="lens_data[name]" value="" size="40" maxlength="" /><br /><br />
+            
+           <table width="100%"><tr><td width="50%">
+
+            <strong>Aliases:</strong>
+      <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='Aliases' text='Alternate names (old names, private label names, etc.) or incorrect spellings of this lens']--> >[?]</span><br />
+            <textarea rows="5" type="text" name="lens_data[aliases]" value=""   style="width: 200px;"  /></textarea><br /><br />
+    
+            <strong>Company Name:</strong><br />
+            <select name="lens_data[comp_id]" size="1" style="width: 200px;">
+            <!--[foreach from=$opt_companies key=key item=company]-->
+                <option value="<!--[$company.comp_tid]-->" /><!--[$company.comp_name]--> [<!--[$company.comp_tid]-->]
+            <!--[/foreach]-->
+            </select><br /><br />
+    
+            <strong>Material:</strong><br />
+            <select name="lens_data[poly_id]" size="1"  style="width: 200px;">
+            <!--[foreach from=$opt_polymers key=key item=polymer]-->
+                <option value="<!--[$polymer.poly_tid]-->" /><!--[$polymer.poly_name]--> (<!--[$polymer.h2o|pnvarprepfordisplay]-->%) [<!--[$polymer.poly_tid]-->]
+            <!--[/foreach]-->
+            </select><br /><br />
+    
+               <strong>Lens URL:</strong>
+               <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='URLs' text='The lense\'s website. <br /> Make sure you write out the ENTIRE URL, including the &quot;http://www...&quot;']--> >[?]</span>
+               <br />
+            <input type="text" name="lens_data[website]" value="" style="width: 200px" maxlength="" /><br /><br />
+
+            <strong>Fitting Guide:</strong>
+            <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='URLs' text='The web location of its fitting guide. <br /> Make sure you write out the ENTIRE URL, including the &quot;http://www...&quot;']--> >[?]</span><br />
+            <input type="text" name="lens_data[fitting_guide]" value="" style="width: 200px" maxlength="" /><br /><br />
+    
+             <strong>Replacement Simple:</strong>
+          <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='replacement (simple)' text='This lens\'s replacement period, in days.  eg)<br />daily=1 <br />2 week = 14<br /> monthly = 30<br /> quarterly = 90<br />yearly = 365...']--> >[?]</span><br />
+            <input type="text" name="lens_data[replace_simple]" value="" size="3" maxlength="" /> days<br /><br />
+
+            <strong>Replacement Text:</strong>
+           <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='replacement' text='A description of the replacement period, such as &quot;Two week disposable&quot;']--> >[?]</span><br />
+            <input type="text" name="lens_data[replace_text]" value="" style="width: 200px" maxlength="" /><br /><br />
+    
+            <strong>Wear Type:</strong>
+             [?]<span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='Wear type' text='Such as daily wear, extented wear, flexible wear']--> >[?]</span><br />
+            <input type="text" name="lens_data[wear]" value="" style="width: 200px" maxlength="" /><br /><br />
+    
+
+    
+             <strong>Price:</strong>
+           <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='Price' text='wholesale prices.']--> >[?]</span><br />
+            <textarea style="width: 300px;" rows="5" type="text" name="lens_data[price]"></textarea> 
+            separate lines by placing &lt;br /&gt; after each row.<br />
+            <br />
+
+            </td><td width="50%">
+            
+            
+              <label for="lens_visi" ><strong>Visitint:</strong></label><br />
+            <input type="checkbox" id="lens_visi" name="lens_data[visitint]" value="1" /><br /><br />
+
+             <label for="lens_ew"><strong>Extended Wear:</strong></label>
+       <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='EW' text='FDA approved for EW?']--> >[?]</span><br />
+            <input id="lens_ew" type="checkbox" name="lens_data[ew]" value="1" /><br /><br />
+
+            
+            <strong>Optic Zone:</strong><br />
+            <input type="text" name="lens_data[oz]" value="" size="3" maxlength="" /> millimeters<br /><br />
+
+            
+            <strong>Quantity:</strong>
+          <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='quantity' text='Such as \'6 pack\', or \'single lens\'.  May vary - if so, write a comment in the Other Info section']--> >[?]</span><br />
+            <input type="text" name="lens_data[qty]" value="" size="30" maxlength="" /> <br /><br />
+
+            <strong>Center Thickness:</strong><br />
+            <input type="text" name="lens_data[ct]" value="" size="3" maxlength="" /> millimeters<br /><br />
+
+            <strong>DK Value:</strong>
+           <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='DK' text='Make sure you are recording dk and not dk/t.  Dk/t will be calculated from CT and dk']--> >[?]</span><br />
+            <input type="text" name="lens_data[dk]" value="" size="3" maxlength="" /><br /><br />
+
+            <strong>Markings:</strong>
+<span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='Markings' text='Any unique characteristics, such as &quot;123 inversion markings&quot;']--> >[?]</span><br />
+            <input type="text" name="lens_data[markings]" value="" size="" maxlength="" /><br /><br />
+    
+            <strong>Process Simple:</strong>
+ <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='Process simple' text='Choose the most appropriate option']--> >[?]</span><br />
+            <select name="lens_data[process_simple]" size="1">
+				<option value="" />unknown
+                <option value="lathe-cut" />lathe-cut
+                <option value="molded" />molded
+                <option value="spin-cast" />spin-cast
+            </select><br /><br />
+    
+            <strong>Process Text:</strong>
+          <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='Process text' text='May use lathe-cut, etc.  Some companies have fancier, proprietary processes such as \'FIPs\', ']--> >[?]</span><br />
+            <input type="text" name="lens_data[process_text]" value="" style="width: 200px" maxlength="" /><br /><br />
+
+            
+
+            </td></tr></table>
+            
+            <strong>Images:</strong>
+        <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='Images' text='A list of the file paths to the images of this lens.  If more than one, separate by comma']--> >[?]</span><br />
+            <input type="text" name="lens_data[image]" value="" size="80" maxlength="300" />
+            <br /><br />
+    
+            <strong>Other Info:</strong><br />
+            <textarea id="lenses_other" name="lens_data[other_info]" cols="100" rows="7"></textarea><br />
+    
+        </div>
+
+        <br />
+
+        <strong style="color:#00f;">SPHERE INFO</strong>
+    
+        <div style="padding:10px; border:1px solid #ccc; background:#fff;">
+    
+            <strong>Base Curves:</strong>
+         <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='Base curves' text='This is only used for searching purposes.  If the lens comes in one BC it is median, if two BCs flat and steep, if more check all three']--> >[?]</span><br />
+            <input type="checkbox" name="bc[0]" value="flat" /> flat &nbsp;&nbsp;&nbsp;
+            <input type="checkbox" name="bc[1]" value="median" /> med &nbsp;&nbsp;&nbsp;
+            <input type="checkbox" name="bc[2]" value="steep" /> steep<br /><br />
+
+            <p>
+            <table cellpadding="10px"><tr style="text-align:center;">
+              <td ><strong>Highest (<strong style="font-family:courier,monospace;">+</strong>) Power Available</strong>
+<span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='searching parameters' text='Only used for searching and sorting']--> >[?]</span><br />
+              <input type="text" name="lens_data[max_plus]" value="" size="6" maxlength="" />
+              </td>
+
+              <td><strong>Highest (<strong style="font-family:courier,monospace;">-</strong>) Power Available</strong>
+           <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='searching parameters' text='Only used for searching and sorting']--> >[?]</span><br />
+              <input type="text" name="lens_data[max_minus]" value="" size="6" maxlength="" />
+              </td></tr>
+
+             <tr style="text-align:center;"> 
+             <td><strong>Smallest Diameter Available</strong>
+<span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='searching parameters' text='Only used for searching and sorting']--> >[?]</span><br />
+              <input type="text" name="lens_data[min_diam]" value="" size="6" maxlength="" />
+              </td>
+              
+              <td>
+              <strong>Largest Diameter Available</strong>
+<span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='searching parameters' text='Only used for searching and sorting']--> >[?]</span><br />
+              <input type="text" name="lens_data[max_diam]" value="" size="6" maxlength="" />
+              </td>
+              
+              </tr>
+            </table>
+             
+            </p>
+        All base curves: <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='All base curves' text='This is a comma-separated list of all base curves availabel for this lens.  Listing a range is acceptable, eg) 8.3,8.6,8.9 or 8.1 to 9.1 in .2 steps']--> >[?]</span> <input type="text" name="lens_data[bc_all]" value="" size="100" maxlength="" />
+        
+        <br /><br />
+            <table>
+                <tr style="background:#fafafa;letter-spacing:3px;font-size:12px;font-weight:bold;color:#c09;">
+                    <td>VARIATIONS
+           <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='variations' text='Fill this out as best you can - if there are more than three variations use the ALTERNATE SPHERE TEXT option below']--> >[?]</span>
+                    </td>
+                    <td>1</td>
+                    <td>2</td>
+                    <td>3</td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;">Diameter:<span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='diameter' text='eg) 14.2']--> >[?]</span></td>
+                    <td><input type="text" name="lens_data[diam_1]" value="" size="30"></td>
+                    <td><input type="text" name="lens_data[diam_2]" value="" size="30"></td>
+                    <td><input type="text" name="lens_data[diam_3]" value="" size="30"></td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;">Powers:<span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='powers' text='eg) +12.00(+6.00) to -8.00(-12.00)']--> >[?]</span></td>
+                    <td><input type="text" name="lens_data[powers_1]" value="" size="30"></td>
+                    <td><input type="text" name="lens_data[powers_2]" value="" size="30"></td>
+                    <td><input type="text" name="lens_data[powers_3]" value="" size="30"></td>
+                </tr>
+                <tr>
+                    <td style="text-align:right;">Base Curves:<span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='base curves' text='eg) 8.3, 8.6, 8.9']--> >[?]</span></td>
+                    <td><input type="text" name="lens_data[base_curves_1]" value="" size="30"></td>
+                    <td><input type="text" name="lens_data[base_curves_2]" value="" size="30"></td>
+                    <td><input type="text" name="lens_data[base_curves_3]" value="" size="30"></td>
+                </tr>
+            </table><br />
+            
+            Notes regarding sphere powers? <br /><input type="text" name="lens_data[sph_notes]" value="" size="80"><br /><br />
+
+           
+    
+        </div>
+    
+        <br />
+        
+        
+<input type="checkbox" id="toric_lens" name="lens_data[toric]" value="1" onclick="if(this.checked){document.getElementById('toric').style.display='block';}else{document.getElementById('toric').style.display='none';}" />
+        <label for="toric_lens"><strong style="color:#00f;">TORIC LENS?</strong></label>
+    
+        <div id="toric" style="display:none; padding:10px; border:1px solid #ccc; background:#fff;">
+    
+            <strong>Toric Type:</strong>
+<span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='toric type' text='Such as &quot;back surface toric&quot;']--> >[?]</span><br />
+            <input type="text" name="lens_data[toric_type]" value="" size="" maxlength="" /><br /><br />
+    
+            <strong>Toric Type Simple:</strong><br />
+            <select name="lens_data[toric_type_simple]">
+				<option value="0" />unknown
+                <option value="prism ballast" />prism ballast
+                <option value="thin zones" />thin zones
+            </select><br /><br />
+    
+            <strong>Cylinder Power Text:</strong>
+<span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='cyl power text' text='eg) -0.75 to -2.25 in .50 steps']--> >[?]</span><br />
+            <input type="text" name="lens_data[cyl_power]" value="" size="40" maxlength="" /><br /><br />
+    
+            <strong>Max Cylinder Power:</strong>
+           <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='max cyl power' text='This is only for searching and sorting.  Use only numbers.<br /> eg) -2.25.']--> >[?]</span><br />
+            <input type="text" name="lens_data[max_cyl_power]" value="" size="8" maxlength="" /><br /><br />
+    
+            <strong>Cylinder Axis Text:</strong>
+          <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='cyl axis text' text='eg) 90 /180 &plusmn; 30&deg;<br /> eg) full circle<br />']--> >[?]</span><br />
+            <input type="text" name="lens_data[cyl_axis]" value="" size="40" maxlength="" />for a '&deg;' symbol type '&amp;deg;', for a '&plusmn;' symbol,type '&amp;plusmn;'<br />    <br />
+    
+    		<strong>Notes</strong> regarding cylinder powers or axis? <br /><input type="text" name="lens_data[cyl_notes]" value="" size="80"><br /><br />
+    
+            <strong>Cylinder Axis Steps:</strong>
+     <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='cyl axis steps' text='eg)10<br />eg)5<br />eg)1']--> >[?]</span><br />
+            <input type="text" name="lens_data[cyl_axis_steps]" value="" size="4" maxlength="" /><br /><br />
+    
+            <strong>Most Oblique Axis After 180:</strong>
+          <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='most oblique axis' text='A number between 0 and 45.  If a lens comes in axis 90/180 &plusm;20&deg; enter \'20\'.  <br />If a lens comes in axis 90/180 &plusm;30&deg; enter \'30\'.<br /> If a lens full circle enter \'45\'.']--> >[?]</span><br />
+            <input type="text" name="lens_data[oblique]" value="" size="4" maxlength="" /><br /><br />
+    
+            
+           
+        </div>
+    
+        <br/>
+        <input type="checkbox" id="lens_bifocal" name="lens_data[bifocal]" value="1" onclick="if(this.checked){document.getElementById('bifocal').style.display='block';}else{document.getElementById('bifocal').style.display='none';}" />
+        <label for="lens_bifocal"><strong style="color:#00f;">BIFOCAL LENS?</strong></label>
+    
+        <div id="bifocal" style="display:none; padding:10px; border:1px solid #ccc; background:#fff;">
+    
+            <strong>Bifocal Type:</strong>
+            <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='bifocal type' text='eg) diffractive; <br />eg)Aspheric front surface<br />eg) Concentric, near center']--> >[?]</span><br />
+            <input type="text" name="lens_data[bifocal_type]" value="" size="" maxlength="" /><br /><br />
+    
+            <strong>Bifocal Add Powers:</strong>
+         <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='bifocal adds' text='eg) +1.00 to +2.50 in .50 steps ']--> >[?]</span><br />
+            <input type="text" name="lens_data[add_text]" value="" size="" maxlength="" /><br /><br />
+    
+            <strong>Highest Bifocal Power:</strong>
+        <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='bifocal power' text='eg) 3.00']--> >[?]</span><br />
+            <input type="text" name="lens_data[max_add]" value="" size="" maxlength="" /><br /><br />
+    
+        </div>
+    
+        <br />
+    
+
+
+        <input type="checkbox" id="cosmetic_lens" name="lens_data[cosmetic]" value="1" onclick="if(this.checked){document.getElementById('cosmetic').style.display='block';}else{document.getElementById('cosmetic').style.display='none';}" />
+        <label for="cosmetic_lens"><strong style="color:#00f;">COSMETIC LENS?</strong></label>
+
+        <div id="cosmetic" style="display:none; padding:10px; border:1px solid #ccc; background:#fff;">
+    
+            <strong>Opaque Color Names:</strong>
+<span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='opaque colors' text='the manufacturer\'s color names, separated by commas.<br />eg) Sapphire blue, Emarald green, Kaka brown']--> >[?]</span><br />
+            <input type="text" name="lens_data[opaque_names]" value="" size="80" maxlength="" /><br /><br />
+    
+            <strong>Opaque Colors simple names:</strong>
+       <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='opaque colors' text='your best assesment of the colors.  Hold down the control button to make multiple selections.<br />eg) emerald green=green, sapphire blue=blue']--> >[?]</span><br />
+            <select name="opaque_colors[]" size="8" multiple="multiple">
+            <!--[foreach from=$opt_colors key=key item=color]-->
+                <option value="<!--[$color]-->" /><!--[$color]-->
+            <!--[/foreach]-->
+            </select><br /><br />
+
+            <strong>Enhancer Color Names:</strong>
+          <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='opaque colors' text='the manufacturer\'s color names, separated by commas.<br />eg) Sapphire blue, Emarald green, Kaka brown']--> >[?]</span><br />
+            <input type="text" name="lens_data[enh_names]" value="" size="80" maxlength="" /><br /><br />
+
+            <strong>Enhancer Colors simple names:</strong>
+ <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='opaque colors' text='your best assesment of the colors.  Hold down the control button to make multiple selections.<br />eg) emerald green=green, sapphire blue=blue']--> >[?]</span>
+             <br />
+            <select name="enh_colors[]" size="8" multiple="multiple">
+            <!--[foreach from=$opt_colors key=key item=color]-->
+                <option value="<!--[$color]-->" /><!--[$color]-->
+            <!--[/foreach]-->
+            </select><br /><br />
+
+           
+        </div>
+        
+        <br />
+        
+        <input type="checkbox"  id="special_lens" value="1" onclick="if(this.checked){document.getElementById('alt_entry').style.display='block';}else{document.getElementById('alt_entry').style.display='none';}" />
+        <label for="special_lens"> <strong>VERY UNIQUE LENS?</strong></label>
+<span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='unique lens' text='This box should only be used for very unique lenses that do not otherwise fit into the above fields.  Examples would include the synergeyes and softperm lensess.  ']--> >[?]</span>
+            
+     <div id="alt_entry" style="display:none; padding:10px; border:1px solid #ccc; background:#fff;"><span class="lens_warning">*  If the following box is populated, this information will be displayed in place of nearly all the above fields starting with the "material" field.   However, the above fields should still be filled out as well as possible as they are used during database searches.*</span><br />
+     
+          <strong>Special Lens?</strong><br />
+          <textarea  id="lenses_all" name="lens_data[redirect]" cols="100"rows="10"></textarea><br />
+       </div>
+    
+    </div>
+
+    <br /><br />
+
+     
+     
+
+      
+      <table border="0" cellpadding="10px">
+      <tr>
+          <td><strong>Discontinued:</strong>
+<span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='discontinued' text='If this lens is no longer being manufactured checking this box will place the word \'discontinued\' next to it every time it is listed']--> >[?]</span><br />
+            <input type="checkbox" name="lens_data[discontinued]" value="1" />
+          </td>
+          <td>
+            <strong>Display:</strong>
+         <span class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='display' text='Uncheck this box if you are not ready for website users to see this lens\'s info']--> >[?]</span><br />
+            <input type="checkbox" name="lens_data[display]" value="1" checked="checked"/>
+          </td>
+        </tr>
+        </table>
+
+
+    <br /><br /><input type="submit" name="submit" value="Create Lens" />
+
+</form>

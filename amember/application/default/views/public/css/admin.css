@@ -447,6 +447,11 @@ ul.list li {
 .norecord-actions {
   margin-bottom: 1em;
 }
+.group-wrap .link,
+.norecord-actions .link {
+  display: inline-block;
+  margin: 0.4em 1em;
+}
 
 .grid-container {
   border: 1px solid #a1a1a1;
@@ -479,6 +484,8 @@ ul.list li {
   padding: 0.5em;
   border: 1px solid white;
   vertical-align: top;
+  word-break: break-word;
+  word-wrap: break-word;
 }
 .grid th {
   padding: 0.5em;
@@ -982,6 +989,7 @@ input.error {
   width: 100%;
 }
 .input-lookup-input input.lookup:focus {
+  outline: 0;
   background: none;
   border: none;
 }
@@ -1172,7 +1180,8 @@ ul.admin-menu-collapsed li a.bold {
 
 .form-login {
   display: inline-block;
-  width: 350px;
+  width: 100%;
+  max-width: 350px;
 }
 .form-login legend {
   text-align: center;
@@ -1837,7 +1846,10 @@ button.ui-button.ui-button-text-only.ui-state-hover {
 
 .user-invoice-pending {
   opacity: .35;
-  filter: Alpha(Opacity=35);
+}
+
+.user-invoice-open.user-invoice-pending {
+  opacity: 1;
 }
 
 .user-invoice-header {

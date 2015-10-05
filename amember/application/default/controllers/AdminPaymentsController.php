@@ -8,7 +8,7 @@
  *        Web: http://www.cgi-central.net
  *    Details: Admin Payments
  *    FileName $RCSfile$
- *    Release: 4.4.4 ($Revision$)
+ *    Release: 4.7.0 ($Revision$)
  *
  * Please direct bug reports,suggestions or feedback to the cgi-central forums.
  * http://www.cgi-central.net/forum/
@@ -51,13 +51,24 @@ abstract class Am_Grid_Filter_Payments_Abstract extends Am_Grid_Filter_Abstract
             switch (@$filter['type']) {
                 case 'invoice':
                     if ($q->getTableName() == '?_invoice') {
-                        $q->addWhere('(t.invoice_id=? OR t.public_id=?)', $filter['text'], $filter['text']);
+                        $q->leftJoin('?_invoice_payment', 'p');
+                        $q->leftJoin('?_invoice_refund', 'rf');
+                        $q->addWhere('(t.invoice_id=? OR t.public_id=? OR p.display_invoice_id=? or rf.display_invoice_id=?)', $filter['text'], $filter['text'], $filter['text'], $filter['text']);
                     } else {
-                        $q->addWhere('(t.invoice_id=? OR t.invoice_public_id=?)', $filter['text'], $filter['text']);
+                        $q->addWhere('(t.invoice_id=? OR t.invoice_public_id=? or t.display_invoice_id=?)', $filter['text'], $filter['text'], $filter['text']);
                     }
                     break;
                 case 'login':
                     $q->addWhere('login=?', $filter['text']);
+                    break;
+                case 'name':
+                    $q->addWhere("name_f LIKE ? OR name_l LIKE ?
+                        OR CONCAT(name_f, ' ', name_l) LIKE ?
+                        OR CONCAT(name_l, ' ', name_f) LIKE ?",
+                        '%' . $filter['text'] . '%',
+                        '%' . $filter['text'] . '%',
+                        '%' . $filter['text'] . '%',
+                        '%' . $filter['text'] . '%');
                     break;
                 case 'receipt':
                     if ($q->getTableName() == '?_invoice') {
@@ -66,8 +77,10 @@ abstract class Am_Grid_Filter_Payments_Abstract extends Am_Grid_Filter_Abstract
                     $q->addWhere('receipt_id LIKE ?', '%' . $filter['text'] . '%');
                     break;
                 case 'coupon':
-                    $q->leftJoin('?_invoice', 'i', 't.invoice_id=i.invoice_id');
-                    $q->addWhere('i.coupon_code=?', $filter['text']);
+                    if ($q->getTableName() != '?_invoice') {
+                        $q->leftJoin('?_invoice', 'i', 't.invoice_id=i.invoice_id');
+                    }
+                    $q->addWhere('coupon_code=?', $filter['text']);
                     break;
             }
         }
@@ -111,6 +124,7 @@ abstract class Am_Grid_Filter_Payments_Abstract extends Am_Grid_Filter_Abstract
                 'invoice' => ___('Invoice Number'),
                 'receipt' => ___('Payment Receipt'),
                 'login' => ___('Username'),
+                'name' => ___('Name'),
                 'coupon' => ___('Coupon Code')
                 ), @$filter['type']);
 
@@ -344,7 +358,7 @@ class AdminPaymentsController extends Am_Controller_Pages
 
         $countryTitleField = new Am_Grid_Field('country_title', ___('Country Title'));
         $countryTitleField->setGetFunction(array($this, 'getCountryTitle'));
-        
+
         $action = new Am_Grid_Action_Export();
         $action->addField(new Am_Grid_Field('dattm', ___('Date/Time')))
             ->addField(new Am_Grid_Field('date', ___('Date')))
@@ -401,7 +415,7 @@ class AdminPaymentsController extends Am_Controller_Pages
     {
         return $this->getDi()->countryTable->getTitleByCode($obj->country);
     }
-    
+
     function createRefundsPage()
     {
         $query = new Am_Query($this->getDi()->invoiceRefundTable);
@@ -457,7 +471,7 @@ class AdminPaymentsController extends Am_Controller_Pages
 
         $countryTitleField = new Am_Grid_Field('country_title', ___('Country Title'));
         $countryTitleField->setGetFunction(array($this, 'getCountryTitle'));
-        
+
         $action = new Am_Grid_Action_Export();
         $action->addField(new Am_Grid_Field('dattm', ___('Date/Time')))
             ->addField(new Am_Grid_Field('date', ___('Date')))
@@ -491,6 +505,9 @@ class AdminPaymentsController extends Am_Controller_Pages
             }
         }
         $grid->actionAdd($action);
+        if ($this->getDi()->config->get('send_pdf_invoice')) {
+            $grid->actionAdd(new Am_Grid_Action_ExportPdf);
+        }
 
         $action = $grid->actionAdd(new Am_Grid_Action_Total());
         $action->addField($fieldAmount, 'ROUND(%s / t.base_currency_multi, 2)');
@@ -571,13 +588,18 @@ class AdminPaymentsController extends Am_Controller_Pages
 
         $countryTitleField = new Am_Grid_Field('country_title', ___('Country Title'));
         $countryTitleField->setGetFunction(array($this, 'getCountryTitle'));
-        
+
+        $termsField = new Am_Grid_Field('_total', ___('Billing Terms'));
+        $termsField->setGetFunction(array($this, 'getInvoiceTotal'));
+
         $action = new Am_Grid_Action_Export();
         $action->addField(new Am_Grid_Field('tm_started', ___('Date/Time')))
             ->addField(new Am_Grid_Field('date', ___('Date')))
             ->addField(new Am_Grid_Field('rebill_date', ___('Rebill Date')))
             ->addField(new Am_Grid_Field('invoice_id', ___('Invoice (Internal Id)')))
             ->addField(new Am_Grid_Field('public_id', ___('Invoice (Public Id)')))
+            ->addField(new Am_Grid_Field('status', ___('Status')))
+            ->addField($termsField)
             ->addField(new Am_Grid_Field('paysys_id', ___('Payment System')))
             ->addField(new Am_Grid_Field('first_total', ___('First Total')))
             ->addField(new Am_Grid_Field('first_tax', ___('First Tax')))
@@ -595,7 +617,8 @@ class AdminPaymentsController extends Am_Controller_Pages
             ->addField($countryTitleField)
             ->addField(new Am_Grid_Field('phone', ___('Phone')))
             ->addField(new Am_Grid_Field('zip', ___('Zip Code')))
-            ->addField(new Am_Grid_Field('item_title', ___('Product Title')));
+            ->addField(new Am_Grid_Field('item_title', ___('Product Title')))
+            ->addField(new Am_Grid_Field('coupon_code', ___('Coupon')));
         //Additional Fields
         foreach ($this->getDi()->userTable->customFields()->getAll() as $field) {
             if (isset($field->from_config) && $field->from_config) {

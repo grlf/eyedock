@@ -24,7 +24,10 @@ abstract class TranslationDataSource_Abstract {
             case self::FETCH_MODE_UNTRANSLATED :
                 $result = $this->getBaseTranslationData($language);
                 $result = $this->mergeWithCustomTranslation($result, $language);
-                $result = array_filter($result, create_function('$v', 'return (boolean)!$v;'));
+                $flip = array_flip($result);
+                $result = array_filter($result, function($v) use ($flip) {
+                    return (bool)(!$v || $v == $flip[$v]);
+                });
                 break;
             default:
                 throw new Am_Exception_InternalError('Unknown fetch mode : ' . $fetchMode);
@@ -392,6 +395,7 @@ class Am_Grid_Filter_Trans extends Am_Grid_Filter_Abstract {
     );
 
     public function  __construct($lang) {
+        $this->title = ' ';
         $this->language = $lang;
     }
 

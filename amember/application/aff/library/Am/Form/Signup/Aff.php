@@ -23,6 +23,12 @@ class Am_Form_Signup_Aff extends Am_Form_Signup
             new Am_Form_Brick_Password,
             new Am_Form_Brick_Address,
             new Am_Form_Brick_Agreement,
+            new Am_Form_Brick_Payout
         );
+    }
+
+    public function isHideBricks()
+    {
+        return true;
     }
 }

@@ -1,0 +1,108 @@
+ .lens_warning {
+    color: #f00;
+    font-weight: bold;
+       }
+.lens_max {
+    width: 100%;
+    border: 0;
+       }
+
+.lens_h1 {
+    letter-spacing:.4em;
+    margin-bottom:.75em;
+    padding:none;
+    font-weight: 600;
+    }
+
+.lens_outer {
+    padding: 10px;
+    border: 1px solid #ccc;
+    background: #dfe9ef;
+    }
+
+.lens_inner {
+    padding: 10px;
+    border: 1px solid #ccc;
+    background: #fff;
+    }
+.searchTerm {
+    border: 1px solid gray;
+    margin: -1px 5px 0;
+    padding: .5em;
+    /*width: 400px;*/
+    background: #f0f0f0;
+    }
+
+.groupedTerm {
+    margin: 5px 15px;
+    padding: 3px;
+    border-bottom: 1px dotted gray;
+    }
+
+.sectionHeader {
+    text-decoration: underline;
+    line-height: 1.75em;
+    display: block;
+    }
+
+.lens_help {
+	font-size: 14px;  
+	cursor: help; 
+	text-align: center;
+	}
+
+.lens_helpcue {
+	cursor: help; 
+	border-bottom: 1px solid #7CC1FC;
+        padding: 2px 5px;
+}
+.lens_helpcue:hover{
+        background:#E5EEEF;
+        
+}
+.lens_describe {
+    background: #f2f2f2;
+}
+
+ .lensWhite{
+        border: 1px solid gray;
+        margin: 2px;
+        padding: 1em;
+        background: #FFFFFF;
+ }
+
+ .lens_highlight {
+    background: #d2e1fe;
+    padding: 5px;
+    margin: 1.5em 0 1em 0;
+    border: 1px solid gray;
+    }
+    
+.nolens_highlight {
+    background: #ffd4ce;
+    padding: 5px;
+    margin: 1.5em 0 1em 0;
+    border: 1px solid gray;
+    }
+ 
+.lens_right_strong_bg {
+	vertical-align: top;
+	font-weight: bold;
+	text-align: right;
+	background: #f2f2f2;
+	}
+/*-------------------*/
+
+div.lens_nav {
+    border: 1px solid gray;
+    margin: 2px;
+    padding: 1em;
+    }
+a.lens_nav:link,
+a.lens_nav:visited {
+    padding: 5px;
+    margin: 2px;
+    border: 1px solid #000;
+    z-index: -99;
+    }
+

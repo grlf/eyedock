@@ -74,7 +74,7 @@ class am4Widget_login extends WP_Widget{
         $this->addFormElement("text", 'change_profile_title',       __('Change Profile Title:', 'am4-plugin'),    __('Edit Profile', 'am4-plugin'));
         $this->addFormElement("text", 'signup_page_url',            __('Signup Page URL', 'am4-plugin') ,         am4PluginsManager::getAPI()->getSignupURL());
         $this->addFormElement("text", 'renewal_page_url',           __('Renewal  Page URL', 'am4-plugin') ,       am4PluginsManager::getAPI()->getSignupURL());
-        $this->addFormElement("text", 'lost_password_page_url',     __('Lost Password Page URL', 'am4-plugin'),   am4PluginsManager::getAPI()->getLoginURL());
+        $this->addFormElement("text", 'lost_password_page_url',     __('Lost Password Page URL', 'am4-plugin'),   am4PluginsManager::getAPI()->getSendpassURL());
         $this->addFormElement("text", 'profile_page_url',           __('Profile Page URL', 'am4-plugin') ,        am4PluginsManager::getAPI()->getProfileURL());
         $this->addFormElement("text", 'history_page_url',           __('Payment History Page URL', 'am4-plugin'), am4PluginsManager::getAmemberURL()."/member/payment-history");
         $this->addFormElement("text", 'logout_page_url',            __('Logout page URL', 'am4-plugin') ,         am4PluginsManager::getAPI()->getLogoutURL());
@@ -199,10 +199,10 @@ class am4Widget_login extends WP_Widget{
 
 include_once(ABSPATH . WPINC . "/default-widgets.php");
 class am4Widget_text extends WP_Widget_Text {
-    function am4Widget_text(){
+    function __construct(){
 		$widget_ops = array('classname' => 'widget_text', 'description' => __('Arbitrary text or HTML', 'am4-plugin'));
 		$control_ops = array('width' => 400, 'height' => 350);
-                $this->WP_Widget('amember_text',  __('aMember Text Widget', 'am4-plugin'),$widget_ops, $control_ops);
+        WP_Widget::__construct('amember_text',  __('aMember Text Widget', 'am4-plugin'),$widget_ops, $control_ops);
     }
     
     function form($instance){
@@ -237,9 +237,9 @@ class am4Widget_text extends WP_Widget_Text {
 }
 
 class am4Widget_menu extends WP_Nav_Menu_Widget{
-    function am4Widget_menu(){
+    function __construct(){
 		$widget_ops = array('description' => __('Custom Menu with aMember protection settings', 'am4-plugin'));
-		$this->WP_Widget('amember_menu', __('aMember menu Widget', 'am4-plugin'), $widget_ops, @$control_ops);
+		WP_Widget::__construct('amember_menu', __('aMember menu Widget', 'am4-plugin'), $widget_ops, @$control_ops);
 
     }
     function form($instance){

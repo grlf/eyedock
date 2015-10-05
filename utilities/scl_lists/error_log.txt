@@ -1,0 +1,70 @@
+[06-Sep-2013 15:37:42 UTC] PHP Warning:  require_once(/mysqliSingleton.php): failed to open stream: No such file or directory in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 9
+[06-Sep-2013 15:37:42 UTC] PHP Fatal error:  require_once(): Failed opening required '/mysqliSingleton.php' (include_path='.:/Applications/MAMP/bin/php/php5.4.4/lib/php') in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 9
+[06-Sep-2013 15:45:36 UTC] PHP Notice:  Undefined index: comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 11
+[06-Sep-2013 16:15:50 UTC] PHP Notice:  Undefined index: city in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 44
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 16:43:26 UTC] PHP Notice:  Undefined index: pn_comp_id in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 53
+[06-Sep-2013 17:04:17 UTC] PHP Warning:  require_once(../mysqliSingleton.php): failed to open stream: No such file or directory in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 9
+[06-Sep-2013 17:04:17 UTC] PHP Fatal error:  require_once(): Failed opening required '../mysqliSingleton.php' (include_path='.:/Applications/MAMP/bin/php/php5.4.4/lib/php') in /Applications/MAMP/htdocs/eyedock.com/utilities/scl_lists/scl_lists.php on line 9
+[06-Sep-2013 17:04:17 UTC] PHP Strict Standards:  Non-static method JFactory::getDBO() should not be called statically, assuming $this from incompatible context in /Applications/MAMP/htdocs/eyedock.com/libraries/joomla/session/storage/database.php on line 84
+[06-Sep-2013 17:04:17 UTC] PHP Strict Standards:  Non-static method JTable::getInstance() should not be called statically, assuming $this from incompatible context in /Applications/MAMP/htdocs/eyedock.com/libraries/joomla/session/storage/database.php on line 89
+[06-Sep-2013 17:04:17 UTC] PHP Strict Standards:  Non-static method JFactory::getDBO() should not be called statically, assuming $this from incompatible context in /Applications/MAMP/htdocs/eyedock.com/libraries/joomla/database/table.php on line 112
+[06-Sep-2013 17:04:34 UTC] PHP Notice:  Undefined index: view in /Applications/MAMP/htdocs/eyedock.com/templates/beez/index.php on line 63
+[06-Sep-2013 17:04:34 UTC] PHP Notice:  Undefined index: view in /Applications/MAMP/htdocs/eyedock.com/templates/beez/index.php on line 73
+[06-Sep-2013 17:13:09 UTC] PHP Notice:  Undefined index: view in /Applications/MAMP/htdocs/eyedock.com/templates/beez/index.php on line 63
+[06-Sep-2013 17:13:09 UTC] PHP Notice:  Undefined index: view in /Applications/MAMP/htdocs/eyedock.com/templates/beez/index.php on line 73
+[06-Sep-2013 17:14:09 UTC] PHP Notice:  Undefined index: view in /Applications/MAMP/htdocs/eyedock.com/templates/beez/index.php on line 63
+[06-Sep-2013 17:14:09 UTC] PHP Notice:  Undefined index: view in /Applications/MAMP/htdocs/eyedock.com/templates/beez/index.php on line 73
+[06-Sep-2013 17:14:42 UTC] PHP Notice:  Undefined index: view in /Applications/MAMP/htdocs/eyedock.com/templates/beez/index.php on line 63
+[06-Sep-2013 17:14:42 UTC] PHP Notice:  Undefined index: view in /Applications/MAMP/htdocs/eyedock.com/templates/beez/index.php on line 73
+[06-Sep-2013 17:15:26 UTC] PHP Notice:  Undefined index: view in /Applications/MAMP/htdocs/eyedock.com/templates/beez/index.php on line 63
+[06-Sep-2013 17:15:26 UTC] PHP Notice:  Undefined index: view in /Applications/MAMP/htdocs/eyedock.com/templates/beez/index.php on line 73
+[06-Sep-2013 17:16:04 UTC] PHP Notice:  Undefined index: view in /Applications/MAMP/htdocs/eyedock.com/templates/beez/index.php on line 63
+[06-Sep-2013 17:16:04 UTC] PHP Notice:  Undefined index: view in /Applications/MAMP/htdocs/eyedock.com/templates/beez/index.php on line 73
+[06-Sep-2013 17:16:20 UTC] PHP Notice:  Undefined index: view in /Applications/MAMP/htdocs/eyedock.com/templates/beez/index.php on line 63
+[06-Sep-2013 17:16:20 UTC] PHP Notice:  Undefined index: view in /Applications/MAMP/htdocs/eyedock.com/templates/beez/index.php on line 73
+[06-Sep-2013 17:18:20 UTC] PHP Notice:  Undefined index: view in /Applications/MAMP/htdocs/eyedock.com/templates/beez/index.php on line 63
+[06-Sep-2013 17:18:20 UTC] PHP Notice:  Undefined index: view in /Applications/MAMP/htdocs/eyedock.com/templates/beez/index.php on line 73
+[06-Sep-2013 17:18:42 UTC] PHP Notice:  Undefined index: view in /Applications/MAMP/htdocs/eyedock.com/templates/beez/index.php on line 63
+[06-Sep-2013 17:18:42 UTC] PHP Notice:  Undefined index: view in /Applications/MAMP/htdocs/eyedock.com/templates/beez/index.php on line 73
+[06-Sep-2013 17:18:50 UTC] PHP Notice:  Undefined index: view in /Applications/MAMP/htdocs/eyedock.com/templates/beez/index.php on line 63
+[06-Sep-2013 17:18:50 UTC] PHP Notice:  Undefined index: view in /Applications/MAMP/htdocs/eyedock.com/templates/beez/index.php on line 73
+[06-Sep-2013 17:19:18 UTC] PHP Notice:  Undefined index: view in /Applications/MAMP/htdocs/eyedock.com/templates/beez/index.php on line 63
+[06-Sep-2013 17:19:18 UTC] PHP Notice:  Undefined index: view in /Applications/MAMP/htdocs/eyedock.com/templates/beez/index.php on line 73

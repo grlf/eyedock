@@ -405,6 +405,30 @@ class InvoiceCreator_AuthorizeCim extends InvoiceCreator_Standard{
     }
 }
 
+class InvoiceCreator_Abnamro extends InvoiceCreator_Standard{
+    function __construct($paysys_id)
+    {
+        $this->paysys_id = 'abnamro';
+    }
+    
+    function doWork(){
+        parent::doWork();
+        // First make sure that user's record have ccInfo created;
+        
+        $storedCc = Am_Di::getInstance()->ccRecordTable->findFirstByUserId($this->user->pk());
+        if(!$storedCc){
+            $storedCc = Am_Di::getInstance()->CcRecordRecord;
+            $storedCc->user_id = $this->user->pk();
+            $storedCc->cc_expire    =   '1237';
+            $storedCc->cc_number = '0000000000000000';
+            $storedCc->cc = $storedCc->maskCc(@$storedCc->cc_number);
+            $storedCc->insert();
+        }
+        if($user_profile = $this->v3user['data']['abnamro_alias'])
+            $this->user->data()->set('abnamro_alias', $user_profile)->update();
+    }
+}
+
 class InvoiceCreator_MonerisR extends InvoiceCreator_Standard{
     function __construct($paysys_id)
     {
@@ -541,7 +565,7 @@ class InvoiceCreator_Epayeu extends InvoiceCreator_Standard{
                 }else
                     $invoice->status = Invoice::RECURRING_ACTIVE;
                     
-                
+
             }else{
                 $invoice->status = Invoice::PAID; 
             }
@@ -1009,7 +1033,7 @@ class Am_Import_User3 extends Am_Import_Abstract
 
     function getCfDataSource() {
         if (is_null(self::$cfDs)) {
-            include_once(ROOT_DIR . '/application/default/controllers/AdminFieldsController.php');
+            include_once ROOT_DIR . '/application/default/controllers/AdminFieldsController.php';
             self::$cfDs = new Am_Grid_DataSource_CustomFields(array());
         }
         return self::$cfDs;
@@ -1583,7 +1607,8 @@ class Am_Import_Newsletter3 extends Am_Import_Abstract
                             $exp = '-1d';
                         else
                             $exp = null;
-                        $t->addAccessListItem($tr[$p], null, $exp, ResourceAccess::FN_PRODUCT);
+                        if(isset($tr[$p]))
+                            $t->addAccessListItem($tr[$p], null, $exp, ResourceAccess::FN_PRODUCT);
                         break;
                     case 'expired_product':
                         // handled above if active is present, else skipped
@@ -1855,6 +1880,53 @@ class Am_Import_Productlinks3 extends Am_Import_Abstract
     }
 }
 
+class Am_Import_Integration3 extends Am_Import_Abstract
+{
+    public function doWork(&$context)
+    {
+        $q = $this->db3->queryResultOnly("SELECT * FROM ?_products WHERE product_id > ? order by product_id",$context);
+        while ($r = $this->db3->fetchRow($q))
+        {
+            if (!$this->checkLimits()) return false;
+            $context++;
+            $r['data'] = unserialize($r['data']);
+            if($newpid = $this->getDi()->db->selectCell("SELECT id FROM ?_data WHERE `table`='product' AND `key`='am3:id' AND value=?",$r['product_id']))
+            {
+                $ints = array('vbulletin3_access' => 'vbulletin');
+                foreach($ints as $v3name => $v4name)
+                {
+                    if(@count($r['data'][$v3name]))
+                    {
+                        foreach($r['data'][$v3name] as $v3group)
+                        {
+                            $create = true;
+                            foreach($this->getDi()->integrationTable->findBy(array('plugin' => $v4name)) as $integration)
+                            {
+                                if(!$create)
+                                    continue;
+                                $vars = @unserialize($integration->vars);
+                                if($vars['gr'] == $v3group)
+                                {
+                                    $create = false;
+                                    $integration->addAccessListItem($newpid, NULL, NULL, 'product_id');
+                                }
+                            }
+                            if($create) 
+                            {
+                                $integration = $this->getDi()->integrationRecord;
+                                $integration->plugin = $v4name;
+                                $integration->vars = serialize(array('gr' => $v3group));
+                                $integration->insert();
+                                $integration->addAccessListItem($newpid, NULL, NULL, 'product_id');
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+}
 
 class AdminImport3Controller extends Am_Controller
 {
@@ -2083,6 +2155,12 @@ EOL
                 $cb->setLabel('Import Folders');
             }
         }
+        //import integrations
+        if ($imported_products)
+        {
+            $cb = $form->addRadio('import', array('value' => 'integration'));
+            $cb->setLabel('Import Integrations');
+        }
         //import product links
         if ($imported_products)
         {
@@ -2257,6 +2335,194 @@ class InvoiceCreator_Braintree extends InvoiceCreator_Standard{
         if($user_profile = $this->v3user['data']['braintree_customer_vault_id'])
         {
             $this->user->data()->set('braintree_customer_id', $user_profile);
+        }
+        $this->user->data()->update();
+        
+    }
+}
+
+class InvoiceCreator_BeanstreamRemote extends InvoiceCreator_Standard
+{
+    function __construct($paysys_id)
+    {
+        $this->paysys_id = 'beanstream-remote';
+    }
+    function doWork()
+    {
+        foreach ($this->groups as $list)
+        {
+            $byDate = array();
+            $totals = array(); // totals by date
+            $coupon = null;
+            $cancelled = null;
+            $invoice = null;
+            foreach ($list as $p)
+            {
+                $d = date('Y-m-d', strtotime($p['tm_added']));
+                $byDate[ $d ][] = $p;
+                @$totals[ $d ] += $p['amount'];
+                if(!empty($p['data'][0]['coupon']))
+                    $coupon = $p['data'][0]['coupon'];
+                if(!empty($p['data']['CANCELLED_AT']))
+                    $cancelled = date('Y-m-d H:i:s', strtotime($p['data']['CANCELLED_AT']));
+                elseif(@$p['data']['CANCELLED'])
+                    $cancelled = date('Y-m-d H:i:s', time());
+
+            }
+
+            if((count($list) == 1) && (!$list[0]['data']['beanstream_rbaccountid']) && ($rbAccountId = $this->findRbAccountId($list[0])))
+            {
+                $invoice = $this->getDi()->invoiceTable->findFirstByData('rb-account-id', $rbAccountId);
+            }
+
+            if(!$invoice)
+            {
+                $invoice = $this->getDi()->invoiceRecord;
+                $invoice->user_id = $this->user->pk();
+
+                $pidItems = array();
+                foreach ($list as $p)
+                {
+                    $pid = $p['product_id'];
+                    if (@$pidItems[$pid]) continue;
+                    $pidItems[$pid] = 1;
+
+                    $newP = $this->_translateProduct($pid);
+                    if ($newP)
+                    {
+                        $pr = Am_Di::getInstance()->productTable->load($newP);
+                        $item = $invoice->createItem($pr);
+                        if (empty($invoice->first_period))
+                            $invoice->first_period = $pr->getBillingPlan()->first_period;
+                    } else {
+                        $item = $invoice->createItem(new ImportedProduct($pid));
+                        $invoice->first_period = '1d';
+                    }
+                    $item->add(1);
+                    $item->_calculateTotal();
+                    $invoice->addItem($item);
+                }
+                if(!is_null($coupon))
+                {
+                    $invoice->setCouponCode($coupon);
+                    $invoice->validateCoupon();
+                }
+
+                $invoice->currency = $item->currency ? $item->currency : Am_Currency::getDefault();
+                $invoice->calculate();
+                $invoice->paysys_id = $this->paysys_id;
+                $invoice->tm_added = $list[0]['tm_added'];
+                $invoice->tm_started = $list[0]['tm_completed'];
+                $invoice->public_id = $list[0]['payment_id'];
+                $invoice->first_total = current($totals);
+
+                if($invoice->rebill_times){
+                    // Recurring
+                    if($cancelled)
+                    {
+                        $invoice->tm_cancelled = $cancelled;
+                        $invoice->status = Invoice::RECURRING_CANCELLED;
+                    }else
+                        $invoice->status = Invoice::RECURRING_ACTIVE;
+                }else{
+                    $invoice->status = Invoice::PAID;
+                }
+
+                foreach ($list as $p) $pidlist[] = $p['payment_id'];
+                $invoice->data()->set('am3:id', implode(',', $pidlist));
+                if(empty($invoice->currency)) $invoice->currency=Am_Currency::getDefault();
+                //REQUIRED PART TO IMPORT RECURRING SUBCRIPTIONS
+                if (@$p['data']['beanstream_rbaccountid'])
+                    $invoice->data()->set('rb-account-id', $p['data']['beanstream_rbaccountid']);
+                $invoice->insert();
+            }
+
+            // insert payments and access
+            foreach ($list as $p)
+            {
+                $newP = $this->_translateProduct($p['product_id']);
+
+                if (empty($p['data']['ORIG_ID']))
+                {
+                    $payment = $this->getDi()->invoicePaymentRecord;
+                    $payment->user_id = $this->user->user_id;
+                    $payment->currency = $invoice->currency;
+                    $payment->invoice_id = $invoice->pk();
+                    $payment->invoice_public_id = $invoice->public_id;
+                    if (count($list) == 1) {
+                        $payment->amount = $p['amount'];
+                    } elseif ($p['data']['BASKET_PRICES'])
+                    {
+                        $payment->amount = array_sum($p['data']['BASKET_PRICES']);
+                    } else {
+                        $payment->amount = 0;
+                        foreach ($list as $pp)
+                            if (@$p['data']['ORIG_ID'] == $p['payment_id'])
+                                $payment->amount += $pp['amount'];
+                    }
+                    $payment->paysys_id = $this->paysys_id;
+                    $payment->dattm = $p['tm_completed'];
+                    $payment->receipt_id = $p['receipt_id'];
+                    $payment->transaction_id = $p['receipt_id'] . '-import-' . mt_rand(10000, 99999).'-'.intval($p['payment_id']);
+                    $payment->insert();
+                    $this->getDi()->db->query("INSERT INTO ?_data SET
+                        `table`='invoice_payment',`id`=?d,`key`='am3:id',`value`=?",
+                            $payment->pk(), $p['payment_id']);
+                }
+
+                if ($newP) // if we have imported that product
+                {
+                    $a = $this->getDi()->accessRecord;
+                    $a->setDisableHooks();
+                    $a->user_id = $this->user->user_id;
+                    $a->begin_date = $p['begin_date'];
+                    $a->expire_date = $p['expire_date'];
+                    $a->invoice_id = $invoice->pk();
+                    $a->invoice_payment_id = $payment->pk();
+                    $a->product_id = $newP;
+                    $a->insert();
+               }
+            }
+
+        }
+    }
+
+    protected function findRbAccountId($currentPayment)
+    {
+        $rbAccountId = false;
+        foreach ($this->groups as $list)
+        {
+            $p = $list[0];
+            if($p['payment_id'] >= $currentPayment['payment_id']) break;
+            if($p['product_id'] != $currentPayment['product_id']) continue;
+            if(isset($p['data']['beanstream_rbaccountid']))
+                $rbAccountId = $p['data']['beanstream_rbaccountid'];
+        }
+        return $rbAccountId;
+    }
+}
+class InvoiceCreator_MicropaymentDbt extends InvoiceCreator_Standard{
+    function __construct($paysys_id)
+    {
+        $this->paysys_id = 'micropayment-dbt';
+    }
+    
+    function doWork(){
+        parent::doWork();
+        // First make sure that user's record have ccInfo created;
+        
+        $storedCc = Am_Di::getInstance()->ccRecordTable->findFirstByUserId($this->user->pk());
+        if(!$storedCc){
+            $storedCc = Am_Di::getInstance()->CcRecordRecord;
+            $storedCc->user_id = $this->user->pk();
+            $storedCc->cc_expire    =   '1237';
+            $storedCc->cc_number = '0000000000000000';
+            $storedCc->cc = $storedCc->maskCc(@$storedCc->cc_number);
+            $storedCc->insert();
+        }
+        if($user_profile = $this->v3user['data']['micropayment_dbt_customer_vault_id'])
+        {
+            $this->user->data()->set('micropayment_dbt_customer_vault_id', $user_profile);
         }
         $this->user->data()->update();
         

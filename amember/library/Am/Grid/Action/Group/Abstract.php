@@ -10,7 +10,6 @@ abstract class Am_Grid_Action_Group_Abstract extends Am_Grid_Action_Abstract
     protected $confirmationText;
     
     protected $batchCount = 20; // how many records to select and process between checkLimits() 
-    protected $isDelete = false; // if that is delete operation, we must start any iteration from first page!
     
     public function __construct($id = null, $title = null)
     {
@@ -84,33 +83,42 @@ abstract class Am_Grid_Action_Group_Abstract extends Am_Grid_Action_Abstract
         }
         $this->log();
     }
-    public function _handleAll(& $page, Am_BatchProcessor $batch)
+    public function _handleAll(& $context, Am_BatchProcessor $batch)
     {
         $ds = $this->grid->getDataSource();
-        $page = (int)$page;
-        do {
-            $done = 0;
-            foreach ($ds->selectPageRecords($this->isDelete ? 0 : $page++, $this->batchCount) as $record)
-            {
+        list($item, $processed) = explode('-', $context);
+        $done = 0;
+        $totalBefore = $ds->getFoundRows();
+        $page = ceil($item/$this->batchCount);
+        $currentItem = $page * $this->batchCount;
+        foreach ($ds->selectPageRecords($page, $this->batchCount) as $record)
+        {
+            if ($currentItem >= $item) {
                 $id = $ds->getIdForRecord($record);
                 $this->handleRecord($id, $record);
                 $done++;
             }
-            if (!$batch->checkLimits()) return ;
-        } while ($done > 0);
+            $currentItem++;
+        }
+        $ds->selectPageRecords(0, 1); //to clear fornRows cache
+        $totalAfter = $ds->getFoundRows();
+        $item = $currentItem - $totalBefore + $totalAfter;
+        $processed += $done;
+        $context = implode('-', array($item, $processed));
         if ($done == 0) return true; // no more records
     }
     public function handleAll()
     {
         $batch = new Am_BatchProcessor(array($this, '_handleAll'), 10);
-        $page = $this->grid->getRequest()->getInt('group_page');
-        if ($batch->run($page))
+        $context = $this->grid->getRequest()->getParam('group_context', '0-0');
+        if ($batch->run($context))
         {
             echo $this->renderDone();
         } else {
-            echo ($page*$this->batchCount)." " . ___('records processed.');
-            echo $this->getAutoClickScript(5, 'input#group-action-continue');
-            echo $this->renderConfirmationForm(___('Continue'), $page);
+            list(,$processed) = explode('-', $context);
+            echo $processed . " " . ___('records processed.');
+            echo $this->getAutoClickScript(3, 'input#group-action-continue');
+            echo $this->renderContinueForm(___('Continue'), $context);
         }
     }
     abstract public function handleRecord($id, $record);

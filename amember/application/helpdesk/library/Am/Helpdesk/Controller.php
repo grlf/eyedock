@@ -93,7 +93,7 @@ class Am_Helpdesk_Controller extends Am_Controller
             $et = Am_Mail_Template::load('helpdesk.notify_assign');
             $et->setTicket($ticket);
             $et->setAdmin($admin);
-            $et->setUrl(sprintf('%s/helpdesk/index/p/view/view/ticket/%s',
+            $et->setUrl(sprintf('%s/helpdesk/admin/ticket/%s',
                         $this->getDi()->config->get('root_surl'),
                         $ticket->ticket_mask)
                 );
@@ -251,9 +251,25 @@ class Am_Helpdesk_Controller extends Am_Controller
             throw new Am_Exception_AccessDenied();
         }
 
+        $ticket = $this->getDi()->helpdeskTicketTable->load($this->getParam('ticket'), false);
+        $tpl = null;
+        if ($ticket) {
+            $tpl = new Am_SimpleTemplate;
+            $tpl->assign('user', $ticket->getUser());
+        }
+
         $ds = new Am_Query($this->getDi()->helpdeskSnippetTable);
         $grid = new Am_Grid_Editable('_snippet', ___('Snippets'), $ds, $this->getRequest(), $this->view, $this->getDi());
-        $grid->addField('title', ___('Title'))->setRenderFunction(array($this, 'renderSnippetTitle'));
+        $grid->addField('title', ___('Title'))->setRenderFunction(
+            function ($record, $fieldName, $grid) use ($tpl) {
+                $c = $record->content;
+                if ($tpl) {
+                    $c = $tpl->render($c);
+                }
+                return sprintf('<td><a href="javascript:;" class="local am-helpdesk-insert-snippet" data-snippet-content="%s">%s</a></td>',
+                    Am_Controller::escape($c),
+                    Am_Controller::escape($record->title));
+            });
         $grid->setForm(array($this, 'createForm'));
         $grid->actionGet('insert')->setTarget(null);
         $grid->setPermissionId(Bootstrap_Helpdesk::ADMIN_PERM_ID);
@@ -308,13 +324,6 @@ class Am_Helpdesk_Controller extends Am_Controller
         echo $grid->run();
     }
 
-    public function renderSnippetTitle($record, $fieldName, $grid)
-    {
-        return sprintf('<td><a href="javascript:;" class="local am-helpdesk-insert-snippet" data-snippet-content="%s">%s</a></td>',
-            Am_Controller::escape($record->content),
-            Am_Controller::escape($record->title));
-    }
-
     public function renderFaqTitle($record, $fieldName, $grid)
     {
         return sprintf('<td><a href="javascript:;" class="local am-helpdesk-insert-faq" data-faq-content="%s">%s</a></td>',
@@ -352,13 +361,8 @@ class Am_Helpdesk_Controller extends Am_Controller
 
     protected function redirectTicket($ticket)
     {
-        $url = $this->strategy->assembleUrl(array(
-                'page_id' => 'view',
-                'action' => 'view',
-                'ticket' => $ticket->ticket_mask,
-                ), 'inside-pages');
+        $url = $this->strategy->ticketUrl($ticket);
         $this->redirectLocation($url);
-        exit;
     }
 
     private function editMessage($message_id, $value)
@@ -408,13 +412,16 @@ class Am_Helpdesk_Controller extends Am_Controller
                 $content = array_map(create_function('$v', 'return \'>\'.$v;'), $content);
                 $content = "\n\n" . implode("\n", $content);
             }
-            if (defined('AM_ADMIN') && $this->getModule()->getConfig('add_signature')) {
-                $content = "\n\n" . $this->expandPlaceholders($this->getModule()->getConfig('signature')) . $content;
-            }
         } elseif (!is_null($message) && $type == 'comment') {
             $content = $message->content;
             $form->addHidden('message_id')
                 ->setValue($this->getDi()->app->obfuscate($message->message_id));
+        }
+
+        if ($type == 'message' &&
+                defined('AM_ADMIN') &&
+                $this->getModule()->getConfig('add_signature')) {
+            $content = "\n\n" . $this->expandPlaceholders($this->getModule()->getConfig('signature')) . $content;
         }
 
         $form->addHidden('type')

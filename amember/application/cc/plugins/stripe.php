@@ -11,7 +11,7 @@ class Am_Paysystem_Stripe extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.0';
     
     const TOKEN = 'stripe_token';
     const CC_EXPIRES = 'stripe_cc_expires';
@@ -21,14 +21,17 @@ class Am_Paysystem_Stripe extends Am_Paysystem_CreditCard
 
     protected $defaultTitle = "Stripe";
     protected $defaultDescription  = "Credit Card Payments";
-    
+    public function allowPartialRefunds()
+    {
+        return true;
+    }
     public function getRecurringType()
     {
         return self::REPORTS_CRONREBILL;
     }
     public function getSupportedCurrencies()
     {
-        return array('USD', 'CAD', 'GBP', 'EUR', 'CHF');    
+        return array('USD', 'CAD', 'GBP', 'EUR', 'CHF', 'AUD');    
     }
     
     public function _doBill(Invoice $invoice, $doFirst, CcRecord $cc, Am_Paysystem_Result $result)
@@ -329,8 +332,8 @@ CUT
         $action = $this->plugin->getPluginUrl('cc');
         $id = Am_Controller::escape($this->_request->get('id'));
         $action = Am_Controller::escape($action);
-        $view = new Am_View;
-        $receipt = $view->partial('_receipt.phtml', array('invoice' => $this->invoice));
+
+        $receipt = $this->view->partial('_receipt.phtml', array('invoice' => $this->invoice, 'di'=>$this->getDi()));
         $this->view->content .= <<<CUT
 <div class='am-reuse-card-confirmation'>
 $receipt
@@ -421,7 +424,7 @@ class Am_Paysystem_Transaction_Stripe extends Am_Paysystem_Transaction_CreditCar
         $request = new Am_HttpRequest('https://api.stripe.com/v1/charges', 'POST');
         $amount = $doFirst ? $invoice->first_total : $invoice->second_total;
         $request->setAuth($plugin->getConfig('secret_key'), '')
-            ->addPostParameter('amount', (int)(sprintf('%.02f', $amount)*100))
+            ->addPostParameter('amount', sprintf('%.02f', $amount)*100)
             ->addPostParameter('currency', $invoice->currency)
             ->addPostParameter('customer', $invoice->getUser()->data()->get(Am_Paysystem_Stripe::TOKEN))
             ->addPostParameter('description', 'Invoice #'.$invoice->public_id.': '.$invoice->getLineDescription());
@@ -547,7 +550,7 @@ class Am_Paysystem_Transaction_Stripe_Refund extends Am_Paysystem_Transaction_Cr
     }
     public function getUniqId()
     {
-        return $this->parsedResponse['id'] . '-refund';
+        return $this->parsedResponse['id'] . '-' . sprintf("%02d", $this->invoice->getRefundsCount() + 1) .'-refund';
     }
     public function parseResponse()
     {
@@ -557,7 +560,7 @@ class Am_Paysystem_Transaction_Stripe_Refund extends Am_Paysystem_Transaction_Cr
     {
         if (!@$this->parsedResponse['id'])
             $this->result->setErrorMessages(array('Unable to fetch payment profile'));
-        $this->result->setSuccess($this);
+        $this->result->setSuccess();
     }
     public function processValidated()
     {

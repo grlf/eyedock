@@ -1,0 +1,25 @@
+<!--[include file=meds_admin_menu.htm]-->
+<h2>View All Chemicals</h2>
+
+<table class="meds_table_max" cellpadding="3" cellspacing="2">
+    <tr class="meds_table_head">
+        <td>ID</td>
+        <td>Name</td>
+        <td>Method</td>
+        <td>Actions</td>
+    </tr>
+
+<!--[foreach from=$items key=key item=chemical]-->
+    <tr class="meds_row_<!--[cycle values="odd,even"]-->">
+        <td class="align_center"><!--[$chemical.chem_id|pnvarprepfordisplay]--></td>
+        <td class="meds_center_strong"><!--[$chemical.name|pnvarprepfordisplay]--></td>
+        <td class="align_center"><!--[$methods[$chemical.moa_id].name]--></td>
+        <td class="align_center">
+            [ <a href="<!--[pnmodurl modname=Meds type=admin func=modify_chem chem_id=$chemical.chem_id|pnvarprepfordisplay]-->" title="Edit">Edit</a> ]
+            [ <a href="<!--[pnmodurl modname=Meds type=admin func=delete object=chem id=$chemical.chem_id|pnvarprepfordisplay]-->" title="Delete">Delete</a> ]
+        </td>
+    </tr>
+<!--[/foreach]-->
+
+</table>
+<br />

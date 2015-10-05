@@ -19,7 +19,7 @@
  * @see Am_Table
  * @package Am_Invoice
  */
-class InvoicePayment extends Am_Record {
+class InvoicePayment extends Am_Record_WithData {
     /** @var User */
     protected $_user;
     /** @var Invoice */
@@ -37,7 +37,7 @@ class InvoicePayment extends Am_Record {
             $this->invoice_id, 
             $this->invoice_payment_id, $this->dattm, $this->invoice_payment_id);
     }
-    public function setFromTransaction(Invoice $invoice, Am_Paysystem_Transaction_Abstract $transaction)
+    public function setFromTransaction(Invoice $invoice, Am_Paysystem_Transaction_Interface $transaction)
     {
         $this->dattm  = $transaction->getTime()->format('Y-m-d H:i:s');
         $this->invoice_id       = $invoice->invoice_id;
@@ -67,6 +67,9 @@ class InvoicePayment extends Am_Record {
     public function isRefunded(){
         return (bool)$this->refund_dattm;
     }
+    public function isFullRefunded(){
+        return (bool)($this->amount <= $this->getDi()->db->selectCell("SELECT sum(amount) from ?_invoice_refund where invoice_payment_id = ?",$this->pk()));
+    }
     public function refund(DateTime $dattm){
         $this->updateQuick('refund_dattm', $dattm->format('Y-m-d H:i:s'));
     }
@@ -77,13 +80,14 @@ class InvoicePayment extends Am_Record {
         else
             $this->base_currency_multi = $this->getDi()->currencyExchangeTable->getRate($this->currency, sqlDate($this->dattm));
         
+        
         $this->getDi()->hook->call(new Am_Event(Am_Event::PAYMENT_BEFORE_INSERT, 
             array('payment' => $this, 
                   'invoice' => $this->getInvoice(),
                   'user'    => $this->getInvoice()->getUser())));
 
         parent::insert($reload);
-        
+        $this->setDisplayInvoiceId();
         $this->getDi()->hook->call(new Am_Event_PaymentAfterInsert(null, 
             array('payment' => $this, 
                   'invoice' => $this->getInvoice(),
@@ -131,12 +135,31 @@ class InvoicePayment extends Am_Record {
         if ($value) $c->setValue($value);
         return $c;
     }
+    
+    /**
+     * 
+     * Set Invoice ID wich will be displayed in pdf invoice
+     */
+    
+    protected function setDisplayInvoiceId()
+    {
+        $e = new Am_Event(Am_Event::SET_DISPLAY_INVOICE_PAYMENT_ID,array('record'=>$this));
+        $e->setReturn($this->getInvoice()->public_id . '/' . $this->receipt_id);
+        $this->getDi()->hook->call($e);
+        $this->display_invoice_id = $e->getReturn();
+        $this->updateSelectedFields('display_invoice_id');
+    }
+    
+    function getDisplayInvoiceId()
+    {
+        return $this->display_invoice_id ? $this->display_invoice_id : ($this->getInvoice()->public_id . '/' . $this->receipt_id);
+    }
 }
 
 /**
  * @package Am_Invoice
  */
-class InvoicePaymentTable extends Am_Table {
+class InvoicePaymentTable extends Am_Table_WithData {
     protected $_key = 'invoice_payment_id';
     protected $_table = '?_invoice_payment';
     protected $_recordClass = 'InvoicePayment';
@@ -164,13 +187,14 @@ class InvoicePaymentTable extends Am_Table {
     }
     function selectLast($num)
     {
-        return $this->selectObjects("SELECT ip.*, ir.amount refund_amount, ir.dattm refund_dattm,
+        return $this->selectObjects("SELECT ip.*, ir.amount refund_amount, ir.dattm refund_dattm, i.coupon_code,
             (SELECT GROUP_CONCAT(item_title SEPARATOR ', ') FROM ?_invoice_item WHERE invoice_id=ip.invoice_id) AS items,
             u.login, u.email, CONCAT(u.name_f, ' ', u.name_l) AS name, u.added,
             ip.invoice_public_id AS public_id
             FROM ?_invoice_payment ip
             LEFT JOIN ?_user u USING (user_id)
+            LEFT JOIN ?_invoice i USING (invoice_id)
             LEFT JOIN ?_invoice_refund ir USING (invoice_payment_id)
-            ORDER BY ip.invoice_payment_id DESC LIMIT ?d", $num);
+            ORDER BY ip.dattm DESC LIMIT ?d", $num);
     }
 }

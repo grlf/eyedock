@@ -1,0 +1,21 @@
+<!--[include file=meds_admin_menu.htm]-->
+<h2>Meds Configuration</h2>
+
+<form method="post" action="<!--[pnmodurl modname=Meds type=admin func=update_config]-->" enctype="application/x-www-form-urlencoded">
+<div class="meds_admin_form">
+
+    <input type="hidden" name="authid" value="<!--[pnsecgenauthkey module=Meds]-->" />
+    
+    <strong>Meds Per Page:</strong>
+    <input type="text" name="per_page" value="<!--[$per_page|pnvarprepfordisplay]-->" size="3" maxlength="3" />
+    
+    <br /><br /><br />
+    
+    <input type="submit" name="submit" value="Update" />
+    
+    <br /><br /><br />
+    
+    <!--[pnmodcallhooks hookobject="module" hookaction="modifyconfig" hookid="Meds" module="Meds"]-->
+
+</div>
+</form>

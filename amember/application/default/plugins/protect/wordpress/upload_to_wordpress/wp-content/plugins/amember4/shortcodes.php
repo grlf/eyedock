@@ -158,7 +158,7 @@ class am4Shortcode_am4guest extends am4Shortcode{
     function run($atts=array(), $content=''){
         if(!am4PluginsManager::getAPI()->isLoggedIn()){
             return do_shortcode($content);
-        }else if(!empty($atts['notactive']) && !am4PluginsManager::getAPI()->isUserActive()){
+        }else if(@isset($atts['notactive']) && !empty($atts['notactive']) && !am4PluginsManager::getAPI()->isUserActive()){
             return do_shortcode($content);
         }
     }
@@ -205,7 +205,6 @@ class am4Shortcode_am4show extends am4Shortcode{
         if(!am4PluginsManager::getAPI()->isLoggedIn()){
             return do_shortcode($errors->getTextByName(@$atts['guest_error']));
         }
-        if(!am4PluginsManager::getAPI()->isUserActive()) return do_shortcode($errors->getTextByName(@$atts['user_error']));
 
         $access = new am4UserAccess();        
         //User is logged in let's check his access level;

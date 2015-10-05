@@ -1,0 +1,49 @@
+<!--[include file=lenses_admin_menu.htm]-->
+
+<h2>Top 40 "zero results" search phrases (<!--[$time]-->)</h2>
+
+[ <a href="<!--[pnmodurl modname="Lenses" type="admin" func="zero_report" time="this_month"]-->" title="View 'Zero result' search phases">This Month</a> ] 
+[ <a href="<!--[pnmodurl modname="Lenses" type="admin" func="zero_report" time="last_month"]-->" title="View 'Zero result' search phases"> Last Month</a> ] 
+[ <a href="<!--[pnmodurl modname="Lenses" type="admin" func="zero_report" time="total"]-->" title="View 'Zero result' search phases">All</a> ]
+
+
+<table border="1" cellpadding="3" cellspacing="2">
+
+    <tr>
+
+        <th>Phrase</th>
+
+        <th>Instances</th>
+
+
+    </tr>
+
+    <!--[foreach from=$lenses_data item=lens]-->
+
+    <tr>
+
+        <td>
+
+            <!--[$lens.phrase|pnvarprepfordisplay]-->
+
+        </td>
+
+        <td>
+
+            <!--[if $time == "last_month" ]-->
+				<!--[$lens.last_month|pnvarprepfordisplay]-->
+            <!--[elseif $time == "this_month"]-->    
+                <!--[$lens.this_month|pnvarprepfordisplay]-->
+             <!--[else]-->    
+                <!--[$lens.total|pnvarprepfordisplay]-->
+              <!--[/if]-->  
+                
+        </td>
+
+   
+    <!--[/foreach]-->
+
+</table>
+
+
+

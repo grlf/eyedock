@@ -10,11 +10,15 @@ class Am_Newsletter_Plugin_Sendgrid extends Am_Newsletter_Plugin
         $el->addRule('required');
     }
     
+    function isConfigured()
+    {
+        return $this->getConfig('api_user') && $this->getConfig('api_key');
+    }
+
     function getAPI()
     {
         return new Am_Sendgrid_Api($this);
     }
-    
     
     public function getLists()
     {
@@ -27,10 +31,8 @@ class Am_Newsletter_Plugin_Sendgrid extends Am_Newsletter_Plugin
                 );
         return $ret;
     }
-    
-    
-    public
-        function changeSubscription(\User $user, array $addLists, array $deleteLists)
+
+    public function changeSubscription(User $user, array $addLists, array $deleteLists)
     {
         
         $api = $this->getApi();
@@ -43,21 +45,18 @@ class Am_Newsletter_Plugin_Sendgrid extends Am_Newsletter_Plugin
                     'name'  =>$user->getName()
                 ))
             ));
-            if (!@$ret['inserted']) return false;
+//            if (!@$ret['inserted']) return false;
         }        
-        
-        
+
         foreach ($deleteLists as $list_id)
         {
             $ret = $api->sendRequest('lists/email/delete', array(
                 'list' => $list_id,
                 'email' => $user->email
             ));
-            if (!@$ret['removed']) return false;
+//            if (!@$ret['removed']) return false;
         }
         return true;
-        
-        
     }    
 }
 
@@ -94,7 +93,11 @@ class Am_Sendgrid_Api extends Am_HttpRequest
         {
             throw new Am_Exception_InternalError("SendGrid  API Error:".$ret->getBody());
         }
-        $arr = json_decode($ret->getBody(), true);
+        $body = $ret->getBody();
+        
+        if(!$body) return array();
+        
+        $arr = json_decode($body, true);
         if (!$arr)
             throw new Am_Exception_InternalError("SendGrid API Error - unknown response [" . $ret->getBody() . "]");
         if(@$arr['message']=='error')

@@ -187,6 +187,12 @@ class Am_Navigation_Admin extends Zend_Navigation_Container
                     'resource' =>  @constant('Am_Auth_Admin::PERM_ADD_USER_FIELD'),
                 ),
                 array(
+                    'id' => 'email-template-layout',
+                    'controller' => 'admin-email-template-layout',
+                    'label' => ___('Email Layouts'),
+                    'resource' =>  Am_Auth_Admin::PERM_SETUP,
+                ),
+                array(
                     'id' => 'ban',
                     'controller' => 'admin-ban',
                     'label'      => ___('Blocking IP/E-Mail'),

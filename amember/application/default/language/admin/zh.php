@@ -3,7 +3,6 @@
   '%d days after expiration' => '过期后%d天',
   '%d days before expiration' => '过期前%d天',
   '%d user(s) matches your search' => '%d用户匹配您的搜索',
-  '%d-th day' => '第%d天',
   '%d-th subscription day' => '第%d订阅日',
   'ACTIVE subscription for %s' => '%s的有效订阅',
   'Access Method' => '访问方法',
@@ -13,9 +12,7 @@
   'Add Payment Manually' => '手动添加支付',
   'Add Subscription' => '增加订阅',
   'Add User Fields' => '增加栏',
-  'Added' => '已增加',
   'Additional' => '额外的',
-  'Additional Fields' => '其他栏',
   'Admin Accounts' => '管理员账户',
   'Admin E-Mail Address
 used to send email notifications to admin
@@ -28,7 +25,6 @@ and as default outgoing address' => '管理员电子邮件地址
 to admin once payment is received' => '管理员支付通知
 一旦支付收到发给管理员',
   'Admin Settings' => '管理员设置',
-  'Admin Username' => '管理员用户名',
   'Administrator Login' => '管理员登录',
   'Advanced' => '高级',
   'Affiliate Commission' => '分销佣金',
@@ -79,6 +75,7 @@ if set to Yes, don\'t ask customer - always remember' => '总是记住
   'Clear Access Log' => '清除访问日志',
   'Click to Expand' => '点击扩展',
   'Comma' => '逗号',
+  'Commission earned' => '获得的佣金',
   'Commission for First Payment
 calculated for first payment in each invoice' => '首次支付的佣金
 在每张发票中为首次支付计算',
@@ -86,9 +83,6 @@ calculated for first payment in each invoice' => '首次支付的佣金
 calculated for first customer invoice only' => '免费注册的佣金
 仅为首次客户发票计算',
   'Commission for Rebills' => '再次支付的佣金',
-  'Company Logo for Invoice
-it must be png/jpeg/tiff file (%s)' => '发票上的公司标志
-必须是png/jpeg/tiff文件(%s)',
   'Configuration' => '配置',
   'Copy' => '复制',
   'Copy Upgrades' => '复制升级',
@@ -101,19 +95,18 @@ it must be png/jpeg/tiff file (%s)' => '发票上的公司标志
   'Coupons Batches' => '优惠券批',
   'Create Session Key' => '创建会话密钥',
   'Create ticket as' => '创建问题作为',
-  'Currency' => '货币',
   'Currency Exchange Rates' => '货币汇率',
   'Custom Commission Rules added' => '增加的定制佣金规则',
   'Custom Signup Form Title
 keep empty to use default title' => '自定义注册表格标题
 保持空白来使用默认标题',
   'Customer' => '顾客',
-  'Dashboard' => '控制台',
   'Date to Purge
 all records prior to this date will be removed from selected tables' => '清除日期
 在此日期前所有记录从选定的表中移除',
   'Default - user clicks a link to become affiliate' => '默认-用户点击链接成为分销商',
   'Default Billing Plan' => '默认账单计划',
+  'Default Commission' => '默认佣金',
   'Default Signup' => '默认注册',
   'Default for Members' => '对会员默认',
   'Delete Old Records' => '删除旧记录',
@@ -156,15 +149,12 @@ used to display name of sender in outgoing e-mails' => '电子邮件发送者姓
   'EXPIRED subscription for %s' => '%s的过期订阅',
   'Edit Custom Commission Rules' => '编辑定制的佣金规则',
   'Edit Groups' => '编辑群组',
-  'Email' => '电子邮件',
   'Email Backup Frequency' => '电子邮件备份频率',
   'Email Sending method
 PLEASE DO NOT CHANGE if emailing from aMember works' => '电子邮件发送方法
 如果aMember 邮件正常请不要更改',
   'Email Sent' => '发送的邮件',
-  'Email Subject' => '电子邮件主题',
   'Enable plugins if necessary' => '如果必要，开启插件',
-  'End Date' => '结束日期',
   'Enter Maintenance Mode' => '进入维修模式',
   'Error Log' => '错误日志',
   'Error/Debug Log' => '错误/调试 日志',
@@ -175,10 +165,8 @@ PLEASE DO NOT CHANGE if emailing from aMember works' => '电子邮件发送方�
   'Exchange Rate
 enter cost of 1 (one) %s' => '汇率
 输入1%s费用',
-  'Field' => '栏',
   'Field Name' => '栏名称',
   'Field Title' => '栏标题',
-  'Field Type' => '栏类型',
   'Field Values' => '字段值',
   'File is required' => '需要文件',
   'Filter By Coupon#' => '根据优惠券号码过滤',
@@ -199,7 +187,6 @@ price of first period of subscription' => '第一价格
   'Folder URL' => '文件夹链接',
   'Form Type' => '表格类型',
   'Forms Editor' => '表格编辑器',
-  'From' => '从',
   'Future' => '未来',
   'General' => '总体',
   'General Settings' => '常规设置',
@@ -224,13 +211,11 @@ price of first period of subscription' => '第一价格
   'Invoice Log' => '发票日志',
   'Invoices Per User' => '每个用户发票',
   'Is Approved' => '被通过',
-  'Is Paid?' => '支付了吗？',
   'It is required to setup a cron job to trigger backup generation' => '需要CRON工作来引发备份生成',
   'Languages' => '语言',
   'Last %s Customers' => '前%s顾客',
   'Last existing subscription date of this product' => '此产品的上次订阅日期',
   'Last login' => '上次登录',
-  'Leads' => '线',
   'Length of admin password must be from %d to %d' => '管理员密码长度必须从%d到%d',
   'Length of username must be from %d to %d' => '用户名长度必须从%d到%d',
   'Lightbox Main Image' => '灯箱主图',
@@ -244,6 +229,7 @@ price of first period of subscription' => '第一价格
   'Log In' => '登录',
   'Log Outgoing E-Mail Messages for ... days' => '保存发出的邮件消息……天',
   'Log in' => '登录',
+  'Logged in as %s' => '作为%s登录',
   'Login Page' => '登录页面',
   'Logs' => '日志',
   'Lookup' => '查询',
@@ -286,6 +272,7 @@ to customers. If empty, [Admin E-Mail Address] is used' => '发出的电子邮�
 用作从：发送电子邮件消息的地址
 给顾客。如果空白，[管理员电子邮件地址] 被使用',
   'Overwrite User if Exist User with Same Login' => '如果相同用户登录改写用户',
+  'PDF Invoice' => 'PDF格式的发票',
   'Paid' => '已支付',
   'Password Length' => '密码长度',
   'Password must not be equal to username' => '密码不能等于用户名',
@@ -296,7 +283,6 @@ to customers. If empty, [Admin E-Mail Address] is used' => '发出的电子邮�
   'Payment has been successfully refunded' => '支付已成功退还',
   'Payout %d Details' => '取款%d详情',
   'Payout Details' => '取款详情',
-  'Payout Method' => '取款方法',
   'Paysystem' => '支付系统',
   'Permissions' => '允许',
   'Please assign the following fields: ' => '请指定以下栏：',
@@ -312,7 +298,6 @@ to customers. If empty, [Admin E-Mail Address] is used' => '发出的电子邮�
   'Protection Method' => '保护方法',
   'Quit Maintenance Mode' => '退出维修模式',
   'RadioButtons' => '单选按钮',
-  'ReCaptcha' => '重新验证码',
   'Rebill' => '再次支付',
   'Rebill Second Price until cancelled' => '重复第二价格直到取消',
   'Rebill Times
@@ -324,7 +309,6 @@ will occur at the Second Price' => '重复支付次数
   'Receipt' => '收据',
   'Recipients' => '收件人',
   'Records Deleted Sucessfully' => '记录成功删除',
-  'Recurring' => '周期性订购',
   'Referrer' => '推荐人',
   'Refund Payment' => '退款',
   'Remember Login
@@ -372,7 +356,6 @@ secure URL, usually %s' => '安全根链接
   'Select a plugin' => '选择插件',
   'Selected for E-Mailing' => '选择发送电邮',
   'Semicolon' => '分号',
-  'Send' => '发送',
   'Send E-Mail Message' => '发送电子邮件消息',
   'Send E-Mail Messages' => '发送电子邮件消息',
   'Send New E-Mail' => '发送新电子邮件',
@@ -392,8 +375,6 @@ once FIRST subscripton is completed' => '发送注册电子邮件
   'Setup/Configuration' => '安装/配置',
   'Signup Form Configuration' => '注册表格配置',
   'Signup Info' => '注册信息',
-  'Signups' => '注册',
-  'Site Title' => '网站标题',
   'Site is temporarily disabled for maintenance' => '网站维护暂时不可用',
   'Size of input field' => '输入栏大小',
   'Skip' => '跳过',
@@ -403,7 +384,6 @@ once FIRST subscripton is completed' => '发送注册电子邮件
   'Sort Order' => '排序订购',
   'Source' => '源',
   'Space' => '空间',
-  'Start Date' => '开始日期',
   'Start Date Calculation
 rules for subscription start date calculation.
 MAX date from alternatives will be chosen.
@@ -437,12 +417,11 @@ Press [Skip] to type it manually from scratch.' => '此电邮模板在给定的�
 按[Copy] 从默认语言[英语]复制模板
 按[Skip]从头开始手工输入',
   'This field is requred' => '此栏必填',
-  'Thresehold Date' => '开始日期',
+  'Ticket#' => '问题号码',
   'Tier' => '层',
   'Title
 displayed to customers' => '标题
 显示给客户',
-  'To' => '到',
   'Total Paid' => '已支付总计',
   'Total to Pay' => '支付总计',
   'Trace' => '追踪',
@@ -468,10 +447,10 @@ displayed to customers' => '标题
   'User Pages Theme' => '用户页面主题',
   'User currently has access to the following products' => '用户当前可访问下列产品',
   'User had access to the following products' => '用户曾访问下列产品',
+  'User is not found in database' => '数据库中无此用户',
   'Username or E-mail' => '用户名或电子邮件',
   'Username or e-mail address' => '用户名或邮件地址',
   'Users' => '用户',
-  'Validation' => '验证',
   'Value
 use % as wildcard mask' => '值
 使用%作为通配符掩码',

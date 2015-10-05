@@ -1,0 +1,17 @@
+<div style="padding:0 25px 0 25px;">
+<h3>Search Results</h3>
+
+<!--[foreach from=$results key=key item=id_field]-->
+    <h4 style="background:#ffffd8;padding:2px;">
+    <!--[if $key == 'comp_id']--><!--[$totals.comp|pnvarprepfordisplay]--> matches for <!--[$companies[$search.comp_id].name]--><!--[/if]-->
+    <!--[if $key == 'pres_id']--><!--[$totals.pres|pnvarprepfordisplay]--> matches for <!--[$preserves[$search.pres_id].name]--><!--[/if]-->
+    <!--[if $key == 'chem_id']--><!--[$totals.chem|pnvarprepfordisplay]--> matches for <!--[$chemicals[$search.chem_id].name]--><!--[/if]-->
+    <!--[if $key ==  'moa_id']--><!--[$totals.moa|pnvarprepfordisplay]-->  matches for <!--[$methods[$search.moa_id].name]--><!--[/if]-->
+    </h4>
+    <ol>
+<!--[foreach from=$id_field key2=key2 item=result]-->
+        <li><a href="<!--[pnmodurl modname=Meds func=display med_id=$result.med_id|pnvarprepfordisplay search=true]-->" title="<!--[$result.trade|pnvarprepfordisplay]-->"><!--[$result.trade|pnvarprepfordisplay]--></a></li>
+<!--[/foreach]-->
+    </ol>
+<!--[/foreach]-->
+</div>

@@ -17,7 +17,7 @@ class Am_Protect_Wordpress extends Am_Protect_Databased
 {
 
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.0';
 
     protected $_error_reporting_backup = null;
     protected $_timezone_backup = null;
@@ -52,6 +52,10 @@ class Am_Protect_Wordpress extends Am_Protect_Databased
             $this->getDi()->plugins_protect->addEnabled($plugin->getId());
             $this->wpmu = $plugin;
         }
+        
+        $this->getDi()->userTable->customFields()->add(new Am_CustomFieldHidden('_wordpress_nickname', 'Wordpress nickname'));
+        $this->getDi()->userTable->customFields()->add(new Am_CustomFieldHidden('_wordpress_display', 'Wordpress display publicly as'));
+        
     }
 
     /**
@@ -114,6 +118,18 @@ class Am_Protect_Wordpress extends Am_Protect_Databased
           $options = $this->getLevels();
           $group->addSelect('level', array(), array('options'=>$options))->setLabel('Wordpress Level');
          */
+    }
+
+    public function getIntegrationSettingDescription(array $config)
+    {
+        $ret = parent::getIntegrationSettingDescription($config);
+
+        if (isset($config['wp_courseware_group']) && ($id = $config['wp_courseware_group'])) {
+            $title = $this->getWpCoursewareGroups();
+            $g = isset($title[$id]) ? $title[$id] : "#$id";
+            $ret .= ", WpCourseware Courses [$g]";
+        }
+        return $ret;
     }
 
     public function afterAddConfigItems(Am_Form_Setup_ProtectDatabased $form)
@@ -392,6 +408,9 @@ CUT
 
     function getDisplayName(User $user)
     {
+        if($display_name = $user->data()->get("_wordpress_display"))
+            return $display_name;
+            
         switch ($this->getConfig('display_name', 'username'))
         {
             case 'name_f_name_l' : return $user->name_f . ' ' . $user->name_l;
@@ -542,7 +561,7 @@ CUT
 
     function addTitle()
     {
-        return $this->_page_title . " | ";
+        return $this->_page_title ;
     }
 
     function startLayout(Am_View $view, $title, $safe_jquery_load = false)
@@ -741,6 +760,13 @@ CUT;
         }
         return true;
     }
+    
+    
+    public function onLoadBricks($event)
+    {
+        if(!class_exists('Am_Form_Brick_WordpressNickname',false))
+            require_once  "bricks.php";
+    }
 
 }
 
@@ -856,7 +882,7 @@ if (!class_exists('Am_Protect_Wordpress_Table', false))
         {
             $this->_plugin->getWP()->update_user_meta($record->pk(), 'first_name', $user->name_f);
             $this->_plugin->getWP()->update_user_meta($record->pk(), 'last_name', $user->name_l);
-            $this->_plugin->getWP()->update_user_meta($record->pk(), 'nickname', $user->login);
+            $this->_plugin->getWP()->update_user_meta($record->pk(), 'nickname', (($nickname = $user->data()->get('_wordpress_nickname')) ? $nickname : $user->login));
             $this->_plugin->getWP()->update_user_meta($record->pk(), 'rich_editing', 'true');
         }
 
@@ -942,12 +968,12 @@ if (!class_exists('Am_Protect_Wordpress_Table', false))
             if ($this->getPlugin()->getConfig('simple_press'))
                 $this->updateSimplePressMemberships($record, $groups);
             
-            if ($this->getPlugin()->getConfig('wp_courseware'))
-                $this->updateWpCoursewareGroups($record, $this->findAmember($record));
+            if ($this->getPlugin()->getConfig('wp_courseware') && $_u = $this->findAmember($record))
+                $this->updateWpCoursewareGroups($record, $_u);
             
-            if ($this->getPlugin()->getConfig('buddy_press'))
+            if ($this->getPlugin()->getConfig('buddy_press') && $_u = $this->findAmember($record))
             {
-                $this->updateBuddyPressGroups($record, $this->findAmember($record));
+                $this->updateBuddyPressGroups($record, $_u);
             }
             
             

@@ -241,7 +241,7 @@ class AdminBuildDemoController extends Am_Controller {
         if (empty($payplugin))
             throw new Am_Exception_InputError('No payment plugins enabled. Visit [aMember Cp -> Setup/Configuration -> Plugins] and enable one');
 
-        $batch = new Am_BatchProcessor(array($this, 'generateUser'), 5);
+        $batch = new Am_BatchProcessor(array($this, 'generateUser'));
         $context = array(
             'payplugin' => $payplugin
         );

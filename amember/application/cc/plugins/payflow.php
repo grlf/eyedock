@@ -12,7 +12,7 @@ class Am_Paysystem_Payflow extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.4';    
+    const PLUGIN_REVISION = '4.7.0';    
     
     const LIVE_URL = 'https://payflowpro.paypal.com';
     const TEST_URL = 'https://pilot-payflowpro.paypal.com';
@@ -34,6 +34,17 @@ class Am_Paysystem_Payflow extends Am_Paysystem_CreditCard
     {
         return array('USD', 'CAD', 'GBP');
     }
+    public function allowPartialRefunds()
+    {
+        return true;
+    }
+    protected function createController(\Am_Request $request, \Zend_Controller_Response_Http $response, array $invokeArgs)
+    {
+        if (!$this->getConfig('advanced'))
+            return parent::createController($request, $response, $invokeArgs);
+        else
+            return new Am_Controller_CreditCard_Payflow($request, $response, $invokeArgs);
+    }
     public function _doBill(Invoice $invoice, $doFirst, CcRecord $cc, Am_Paysystem_Result $result)
     {
         $addCc = true;
@@ -41,7 +52,7 @@ class Am_Paysystem_Payflow extends Am_Paysystem_CreditCard
         // This is necessary when data was imported from amember v3 for example
         if ($doFirst || (!empty($cc->cc_number) && $cc->cc_number != '0000000000000000')) 
         {
-            if (!(float)$invoice->first_total) // free trial
+            if ($doFirst && (doubleval($invoice->first_total) == 0) ) // free trial
             {
                 $tr = new Am_Paysystem_Payflow_Transaction_Authorization($this, $invoice, $doFirst, $cc);
             } else {
@@ -115,6 +126,8 @@ class Am_Paysystem_Payflow extends Am_Paysystem_CreditCard
         $form->addPassword('pass')->setLabel('Merchant Password');
         $form->addText('partner')->setLabel('Partner');
         $form->setDefault('partner', 'PayPal');
+        
+        $form->addAdvCheckbox('advanced')->setLabel("Use PayPal Advanced\ncredit card info will be asked in iframe on your website");
         $form->addAdvCheckbox('testing')->setLabel('Test Mode');
     }
     
@@ -126,8 +139,24 @@ class Am_Paysystem_Payflow extends Am_Paysystem_CreditCard
     
     public function getReadme()
     {
+        $root = $this->getRootUrl();
         return <<<CUT
-    This plugin does not store CC info in Amember database and to allow recurring payments it uses reference transactions.
+    This plugin does not store CC info in Amember database and to allow recurring 
+    payments it uses reference transactions.
+        
+    New [PayPal Advanced] feature allows to display credit card form on your 
+    website in an iframe, so customer will pay without leaving your website.
+    Unfortunately this integration currently DOES NOT SUPPORT RECURRING
+    billing. We are working to implement it.
+    To get started with this feature, you need to :
+          Login to https://manager.paypal.com
+          Go to Service Settings -> Hosted Checkout Pages -> Set Up
+          PayPal email address -> set to your paypal e-mail address
+          Return URL -> set to $root/payment/payflow/thanks
+          Enable Secure Token -> yes
+          Click [Save Changes] button
+          Click [Customize] -> Layout C and click [Save and Publish]
+    You now are ready to go with PayPal Advanced.
 
     <font color="red">IMPORTANT:</font> As a security measure, reference transactions are disallowed by default. Only
     your account administrator can enable reference transactions for your
@@ -138,6 +167,163 @@ class Am_Paysystem_Payflow extends Am_Paysystem_CreditCard
     
 CUT;
     }
+    
+    public function createThanksTransaction(Am_Request $request, Zend_Controller_Response_Http $response, array $invokeArgs)
+    {
+        return new Am_Paysystem_Payflow_Transaction_Thanks($this, $request, $response, $invokeArgs);
+    }
+    
+    public function thanksAction(\Am_Request $request, \Zend_Controller_Response_Http $response, array $invokeArgs)
+    {
+        $ret = parent::thanksAction($request, $response, $invokeArgs);
+        foreach ($response->getHeaders() as $h)
+            if ($h['name'] == 'Location')
+                $redirect = $h['value'];
+        if ($response->isRedirect())
+        {
+            $response->clearAllHeaders()->clearBody();
+            $url = Am_Controller::escape($redirect);
+            $response->setBody(
+            "<html>
+                <head>
+                    <script type='text/javascript'>
+                        window.top.location.href = '$url';
+                    </script>
+                </head>
+             </html>
+            ");
+        }
+        
+        return $ret;
+    }
+    
+    public function cancelPaymentAction(\Am_Request $request, \Zend_Controller_Response_Http $response, array $invokeArgs)
+    {
+        $ret = parent::cancelPaymentAction($request, $response, $invokeArgs);
+        foreach ($response->getHeaders() as $h)
+            if ($h['name'] == 'Location')
+                $redirect = $h['value'];
+        if ($response->isRedirect())
+        {
+            $response->clearAllHeaders()->clearBody();
+            $url = Am_Controller::escape($redirect);
+            $response->setBody(
+            "<html>
+                <head>
+                    <script type='text/javascript'>
+                        window.top.location.href = '$url';
+                    </script>
+                </head>
+             </html>
+            ");
+        }
+        
+        return $ret;
+    }
+    
+}
+
+class Am_Controller_CreditCard_Payflow extends Am_Controller_CreditCard
+{
+    public function ccAction()
+    {
+        // invoice must be set to this point by the plugin
+        if (!$this->invoice)
+            throw new Am_Exception_InternalError('Empty invoice - internal error!');
+        $this->form = $this->createForm();
+
+        $this->getDi()->hook->call(Bootstrap_Cc::EVENT_CC_FORM, array('form' => $this->form));
+
+        
+        $trans = new Am_Paysystem_Payflow_Transaction_CreateSecureToken($this->plugin, $this->invoice, true);
+        $res = new Am_Paysystem_Result();
+        $trans->run($res); 
+        //var_dump($res);exit();
+        //if (!$res->isSuccess())
+        //    throw new Am_Exception_Paysystem("Internal error - cannot get secure token from PayPal API");
+        $token = $trans->getToken();
+        
+        $frm = new Am_Form();
+
+        $params = array(
+            'SECURETOKENID' => $trans->getTokenId(),
+            'SECURETOKEN' => $trans->getToken(),
+            'CANCELURL' => $this->plugin->getCancelUrl(),
+            'DISABLERECEIPT' => true, // Determines if the payment confirmation / order receipt page is a PayPal hosted page or a page on the merchant site. 
+            'EMAILCUSTOMER' => true,
+            //'ERRORURL' => $this->plugin->getCancelUrl(),
+            //'RETURNURL' => $this->plugin->getReturnUrl(),
+            'INVNUM' => $this->invoice->public_id,
+            'TEMPLATE' => 'MINLAYOUT', // or MOBILE for mobile iframe or TEMPLATEA TEMPLATEB
+            'SHOWAMOUNT' => (double)$this->invoice->first_total <= 0 ? false : true, 
+        );
+        if ($this->plugin->getConfig('testing'))
+            $params['MODE'] = 'TEST';
+        
+        $params = http_build_query($params);
+        
+        $html = '<iframe src="https://payflowlink.paypal.com?' . $params . '" ' .
+                        'name="payflow_iframe" scrolling="no" width="570px" height="540px"></iframe>';
+        $frm->addHtml()->setHtml($html)->addClass('no-label');
+        
+        $this->view->form = $frm;
+        $this->view->invoice = $this->invoice;
+        $this->view->display_receipt = true;
+        $this->view->layoutNoMenu = true;
+        $this->view->display('cc/info.phtml');
+    }
+}
+
+class Am_Paysystem_Payflow_Transaction_Thanks extends Am_Paysystem_Transaction_Incoming_Thanks
+{
+    /* @var $request Am_Request */
+    protected $request;
+    
+    public function __construct(\Am_Paysystem_Abstract $plugin, Am_Request $request, 
+     Zend_Controller_Response_Http $response, array $invokeArgs)
+    {
+        $this->request = $request;
+        parent::__construct($plugin, $request, $response, $invokeArgs);
+    }
+    public function findInvoiceId()
+    {
+        return $this->request->getFiltered('INVNUM');
+    }
+
+    public function getUniqId()
+    {
+         return $this->request->get('PNREF');
+    }
+
+    public function validateStatus()
+    {
+        return $this->request->get('RESULT') === '0';
+    }
+
+    public function validateTerms()
+    {
+        return true; // checked with securetoken
+    }
+
+    public function validateSource()
+    {
+        // check if secure token is registered in session
+        $tok = $this->request->get('SECURETOKEN', rand(10,88888));
+        $k = 'payflow_securetoken_' . $tok;
+        return (bool)Am_Di::getInstance()->session->$k;
+    }
+    
+    public function processValidated()
+    {
+        parent::processValidated();
+        // TODO if there was a recurring invoice start it
+//        $tr = new Am_Paysystem_Payflow_Transaction_CreateProfile($this->plugin, $this->invoice, $this->getReceiptId());
+//        $res = new Am_Paysystem_Result();
+//        $tr->run(res);
+//        if (!$res->isSuccess())
+//            throw new Am_Exception_Paysystem("Could not start recurring billing for invoice " . $this->invoice->public_id );
+    }
+    
 }
 
 class Am_Paysystem_Payflow_Transaction extends Am_Paysystem_Transaction_CreditCard
@@ -164,7 +350,6 @@ class Am_Paysystem_Payflow_Transaction extends Am_Paysystem_Transaction_CreditCa
        // $this->request->setHeader('Content-Type', 'text/namevalue');
         
         $this->request->addPostParameter('VERBOSITY', 'HIGH');
-        
         return parent::run($result);
     }
     
@@ -174,6 +359,7 @@ class Am_Paysystem_Payflow_Transaction extends Am_Paysystem_Transaction_CreditCa
         $this->request->addPostParameter('USER', $this->plugin->getConfig('user'));
         $this->request->addPostParameter('PWD', $this->plugin->getConfig('pass'));
         $this->request->addPostParameter('PARTNER', $this->plugin->getConfig('partner'));
+        $this->request->addPostParameter('BUTTONSOURCE', 'CgiCentral.aMemberPro');
     }
     
     public function getUniqId()
@@ -217,6 +403,33 @@ class Am_Paysystem_Payflow_Transaction extends Am_Paysystem_Transaction_CreditCa
             'CVV2' => $cc->getCvv(),
         ));
     }
+}
+
+class Am_Paysystem_Payflow_Transaction_CreateProfile extends Am_Paysystem_Payflow_Transaction
+{
+    protected $pnref;
+    public function __construct(\Am_Paysystem_Abstract $plugin, \Invoice $invoice, $pnref)
+    {
+        $this->pnref = $pnref;
+        parent::__construct($plugin, $invoice, false);
+    }
+    protected function addRequestParams()
+    {
+        parent::addRequestParams();
+        $this->request->addPostParameter(array(
+            'TRXTYPE' => 'R',
+            'ACTION' => 'A',
+            'TENDER' => 'C',
+            'PROFILEREFERENCE' => $this->invoice->public_id,
+            'PROFILENAME' => $this->invoice->getLineDescription(),
+            'START' => '09182014',
+            'TERM'  => '0',
+            'PAYPERIOD' => 'MONT',
+            'AMT' => $this->invoice->second_total,
+            'ORIGID' => $this->pnref,
+        ));
+        /// [13]=XXXXXX&USER[6]=XXXXX&PWD[8]=XXXXX&TRXTYPE=R&ACTION=A&TENDER=C&PROFILEREFERENCE=XXXX&PROFILENAME[38]=XAXXXXXAXXX&START=09182014&TERM=0&PAYPERIOD=MONT&AMT[4]=1.07&ORIGID=ESJPC2894AFC
+    }    
 }
 
 class Am_Paysystem_Payflow_Transaction_Upload extends Am_Paysystem_Payflow_Transaction
@@ -331,5 +544,58 @@ class Am_Paysystem_Payflow_Transaction_Refund extends Am_Paysystem_Payflow_Trans
     public function processValidated()
     {
         $this->invoice->addRefund($this);
+    }
+}
+
+class Am_Paysystem_Payflow_Transaction_CreateSecureToken extends Am_Paysystem_Payflow_Transaction
+{
+    public function __construct(Am_Paysystem_Abstract $plugin, Invoice $invoice, $doFirst, CcRecord $cc = null, $referenceId = null)
+    { 
+        parent::__construct($plugin, $invoice, $doFirst, $referenceId);
+    }
+    protected function addRequestParams()
+    {
+        parent::addRequestParams();
+        $this->request->setNvpRequest(true); // send without encoding, else paypal handles encoded urls incorrectly
+        $this->request->addPostParameter(array(
+            'TRXTYPE'  => 'S',
+            'TENDER'   => 'C',  
+            'AMT'      => $this->doFirst ? $this->invoice->first_total : $this->invoice->second_total,
+            'CURRENCY' => $this->invoice->currency,
+            'CREATESECURETOKEN' => 'Y',
+            'SECURETOKENID' => uniqid('PFP'),
+            
+            'CANCELURL' => $this->plugin->getRootUrl() . '/payment/payflow/cancel-payment?id=' . $this->invoice->public_id,
+            'DISABLERECEIPT' => true, // Determines if the payment confirmation / order receipt page is a PayPal hosted page or a page on the merchant site. 
+            'EMAILCUSTOMER' => true,
+            'ERRORURL' => $this->plugin->getRootUrl() . '/payment/payflow/cancel-payment?id=' . $this->invoice->public_id,
+            'INVNUM' => $this->invoice->public_id,
+            'RETURNURL' => $this->plugin->getRootUrl() . '/payment/payflow/thanks', 
+            'TEMPLATE' => 'MINLAYOUT', // or MOBILE for mobile iframe or TEMPLATEA TEMPLATEB
+            'SHOWAMOUNT' => (double)$this->invoice->first_total <= 0 ? false : true, 
+        ));
+    }
+    public function getToken()
+    {
+        return $this->parsedResponse->SECURETOKEN;
+    }
+    public function getTokenId()
+    {
+        return $this->parsedResponse->SECURETOKENID;
+    }
+    public function validate()
+    {
+        $tok = $this->parsedResponse->SECURETOKEN;
+        if ($tok == '')
+            return $this->result->setFailed(array("Transaction declined, cannot get secure token id"));
+        $this->result->setSuccess($this);
+        $k = 'payflow_securetoken_' . $tok;
+        Am_Di::getInstance()->session->$k = 1;
+    }
+    public function getReceiptId()
+    {
+    }
+    public function getUniqId()
+    {
     }
 }

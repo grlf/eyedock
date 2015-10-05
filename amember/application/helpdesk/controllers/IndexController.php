@@ -40,6 +40,9 @@ class Helpdesk_IndexController extends Am_Controller_Pages
     {
         $this->getDi()->auth->requireLogin(ROOT_URL . '/helpdesk');
         $this->view->headLink()->appendStylesheet($this->view->_scriptCss('helpdesk-user.css'));
+        if ($page = $this->getDi()->navigationUser->findOneBy('id', 'helpdesk')) {
+            $page->setActive(true);
+        }
         parent::preDispatch();
     }
 

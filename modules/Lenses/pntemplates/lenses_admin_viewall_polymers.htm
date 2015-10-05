@@ -1,0 +1,56 @@
+<!--[include file=lenses_admin_menu.htm]-->
+
+<h2>View All Polymers</h2>
+
+<div>[ <a href="<!--[pnmodurl modname="Lenses" type="admin" func="create_polymer"]-->" title="Add New Polymer">Add New Polymer</a> ]</div>
+
+<table border="1" cellpadding="3" cellspacing="2">
+
+    <tr>
+
+        <th>ID</th>
+
+        <th>Name</th>
+
+        <th>H<sub>2</sub>O</th>
+
+        <th>FDA Group</th>
+
+       <!-- <th>Description</th>-->
+
+        <th>Actions</th>
+
+    </tr>
+
+    <!--[foreach from=$polymers key=key item=polymer]-->
+
+    <tr>
+
+        <td><!--[$polymer.poly_tid|pnvarprepfordisplay]--></td>
+
+        <td><!--[if $polymer.poly_name]--><!--[$polymer.poly_name|pnvarprepfordisplay]--><!--[else]-->None Specified<!--[/if]--></td>
+
+	 <td><!--[if $polymer.h2o]--><!--[$polymer.h2o|pnvarprepfordisplay]--><!--[else]-->None Specified<!--[/if]--></td>
+        <td><!--[if $polymer.fda_grp]--><!--[$polymer.fda_grp|pnvarprepfordisplay]--><!--[else]-->None Specified<!--[/if]--></td>
+
+       
+
+
+
+        <!--<td><!--//[if $polymer.poly_desc]--><!--//[$polymer.poly_desc|pnvarprepHTMLdisplay]--><!--//[else]-->None Specified<!--//[/if]--></td>-->
+
+        <td>
+
+            [ <a href="<!--[pnmodurl modname="Lenses" type="admin" func="modify_polymer" poly_tid=$polymer.poly_tid|pnvarprepfordisplay]-->" title="Modify">Modify</a> ]<br />
+
+            [ <a href="<!--[pnmodurl modname="Lenses" type="admin" func="delete" tid=$polymer.poly_tid|pnvarprepfordisplay item_type="polymer"]-->" title="Delete">Delete</a> ]
+
+        </td>
+
+    </tr>
+
+<!--[/foreach]-->
+
+</table>
+
+<div>[ <a href="<!--[pnmodurl modname="Lenses" type="admin" func="create_polymer"]-->" title="Add New Polymer">Add New Polymer</a> ]</div>

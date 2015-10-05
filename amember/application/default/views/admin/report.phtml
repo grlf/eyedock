@@ -12,22 +12,22 @@
 <br />
 <div class="forms">
 <?php foreach ($reports as $r): ?>
-<div id="form-<?php echo $r->getId()?>" class="formdiv" style="display:none">
-<h2><?php echo $r->getTitle()?></h2>
-<?php
-echo $r->getForm();
-?>
-</div>
+<div id="form-<?php echo $r->getId()?>" class="formdiv" style="display:none"></div>
 <?php endforeach ?>
 </div>
 
 <style type="text/css">
 <!--
     .reports {
-        text-align: left; width: 60%;
+        text-align: left;
+        max-width: 700px;
+    }
+    #report {
+        width:100%;
     }
     .forms {
-        text-align: left; width: 60%; 
+        text-align: left;
+        max-width: 700px;
     }
 -->
 </style>
@@ -35,10 +35,16 @@ echo $r->getForm();
 $(function(){
     $("select#report").change(function()
     {
-        $("div.line").removeClass('line_selected');
-        $(this).parents("div.line").addClass('line_selected');
         $(".formdiv").hide();
-        $("#form-"+this.value).show();
+        var id = "form-" + this.value;
+        if ($('#' + id).data('loaded')) {
+            $("#"+id).show();
+        } else {
+            $("#"+id).load(window.rootUrl + '/admin-reports/getform', {id : this.value}, function(){
+                $("#"+id).data('loaded', true)
+                $("#"+id).show();
+            })
+        }
     });
 });
 </script>

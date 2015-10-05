@@ -226,7 +226,11 @@ abstract class Am_Paysystem_Echeck extends Am_Paysystem_Abstract
         /** @todo use "reattempt" config **/
         $reattempt = array_filter($this->getConfig('reattempt', array()));
         sort($reattempt);
-        if (!$reattempt) return;
+        if (!$reattempt) {
+            $invoice->updateQuick('status', Invoice::RECURRING_FAILED);
+            $invoice->updateQuick('rebill_date', null);
+            return;
+        }
 
         $first_failure = $invoice->data()->get(self::FIRST_REBILL_FAILURE);
         if (!$first_failure)
@@ -245,7 +249,7 @@ abstract class Am_Paysystem_Echeck extends Am_Paysystem_Abstract
             return;
         }
         
-        $invoice->updateQuick('rebill_date', date('Y-m-d', strtotime($first_failure) + $day * 24*3600));
+        $invoice->updateQuick('rebill_date', date('Y-m-d', strtotime($first_failure." +$day days")));
 
         $tr = new Am_Paysystem_Transaction_Manual($this);
         if ($invoice->getAccessExpire() < $invoice->rebill_date)

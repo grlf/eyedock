@@ -109,6 +109,12 @@ class Am_View extends Zend_View_Abstract
             'resource-category' => 24738,
             'setup' => 25004,
             'documentation' => 25270,
+            'payment-link' => 25536,
+            'product-restore' => 25802,
+            'cancel-feedback' => 26068,
+            'personal-content' => 26334,
+            'reports-vat' => 26600,
+            'email-template-layout' => 26866,
         ),
         'flag' => array(
             'ad' => 26,
@@ -403,7 +409,7 @@ class Am_View extends Zend_View_Abstract
             if ($v === null)
                 $s .= $this->escape($k);
             else
-                $s .= $this->escape($k) . '="' . $this->escape($v); 
+                $s .= $this->escape($k) . '="' . $this->escape($v) . '"';
         }
         return $s;
     }
@@ -523,7 +529,7 @@ class Am_View extends Zend_View_Abstract
         }
         
         if($safe_jquery_load){
-            $hs->prependScript('if (typeof jQuery == \'undefined\') {document.write(\'<script type="text/javascript" src="'.$this->_scriptJs('jquery/jquery.js').'"></script>\');} else {$=jQuery;}');
+            $hs->prependScript('if (typeof jQuery == \'undefined\') {document.write(\'<script type="text/javascript" src="'.$this->_scriptJs('jquery/jquery.js').'"></scr\'+\'ipt>\');} else {$=jQuery;}');
         }else{
             $hs->prependFile($this->_scriptJs('jquery/jquery.js'));
         }

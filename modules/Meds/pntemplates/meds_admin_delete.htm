@@ -1,0 +1,15 @@
+<!--[include file=meds_admin_menu.htm]-->
+<h2>Item Deletion</h2>
+<form method="post" action="<!--[pnmodurl modname=Meds type=admin func=delete]-->" enctype="application/x-www-form-urlencoded">
+<div class="meds_admin_form">
+    <input type="hidden" name="authid" value="<!--[pnsecgenauthkey module=Meds]-->" />
+    <input type="hidden" name="confirmation" value="1" />
+    <input type="hidden" name="object" value="<!--[$object|pnvarprepfordisplay]-->" />
+    <input type="hidden" name="id" value="<!--[$id|pnvarprepfordisplay]-->" />
+    
+    <div style="padding:15px;font-size:14pt;"><strong>Delete <!--[$object|pnvarprepfordisplay]--> #<!--[$id|pnvarprepfordisplay]-->?</strong></div>
+    
+    <div><input name="submit" type="submit" value="Delete" /></div>
+</div>
+</form>
+<div>[ <a href="<!--[pnmodurl modname=Meds type=admin func=viewall object=$object|pnvarprepfordisplay]-->" title="Cancel">Cancel</a> ]</div>

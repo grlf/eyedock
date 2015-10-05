@@ -7,6 +7,7 @@
  * @property Am_Interval $interval
  * @property DbSimple_Interface $db database
  * @property Am_Crypt $crypt crypt class
+ * @property Am_CountryLookup_Abstract $countryLookup service
  * @property Am_Hook $hook hook manager
  * @property Am_Blocks $blocks blocks - small template pieces to insert
  * @property Am_Config $config configuration
@@ -21,7 +22,7 @@
  * @property Am_Navigation_UserTabs $navigationUserTabs User Tabs in Admin CP
  * @property Am_Navigation_UserTabs $navigationAdmin Admin Menu
  * @property Am_Navigation_UserTabs $navigationUser Member Page menu
- * @property Am_Theme $theme User-side theme 
+ * @property Am_Theme $theme User-side theme
  * @property array $viewPath paths to templates
  * @property ArrayObject $plugins modules, misc, payment, protect,storage
  * @property Am_Plugins $modules
@@ -40,13 +41,13 @@
  * @property Am_Request $request current request
  * @property Am_View $view view object (not shared! each call returns new instance)
  * @property Am_Mail $mail mail object (not shared! each call returns new instance)
- 
+
  * @property int $time current time (timestamp)
  * @property string $sqlDate current date in SQL format yyyy-mm-dd
  * @property string $sqlDateTime current datetime in SQL format yyyy-mm-dd hh:ii:ss
- * 
+ *
  * @property DateTime $dateTime current DateTime object with default timezone (created from @link time)
- * 
+ *
  * /// tables
  * @property AccessLogTable $accessLogTable
  * @property AccessTable $accessTable
@@ -62,6 +63,7 @@
  * @property CurrencyExchangeTable $currencyExchangeTable
  * @property EmailSentTable $emailSentTable
  * @property EmailTemplateTable $emailTemplateTable
+ * @property EmailTemplateLayoutTable $emailTemplateLayoutTable
  * @property ErrorLogTable $errorLogTable
  * @property FileTable $fileTable
  * @property FileDownloadTable $fileDownloadTable
@@ -105,7 +107,7 @@
  * // newsletter
  * @property NewsletterListTable $newsletterListTable
  * @property NewsletterUserSubscriptionTable $newsletterUserSubscriptionTable
- * 
+ *
  * @property-read Access $accessRecord creates new record on each access!
  * @property-read AccessLog $accessLogRecord creates new record on each access!
  * @property-read Admin $adminRecord creates new record on each access!
@@ -127,6 +129,7 @@
  * @property-read CurrencyExchange $currencyExchangeRecord creates new record on each access!
  * @property-read EmailSent $emailSentRecord creates new record on each access!
  * @property-read EmailTemplate $emailTemplateRecord creates new record on each access!
+ * @property-read EmailTemplateLayout $emailTemplateLayoutRecord creates new record on each access!
  * @property-read ErrorLog $errorLogRecord creates new record on each access!
  * @property-read File $fileRecord creates new record on each access!
  * @property-read FileDownload $fileDownloadRecord creates new record on each access!
@@ -163,12 +166,12 @@
  * @property-read User $userRecord creates new record on each access!
  * @property-read UserGroup $userGroupRecord creates new record on each access!
  * @property-read UserStatus $userStatusRecord creates new record on each access!
- * 
+ *
  */
 class Am_Di extends sfServiceContainerBuilder
 {
     static $instance;
-    
+
     function init()
     {
         $this->register('crypt', 'Am_Crypt_Strong')
@@ -201,55 +204,67 @@ class Am_Di extends sfServiceContainerBuilder
         $this->register('backupProcessor', 'Am_BackupProcessor')
             ->setArguments(array(new sfServiceReference('db'), $this))
             ->setShared(false);
-        
+
         $this->register('invoice', 'Invoice')->setShared(false);
-        
+
         $this->setServiceDefinition('TABLE', new sfServiceDefinition('Am_Table',
             array(new sfServiceReference('db'))))
             ->addMethodCall('setDi', array($this));
         $this->setServiceDefinition('RECORD', new sfServiceDefinition('Am_Record'))
             ->setShared(false); // new object created on each access !
 
-        $this->setServiceDefinition('modules', new sfServiceDefinition('Am_Plugins', 
+        $this->setServiceDefinition('modules', new sfServiceDefinition('Am_Plugins',
             array(new sfServiceReference('service_container'),
                 'modules', APPLICATION_PATH, 'Bootstrap_%s', '%2$s', array('%s/Bootstrap.php'))))
             ->addMethodCall('setTitle', array('Enabled Modules'));
-        $this->setServiceDefinition('plugins_protect', new sfServiceDefinition('Am_Plugins', 
-            array(new sfServiceReference('service_container'), 
+        $this->setServiceDefinition('plugins_protect', new sfServiceDefinition('Am_Plugins',
+            array(new sfServiceReference('service_container'),
                 'protect', APPLICATION_PATH . '/default/plugins/protect', 'Am_Protect_%s')))
             ->addMethodCall('setTitle', array('Integration'));
-        $this->setServiceDefinition('plugins_payment', new sfServiceDefinition('Am_Plugins', 
-            array(new sfServiceReference('service_container'), 
+        $this->setServiceDefinition('plugins_payment', new sfServiceDefinition('Am_Plugins',
+            array(new sfServiceReference('service_container'),
                 'payment', APPLICATION_PATH . '/default/plugins/payment', 'Am_Paysystem_%s')))
             ->addMethodCall('setTitle', array('Payment'));
-        $this->setServiceDefinition('plugins_misc', new sfServiceDefinition('Am_Plugins', 
-            array(new sfServiceReference('service_container'), 
+        $this->setServiceDefinition('plugins_misc', new sfServiceDefinition('Am_Plugins',
+            array(new sfServiceReference('service_container'),
                 'misc', APPLICATION_PATH . '/default/plugins/misc', 'Am_Plugin_%s')))
             ->addMethodCall('setTitle', array('Other'));
-        $this->setServiceDefinition('plugins_storage', new sfServiceDefinition('Am_Plugins_Storage', 
-            array(new sfServiceReference('service_container'), 
+        $this->setServiceDefinition('plugins_storage', new sfServiceDefinition('Am_Plugins_Storage',
+            array(new sfServiceReference('service_container'),
                 'storage', APPLICATION_PATH . '/default/plugins/storage', 'Am_Storage_%s')))
             ->setFile('Am/Storage.php')
             ->addMethodCall('setTitle', array('File Storage'));
-        $this->setServiceDefinition('plugins_tax', new sfServiceDefinition('Am_Plugins_Tax', 
-            array(new sfServiceReference('service_container'), 
+        $this->setServiceDefinition('plugins_tax', new sfServiceDefinition('Am_Plugins_Tax',
+            array(new sfServiceReference('service_container'),
                 'tax', APPLICATION_PATH . '/default/plugins/misc', 'Am_Invoice_Tax_%s')))
             ->setFile('Am/Invoice/Tax.php')
             ->addMethodCall('setTitle', array('Tax Plugins'));
-        
+
         $this->register('cache', 'Zend_Cache_Core')
-            ->addArgument(array('lifetime'=>3600, 'automatic_serialization' => true))
+            ->addArgument(array(
+                'lifetime'=>3600,
+                'automatic_serialization' => true,
+                'cache_id_prefix' => sprintf('%s.',
+                        $this->app->getSiteHash($this->config->get('db.mysql.db') . $this->config->get('db.mysql.prefix'), 10)
+                    )))
             ->addMethodCall('setBackend', array(new sfServiceReference('cacheBackend')));
         $this->register('cacheFunction', 'Zend_Cache_Frontend_Function')
             ->addArgument(array('lifetime'=>3600))
             ->addMethodCall('setBackend', array(new sfServiceReference('cacheBackend')));
-        
+
+        $this->register('countryLookup', 'Am_CountryLookup');
+
         $this->register('app', 'Am_App')
             ->addArgument(new sfServiceReference('service_container'));
 
         $this->register('interval', 'Am_Interval');
     }
-    
+
+    function __sleep()
+    {
+        return array();
+    }
+
     function _neverCall_() // expose strings to translation
     {
         ___('Enabled Modules');
@@ -258,7 +273,7 @@ class Am_Di extends sfServiceContainerBuilder
         ___('Other');
         ___('File Storage');
     }
-    
+
     function _setTime($time)
     {
         if (!is_int($time))
@@ -268,7 +283,7 @@ class Am_Di extends sfServiceContainerBuilder
         $this->sqlDateTime = date('Y-m-d H:i:s', $time);
         return $this;
     }
-    
+
     public function getService($id)
     {
         if (empty($this->services[$id]))
@@ -329,7 +344,7 @@ class Am_Di extends sfServiceContainerBuilder
         }
         return $this->services['authAdmin'];
     }
-    
+
     protected function getPluginsService()
     {
         return array(
@@ -350,12 +365,12 @@ class Am_Di extends sfServiceContainerBuilder
         } catch (Am_Exception_Db $e) {
             if (APPLICATION_ENV != 'debug')
                 amDie("Error establishing a database connection. Please contact site webmaster if this error does not disappear long time");
-            else 
+            else
                 throw $e;
         }
         return $v;
     }
-    
+
     public function getLanguagesListUserService()
     {
         return $this->cacheFunction->call(array('Am_Locale','getLanguagesList'), array('user'));
@@ -370,8 +385,12 @@ class Am_Di extends sfServiceContainerBuilder
         if (!isset($this->services['cacheBackend']))
         {
             $fileBackendOptions = array('cache_dir' => DATA_DIR . '/cache');
-            if (extension_loaded('xcache') && ini_get('xcache.var_size')>0)
+            if (extension_loaded('apc') && ini_get('apc.enabled'))
+                $this->services['cacheBackend'] = Zend_Cache::_makeBackend('Apc', array());
+            elseif (extension_loaded('xcache') && ini_get('xcache.var_size')>0)
                 $this->services['cacheBackend'] = Zend_Cache::_makeBackend('Xcache', array());
+            elseif (extension_loaded('memcache'))
+                $this->services['cacheBackend'] = Zend_Cache::_makeBackend('Memcached', array());
             elseif (is_writeable($fileBackendOptions['cache_dir']))
                 $this->services['cacheBackend'] = Zend_Cache::_makeBackend('two-levels', array(
                     'slow_backend' => 'File',
@@ -384,7 +403,7 @@ class Am_Di extends sfServiceContainerBuilder
         }
         return $this->services['cacheBackend'];
     }
-    
+
     function getViewPathService()
     {
         if (!isset($this->services['viewPath']))
@@ -393,7 +412,7 @@ class Am_Di extends sfServiceContainerBuilder
                 $theme = $this->request->getFiltered('theme');
             if (empty($theme))
                 $theme = $this->config->get('theme', 'default');
-            
+
             if (APPLICATION_ENV == 'debug')
                 $admin_theme = $this->request->getFiltered('admin_theme');
             if (empty($admin_theme))
@@ -419,7 +438,7 @@ class Am_Di extends sfServiceContainerBuilder
         }
         return $this->services['viewPath'];
     }
-    
+
     function getThemeService()
     {
         if (!isset($this->services['theme']))
@@ -461,7 +480,7 @@ class Am_Di extends sfServiceContainerBuilder
         }
         return parent::getServiceDefinition($id);
     }
-    
+
     /**
      * That must be last 'getInstance' shortcut in the code !
      * @return Am_Di
@@ -472,7 +491,7 @@ class Am_Di extends sfServiceContainerBuilder
             self::$instance = new self;
         return self::$instance;
     }
-    
+
     /**
      * for unit testing
      * @access private

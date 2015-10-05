@@ -7,7 +7,7 @@
 class Am_Paysystem_Offline extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.0';
     
     public function __construct(Am_Di $di, array $config)
     {
@@ -36,6 +36,7 @@ class Am_Paysystem_Offline extends Am_Paysystem_Abstract
 
     public function _process(Invoice $invoice, Am_Request $request, Am_Paysystem_Result $result)
     {
+        unset($this->getDi()->session->cart);
         $result->setAction(
             new Am_Paysystem_Action_Redirect(
                 REL_ROOT_URL . "/payment/".$this->getId()."/instructions?id=".$invoice->getSecureId($this->getId())));
@@ -49,14 +50,15 @@ class Am_Paysystem_Offline extends Am_Paysystem_Abstract
         $html = $this->getConfig('html', 'SITE OWNER DID NOT PROVIDE INSTRUCTIONS FOR OFFLINE PAYMENT YET');
         
         $tpl = new Am_SimpleTemplate;
-        $tpl->receipt_html = $view->partial('_receipt.phtml', array('invoice' => $invoice));
+        $tpl->receipt_html = $view->partial('_receipt.phtml', array('invoice' => $invoice, 'di' => $this->getDi()));
         $tpl->invoice = $invoice;
         $tpl->user = $this->getDi()->userTable->load($invoice->user_id);
         $tpl->invoice_id = $invoice->invoice_id;
         $tpl->cancel_url = REL_ROOT_URL . '/cancel?id=' . $invoice->getSecureId('CANCEL');
         $tpl->invoice_title = $invoice->getLineDescription();
-        
-        $view->content = $tpl->render($html);
+
+        $view->invoice = $invoice;
+        $view->content = $tpl->render($html) . $view->blocks('payment/offline/bottom');
         $view->title = $this->getTitle();
         $response->setBody($view->render("layout.phtml"));
     }

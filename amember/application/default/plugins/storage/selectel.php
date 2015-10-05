@@ -18,12 +18,8 @@ class Am_Storage_Selectel extends Am_Storage
         return $this->getConfig('secret_key') && $this->getConfig('access_key');
     }
 
-    public
-        function onSetupForms(Am_Event_SetupForms $event)
+    function _initSetupForm(Am_Form_Setup $form)
     {
-        $form = new Am_Form_Setup($this->getId());
-        $event->addForm($form);
-
         $form->setTitle('Selectel');
 
         $form->addText('access_key', array('size' => 40))->setLabel('Your account login')
@@ -51,14 +47,12 @@ class Am_Storage_Selectel extends Am_Storage
                 ->addRule('required');
         }
 
-        $form->addFieldsPrefix('storage.selectel.');
-
         $msg = <<<EOT
-    Make sure that you store all your files in private containers. 
-    In order to provide an access to the files, create one free container, and specify it in plugin configuration. 
-    aMember will create symlinks to the files and put these symilnks to that public container. Links are one-time and time-limited. 
-    For example if you name your public container "download", end-user will see these links: 
-    https://88901.selcdn.ru/download/9365d4a676845f607e46e19038305ba0/filename.mp4    
+    Make sure that you store all your files in private containers.
+    In order to provide an access to the files, create one free container, and specify it in plugin configuration.
+    aMember will create symlinks to the files and put these symilnks to that public container. Links are one-time and time-limited.
+    For example if you name your public container "download", end-user will see these links:
+    https://88901.selcdn.ru/download/9365d4a676845f607e46e19038305ba0/filename.mp4
 
 EOT;
 
@@ -279,7 +273,7 @@ class SelectelAPI
     }
 
     /**
-     * 
+     *
      * @param type $uri
      * @param type $method
      * @param type $headers
@@ -312,7 +306,7 @@ class SelectelAPI
     }
 
     /**
-     * 
+     *
      * @return Am_Di $di
      */
     protected

@@ -171,15 +171,24 @@ var methods = {
         }
 
         this.open = function () {
-            this.row.data('state', 'opened')
-            this.cell.data('openedByMe', 1)
+            if (this.cell.find('.data').hasClass('isAjax') && !this.cell.data('loaded')) {
+                var that = this;
+                $.get(this.cell.find('.data').val(), null, function(res) {
+                    that.cell.data('loaded', true);
+                    that.cell.find('.data').val(res);
+                    that.open();
+                })
+                return;
+            }
+            this.row.data('state', 'opened');
+            this.cell.data('openedByMe', 1);
             numOfCols = this.row.children().size();
             this.row.after('<tr class="expandable-data-row"><td colspan="' +
                 numOfCols +
                 '" class="expandable-data">' +
                 this.getText(this.cell.find('.data')) +
                 '</td></tr>');
-            this.cell.addClass('expanded')
+            this.cell.addClass('expanded');
         }
 
         this.row  = $(this).parent()

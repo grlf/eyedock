@@ -2,8 +2,12 @@
 /**
  * @table paysystems
  * @id epay
- * @title Epay
+ * @title ePay
  * @recurring cc
+ * @visible_link http://www.epay.eu
+ * @logo_url epay.png
+ * @country DK
+ * @adult 1
  */
 class Am_Paysystem_Epay extends Am_Paysystem_CreditCard
 {

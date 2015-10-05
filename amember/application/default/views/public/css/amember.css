@@ -10,7 +10,7 @@ html {
   margin: 0 0 -30px 0;
   padding: 0;
 }
-@media all and (min-width: 892px) {
+@media all and (min-width: 800px) {
   .am-layout {
     background: url("../img/layout-bg.png") repeat-y top center #ededed;
   }
@@ -59,8 +59,15 @@ html {
   padding-right: 20px;
   display: inline-block;
   text-align: left;
-  width: 90%;
+  width: 100%;
   max-width: 800px;
+  box-sizing: border-box;
+}
+@media all and (max-width: 320px) {
+  .am-main {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
 }
 
 .am-header {
@@ -93,7 +100,7 @@ html {
 .am-body {
   text-align: center;
 }
-@media all and (min-width: 892px) {
+@media all and (min-width: 800px) {
   .am-body {
     background: url("../img/body-bg.png") repeat-x left top #ededed;
   }
@@ -104,7 +111,7 @@ html {
   padding-bottom: 50px;
   padding-top: 1em;
 }
-@media all and (min-width: 892px) {
+@media all and (min-width: 800px) {
   .am-body .am-body-content-wrapper {
     border-color: #dbdbdb;
     border-width: 0 1px;
@@ -115,7 +122,6 @@ html {
 .am-footer {
   text-align: center;
   color: #919191;
-  /* padding: 0.5em 2em 0.5em 1em; */
   height: 30px;
 }
 .am-footer .am-footer-content-wrapper {
@@ -208,6 +214,11 @@ html {
 .norecord-actions {
   margin-bottom: 1em;
 }
+.group-wrap .link,
+.norecord-actions .link {
+  display: inline-block;
+  margin: 0.4em 1em;
+}
 
 .grid-container {
   border: 1px solid #a1a1a1;
@@ -240,6 +251,8 @@ html {
   padding: 0.5em;
   border: 1px solid white;
   vertical-align: top;
+  word-break: break-word;
+  word-wrap: break-word;
 }
 .grid th {
   padding: 0.5em;
@@ -348,7 +361,6 @@ html {
 
 /* two column layout, used for login/sendpass on login and signup page */
 .am-layout-two-coll {
-  overflow: hidden;
   border: 1px solid #d9d9d9;
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;
@@ -541,6 +553,45 @@ html {
 }
 
 /* END Tabs */
+/* Tabs Narrow - user member area menu */
+.am-tabs-narrow-wrapper {
+  display: none;
+}
+
+.am-tabs-narrow-switch {
+  cursor: pointer;
+}
+
+.am-tabs-narrow {
+  display: none;
+  overflow: hidden;
+  margin: 0 0 1em 0;
+  padding: 1em;
+  background: #dbdbdb;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  box-shadow: 0 1px 1px #b0b0b0;
+  text-align: left;
+}
+.am-tabs-narrow ul {
+  margin: 0 0 0 1em;
+  padding: 0;
+}
+.am-tabs-narrow li.active > a {
+  font-weight: bold;
+}
+
+@media all and (max-width: 500px) {
+  .am-tabs-wrapper {
+    display: none;
+  }
+
+  .am-tabs-narrow-wrapper {
+    display: block;
+  }
+}
+/* END Tabs Narrow */
 /* Receipt table from thanks.phtml */
 .am-receipt {
   border: 1px solid #E0E0E0;
@@ -832,7 +883,6 @@ div.row:after {
 /* Common styles */
 .am-body-content {
   clear: both;
-  overflow: hidden;
 }
 
 div.errors ul, ul.error, ul.errors {
@@ -890,16 +940,18 @@ div.errors ul li, ul.error li, ul.errors li {
 .am-login-form,
 .am-sendpass-form {
   margin-bottom: 1em;
-  min-width: 310px;
+  margin: 0 auto;
+  width: 350px;
+  max-width: 350px;
 }
 .am-login-form legend,
 .am-sendpass-form legend {
   text-indent: 0;
   text-align: center;
 }
-
 .am-login-form input[name=login],
-.am-login-form input[name=amember_login], .am-sendpass-form input[name=login],
+.am-login-form input[name=amember_login],
+.am-sendpass-form input[name=login],
 .am-sendpass-form input[name=amember_login] {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -910,7 +962,8 @@ div.errors ul li, ul.error li, ul.errors li {
   padding-left: 30px;
   width: 100%;
 }
-.am-login-form input[name=amember_pass], .am-sendpass-form input[name=amember_pass] {
+.am-login-form input[name=amember_pass],
+.am-sendpass-form input[name=amember_pass] {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -919,6 +972,15 @@ div.errors ul li, ul.error li, ul.errors li {
   background-position: 5px center;
   padding-left: 30px;
   width: 100%;
+}
+
+.am-sendpass-form-wrapper {
+  display: none;
+}
+
+.am-form-login-switch {
+  margin-left: 0.5em;
+  color: #3f7fb0;
 }
 
 /* END Form Login */
@@ -1028,7 +1090,11 @@ div.errors ul li, ul.error li, ul.errors li {
 
 .am-form div.am-element-recaptcha {
   margin-left: 0;
-  padding: 0;
+  text-align: center;
+}
+
+.am-form div.am-element-recaptcha > div {
+  display: inline-block;
 }
 
 /* icons */
@@ -1043,6 +1109,66 @@ div.errors ul li, ul.error li, ul.errors li {
 
 #EmailCode {
   background: #FFFFCF;
+}
+
+.am-switch-reveal {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-left: -24px;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.am-switch-reveal-off {
+  background: url("../img/eye-off.png");
+}
+
+.am-switch-reveal-on {
+  background: url("../img/eye.png");
+}
+
+.am-flash {
+  display: none;
+}
+
+.am-flash-mask {
+  position: fixed;
+  z-index: 500;
+  opacity: 0.8;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: #eee;
+}
+
+.am-flash-content {
+  position: fixed;
+  z-index: 501;
+  top: 20%;
+  left: 50%;
+  margin-left: -140px;
+  width: 280px;
+}
+
+.am-flash-content-message {
+  background: #dfe8f0;
+  border: 1px solid #ccddeb;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  padding: 0.5em 1em;
+}
+
+.am-flash-content-error {
+  background: #fcbdbd;
+  border: 1px solid #faa7a7;
+  color: #ba2727;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  padding: 0.5em 1em;
 }
 
 /* outline a block in member area */
@@ -1091,10 +1217,19 @@ div.errors ul li, ul.error li, ul.errors li {
   z-index: 10001;
   display: none;
   background-color: white;
-  border: solid 3px #ccc;
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
-  border-radius: 10px;
+  border-width: 3px 0;
+  border-color: #ccc;
+  border-style: solid;
+  min-width: 320px;
+  box-sizing: border-box;
+}
+@media all and (min-width: 321px) {
+  .am-popup {
+    border-width: 3px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+  }
 }
 .am-popup .am-popup-close-icon {
   display: inline-block;

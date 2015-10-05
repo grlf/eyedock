@@ -11,7 +11,7 @@ class Am_Paysystem_Ccavenue extends Am_Paysystem_Abstract
 {
 
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.0';
     const LIVE_URL = 'https://www.ccavenue.com/shopzone/cc_details.jsp';
 
     protected $defaultTitle = 'CCAvenue';
@@ -19,7 +19,9 @@ class Am_Paysystem_Ccavenue extends Am_Paysystem_Abstract
 
     public function getSupportedCurrencies()
     {
-        return array('INR');
+        return array('INR', 'SGD', 'GBP', 'USD', 'OMR', 'BHD', 'AED', 'EUR', 'CAD',
+'CHF', 'THB', 'LKR', 'MYR', 'QAR', 'HKD', 'KWD', 'BDT', 'NZD',
+'AUD', 'NPR', 'CNY', 'JPY', 'KES', 'MUR', 'PHP', 'SAR', 'ZAR');
     }
 
     function adler32($adler, $str)

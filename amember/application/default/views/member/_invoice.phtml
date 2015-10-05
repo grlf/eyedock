@@ -19,6 +19,11 @@
         <?php elseif ($invoice->isCancelled()): ?>
         <span class="am-active-invoice-cancel">
             <?php __e("Cancelled") ?> (<?php p(amDate($invoice->tm_cancelled)) ?>)
+            <?php if(!empty($invoice->_restoreUrl)) : ?>
+                <span class="am-cancelled-invoice-restore">
+                    <a class="restore-subscription local-link" href="<?php p($invoice->_restoreUrl)?>"><?php __e("Restore Subscription") ?></a>
+                </span>
+            <?php endif; ?>
         </span>
         <?php endif ?>
     </div>

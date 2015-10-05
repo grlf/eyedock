@@ -90,6 +90,10 @@ class InvoiceLog extends Am_Record
             $vars->toXml($x, false);
         } elseif ($vars instanceof HTTP_Request2_Response) {
             $x->writeAttribute('type', 'outgoing-request-response');
+            $x->startElement('status');
+            $x->writeAttribute('code', $vars->getStatus());
+            $x->writeAttribute('reason', $vars->getReasonPhrase());
+            $x->endElement();
             $x->startElement('headers');
             foreach ($vars->getHeader(null) as $k => $v)
             {
@@ -273,7 +277,8 @@ class InvoiceLogTable extends Am_Table {
     function log($invoice_id, $paysys_id,
             $title, $vars=null, $type='info', $remote_addr=null, $tm=null){
         $r = $this->createRecord();
-        $r->setInvoice($this->getDi()->invoiceTable->load($invoice_id, false));
+        if ($invoice = $this->getDi()->invoiceTable->load($invoice_id, false))
+            $r->setInvoice($invoice);
         $r->paysys_id = $paysys_id;
         $r->title = $title;
         $r->remote_addr = get_first($remote_addr, $_SERVER['REMOTE_ADDR']);

@@ -3,7 +3,6 @@
   '%d days after expiration' => '%d dage efter udløb',
   '%d days before expiration' => '%d dage før udløb',
   '%d user(s) matches your search' => '%d bruger (e) matcher din søgning',
-  '%d-th day' => '%d -th dag',
   '%d-th subscription day' => '%d -th abonnement dage',
   '%s Plugins' => '%s Plugins',
   '-- Please Select --' => 'Vælg venligst',
@@ -22,10 +21,7 @@
   'Add Report to My Dashboard' => 'Tilføj kommentar til min Dashboard',
   'Add Subscription' => 'Tilføj Abonnement',
   'Add User Fields' => 'Tilføj Fields',
-  'Added' => 'tilføjede',
   'Additional' => 'Yderligere',
-  'Additional Fields' => 'Yderligere felter',
-  'Additionally to "Access", add "Invoice" and "Payment" record with given %s amount, like they have really made a payment' => 'Derudover til "Access ", add "Faktura " og "Betaling " record med givet %s beløb, ligesom de virkelig har lavet en betaling',
   'Admin Accounts' => 'Admin Konti',
   'Admin E-Mail Address
 used to send email notifications to admin
@@ -41,7 +37,6 @@ til admin en gang gratis tilmelding er afsluttet',
 to admin once payment is received' => 'Admin Betaling Notifications 
 til admin, når betalingen er modtaget',
   'Admin Settings' => 'Administrationsindstillinger',
-  'Admin Username' => 'Admin Brugernavn',
   'Admin notification' => 'Admin meddelelse',
   'Admin username must be alphanumeric in small caps' => 'Admin Brugernavnet skal være alfanumerisk i kapitæler',
   'Administrator Login' => 'Administrator Login',
@@ -130,6 +125,7 @@ between 5 og 32',
   'Commission
 % of commission received by referred affiliate' => 'Kommissionen 
 % provision modtaget af nævnte affiliate',
+  'Commission earned' => 'Kommissionen tjente',
   'Commission for First Payment
 calculated for first payment in each invoice' => 'Underudvalget for First Payment 
 calculated for første udbetaling i hver faktura',
@@ -137,9 +133,6 @@ calculated for første udbetaling i hver faktura',
 calculated for first customer invoice only' => 'Kommissionen for Free Signup 
 calculated for første kunde faktura kun',
   'Commission for Rebills' => 'Kommissionen for Rebills',
-  'Company Logo for Invoice
-it must be png/jpeg/tiff file (%s)' => 'Firma Logo for Invoice 
-it skal være png / jpeg / tiff-fil ( %s )',
   'Conditions' => 'betingelser.',
   'Configuration' => 'Konfiguration',
   'Configured License Keys' => 'Konfigurerede License Keys',
@@ -162,7 +155,6 @@ how mange gange kupon kan bruges',
   'Create Folder' => 'Opret mappe',
   'Create Session Key' => 'Opret sessionsnøgle',
   'Create ticket as' => 'Opret billet som',
-  'Currency' => 'Valuta',
   'Currency Exchange Rates' => 'Valutakurser',
   'Custom Commission Rules added' => 'Tilpassede Kommissionens regler tilføjet',
   'Custom HTML' => 'Tilpasset HTML',
@@ -172,7 +164,6 @@ keep tom for at bruge standard-titel',
   'Customer' => 'kunden.',
   'Customize Dashboard' => 'Tilpas Dashboard',
   'Daily' => 'Dagligt',
-  'Dashboard' => 'Instrumentbræt',
   'Date Time' => 'Dato Tid',
   'Date to Purge
 all records prior to this date will be removed from selected tables' => 'Dato at rense 
@@ -244,16 +235,13 @@ Brugt til visning af afsenderens navn i udgående e-mails',
   'Edit Custom Commission Rules' => 'Rediger brugerdefineret Kommissionen Regler',
   'Edit Groups' => 'Rediger Grupper',
   'Edit Messages' => 'Redigere de beskeder',
-  'Email' => 'E-mail',
   'Email Backup Frequency' => 'E-mail Backup Frekvens',
   'Email Sending method
 PLEASE DO NOT CHANGE if emailing from aMember works' => 'E-mail Afsendelse metode 
 Venligst ændres ikke, hvis e-maile fra aMember virker',
   'Email Sent' => 'E-mail afsendt',
-  'Email Subject' => 'Email Emne',
   'Email address is required field.' => 'E-mail-adresse er nødvendig felt.',
   'Enable plugins if necessary' => 'Aktiver plugins hvis det er nødvendigt',
-  'End Date' => 'Slutdato',
   'Enter Maintenance Mode' => 'Indtast vedligeholdelsesfunktion',
   'Enter admin password for confirmation' => 'Indtast admin password til bekræftelse',
   'Error Log' => 'Fejllog',
@@ -267,10 +255,8 @@ Venligst ændres ikke, hvis e-maile fra aMember virker',
   'Exchange Rate
 enter cost of 1 (one) %s' => 'Valutakursen 
 Indtast omkostninger 1 (én) %s',
-  'Field' => 'Field',
   'Field Name' => 'Field Name',
   'Field Title' => 'Field Titel',
-  'Field Type' => 'Felttype',
   'Field Values' => 'Feltværdier',
   'File
 (max filesize %s)' => 'File 
@@ -304,7 +290,6 @@ Du kan få din nøgle i %s medlemmer område %s',
   'Folder URL' => 'Folder URL',
   'Form Type' => 'Formulartype',
   'Forms Editor' => 'Forms Editor',
-  'From' => 'Fra',
   'Future' => 'Fremtiden',
   'General' => 'Generelt',
   'General Link' => 'Generelt Link',
@@ -357,7 +342,6 @@ Existing fakturaer påvirkes ikke.
   'Is Disabled?
 disable product ordering, hide it from signup and renewal forms' => 'Er handicappet? 
 disable produkt bestilling, skjule det fra signup og fornyelse formularer',
-  'Is Paid?' => 'Er betalt?',
   'It is required to setup a cron job to trigger backup generation' => 'Det er nødvendigt at sætte en cron job at udløse backup generation',
   'Items' => 'Varer',
   'JavaScript Code' => 'JavaScript-kode',
@@ -371,7 +355,6 @@ disable produkt bestilling, skjule det fra signup og fornyelse formularer',
   'Last existing subscription date of this product' => 'Sidste eksisterende abonnement datoen for dette produkt',
   'Last expiration date in the renewal group' => 'Sidste udløbsdato i fornyelsen gruppen',
   'Last login' => 'Sidste login',
-  'Leads' => 'Leads',
   'Length of admin password must be from %d to %d' => 'Længde af admin password skal være fra %d til %d',
   'Length of username must be from %d to %d' => 'Længde af brugernavn skal være fra %d til %d',
   'Light Boxes' => 'Lyskasser',
@@ -388,8 +371,8 @@ disable produkt bestilling, skjule det fra signup og fornyelse formularer',
   'Log In' => 'Log på',
   'Log Outgoing E-Mail Messages for ... days' => 'Log udgående e-mail-meddelelser for ... dag',
   'Log in' => 'Log på',
+  'Logged in as %s' => 'Logget ind som %s',
   'Login Page' => 'Login-side',
-  'Login as User' => 'Login som bruger',
   'Logs' => 'Logs',
   'Lookup' => 'Opslag',
   'Lost your password?' => 'Mistet dit kodeord?',
@@ -449,6 +432,7 @@ to customers. If empty, [Admin E-Mail Address] is used' => 'Udgående e-mail-adr
 Brugt som Fra: adresse til at sende e-mails 
 For kunder. Hvis tom, er [Admin E-mail adresse], der anvendes',
   'Overwrite User if Exist User with Same Login' => 'Overskriv Bruger hvis Exist Bruger med samme login',
+  'PDF Invoice' => 'PDF-faktura',
   'Paid' => 'Betalt',
   'Password Length' => 'Password Length',
   'Password changed' => 'Password skiftet',
@@ -462,7 +446,6 @@ For kunder. Hvis tom, er [Admin E-mail adresse], der anvendes',
   'Payment#/Receipt#' => 'Betaling # / Modtagelse #',
   'Payout %d Details' => 'Udbetaling %d Detaljer',
   'Payout Details' => 'Udbetaling Detaljer',
-  'Payout Method' => 'Udbetaling Method',
   'Paysystem' => 'Paysystem',
   'Pending Invoice Notification Rules' => 'Indtil Faktura for beskeder',
   'Permissions' => 'Tilladelser',
@@ -498,7 +481,6 @@ default - 1, normalt behøver du ikke at ændre det
 First og Second Price er den samlede for specificerede qty',
   'Quit Maintenance Mode' => 'Afslut vedligeholdelsesfunktion',
   'RadioButtons' => 'Radioknapper',
-  'ReCaptcha' => 'ReCAPTCHA',
   'Rebill' => 'Rebill',
   'Rebill Second Price until cancelled' => 'Rebill Second Pris indtil aflyst',
   'Rebill Times
@@ -512,7 +494,6 @@ vil optræder på det andet Price',
   'Recipients' => 'Modtagere',
   'Record Type' => 'Posttype',
   'Records Deleted Sucessfully' => 'Records slettet succesfuldt',
-  'Recurring' => 'Tilbagevendende',
   'Redirect URL' => 'Omdirigeringswebadresse',
   'Referrer' => 'Referrer',
   'Refund Amount' => 'Refund Beløb',
@@ -577,7 +558,6 @@ secure URL, som regel %s',
   'Select option' => 'Vælg option',
   'Selected for E-Mailing' => 'Udvalgt til E-Mailing',
   'Semicolon' => 'Semikolon',
-  'Send' => 'Send',
   'Send Cancel Notifications to Admin
 send email to admin when recurring subscription cancelled by member' => 'Send Annuller Meddelelser til Admin',
   'Send E-Mail Message' => 'Send e-mail',
@@ -613,8 +593,6 @@ Når FIRST subscripton er afsluttet',
   'Signup Form Configuration' => 'Tilmeldingsformular Configuration',
   'Signup Info' => 'Signup Info',
   'Signup Messages' => 'Konto Meddelelser',
-  'Signups' => 'Tilmeldinger',
-  'Site Title' => 'Site Title',
   'Site is temporarily disabled for maintenance' => 'Stedet er midlertidigt deaktiveret for vedligeholdelse',
   'Size' => 'Størrelse',
   'Size of input field' => 'Størrelse på indtastningsfeltet',
@@ -626,7 +604,6 @@ Når FIRST subscripton er afsluttet',
   'Source' => 'Kilde:',
   'Space' => 'mellemrum',
   'Standard PHP Sessions' => 'Standard PHP Sessions',
-  'Start Date' => 'Startdato',
   'Start Date Calculation
 rules for subscription start date calculation.
 MAX date from alternatives will be chosen.
@@ -645,7 +622,6 @@ Dette indstillinger har ingen virkning for tilbagevendende abonnementer',
   'Surcharge' => 'Tillæg',
   'Table' => 'Bord',
   'Tabulation' => 'Tabulering',
-  'Tax Id' => 'Skat Id',
   'Template' => 'Skabelon',
   'Template
 alternative template for signup page' => 'Skabelon 
@@ -665,14 +641,12 @@ Press [Skip] to type it manually from scratch.' => 'Denne e-mail-skabelon er tom
 Tryk [Kopier] for at kopiere skabelon fra standardsprog [Engelsk] 
 Tryk [Skip] for at skrive det manuelt fra bunden.',
   'This field is requred' => 'Dette felt er requred',
-  'Thresehold Date' => 'Thresehold Dato',
   'Ticket#' => 'Billet #',
   'Tier' => 'Tier',
   'Title
 displayed to customers' => 'Title 
 displayed til kunder',
   'Title of Report for your Reference' => 'Titel Rapport for din reference',
-  'To' => 'Til',
   'To order this product user must have an
 when user orders this subscription, it will be checked
 that user has one from the following subscriptions' => 'For at bestille dette produkt bruger skal have en 
@@ -707,7 +681,6 @@ that bruger har en af ​​følgende abonnementer',
   'Use E-Mail Throttle Queue' => 'Bruge e-mail Throttle kø',
   'Use External Cron' => 'Brug ekstern Cron',
   'Use Global Settings' => 'Brug Globale indstillinger',
-  'User' => 'Bruger Training ',
   'User Coupon Usage Count
 how many times a coupon code can be used by customer' => 'Bruger Kupon Usage Count 
 how mange gange en kuponkode kan bruges af kunden',
@@ -718,6 +691,7 @@ how mange gange en kuponkode kan bruges af kunden',
   'User had access to the following products' => 'Brugeren havde adgang til følgende produkter',
   'User is locked' => 'Bruger er låst',
   'User is not approved' => 'Brugeren er ikke godkendt',
+  'User is not found in database' => 'Brugeren findes ikke i databasen',
   'User notification' => 'Bruger meddelelse',
   'User-Affiliate Relation Lifetime
 how long (in days) calculate commission for referred affiliate (default: 0 - forever)' => 'Bruger-Affiliate Relation Levetid 
@@ -728,7 +702,6 @@ how lang (i dage) beregne provision for nævnte affiliate (default: 0 - forever)
   'Users Report' => 'Brugere rapporterer',
   'Utilities' => 'Nytteprogramer',
   'Valid license key are one-line string,starts with L and ends with X' => 'Gyldig licens nøglen er one-line streng, begynder med L og slutter med X',
-  'Validation' => 'Validering',
   'Value
 use % as wildcard mask' => 'Værdi 
 Brug% som wildcard maske',

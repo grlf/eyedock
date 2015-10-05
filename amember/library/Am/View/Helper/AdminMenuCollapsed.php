@@ -22,10 +22,10 @@ class Am_View_Helper_AdminMenuCollapsed extends Zend_View_Helper_Abstract {
         foreach ($container as $page)
         {
             /* @var $page Zend_Navigation_Page */
-            if ($this->acl && ($recources = $page->getResource())) {
+            if ($this->acl && ($resources = $page->getResource())) {
                 $hasPermission = false;
-                foreach ((array)$recources as $recource) {
-                    if ($this->acl->hasPermission($recource, $page->getPrivilege()))
+                foreach ((array)$resources as $resource) {
+                    if ($this->acl->hasPermission($resource, $page->getPrivilege()))
                         $hasPermission = true;
                 }
                 if (!$hasPermission) continue;
@@ -59,10 +59,10 @@ class Am_View_Helper_AdminMenuCollapsed extends Zend_View_Helper_Abstract {
         $html = '';
         foreach ($page as $subPage)
         {
-            if ($this->acl && ($recources = $subPage->getResource())) {
+            if ($this->acl && ($resources = $subPage->getResource())) {
                 $hasPermission = false;
-                foreach ((array)$recources as $recource) {
-                    if ($this->acl->hasPermission($recource, $subPage->getPrivilege()))
+                foreach ((array)$resources as $resource) {
+                    if ($this->acl->hasPermission($resource, $subPage->getPrivilege()))
                         $hasPermission = true;
                 }
                 if (!$hasPermission) continue;
@@ -103,7 +103,7 @@ class Am_View_Helper_AdminMenuCollapsed extends Zend_View_Helper_Abstract {
         if ($page instanceof Zend_Navigation_Page_Mvc)
             return sprintf('%s-%s', $page->getController(), $page->getAction());
         elseif ($page instanceof Zend_Navigation_Page_Uri)
-            return crc32($page->getUri);
+            return crc32($page->getUri());
     }
 }
 

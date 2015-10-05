@@ -134,6 +134,7 @@
     <field name="disabled" type="tinyint" notnull="1" default="0" />
     <field name="qty" type="int" notnull="1" default="1" />
     <field name="variable_qty" type="tinyint" notnull="1" default="0" />
+    <field name="paysys_id" type="varchar" len="255"/>
     <index name="PRIMARY" unique="1">
       <field name="plan_id"/>
     </index>
@@ -301,6 +302,7 @@
   </table>
   <table name="email_template">
     <field name="email_template_id" type="int" notnull="1" extra="auto_increment"/>
+    <field name="email_template_layout_id" type="int" notnull="0" />
     <field name="name" type="varchar" len="64" notnull="1"/>
     <field name="lang" type="varchar" len="16" notnull="1"/>
     <field name="format" type="enum" len="'text','html','multipart'" notnull="1" default="text"/>
@@ -313,13 +315,68 @@
     <field name="conditions" type="text" notnull="0" />
     <field name="not_conditions" type="varchar" len="255" notnull="0" />
     <field name="not_conditions_expired" type="tinyint" notnull="0" />
+    <field name="not_conditions_future" type="tinyint" notnull="0" />
     <field name="recipient_user" type="tinyint" notnull="1" default="1" />
+    <field name="recipient_aff" type="tinyint" notnull="1" default="0" />
     <field name="recipient_admin" type="tinyint" notnull="1" default="0" />
     <field name="recipient_emails" type="text" notnull="0" />
     <field name="bcc" type="text" notnull="0" />
+    <field name="reply_to" type="int" unsigned="1" notnull="0" />
+    <field name="recipient_admins" type="varchar" len="255" notnull="0"/>
     <index name="PRIMARY" unique="1">
       <field name="email_template_id"/>
     </index>
+  </table>
+  <table name="email_template_layout">
+      <field name="email_template_layout_id" type="int" notnull="1" extra="auto_increment"/>
+      <field name="name" type="varchar" len="64" notnull="1"/>
+      <field name="layout" type="mediumtext" notnull="1"/>
+      <index name="PRIMARY" unique="1">
+        <field name="email_template_layout_id"/>
+      </index>
+      <data>
+        <query>
+        ALTER TABLE ?_email_template_layout AUTO_INCREMENT = 101;
+        </query>
+      </data>
+      <table_data name="email_template">
+          <row>
+              <field name="email_template_layout_id">1</field>
+              <field name="name">Default User Layout</field>
+              <field name="layout">Dear %user.name_f% %user.name_l%,
+
+%content%
+
+--
+Best Regards,
+%site_title%
+%root_url%</field>
+          </row>
+          <row>
+              <field name="email_template_layout_id">2</field>
+              <field name="name">Default Admin Layout</field>
+              <field name="layout">Dear Administrator,
+
+%content%
+
+--
+Best Regards,
+%site_title%
+%root_url%</field>
+          </row>
+          <row>
+              <field name="email_template_layout_id">3</field>
+              <field name="name">Default Affiliate Layout</field>
+              <field name="layout">Dear %affiliate.name_f% %affiliate.name_l%,
+
+%content%
+
+--
+Best Regards,
+%site_title%
+%root_url%</field>
+          </row>
+      </table_data>
   </table>
   
   <!-- emails sent via admin-email function -->
@@ -507,6 +564,7 @@
       <field name="storage_id" type="varchar" len="32" notnull="0" default="null" />
       <field name="admin_id" type="int" notnull="0" />
       <field name="user_id" type="int" notnull="0" />
+      <field name="session_id" type="char" len="32" notnull="0" />
       <index name="PRIMARY" unique="1">
           <field name="upload_id" />
       </index>
@@ -576,6 +634,8 @@
     <field name="status" type="tinyint" notnull="1" default="0"/>
     <field name="coupon_id" type="int" notnull="0"/>
     <field name="coupon_code" type="varchar" len="255" notnull="0"/>
+    <field name="discount_first" type="decimal" len="12,2"/>
+    <field name="discount_second" type="decimal" len="12,2"/>
     <field name="is_confirmed" type="tinyint"/>
     <field name="public_id" type="char" notnull="1" len="16"/>
     <field name="invoice_key" type="varchar" len="32"/>
@@ -680,6 +740,8 @@
     <field name="shipping" type="decimal" len="12,2"/>
     <field name="refund_dattm" type="datetime"/>
     <field name="base_currency_multi" type="decimal" len="12,6" default="1.0" />
+    <field name="display_invoice_id" type="char" len="32"/>
+
     <index name="PRIMARY" unique="1">
       <field name="invoice_payment_id"/>
     </index>
@@ -712,6 +774,8 @@
     <field name="amount" type="decimal" len="12,2" notnull="1"/>
     <field name="refund_type" type="int" notnull="1" default="0"/>
     <field name="base_currency_multi" type="decimal" len="12,6" default="1.0" />
+    <field name="display_invoice_id" type="char" len="32"/>
+    
     <index name="PRIMARY" unique="1">
       <field name="invoice_refund_id"/>
     </index>
@@ -784,17 +848,20 @@
     <field name="phone" type="varchar" len="255"/>
     <field name="added" type="datetime" notnull="1" default="0000-00-00 00:00:00"/>
     <field name="remote_addr" type="varchar" len="39"/>
+    <field name="user_agent" type="varchar" len="255"/>
     <field name="status" type="smallint" notnull="1" default="0"/>
     <field name="unsubscribed" type="tinyint" notnull="1" default="0" />
     <field name="lang" type="varchar" len="32"/>
     <field name="i_agree" type="tinyint" default="0"/>
     <field name="is_approved" type="tinyint" default="1"/>
     <field name="is_locked" type="tinyint" default="0"/>
+    <field name="disable_lock_until" type="datetime" notnull="0"/>
     <field name="reseller_id" type="int"/>
     <field name="comment" type="text"/>
     <field name="tax_id" type="varchar" len="255" notnull="0" /><!-- to store EU VAT Id -->
     <field name="last_login" type="datetime"/>
     <field name="last_ip" type="varchar" len="39"/>
+    <field name="last_user_agent" type="varchar" len="255"/>
     <field name="last_session" type="varchar" len="32"/>
      <!-- add fields from [aff] module here to similfy import -->
     <field name="aff_id" type="int" unsigned="1" notnull="0"/>
@@ -853,6 +920,7 @@
     <field name="start_date" type="varchar" len="255" />
     <field name="currency" type="varchar" len="12"/>
     <field name="tax_group" type="varchar" len="255" default="-1" />
+    <field name="tax_digital" type="varchar" len="255" default="0" />
     <field name="sort_order" type="int" notnull="1" />
     <field name="renewal_group" type="varchar" len="255"/>
     <field name="start_date_fixed" type="date" /> 
@@ -863,6 +931,7 @@
     <field name="default_billing_plan_id" type="int" notnull="0" />
     <field name="is_tangible" type="tinyint" default="0" notnull="1" />
     <field name="is_disabled" type="tinyint" default="0" notnull="1" />
+    <field name="is_archived" type="tinyint" default="0" notnull="1" />
     <!-- <field name="is_countable" type="tinyint" default="0" notnull="1" deprecated="deprecated" /> -->
     <field name="comment" type="text"/>
     <index name="PRIMARY" unique="1">
@@ -972,6 +1041,7 @@
     <field name="fields" type="mediumtext" />
     <field name="tpl" type="varchar" len="255" notnull="0" />
     <field name="type" type="varchar" len="16" />
+    <field name="hide" type="smallint" size="1" default="0" />
     <field name="default_for" type="varchar" len="255" />
     <field name="meta_title" type="varchar" len="255" notnull="0"/>
     <field name="meta_keywords" type="varchar" len="255" notnull="0"/>
@@ -997,7 +1067,9 @@
      <row type="saved_form">
       <field name="title">Customer Profile</field>
       <field name="comment">customer profile form</field>
+      <field name="code">default</field>
       <field name="fields">[{&quot;id&quot;:&quot;name&quot;,&quot;class&quot;:&quot;name&quot;,&quot;hide-if-logged-in&quot;:true},{&quot;id&quot;:&quot;email&quot;,&quot;class&quot;:&quot;email&quot;,&quot;hide-if-logged-in&quot;:true},{&quot;id&quot;:&quot;new-password&quot;,&quot;class&quot;:&quot;new-password&quot;}]</field>
+      <field name="default_for">profile</field>
       <field name="type">profile</field>
      </row>
     </table_data>

@@ -9,11 +9,11 @@
  */
 class Am_Paysystem_Multisafepay extends Am_Paysystem_Abstract{
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.0';
 
     protected $defaultTitle = 'Multisafepay';
     protected $defaultDescription = 'Credit Card Payment';
-   
+
     public function _initSetupForm(Am_Form_Setup $form)
     {
         $form->addText("account_id")->setLabel(array(
@@ -24,24 +24,24 @@ class Am_Paysystem_Multisafepay extends Am_Paysystem_Abstract{
             'Site Code', ''));
         $form->addAdvCheckbox('testing')->setLabel('Test Mode');
     }
-    
+
     function getSupportedCurrencies()
     {
         return array('USD','GBP','EUR');
     }
     public function createMSP() {
         require_once dirname(__FILE__) . '/MultiSafepay.class.php';
-        
+
         $msp = new MultiSafepay();
         $msp->test = (bool)$this->getConfig('testing');
         $msp->merchant['account_id'] = $this->getConfig('account_id');
         $msp->merchant['site_id'] = $this->getConfig('site_id');
         $msp->merchant['site_code'] = $this->getConfig('site_code');
-        
+
         return $msp;
     }
-    
-    
+
+
     public function _process(Invoice $invoice, Am_Request $request, Am_Paysystem_Result $result)
     {
         $u = $invoice->getUser();
@@ -61,28 +61,28 @@ class Am_Paysystem_Multisafepay extends Am_Paysystem_Abstract{
         $msp->customer['email'] = $u->email;
 
         $msp->parseCustomerAddress($member['street']);
-        
-        /* 
+
+        /*
          * Transaction Details
          */
         $msp->transaction['id']            = $invoice->public_id; // generally the shop's order ID is used here
         $msp->transaction['currency']      = $invoice->currency;
         $msp->transaction['amount']        = $invoice->first_total * 100; // cents
         $msp->transaction['description']   = $invoice->getLineDescription();
-        
-        $out = '';      
+
+        $out = '';
         foreach ($invoice->getItems() as $item)
             $out .= sprintf('<li>%s</li>', htmlspecialchars($item->item_title));
         $msp->transaction['items'] = sprintf('<br/><ul>%s</ul>', $out);
-        
+
         $url = $msp->startTransaction();
         if ($msp->error){
             $result->setFailed(___('Error happened during payment process. ').' ('.$msp->error_code . ": " . $msp->error.')');
             return;
         }
-        
+
         $a = new Am_Paysystem_Action_Redirect($url);
-        $result->setAction($a);        
+        $result->setAction($a);
     }
     public function createTransaction(Am_Request $request, Zend_Controller_Response_Http $response, array $invokeArgs)
     {
@@ -104,27 +104,27 @@ class Am_Paysystem_Transaction_Multisafepay_Thanks extends Am_Paysystem_Transact
     {
         return $this->request->get('transactionid');
     }
-    
+
     public function getUniqId()
     {
         return $_SERVER['REMOTE_ADDR'] . '-' . $this->getPlugin()->getDi()->time;
     }
-    
+
     public function validateSource()
     {
         return true;
     }
-    
+
     public function validateStatus()
     {
         return true;
     }
-    
+
     public function validateTerms()
     {
         return true;
     }
-    
+
     public function getInvoice()
     {
         return $this->invoice;
@@ -132,9 +132,9 @@ class Am_Paysystem_Transaction_Multisafepay_Thanks extends Am_Paysystem_Transact
 }
 
 class Am_Paysystem_Transaction_Multisafepay extends Am_Paysystem_Transaction_Incoming{
-    
+
     protected $msp;
-    
+
     public function __construct(Am_Paysystem_Abstract $plugin, Am_Request $request, Zend_Controller_Response_Http $response, $invokeArgs) {
         $this->msp = $plugin->createMSP();
         $this->msp->transaction['id'] = $request->get('transactionid');
@@ -144,25 +144,25 @@ class Am_Paysystem_Transaction_Multisafepay extends Am_Paysystem_Transaction_Inc
     {
         return $this->request->get('transactionid');
     }
-        
+
     public function getUniqId()
     {
         return $_SERVER['REMOTE_ADDR'] . '-' . $this->getPlugin()->getDi()->time;
     }
-    
+
     public function validateSource()
     {
         return true;
     }
-    
+
     public function validateStatus()
     {
         return true;
         //return $this->msp->error;
     }
-    
+
     public function validateTerms()
-    {        
+    {
         return true;
     }
     public function processValidated() {
@@ -176,6 +176,6 @@ class Am_Paysystem_Transaction_Multisafepay extends Am_Paysystem_Transaction_Inc
             default:
                 break;
         }
-        
+
     }
 }

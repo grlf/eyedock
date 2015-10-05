@@ -186,7 +186,7 @@ class Import_Field_Date extends Import_Field
     public function getValue($lineParsed, $partialRecord = null)
     {
         $rawValue = $this->getRawValue($lineParsed, $partialRecord);
-        return $rawValue ? date('Y-m-d H:i:s', strtotime($rawValue)) : '';
+        return $rawValue ? date('Y-m-d', amstrtotime($rawValue)) : '';
     }
 
     protected function getRawValue($lineParsed, $partialRecord = null)
@@ -598,7 +598,7 @@ class Import_DataSource
             if (!$res) {
                 break;
             }
-            $result[$i + 1] = $res;
+            $result[$i] = $res;
         }
 
         return $result;
@@ -1135,6 +1135,7 @@ class AdminImportController extends Am_Controller
     public function reportAction()
     {
         $this->view->stat = $this->log->getStat();
+        $this->view->import_id = $this->getID();
         $this->view->errors = $this->log->getErrors();
 
         $interval = time() - $this->session->timeStart;
@@ -1238,8 +1239,19 @@ class AdminImportController extends Am_Controller
         $grid->setPermissionId(Am_Auth_Admin::PERM_IMPORT);
         $grid->addField(new Am_Grid_Field_Date('date', ___('Date'), false, '', null, '10%'))
             ->setFormatDate();
-        $grid->addField('id', '#');
-        $grid->addField(new Am_Grid_Field('title', ___('Title'), false, '', array($this, 'renderGridTitle'), '90%'));
+
+        $urlTpl = REL_ROOT_URL . '/admin-users?' . http_build_query(array(
+            '_u_search' => array(
+                'import' => array(
+                        'id' => '__ID__'
+                    )
+            )
+        ));
+        $urlTpl = str_replace('__ID__', '{id}', $urlTpl);
+
+        $grid->addField('id', '#', false, '', null, '10%')
+            ->addDecorator(new Am_Grid_Field_Decorator_Link($urlTpl));
+        $grid->addField(new Am_Grid_Field('title', ___('Title'), false, '', array($this, 'renderGridTitle')));
         $grid->actionsClear();
         $grid->actionAdd(new Am_Grid_Action_ImportDel);
         return $grid;
@@ -1381,15 +1393,19 @@ class AdminImportController extends Am_Controller
             return;
 
         $invoice = $this->getDi()->invoiceRecord;
+        $invoice->tm_added =
+        $invoice->tm_started = $this->getImportField('begin_date', self::FIELD_TYPE_SUBSCRIPTION)->getValue($lineParsed);
         $invoice->user_id = $user_id;
         $invoice->paysys_id = $this->getImportField('paysys_id', self::FIELD_TYPE_SUBSCRIPTION)->getValue($lineParsed);
         $invoice->currency = Am_Currency::getDefault();
-        $invoice->status = Invoice::PAID;
         $invoice->add($product);
         $items = $invoice->getItems();
-        $items[0]->first_total = $this->getImportField('amount', self::FIELD_TYPE_SUBSCRIPTION)->getValue($lineParsed);
         $invoice->calculate();
-        $invoice->insert();
+        $items[0]->first_price =
+        $items[0]->first_total =
+        $invoice->first_subtotal =
+        $invoice->first_total = $this->getImportField('amount', self::FIELD_TYPE_SUBSCRIPTION)->getValue($lineParsed);
+        $invoice->save();
         if ($external_id = $this->getImportField('invoice_external_id', self::FIELD_TYPE_SUBSCRIPTION)->getValue($lineParsed))
             $invoice->data()->set('external_id', $external_id)->update();
 
@@ -1419,6 +1435,9 @@ class AdminImportController extends Am_Controller
         $access->invoice_payment_id = $payment ? $payment->pk() : null;
         $access->transaction_id = $this->getID();
         $access->save();
+        $invoice->updateStatus();
+        if ($invoice->status == Invoice::RECURRING_ACTIVE)
+            $invoice->recalculateRebillDate();
     }
 
     protected function addEncryptedPass(Am_Record $user, $lineParsed, $format)
@@ -1558,8 +1577,8 @@ class AdminImportController extends Am_Controller
         if (!@$this->session->importOptions['add_encrypted_pass']) {
             $this->addImportField(new Import_Field_UserPass('pass', 'Password', true));
         }
-        $this->addImportField(new Import_Field('name_f', ___('Name F')));
-        $this->addImportField(new Import_Field('name_l', ___('Name L')));
+        $this->addImportField(new Import_Field('name_f', ___('First Name')));
+        $this->addImportField(new Import_Field('name_l', ___('Last Name')));
         $this->addImportField(new Import_Field_UserLogin('login', ___('Username'), true));
         $this->addImportField(new Import_Field_WithFixed('phone', ___('Phone')));
         $this->addImportField(new Import_Field('street', ___('Street')));
@@ -1570,13 +1589,19 @@ class AdminImportController extends Am_Controller
         $this->addImportField(new Import_Field('zip', ___('Zip Code')));
         $this->addImportField(new Import_Field('tax_id', ___('VatId')));
         $this->addImportField(new Import_Field('remote_addr', ___('User IP address')));
+        $this->addImportField(new Import_Field('is_affiliate', ___('Is Affiliate? (0 - No, 1 - Yes)')));
+        $this->addImportField(new Import_Field('aff_id', ___('Affiliate Id')));
         $this->addImportField(new Import_Field_Data('external_id', 'Member External ID'));
 
         //Additional Fields
         foreach ($this->getDi()->userTable->customFields()->getAll() as $field) {
             if (isset($field->from_config) && $field->from_config) {
                 if ($field->sql) {
-                    $this->addImportField(new Import_Field($field->name, $field->title));
+                    if ($field->type == 'date') {
+                        $this->addImportField(new Import_Field_Date($field->name, $field->title));
+                    } else {
+                        $this->addImportField(new Import_Field($field->name, $field->title));
+                    }
                 } else {
                     if (in_array($field->type, array('multi_select', 'checkbox')))
                         $this->addImportField(new Import_Field_Data_Multiselect($field->name, $field->title));

@@ -5,7 +5,7 @@ $this->setLayout('member/layout.phtml'); ?>
 <?php $this->headScript()->appendFile($this->_scriptJs('user.js')); ?>
 <div id="am-block-active-subscriptions">
 <?php if ($activeInvoices): ?>
-    <h2><?php __e('Your Active Subscriptions') ?></h2>
+    <h2><?php __e('Your Subscriptions') ?></h2>
     <?php foreach ($activeInvoices as $invoice): ?>
     <?php include $this->_script('member/_invoice.phtml'); ?>
     <?php endforeach ?>
@@ -34,10 +34,10 @@ foreach ($payments as $p) $hasRefund = $hasRefund || $p->isRefunded();
             <tr<?php if (@$i++%2) echo ' class="odd"'; ?>>
                 <td class="am-member-payment-history-date"><?php echo amDate($p->dattm)?></td>
                 <td class="am-member-payment-history-invoice_id">
-                    <?php if ($di->config->get('send_pdf_invoice') && !$p->isRefunded()): ?>
-                        <a href="<?php $this->pUrl('member', 'get-invoice', 'default', 'id', $this->obfuscate($p->pk()))?>"><?php p($p->getInvoice()->public_id) ?></a>
+                    <?php if ($di->config->get('send_pdf_invoice')): ?>
+                        <a href="<?php $this->pUrl('member', 'get-invoice', 'default', 'id', $this->obfuscate($p->pk()))?>"><?php p($p->getDisplayInvoiceId()); ?></a>
                     <?php else: ?>
-                        <?php p($p->getInvoice()->public_id) ?>
+                        <?php p($p->getDisplayInvoiceId()); ?>
                     <?php endif; ?>
                 </td>
                 <td class="am-member-payment-history-items"><?php

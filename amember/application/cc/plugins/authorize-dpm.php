@@ -13,7 +13,7 @@ class Am_Paysystem_AuthorizeDpm extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.0';
 
     const LIVE_URL = "https://secure.authorize.net/gateway/transact.dll";
     const SANDBOX_URL = 'https://test.authorize.net/gateway/transact.dll';
@@ -338,7 +338,7 @@ CUT
         return array(
             'x_first_name' => $user->name_f,
             'x_last_name' => $user->name_l,
-            'x_street' => $user->street,
+            'x_address' => $user->street,
             'x_city' => $user->city,
             'x_state' => $user->state,
             'x_country' => $user->country,

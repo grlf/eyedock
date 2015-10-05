@@ -418,7 +418,7 @@ class Am_DemoBuilder {
         if ($is_recurring) {
             $bp->second_price = rand(100,200);
             $bp->second_period = rand(1,12) . 'm';
-            $bp->rebill_times = 99999;
+            $bp->rebill_times =IProduct::RECURRING_REBILLS;
         }
         $bp->insert();
 

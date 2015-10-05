@@ -142,7 +142,9 @@ class Am_Upload_Acl {
         } elseif ($identity instanceof User) {
             return $identity->pk() == $upload->user_id;
         } else {
-            return false;
+            return (!$upload->admin_id &&
+                !$upload->user_id &&
+                $upload->session_id == Zend_Session::getId());
         }
     }
     
@@ -216,6 +218,11 @@ class Am_Upload_Acl {
                 self::IDENTITY_TYPE_ANONYMOUS => self::ACCESS_READ,
                 self::IDENTITY_TYPE_USER => self::ACCESS_READ,
                 self::IDENTITY_TYPE_AFFILIATE => self::ACCESS_READ
+            ),
+            'custom-field' => array(
+                self::IDENTITY_TYPE_ADMIN => self::ACCESS_ALL,
+                self::IDENTITY_TYPE_USER => self::ACCESS_WRITE | self::ACCESS_READ_OWN,
+                self::IDENTITY_TYPE_ANONYMOUS => self::ACCESS_WRITE | self::ACCESS_READ_OWN
             )
         );
     }  

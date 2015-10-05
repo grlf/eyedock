@@ -1,4 +1,4 @@
-<?php                                                        
+<?php
 
 class ThanksController extends Am_Controller {
     /** @var Invoice */
@@ -8,7 +8,7 @@ class ThanksController extends Am_Controller {
         $id = $this->_request->getFiltered('id');
         if (empty($id)) $id = filterId(@$_GET['id']);
         $this->invoice = null;
-        if ($id) 
+        if ($id)
         {
             $this->invoice = $this->getDi()->invoiceTable->findBySecureId($id, 'THANKS');
             if (!$this->invoice)
@@ -16,17 +16,17 @@ class ThanksController extends Am_Controller {
             $tm = max($this->invoice->tm_started, $this->invoice->tm_added);
             if (($this->getDi()->time - strtotime($tm)) > 48*3600)
                 throw new Am_Exception_InputError("Link expired");
-            
-            // Clean signup_member_login and signup_member_id to avoid duplicate signups with the same email address. 
+
+            // Clean signup_member_login and signup_member_id to avoid duplicate signups with the same email address.
             $this->getSession()->signup_member_id = null;
             $this->getSession()->signup_member_login = null;
-            
-            
+
+
             $this->view->invoice = $this->invoice;
-            $p = $this->getDi()->invoicePaymentRecord;
-            foreach ($this->invoice->getPaymentRecords() as $p);
-            $this->view->payment = $p;
-            
+            foreach ($this->invoice->getPaymentRecords() as $p) {
+                $this->view->payment = $p;
+            }
+
             if (!$this->invoice->tm_started)
             {
                 $this->view->show_waiting = true;
@@ -34,12 +34,13 @@ class ThanksController extends Am_Controller {
             }
             $this->view->script = $this->getJs(10);
         }
-        
+
         $this->getDi()->hook->call(Am_Event::THANKS_PAGE, array(
             'controller' => $this,
             'invoice'    => $this->invoice,
         ));
-        
+
+        $this->view->layoutNoMenu = true;
         $this->view->display('thanks.phtml');
     }
     function getJs($seconds)
@@ -47,7 +48,7 @@ class ThanksController extends Am_Controller {
         return <<<CUT
 $(function(){
     var left = $seconds;
-    var f = function() 
+    var f = function()
     {
         left--;
         var m = Math.floor(left / 60);

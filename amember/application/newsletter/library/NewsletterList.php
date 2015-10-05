@@ -79,7 +79,9 @@ class NewsletterListTable extends ResourceAbstractTable
     }
     function getUserOptions()
     {
-        return $this->_db->selectCol("SELECT list_id AS ARRAY_KEY, title FROM $this->_table WHERE IFNULL(disabled,0) = 0");
+        return $this->_db->selectCol("SELECT list_id AS ARRAY_KEY, title FROM $this->_table t WHERE IFNULL(disabled,0) = 0
+            ORDER BY (SELECT ras.sort_order FROM ?_resource_access_sort ras
+             WHERE ras.resource_id=t.list_id AND ras.resource_type=? LIMIT 1)", NewsletterList::NEWSLETTER_LIST);
     }
     
     function getAllowed(User $user)
@@ -87,7 +89,9 @@ class NewsletterListTable extends ResourceAbstractTable
         $ids = array(-99); // to avoid empty array errors
         foreach ($this->getDi()->resourceAccessTable->selectAllowedResources($user, NewsletterList::NEWSLETTER_LIST) as $r)
             $ids[] = $r['resource_id'];
-        return $this->selectObjects("SELECT * FROM $this->_table WHERE (list_id IN (?a) AND IFNULL(disabled,0) = 0)", $ids);
+        return $this->selectObjects("SELECT t.* FROM $this->_table t WHERE (t.list_id IN (?a) AND IFNULL(disabled,0) = 0)
+             ORDER BY (SELECT ras.sort_order FROM ?_resource_access_sort ras
+             WHERE ras.resource_id=t.list_id AND ras.resource_type=? LIMIT 1)", $ids, NewsletterList::NEWSLETTER_LIST);
     }
     
     function disableDisabledPlugins(array $enabledPlugins)

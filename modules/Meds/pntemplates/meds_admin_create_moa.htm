@@ -1,0 +1,23 @@
+<!--[include file=meds_admin_menu.htm]-->
+<h2>Create Method Of Action</h2>
+
+<form method="post" action="<!--[pnmodurl modname=Meds type=admin func=insert_moa]-->" enctype="application/x-www-form-urlencoded">
+<div class="meds_admin_form">
+    
+    <input type="hidden" name="authid" value="<!--[pnsecgenauthkey module=Meds]-->" />
+    
+    <strong>Name:</strong><br />
+    <input type="text" name="moa[name]" value="<!--[$moa.name|pnvarprepfordisplay]-->" size="35" />
+    
+    <br /><br />
+    
+    <strong>Comments:</strong><br />
+    <textarea name="moa[comments]" cols="35" rows="10"><!--[$moa.comments|pnvarprepfordisplay]--></textarea>
+    
+    <br /><br /><br />
+    
+    <input type="submit" name="submit" value="Create" />
+    <input type="reset" name="reset" value="Reset" />
+
+</div>
+</form>

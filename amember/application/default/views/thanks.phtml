@@ -1,4 +1,6 @@
-<?php $this->placeholder("head-start")->prepend(sprintf('<base href="%s://%s" />', ((empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] != 'on') ? 'http' : 'https'),  Am_Controller::escape($_SERVER['HTTP_HOST']))) ?>
+<?php
+$this->headMeta()->setName('robots', 'noindex,nofollow');
+$this->placeholder("head-start")->prepend(sprintf('<base href="//%s" />',  Am_Controller::escape($_SERVER['HTTP_HOST']))) ?>
 <?php $title = ___('Thank you for Signing up'); $this->setLayout('layout.phtml'); ?>
 
 <!-- display payment receipt -->
@@ -33,14 +35,14 @@ CUT
 <?php elseif ($invoice->tm_started): ?>
 
 <?php if ($invoice->first_total > 0): ?>
-<?php __e('Your payment has been successfully processed.') ?>
+<?php __e('Your payment has been successfully processed.') ?><br />
+<?php __e('Order reference: %s', '<strong>' . $payment->getDisplayInvoiceId(). '</strong>') ?><br />
+<?php __e('Date and time of payment: %s', '<strong>' . amDatetime($payment->dattm) . '</strong>') ?><br />
 <?php else: ?>
 <?php __e('Your subscription has been successfully processed.') ?>
 <?php endif ?>
 
-<br />
-<?php __e('Order reference: %s', '<strong>' . $invoice->public_id . (@$payment->receipt_id ? ("/".$payment->receipt_id) : null) . '</strong>') ?><br />
-<?php if (!empty($payment->dattm)) __e('Date and time of payment: %s', '<strong>' . amDatetime($payment->dattm) . '</strong>') ?><br />
+
 
 <br /><br />
 

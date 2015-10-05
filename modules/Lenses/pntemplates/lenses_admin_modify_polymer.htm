@@ -1,0 +1,43 @@
+<!--[include file=lenses_admin_menu.htm]-->
+
+<form method="post" action="<!--[pnmodurl modname="Lenses" type="admin" func="update_polymer"]-->" enctype="application/x-www-form-urlencoded">
+
+    <h3>Modify Polymer</h3>
+
+    <div style="padding:10px; border:1px solid #ccc; background:#fafafa;">
+
+        <input type="hidden" name="authid" value="<!--[pnsecgenauthkey module="Lenses"]-->" />
+
+        <input type="hidden" name="polymer[poly_tid]" value="<!--[$polymer.poly_tid|pnvarprepfordisplay]-->" />
+
+        <strong style="color:#00f;">AT LEAST NAME IS REQUIRED</strong>
+
+        <div style="padding:10px; border:1px solid #ccc; background:#fff;">
+
+            Name:<br />
+            <input type="text" name="polymer[poly_name]" value="<!--[$polymer.poly_name|pnvarprepfordisplay]-->" size="25" maxlength="" /><br /><br />
+
+            H<sub>2</sub>O:<br />
+            <input type="text" name="polymer[h2o]" value="<!--[$polymer.h2o|pnvarprepfordisplay]-->" size="25" maxlength="" /><br /><br />
+
+            FDA Group:<br />
+            <select name="polymer[fda_grp]" size="1">
+            <!--[foreach from=$opt_fda_grps item=group]-->
+                <option value="<!--[$group]-->"<!--[if $group eq $polymer.fda_grp]--> selected="selected"<!--[/if]--> /><!--[$group]-->
+            <!--[/foreach]-->
+            </select><br /><br />
+
+            Description:<br />
+            <textarea name="polymer[poly_desc]" rows="5" cols="35"><!--[$polymer.poly_desc|pnvarprepfordisplay]--></textarea><br /><br />
+        
+            <br />
+        
+            <input type="submit" name="submit" value="Update Polymer" />
+            
+        </div>
+        
+    </div>
+
+</form>
+
+<div>[ <a href="<!--[pnmodurl modname="Lenses" type="admin" func="delete" poly_tid=$polymer.poly_tid|pnvarprepfordisplay item_type="polymer"]-->" title="Delete">Delete</a> ]</div>

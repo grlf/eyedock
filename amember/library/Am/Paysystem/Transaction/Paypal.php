@@ -51,14 +51,14 @@ class Am_Paysystem_Transaction_Paypal extends Am_Paysystem_Transaction_Incoming
     PayPal sent a payment record with primary email address:
        $incoming
     However, you have only the following e-mail addresses configured in
-    aMember Pro CP -> Setup/Configuration -> PayPal
+    aMember CP -> Configuration -> Setup/Configuration -> PayPal
        $businesses
 
     If it is really your transaction and your primary PayPal email address
-    is $incoming, go to aMember CP -> Setup -> PayPal
+    is $incoming, go to aMember CP -> Configuration -> Setup/Configuration -> PayPal
     and set PayPal email address as $incoming
 
-    Once you have fixed the configuration, please visit Amember CP -> Invoice Log,
+    Once you have fixed the configuration, please visit Amember CP -> Utilities -> Logs -> Invoice,
     find this transaction (invoice #{$this->request->invoice}), and press "Retry Processing".
 
     --
@@ -66,7 +66,7 @@ class Am_Paysystem_Transaction_Paypal extends Am_Paysystem_Transaction_Incoming
     P.S. If you have any questions, resend this email to support@cgi-central.net
     with server access details.
 CUT;
-        $mail = new Am_Mail;
+        $mail = $this->getPlugin()->getDi()->mail;
         $mail->toAdmin();
         $mail->setBodyText($msg);
         $mail->setSubject('*** PayPal plugin error in Amember ***');
@@ -164,7 +164,7 @@ CUT;
         if ($profileId = $this->request->get('recurring_payment_id'))
         {
             if ($invoice = Am_Di::getInstance()->invoiceTable->findFirstByData(
-               Am_Paysystem_PaypalExpress::PAYPAL_PROFILE_ID, $profileId))
+               'paypal-profile-id', $profileId))
             {
                 return $invoice->public_id;
             }

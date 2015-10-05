@@ -1,0 +1,55 @@
+<!--[include file=lenses_admin_menu.htm]-->
+
+<form method="post" action="<!--[pnmodurl modname="Lenses" type="admin" func="insert_company"]-->" enctype="application/x-www-form-urlencoded">
+
+    <h3>Add New Company</h3>
+
+    <div style="padding:10px; border:1px solid #ccc; background:#fafafa;">
+
+        <input type="hidden" name="authid" value="<!--[pnsecgenauthkey module="Lenses"]-->" />
+
+        <strong style="color:#00f;">AT LEAST NAME IS REQUIRED</strong>
+        
+        <div style="padding:10px; border:1px solid #ccc; background:#fff;">
+
+            Name:<br />
+            <input type="text" name="company[comp_name]" value="<!--[$company.comp_name|pnvarprepfordisplay]-->" size="35" maxlength="30" /><br /><br />
+        
+		Logo URL:<br />
+            <input type="text" name="company[logo]" value="<!--[$company.logo|pnvarprepfordisplay]-->" size="35" maxlength="100" /><br /><br />
+		
+            Address:<br />
+            <input type="text" name="company[address]" value="<!--[$company.address|pnvarprepfordisplay]-->" size="35" maxlength="100" /><br /><br />
+        
+            City:<br />
+            <input type="text" name="company[city]" value="<!--[$company.city|pnvarprepfordisplay]-->" size="35" maxlength="25" /><br /><br />
+        
+            State:<br />
+            <input type="text" name="company[state]" value="<!--[$company.state|pnvarprepfordisplay]-->" size="2" maxlength="2" /><br /><br />
+        
+            Zip:<br />
+            <input type="text" name="company[zip]" value="<!--[$company.zip|pnvarprepfordisplay]-->" size="10" maxlength="10" /><br /><br />
+        
+            Phone:<br />
+            <input type="text" name="company[phone]" value="<!--[$company.phone|pnvarprepfordisplay]-->" size="15" maxlength="14" />
+			<br/> Please use this format: 1-800-555-1234<br /><br />
+        
+            Email:<br />
+            <input type="text" name="company[email]" value="<!--[$company.email|pnvarprepfordisplay]-->" size="35" maxlength="100" /><br /><br />
+        
+            URL:<br />
+            <input type="text" name="company[url]" value="<!--[$company.url|pnvarprepfordisplay]-->" size="35" maxlength="100" /><br /><br />
+        
+            Description:<br />
+            <textarea name="company[comp_desc]" cols="35" rows="7"><!--[$company.comp_desc|pnvarprepfordisplay]--></textarea>
+			<br /> Please avoid using HTML<br /><br />
+        
+            <br />
+        
+            <input type="submit" name="submit" value="Create Company" />
+            
+        </div>
+    
+    </div>
+
+</form>

@@ -431,12 +431,14 @@ class ProductTable extends Am_Table_WithData
      * Suitable for usage in <SELECT>
      * @return array
      */
-    function getOptions($onlyEnabled = false)
+    function getOptions($onlyEnabled = false, $showArchived = false)
     {
         return array_map(array("Am_Controller", "escape"), $this->_db->selectCol("SELECT product_id as ARRAY_KEY, CONCAT('(', product_id, ') ', title)
             FROM ?_product 
-            {WHERE is_disabled = ?}
+            WHERE is_archived < ?
+            { AND is_disabled = ? }
             ORDER BY sort_order, title",
+            $showArchived ? 2 : 1,
             $onlyEnabled ? 0 : DBSIMPLE_SKIP));
     }
 
@@ -461,7 +463,7 @@ class ProductTable extends Am_Table_WithData
                                     FROM  ?_product p 
                                     {RIGHT JOIN ?_product_product_category ppc 
                                     ON p.product_id=ppc.product_id AND ppc.product_category_id in (?a)}
-                                    WHERE   p.product_id > 0 AND p.is_disabled = 0 
+                                    WHERE   p.product_id > 0 AND p.is_disabled = 0 AND p.is_archived = 0 
                                     GROUP BY p.product_id
                                     ORDER BY p.sort_order, p.title
             ",  $productCategories ? $productCategories : DBSIMPLE_SKIP);
@@ -609,6 +611,7 @@ class ProductTable extends Am_Table_WithData
         $q = new Am_Query($this, 'p');
         $q->addOrder('sort_order')->addOrder('title');
         $q->addWhere('p.is_disabled=0');
+        $q->addWhere('p.is_archived=0');
         if ($scope) {
             $q->addWhere('ppc.product_category_id IN (?a)', $scope);
         }

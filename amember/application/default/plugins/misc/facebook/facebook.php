@@ -1,66 +1,120 @@
 <?php
 
+use Facebook\FacebookSession;
+use Facebook\FacebookJavaScriptLoginHelper;
+use Facebook\FacebookRequest;
+use Facebook\GraphUser;
+use Facebook\FacebookRequestException;
+
 class Am_Plugin_Facebook extends Am_Plugin
 {
-    const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
-    const FACEBOOK_UID = 'facebook-uid';
-    const FACEBOOK_LOGOUT = 'facebook-logout';
 
-    const NOT_LOGGED_IN = 0;
-    const LOGGED_IN = 1;
-    const LOGGED_AND_LINKED = 2;
-    const LOGGED_OUT = 3;
-    
-    protected $status = null; //self::NOT_LOGGED_IN;
+    const
+        PLUGIN_STATUS = self::STATUS_BETA;
+    const
+        PLUGIN_REVISION = '4.7.0';
+    const
+        FACEBOOK_UID = 'facebook-uid';
+    const
+        FACEBOOK_LOGOUT = 'facebook-logout';
+    const
+        NOT_LOGGED_IN = 0;
+    const
+        LOGGED_IN = 1;
+    const
+        LOGGED_AND_LINKED = 2;
+    const
+        LOGGED_OUT = 3;
+    const
+        FB_APP_ID = 'app_id';
+    const
+        FB_APP_SECRET = 'app_secret';
+
+    protected
+        $status = null; //self::NOT_LOGGED_IN;
     /** @var User */
-    protected $linkedUser;
-    /** @var array */
-    protected $fbProfile = null;
-    
-    public function isConfigured()
+    protected
+        $linkedUser;
+
+    /** @var GraphUser */
+    protected
+        $fbProfile = null;
+    private
+        $_api_loaded = false;
+    private
+        $_api_error = null;
+    private
+        $sdkIncluded = false;
+
+    /**
+     * 
+     * @return FacebookSession;
+     */
+    protected
+        $session = null;
+
+    protected
+        function loadAPI()
     {
-        return $this->getConfig('app_id') && $this->getConfig('app_secret');
+        if ($this->_api_loaded)
+            return true;
+
+        try
+        {
+            include_once __DIR__ . "/sdk/autoload.php";
+            FacebookSession::setDefaultApplication($this->getConfig(self::FB_APP_ID), $this->getConfig(self::FB_APP_SECRET));
+            $this->_api_loaded = true;
+        }
+        catch (Exception $ex)
+        {
+            $this->_api_error = $ex->getMessage();
+        }
+
+        return $this->_api_loaded;
     }
+
+    public
+        function onAdminWarnings(\Am_Event $event)
+    {
+        if (!$this->_api_loaded)
+            $event->setReturn(array(___('Facebook SDK was  not loaded. Got an error: %s', $this->_api_error)));
+        else
+            parent::onAdminWarnings($event);
+    }
+
+    public
+        function isConfigured()
+    {
+        return $this->getConfig(self::FB_APP_ID) && $this->getConfig(self::FB_APP_SECRET) && $this->loadAPI();
+    }
+
     function onSetupForms(Am_Event_SetupForms $event)
     {
         $form = new Am_Form_Setup('facebook');
         $form->setTitle('Facebook');
-        
+
         $fs = $form->addFieldset()->setLabel(___('FaceBook Application'));
-        $fs->addText('app_id')->setLabel(___('FaceBook App ID'));
-        $fs->addText('app_secret', array('size' => 40))->setLabel(___('Facebook App Secret'));
-        
+        $fs->addText(self::FB_APP_ID)->setLabel(___('FaceBook App ID'));
+        $fs->addText(self::FB_APP_SECRET, array('size' => 40))->setLabel(___('Facebook App Secret'));
+
         $fs = $form->addFieldset()->setLabel(___('Features'));
         $gr = $fs->addCheckboxedGroup('like')->setLabel(___('Add "Like" button'));
         $gr->addStatic()->setContent(___('Like Url'));
         $gr->addText('likeurl', array('size' => 40));
         $form->setDefault('likeurl', ROOT_URL);
-        
+
         $fs->addAdvCheckbox('no_signup')->setLabel(___('Do not add to Signup Form'));
         $fs->addAdvCheckbox('no_login')->setLabel(___('Do not add to Login Form'));
-        
-        $fs->addAdvCheckbox('create_account')
-            ->setLabel(array(
-                ___('Create account from login form'), 
-                ___("Create account for facebook user automatically")
-                ));
+
         $fs->addSelect('add_access', null, array(
-            'options' => array('' => '-- Do not add access --') + Am_Di::getInstance()->productTable->getOptions()
+                'options' => array('' => '-- Do not add access --') + Am_Di::getInstance()->productTable->getOptions()
             ))
-            ->setLabel(___('Additionaly add access to this product'));
+            ->setLabel(___('Add free access to a product if user signup from Facebook'));
         $form->addFieldsPrefix('misc.facebook.');
-        $form->addScript()->setScript(<<<EOT
-    jQuery(document).ready(function ($){
-        $('#create_account-0').change(function(){
-            $("#add_access-0").closest('div.row').toggle(this.checked);
-        });
-    });
-EOT
-            );
         $this->_afterInitSetupForm($form);
         $event->addForm($form);
     }
+
     function onInitFinished(Am_Event $event)
     {
         $blocks = $this->getDi()->blocks;
@@ -74,42 +128,98 @@ EOT
             );
         if ($this->getConfig('like'))
             $blocks->add(
-                new Am_Block('member/main/right/top', null, 'fb-like', $this, 'fb-like.phtml')
+                new Am_Block('member/main/right/bottom', null, 'fb-like', $this, 'fb-like.phtml')
             );
     }
+
     function onSignupUserAdded(Am_Event $event)
     {
         $user = $event->getUser();
         // validate if user is logged-in to Facebook
-        $api = $this->getApi();
-        if ($api->getSignedRequest() && ($fbuid = $api->getUser()))
+        if ($fbuid = $this->getFbUid())
         {
             $user->data()->set(self::FACEBOOK_UID, $fbuid)->update();
         }
     }
-    /** @return Facebook|null */
-    function getApi()
+
+    function includeJSSDK()
     {
-        if (!$this->getConfig('app_id'))
+        echo <<<CUT
+<div id="fb-root"></div>
+<script>
+jQuery(document).ready(function($) {
+  $.ajaxSetup({ cache: true });
+  $.getScript('//connect.facebook.net/en_US/sdk.js', function(){
+    FB.init({
+      appId: '{$this->getConfig(self::FB_APP_ID)}',
+      version: 'v2.3',
+      status: true,
+      cookie: true, 
+      xfbml: true,
+      oauth: true
+    });     
+    $('#loginbutton,#feedbutton').removeAttr('disabled');
+  });
+});        
+</script>
+CUT;
+    }
+
+    function includeLoginJS()
+    {
+        print <<<OUT
+<script type="text/javascript">
+        
+function facebook_login_login()
+{
+
+    var loginRedirect = function(){
+        var href = window.location.href;
+        if (href.indexOf('?') < 0)
+            href += '?fb_login=1';
+        else
+            href += '&fb_login=1';
+        window.location.href=href;
+    }
+    
+    FB.getLoginStatus(function(response) {
+        
+        if(response.status == 'connected')
+            loginRedirect();
+        else
+            FB.login(function(response) {
+                if (response.status=='connected')  loginRedirect();
+                }, {scope: 'email'});    
+            
+    });        
+        
+}
+
+</script>
+        
+OUT;
+    }
+
+    /**
+     * return FacebookSession $session;
+     */
+    function getFacebookJsSession()
+    {
+        if (is_null($this->session))
         {
-            throw new Am_Exception_Configuration("Facebook plugins is not configured");
+            try
+            {
+                $helper = new FacebookJavaScriptLoginHelper;
+                $this->session = $helper->getSession();
+            }
+            catch (Exception $e)
+            {
+                return null;
+            }
         }
-        require_once dirname(__FILE__) . '/facebook-sdk.php';
-        return new Am_Facebook(array(
-            'appId'  => $this->getConfig('app_id'),
-            'secret' => $this->getConfig('app_secret'),
-            'cookie' => true,
-        ), $this->getSession());
+        return $this->session;
     }
-    function getSession()
-    {
-        static $session;
-        if (empty($session))
-            $session = new Zend_Session_Namespace('am_facebook');
-        return $session;
-    }
-    
-    
+
     /**
      * Create account in aMember for user who is logged in facebook. 
      */
@@ -117,7 +227,7 @@ EOT
     {
         /* Search for account by email address */
         $user = $this->getDi()->userTable->findFirstByEmail($this->getFbProfile('email'));
-        if(empty($user))
+        if (empty($user))
         {
             // Create account for user;
             $user = $this->getDi()->userRecord;
@@ -128,29 +238,28 @@ EOT
             $user->generatePassword();
             $user->insert();
         }
-        
+
         $user->data()->set(self::FACEBOOK_UID, $this->getFbProfile('id'))->update();
-        
-        if($product_id = $this->getConfig('add_access'))
+
+        if ($product_id = $this->getConfig('add_access'))
         {
             $product = $this->getDi()->productTable->load($product_id);
             $billingPlan = $this->getDi()->billingPlanTable->load($product->default_billing_plan_id);
-            
+
             $access = $this->getDi()->accessRecord;
             $access->product_id = $product_id;
             $access->begin_date = $this->getDi()->sqlDate;
-            
+
             $period = new Am_Period($billingPlan->first_period);
             $access->expire_date = $period->addTo($access->begin_date);
-            
+
             $access->user_id = $user->pk();
             $access->insert();
         }
-        
+
         return $user;
-        
     }
-    
+
     function onAuthCheckLoggedIn(Am_Event_AuthCheckLoggedIn $event)
     {
         $status = $this->getStatus();
@@ -161,22 +270,23 @@ EOT
             $this->linkedUser->data()->set(self::FACEBOOK_LOGOUT, null)->update();
             $event->setSuccessAndStop($this->linkedUser);
         }
-        elseif($status == self::LOGGED_IN && $this->getDi()->request->get('fb_login') && $this->getConfig('create_account'))
+        elseif ($status == self::LOGGED_IN && $this->getDi()->request->get('fb_login'))
         {
             $this->linkedUser = $this->createAccount();
             $event->setSuccessAndStop($this->linkedUser);
         }
     }
+
     function onAuthAfterLogout(Am_Event_AuthAfterLogout $event)
     {
-        $this->getSession()->unsetAll();
         $domain = Zend_Controller_Front::getInstance()->getRequest()->getHttpHost();
-        Am_Controller::setCookie('fbsr_'.$this->getConfig('app_id'), null, time() - 3600*24, "/");
-        Am_Controller::setCookie('fbm_'.$this->getConfig('app_id'), null, time() - 3600*24, "/");
-        Am_Controller::setCookie('fbsr_'.$this->getConfig('app_id'), null, time() - 3600*24, "/", $domain, false);
-        Am_Controller::setCookie('fbm_'.$this->getConfig('app_id'), null, time() - 3600*24, "/", $domain, false);
+        Am_Controller::setCookie('fbsr_' . $this->getConfig('app_id'), null, time() - 3600 * 24, "/");
+        Am_Controller::setCookie('fbm_' . $this->getConfig('app_id'), null, time() - 3600 * 24, "/");
+        Am_Controller::setCookie('fbsr_' . $this->getConfig('app_id'), null, time() - 3600 * 24, "/", $domain, false);
+        Am_Controller::setCookie('fbm_' . $this->getConfig('app_id'), null, time() - 3600 * 24, "/", $domain, false);
         $event->getUser()->data()->set(self::FACEBOOK_LOGOUT, true)->update();
     }
+
     function onAuthAfterLogin(Am_Event_AuthAfterLogin $event)
     {
         if (($this->getStatus() == self::LOGGED_IN) && $this->getFbUid())
@@ -184,12 +294,15 @@ EOT
             $event->getUser()->data()->set(self::FACEBOOK_UID, $this->getFbUid())->update();
         }
     }
-    
+
     function getStatus()
     {
-        if ($this->status !== null) return $this->status;
+        if ($this->status !== null)
+            return $this->status;
+
         $this->linkedUser = null;
-        if ($id = $this->getApi()->getUser())
+
+        if ($id = $this->getFbUid())
         {
             $user = $this->getDi()->userTable->findFirstByData(self::FACEBOOK_UID, $id);
             if ($user)
@@ -199,66 +312,55 @@ EOT
                     $this->status = self::LOGGED_OUT;
                 else
                     $this->status = self::LOGGED_AND_LINKED;
-            } else {
+            } else
+            {
                 $this->status = self::LOGGED_IN;
             }
-        } else {
+        }
+        else
+        {
             $this->status = self::NOT_LOGGED_IN;
         }
         return $this->status;
     }
-    
+
     /** @return User */
     function getLinkedUser()
     {
         return $this->linkedUser;
     }
+
     /** @return int FbUid */
     function getFbUid()
     {
-        return $this->getApi()->getUser();
+        $session = $this->getFacebookJsSession();
+        if (is_null($session))
+            return null;
+        return $session->getUserId();
     }
+
     /** @return facebook info */
     function getFbProfile($fieldName)
     {
         if (is_null($this->fbProfile) && $this->getFbUid())
         {
-            $this->fbProfile = $this->getApi()->api('/me');
+            $session = $this->getFacebookJsSession();
+            $fbReq = new FacebookRequest(
+                $session, 'GET', '/me?fields=email,first_name,last_name'
+            );
+            try
+            {
+                $user_profile = $fbReq->execute()->getGraphObject(GraphUser::className());
+                $this->fbProfile = $user_profile;
+            }
+            catch (Exception $e)
+            {
+                return null;
+            }
         }
-        return !empty($this->fbProfile[$fieldName]) ? $this->fbProfile[$fieldName] : null;
+        return $this->fbProfile->getProperty($fieldName);
     }
-    
-    function renderConnect()
-    {
-        return sprintf('<img src="%s" width="%d" height="%d" alt="%s"/>',
-            Am_Controller::escape(REL_ROOT_URL . '/misc/facebook/connect-btn'),
-            107, 25, ___("Connect with Facebook")
-        );
-        //return ___('Connect with Facebook');
-    }
-    function renderLogin()
-    {
-        return sprintf('<img src="%s" width="%d" height="%d" alt="%s"/>',
-            Am_Controller::escape(REL_ROOT_URL . '/misc/facebook/login-btn'),
-            107, 25, ___("Login using Facebook")
-        );
-        //return ___('Login using Facebook');
-    }
-    public function directAction(Am_Request $request, Zend_Controller_Response_Http $response, array $invokeArgs)
-    {
-        switch ($action = $request->getActionName())
-        {
-            case 'connect-btn':
-            case 'login-btn':
-                $response->setHeader('Content-Type', 'image/png', true);
-                $response->setHeader('Expires', gmdate('D, d M Y H:i:s', time()+3600*24).' GMT', true);
-                readfile(dirname(__FILE__) . '/facebook-connect.png');
-                break;
-            default:
-                throw new Am_Exception_InputError("Wrong request: [$action]");
-        }
-    }
-    
+
     function getReadme()
     {
         return <<<CUT
@@ -284,5 +386,5 @@ To enable and configure the plugin, follow these instructions:
   Usually it points to your site homepage url : http://www.example.com/ 
 CUT;
     }
-    
+
 }

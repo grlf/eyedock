@@ -25,7 +25,7 @@ class Am_Helpdesk_Strategy_Admin extends Am_Helpdesk_Strategy_Abstract
 
     public function fillUpTicketIdentity($ticket, $request)
     {
-        //loginOrEmail was already validated in form 
+        //loginOrEmail was already validated in form
         //and we must find user with such login or email
         //in any case
         $user = $this->getDi()->userTable->findFirstByLogin($request->get('loginOrEmail'));
@@ -59,7 +59,7 @@ class Am_Helpdesk_Strategy_Admin extends Am_Helpdesk_Strategy_Abstract
                 $et->setTicket($message->getTicket());
                 $et->setUser($user);
                 $et->setMessage($message);
-                $et->setUrl(sprintf('%s/helpdesk/index/p/view/view/ticket/%s',
+                $et->setUrl(sprintf('%s/helpdesk/ticket/%s',
                         $this->getDi()->config->get('root_surl'),
                         $message->getTicket()->ticket_mask)
                 );
@@ -218,9 +218,15 @@ CUT
         return $form;
     }
 
+    public function ticketUrl($ticket)
+    {
+        return $this->assembleUrl(array(
+                'ticket' => $ticket->ticket_mask
+                ), 'helpdesk-ticket-admin');
+    }
+
     protected function getControllerName()
     {
         return 'admin';
     }
-
 }

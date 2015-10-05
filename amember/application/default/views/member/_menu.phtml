@@ -25,3 +25,27 @@ echo $m->renderMenu($this->di->navigationUser,
 );
 ?>
 </div>
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+    $('.am-tabs-narrow-switch').click(function(){
+        $('.am-tabs-narrow').toggle();
+    })
+});
+</script>
+<div class="am-tabs-narrow-wrapper">
+    <a class="am-tabs-narrow-switch"><img href="javascript:;" src="<?php p($this->_scriptImg('/menu.png')); ?>" /></a>
+<?php
+$m = new Am_View_Helper_Menu();
+$m->setView($this);
+
+echo $m->renderMenu($this->di->navigationUser,
+    array(
+        'ulClass' => 'am-tabs-narrow',
+        'activeClass' => 'active',
+        'normalClass' => 'normal',
+        'disabledClass' => 'disabled',
+        'maxDepth' => 1,
+    )
+);
+?>
+</div>

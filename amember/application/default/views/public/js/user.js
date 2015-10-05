@@ -30,17 +30,25 @@ function amAjaxLoginForm(selector, options)
             if (response.recaptcha_key)
             {
                 jQuery("#recaptcha-row").show();
-                if (typeof Recaptcha == "undefined")
+
+                if (typeof grecaptcha == "undefined")
                 {
-                    jQuery.getScript('http://www.google.com/recaptcha/api/js/recaptcha_ajax.js', function(){
-                        frm.data('recaptcha', Recaptcha.create(response.recaptcha_key, 'recaptcha-element', {theme: jQuery("#recaptcha-row").data('recaptcha-theme')}));
-                    });
+                    window.onLoadGrecaptcha = function(){
+                        frm.data('recaptcha', grecaptcha.render('recaptcha-element', {
+                            sitekey: response.recaptcha_key,
+                            theme: jQuery("#recaptcha-row").data('recaptcha-theme')
+                        }));
+                    }
+                    jQuery.getScript('//www.google.com/recaptcha/api.js?onload=onLoadGrecaptcha&render=explicit');
                 } else {
-                    if (!frm.data('recaptcha'))
-                    {
-                        frm.data('recaptcha', Recaptcha.create(response.recaptcha_key, 'recaptcha-element', {theme: jQuery("#recaptcha-row").data('recaptcha-theme')}));
-                    } else 
-                        frm.data('recaptcha').reload();
+                    if (typeof(frm.data('recaptcha')) == 'undefined') {
+                        frm.data('recaptcha', grecaptcha.render('recaptcha-element', {
+                            sitekey: response.recaptcha_key,
+                            theme: jQuery("#recaptcha-row").data('recaptcha-theme')
+                        }));
+                    } else {
+                        grecaptcha.reset(frm.data('recaptcha'));
+                    }
                 }
             } else {
                 jQuery("#recaptcha-row").hide();
@@ -127,6 +135,24 @@ function amAjaxSendPassForm(selector, options)
     });
 }
 
+function amFlashError(msg){
+    return amFlash(msg, 'error', 5000);
+}
+function amFlashMessage(msg){
+    return amFlash(msg, 'message', 2000);
+}
+function amFlash(msg, msgClass, timeout)
+{
+    $('#am-flash .am-flash-content').empty().text(msg).
+        removeClass('am-flash-content-error am-flash-content-message').
+        addClass('am-flash-content-' + msgClass);
+    $('#am-flash').fadeIn();
+    if (timeout)
+        setTimeout(function(){
+            $('#am-flash').fadeOut();
+        }, timeout);
+}
+
 function ajaxLink(selector)
 {
     jQuery(document).on('click', selector, function(){
@@ -203,6 +229,22 @@ function ajaxLink(selector)
             });
         });};
     }
+
+    $.fn.amRevealPass = function() {
+        return $(this).each(function(){
+            if ($(this).data('am-reveal-pass-init')) return;
+            $(this).data('am-reveal-pass-init', true);
+
+            var $switch = $('<span class="am-switch-reveal am-switch-reveal-off" title="Toggle Password Visibility"></span>');
+            $(this).after($switch);
+            $switch.click(function(){
+                $(this).toggleClass('am-switch-reveal-on am-switch-reveal-off');
+                var $input = $(this).prev();
+                $input.attr('type', $input.attr('type') == 'text' ? 'password' : 'text');
+            });
+        })
+    };
+
 })(jQuery);
 
 jQuery(function($) {
@@ -252,7 +294,13 @@ jQuery(function($) {
     // end of upgrade 
     
     ajaxLink(".ajax-link");
-    
+
+    $('.am-pass-reveal').amRevealPass();
+    $(document).ajaxComplete(function(){
+        //allow ajax handler to do needed tasks before convert elements
+        setTimeout(function(){$('.am-pass-reveal').amRevealPass();}, 100);
+    })
+
     $(document).on("click",".am-switch-forms", function(){
         var el = $(this);
         $(el.data('show_form')).show();

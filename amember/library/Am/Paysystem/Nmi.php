@@ -51,25 +51,33 @@ abstract class Am_Paysystem_Nmi extends Am_Paysystem_CreditCard
         $user = $invoice->getUser();
         if ($doFirst) // not recurring sale
         {
-            $trAuth = new Am_Paysystem_Networkmerchants_Transaction_Authorization($this, $invoice, $cc);
-            $trAuth->run($result);
-            $transactionId = $trAuth->getUniqId();
-            $customerVaultId = $trAuth->getCustomerVaultId();
-            if (!$transactionId || !$customerVaultId)
-            {
-                return $result->setFailed(array("NMI Plugin: Bad auth response."));
-            }
-            $trVoid = new Am_Paysystem_Networkmerchants_Transaction_Void($this, $invoice, $transactionId, $customerVaultId);
-            $trVoid->run($result);
             if (!(float)$invoice->first_total) // first - free
             {
+                $trAuth = new Am_Paysystem_Networkmerchants_Transaction_Authorization($this, $invoice, $cc);
+                $trAuth->run($result);
+                $transactionId = $trAuth->getUniqId();
+                $customerVaultId = $trAuth->getCustomerVaultId();
+                if (!$transactionId || !$customerVaultId)
+                {
+                    return $result->setFailed(array("NMI Plugin: Bad auth response."));
+                }
+                $trVoid = new Am_Paysystem_Networkmerchants_Transaction_Void($this, $invoice, $transactionId, $customerVaultId);
+                $trVoid->run($result);
                 $trFree = new Am_Paysystem_Transaction_Free($this);
                 $trFree->setInvoice($invoice);
                 $trFree->process();
                 $result->setSuccess($trFree);
             } else
             {
-                $trSale = new Am_Paysystem_Networkmerchants_Transaction_Sale($this, $invoice, $doFirst, $customerVaultId);
+                $trAuth = new Am_Paysystem_Networkmerchants_Transaction_Authorization($this, $invoice, $cc, $invoice->first_total);
+                $trAuth->run($result);
+                $transactionId = $trAuth->getUniqId();
+                $customerVaultId = $trAuth->getCustomerVaultId();
+                if (!$transactionId || !$customerVaultId)
+                {
+                    return $result->setFailed(array("NMI Plugin: Bad auth response."));
+                }
+                $trSale = new Am_Paysystem_Networkmerchants_Transaction_Capture($this, $invoice, $doFirst, $transactionId);
                 $trSale->run($result);
             }
             $user->data()->set($this->getCustomerVaultVariable(), $customerVaultId)->update();
@@ -244,7 +252,22 @@ class Am_Paysystem_Networkmerchants_Transaction_Sale extends Am_Paysystem_Networ
     {
         parent::addRequestParams();
         $this->request->addPostParameter('amount', $this->getAmount());
-        $this->request->addPostParameter('type ', 'sale');
+        $this->request->addPostParameter('type', 'sale');
+    }
+}
+
+class Am_Paysystem_Networkmerchants_Transaction_Capture extends Am_Paysystem_Networkmerchants_Transaction
+{
+    public function __construct(Am_Paysystem_Abstract $plugin, Invoice $invoice, $doFirst, $transactionid)
+    { 
+        parent::__construct($plugin, $invoice, $doFirst);
+        $this->request->addPostParameter('transactionid', $transactionid);
+    }
+    protected function addRequestParams()
+    {
+        parent::addRequestParams();
+        $this->request->addPostParameter('amount', $this->getAmount());
+        $this->request->addPostParameter('type', 'capture');
     }
 }
 
@@ -266,7 +289,7 @@ class Am_Paysystem_Networkmerchants_Transaction_Refund extends Am_Paysystem_Netw
     public function addRequestParams()
     {
         parent::addRequestParams();
-        $this->request->addPostParameter('type ', 'refund');
+        $this->request->addPostParameter('type', 'refund');
         $this->request->addPostParameter('amount', $this->getAmount());
     }
     public function processValidated(){} // no process payment
@@ -275,8 +298,9 @@ class Am_Paysystem_Networkmerchants_Transaction_Refund extends Am_Paysystem_Netw
 
 class Am_Paysystem_Networkmerchants_Transaction_Authorization extends Am_Paysystem_Networkmerchants_Transaction
 {
-    public function __construct(Am_Paysystem_Abstract $plugin, Invoice $invoice, CcRecord $cc)
+    public function __construct(Am_Paysystem_Abstract $plugin, Invoice $invoice, CcRecord $cc, $amount = '1.00')
     {
+        $this->amount = $amount;
         parent::__construct($plugin, $invoice, true);
         $this->setCcRecord($cc);
     }
@@ -284,7 +308,7 @@ class Am_Paysystem_Networkmerchants_Transaction_Authorization extends Am_Paysyst
     {
         parent::addRequestParams();
         $this->request->addPostParameter('type', 'auth');
-        $this->request->addPostParameter('amount', 1.00);
+        $this->request->addPostParameter('amount', $this->amount);
         $this->request->addPostParameter('customer_vault', 'add_customer');
     }
     public function processValidated(){} // no process payment
@@ -301,7 +325,7 @@ class Am_Paysystem_Networkmerchants_Transaction_Void extends Am_Paysystem_Networ
     protected function addRequestParams()
     {
         parent::addRequestParams();
-        $this->request->addPostParameter('type ', 'void');
+        $this->request->addPostParameter('type', 'void');
         $this->request->addPostParameter('amount', 1.00);
     }
     public function processValidated(){} // no process payment

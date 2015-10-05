@@ -165,7 +165,7 @@ var cart = {
         var callback = function(){
             window.location =
                 cart._getUrl('add-and-checkout') +
-                '?b=' + encodeURIComponent(window.location.pathname + window.location.search);
+                '?b=' + encodeURIComponent(window.location.protocol + '//' + window.location.host + window.location.pathname + window.location.search);
         };
         var elem = (th.nodeType) ? th : false;
         cart._addOnly([{
@@ -191,7 +191,7 @@ var cart = {
     {
         var callback = function(){
             window.location = cart._getUrl('view-basket') +
-                '?b=' + encodeURIComponent(window.location.pathname + window.location.search);
+                '?b=' + encodeURIComponent(window.location.protocol + '//' + window.location.host + window.location.pathname + window.location.search);
         };
         var elem = (arguments[0].nodeType) ? arguments[0] : false;
         cart._addOnly(cart._getObj(jQuery.makeArray(arguments)), callback, elem);
@@ -224,7 +224,7 @@ var cart = {
     {
         var callback = function(){
             window.location = cart._getUrl('view-basket') +
-                '?b=' + encodeURIComponent(window.location.pathname + window.location.search);
+                '?b=' + encodeURIComponent(window.location.protocol + '//' + window.location.host + window.location.pathname + window.location.search);
         };
         var elem = (arguments[0].nodeType) ? arguments[0] : false;
         cart._addOnly([{
