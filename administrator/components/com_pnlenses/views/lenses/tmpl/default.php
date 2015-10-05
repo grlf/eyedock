@@ -5,8 +5,8 @@
 <?php
 	JToolBarHelper::title( JText::_( 'Soft Lenses Administration' ), 'generic.png' );
 	JToolBarHelper::deleteList();
-	JToolBarHelper::editListX();
-	JToolBarHelper::addNewX();
+	JToolBarHelper::editList();
+	JToolBarHelper::addNew();
 ?>
 
 <form action="index.php?option=com_gpmaterial" method="post" name="adminForm" id='adminForm'>
@@ -30,7 +30,7 @@
 			<th width="1%">
 				<input type="checkbox" name="toggle" value="" onclick="checkAll(<?php echo count( $this->lenses ); ?>);" />
 			</th>
-			
+
 			<th width="8%" align="center" style="whitespace: pre-line;">Name</th>
 			<th width="5%" align="center" style="whitespace: pre-line;">Company</th>
 			<th width="4%" align="center" style="whitespace: pre-line;">Toric</th>

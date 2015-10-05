@@ -26,7 +26,7 @@ class plgSystemJumi extends JPlugin {
       if($mainframe->isAdmin())
         return;
 
-      $plugin =& JPluginHelper::getPlugin('system', 'jumi');
+      $plugin = JPluginHelper::getPlugin('system', 'jumi');
       $pluginParams = json_decode( $plugin->params );
 
       $content = JResponse::getBody();

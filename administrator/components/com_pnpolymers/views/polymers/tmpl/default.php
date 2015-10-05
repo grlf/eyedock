@@ -8,8 +8,12 @@
 
 	JToolBarHelper::title( JText::_( 'Soft Lens Polymers Administration' ), 'generic.png' );
 	JToolBarHelper::deleteList();
-	JToolBarHelper::editListX();
-	JToolBarHelper::addNewX();
+	JToolBarHelper::editList();
+	JToolBarHelper::addNew();
+
+	if(empty($this->lists)){
+		$this->lists = array();
+	}
 ?>
 
 <form action="index.php?option=com_gplab" method="post" name="adminForm">
