@@ -1,0 +1,16 @@
+<div style="float:right"><a href="index.php?module=Pagesetter&tid=10&filter=category^sub^151&cv=151">Lenses FAQs</a></div>
+<!--[include file=lenses_user_menu.htm]-->
+
+<div style=" margin-bottom:.75em;">
+<a href="javascript:history.go(-1);" title="Go back">Go back</a> |
+  <a href="<!--[pnmodurl modname='Lenses' type='user' ]-->">Lens searches main page</a> |
+</div>
+
+<h1>Compare Lenses</h1>
+
+<form method="POST" action="<!--[pnmodurl modname='Lenses' type='user' func='compare_view']-->">
+  <!--[foreach  item=id key=lens from=$lenses]-->
+     <input type="checkbox" name="lens[<!--[$id]-->]"  value="1"/> <label for="lens[<!--[$id]-->]" ><!--[$lens]--></label> <br />
+  <!--[/foreach]-->
+  <br /><input type="submit" value="compare lenses"/>
+</form>

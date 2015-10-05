@@ -1,0 +1,170 @@
+<!--[include file=meds_admin_menu.htm]-->
+<h2>View All Medications</h2>
+
+<!--[pager  show="page" 
+        rowcount=$pager.total 
+           limit=$pager.limit 
+          posvar=start 
+           shift=1]-->
+
+<!--[foreach from=$items key=key item=med]-->
+<table class="meds_table_max" style="background:#fff;" cellpadding="3" cellspacing="2">
+    <tr class="meds_table_head">
+        <td colspan="4" style="font-size:14pt;"><!--[$med.trade|pnvarprepfordisplay]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Manufacturer:</td>
+        <td class="align_left"><!--[if $med.comp_id]--><!--[$companies[$med.comp_id].name]--><!--[else]-->Not Specified<!--[/if]--></td>
+        <td colspan="2" rowspan="12" style="vertical-align:middle;text-align:center;">
+            <!--[if $med.image1]--><img class="meds_product_image" src="modules/Meds/pnimages/<!--[$med.image1|pnvarprepfordisplay]-->" alt="<!--[$med.image1|pnvarprepfordisplay]-->" /><!--[/if]-->
+            <!--[if $med.image2]--><img class="meds_product_image" src="modules/Meds/pnimages/<!--[$med.image2|pnvarprepfordisplay]-->" alt="<!--[$med.image2|pnvarprepfordisplay]-->" /><!--[/if]-->
+        </td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Med Type 1:</td>
+        <td class="align_left"><!--[if $med.medType1]--><!--[$med.medType1|pnvarprepfordisplay]--><!--[else]-->None Specified<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Med Type 2:</td>
+        <td class="align_left"><!--[if $med.medType2]--><!--[$med.medType2|pnvarprepfordisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Preservative 1:</td>
+        <td class="align_left"><!--[if $med.pres_id1]--><!--[$preserves[$med.pres_id1].name]--><!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Preservative 2:</td>
+        <td class="align_left"><!--[if $med.pres_id2]--><!--[$preserves[$med.pres_id2].name]--><!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Peds:</td>
+        <td class="align_left"><!--[if $med.peds]--><!--[$med.peds|pnvarprepfordisplay]--> <!--[$med.ped_text|pnvarprepfordisplay]--> and older<!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Schedule:</td>
+        <td class="align_left"><!--[if $med.schedule]--><!--[$med.schedule|pnvarprepfordisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Pregnacy Class:</td>
+        <td class="align_left"><!--[if $med.preg]--><!--[$med.preg|pnvarprepfordisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Generic:</td>
+        <td class="align_left"><!--[if $med.generic]--><!--[$med.generic|pnvarprepfordisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Website:</td>
+        <td class="align_left"><!--[if $med.med_url != 'http://']--><a href="<!--[$med.med_url|pnvarprepfordisplay]-->" title="<!--[$med.trade|pnvarprepfordisplay]--> on the web"><!--[$med.med_url|pnvarprepfordisplay|truncate:20:"...":true]--></a><!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Updated:</td>
+        <td class="align_left"><!--[if $med.updated]--><!--[$med.updated|pnvarprepfordisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+    <tr>
+
+        <td class="meds_right_strong_bg">Display:</td>
+        <td class="align_left"><!--[if $med.display]--><!--[$med.display|pnvarprepfordisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Dose:</td>
+        <td class="align_left" colspan="3"><!--[if $med.dose]--><!--[$med.dose|pnvarprephtmldisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Nurse:</td>
+        <td class="align_left" colspan="3"><!--[if $med.nurse]--><!--[$med.nurse|pnvarprephtmldisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Mixtures</td>
+        <td class="meds_center_strong_bg">Concentration</td>
+        <td class="meds_center_strong_bg">Chemical</td>
+        <td class="meds_center_strong_bg">Method Of Action</td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">#1:</td>
+        <td class="align_center"><!--[if $med.conc1]--><!--[$med.conc1|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td> 
+        <td class="align_center"><!--[if $med.chem_id1]--><!--[$chemicals[$med.chem_id1].name]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.moa_id1]--><!--[$methods[$med.moa_id1].name]--><!--[else]-->--<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">#2:</td>
+        <td class="align_center"><!--[if $med.conc2]--><!--[$med.conc2|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td> 
+        <td class="align_center"><!--[if $med.chem_id2]--><!--[$chemicals[$med.chem_id2].name]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.moa_id2]--><!--[$methods[$med.moa_id2].name]--><!--[else]-->--<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">#3:</td>
+        <td class="align_center"><!--[if $med.conc3]--><!--[$med.conc3|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td> 
+        <td class="align_center"><!--[if $med.chem_id3]--><!--[$chemicals[$med.chem_id3].name]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.moa_id3]--><!--[$methods[$med.moa_id3].name]--><!--[else]-->--<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">#4:</td>
+        <td class="align_center"><!--[if $med.conc4]--><!--[$med.conc4|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td> 
+        <td class="align_center"><!--[if $med.chem_id4]--><!--[$chemicals[$med.chem_id4].name]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.moa_id4]--><!--[$methods[$med.moa_id4].name]--><!--[else]-->--<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Packages</td>
+        <td class="meds_center_strong_bg">Form</td>
+        <td class="meds_center_strong_bg">Size</td>
+        <td class="meds_center_strong_bg">Cost</td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">#1:</td>
+        <td class="align_center"><!--[if $med.form1]--><!--[$med.form1|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.size1]--><!--[$med.size1|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.cost1]--><!--[$med.cost1|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">#2:</td>
+        <td class="align_center"><!--[if $med.form2]--><!--[$med.form2|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.size2]--><!--[$med.size2|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.cost2]--><!--[$med.cost2|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">#3:</td>
+        <td class="align_center"><!--[if $med.form3]--><!--[$med.form3|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.size3]--><!--[$med.size3|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.cost3]--><!--[$med.cost3|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">#4:</td>
+        <td class="align_center"><!--[if $med.form4]--><!--[$med.form4|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.size4]--><!--[$med.size4|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.cost4]--><!--[$med.cost4|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Comments:</td>
+        <td class="align_left" colspan="3"><!--[if $med.comments]--><!--[$med.comments|pnvarprephtmldisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Rx Info:</td>
+        <td class="align_left"><!--[if $med.rxInfo != 'http://']--><a href="<!--[$med.rxInfo|pnvarprepfordisplay]-->" title="Rx Information"><!--[$med.rxInfo|pnvarprepfordisplay|truncate:20:"...":true]--></a><!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+    <!--[if $is_admin]-->
+    <tr>
+        <td class="meds_right_strong_bg">Actions:</td>
+        <td class="align_left" colspan="3">
+            [ <a href="<!--[pnmodurl modname=Meds type=admin func=modify_med med_id=$med.med_id|pnvarprepfordisplay]-->" title="Edit">Edit</a> ]
+            [ <a href="<!--[pnmodurl modname=Meds type=admin func=delete object=med id=$med.med_id|pnvarprepfordisplay]-->" title="Delete">Delete</a> ]
+        </td>
+    </tr>
+    <!--[/if]-->
+    <tr class="meds_table_head">
+        <td class="meds_width_25">&nbsp;</td>
+        <td class="meds_width_25">&nbsp;</td>
+        <td class="meds_width_25">&nbsp;</td>
+        <td class="meds_width_25">&nbsp;</td>
+    </tr>
+</table>
+<br />
+<!--[/foreach]-->
+
+<!--[pager  show="page" 
+        rowcount=$pager.total 
+           limit=$pager.limit 
+          posvar=start 
+           shift=1]--><br /><br />
+
+<!--[pnmodurl modname=Meds func=view startnum=$startnum assign=returnurl]-->
+<!--[pnmodcallhooks hookobject=category hookaction=display hookid=$startnum module=Meds returnurl=$returnurl]-->

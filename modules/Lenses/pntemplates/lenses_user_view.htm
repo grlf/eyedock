@@ -1,0 +1,199 @@
+<!--[include file=lenses_user_menu.htm]-->
+
+<!-- saved from url=(0022)http://internet.e-mail -->
+
+
+
+ <!--[if $wizard!=1]--><!--[include file=lenses_user_search_form.htm]--><!--[/if]-->
+ 
+ <div style="float: right; margin-bottom:.75em;">
+      <!--[if $wizard==1]--><a href="javascript:history.go(-1);" title="Change search parameters">Change search parameters</a> | <a href="<!--[pnmodurl modname='Lenses' type='user' ]-->">Lenses main page</a> |<!--[/if]-->
+
+    </div>
+
+ <h1>Search Results</h1>
+
+
+  <!--[if $display_phrase ]-->
+          <div <!--[if !$lenses]-->class="nolens_highlight"<!--[else]-->class="lens_highlight"<!--[/if]-->>Your search was for lenses
+          <!--[$display_phrase]-->
+          <!--[if $count>1]-->
+                  <br /><strong><!--[$count]--> results</strong> were found.
+          <!--[/if]-->
+          
+          <!--[if !$lenses]--><p><strong>No results were found.</strong></p>You should try searching with different parameters or by a different method.  If you cannot find a lens that you feel should be in the database please let us know.<!--[/if]-->
+          </div>
+  <!--[/if]-->
+
+<!--[if $lenses]-->
+
+<form method="POST" action="<!--[pnmodurl modname='Lenses' type='user' func='compare_view']-->">
+  <table border="1" cellpadding="5" cellspacing="0" style="border: 1px solid gray;">
+    <tr>
+      <th>Lens</th>
+      <th>Company</th>
+      <th>Sph Pwrs</th>
+      <!--[if $select.toric>0 AND $search.toric!="=0"]-->
+      <th>Toric?</th>
+      <!--[/if]-->
+      <!--[if $select.bifocal>0 AND $search.bifocal!="=0"]-->
+      <th>Bifocal?</th>
+      <!--[/if]-->
+      <!--[if $select.cosmetic>0 AND $search.cosmetic!="=0"]-->
+      <th>Cosmetic?</th>
+      <!--[/if]-->
+      <!--[if $select.max_diam>0 AND $select.min_diam>0]-->
+      <th>Diameter</th>
+      <!--[/if]-->
+      <!--[if $select.max_diam>0 AND $select.min_diam==0]-->
+      <th>Largest Diam.</th>
+      <!--[/if]-->
+      <!--[if $select.max_diam==0 AND $select.min_diam>0]-->
+      <th>Smallest Diam.</th>
+      <!--[/if]-->
+      <!--[if $select.ct>0]-->
+      <th>CT</th>
+      <!--[/if]-->
+      <!--[if $select.oz>0]-->
+      <th>OZ</th>
+      <!--[/if]-->
+      <!--[if $select.dk>0]-->
+      <th>dk</th>
+      <!--[/if]-->
+      <!--[if $select.h2o>0]-->
+      <th>H2O</th>
+      <!--[/if]-->
+      <th>Compare</th>
+    </tr>
+    <!--[foreach name=outer item=contact from=$lenses]-->
+    <tr style="background-color:<!--[cycle values="#FFFFFF,#E5EBFF"]-->;">
+      <td><a href="<!--[pnmodurl modname="Lenses" type="user" func="display" tid=$contact.tid|pnvarprepfordisplay]-->">
+        <!--[$contact.name]-->
+        </a>
+        <!--[if $contact.discontinued]-->
+        <br/>
+        <span style="color:#FF0000; font-size: 10px;">(discontinued)</span>
+        <!--[/if]--></td>
+      <td ><!--[$contact.comp_name]--></td>
+      <td><!--[if $contact.max_plus==99]-->
+        Any
+        <!--[else]-->
+        <!--[if $contact.max_plus==0]-->
+        pl
+        <!--[else]-->
+        <!--[$contact.max_plus|string_format:"%+.2f"]-->
+        <!--[/if]-->
+        to
+        <!--[if $contact.max_minus==0]-->
+        pl
+        <!--[else]-->
+        <!--[$contact.max_minus|string_format:"%.2f"]-->
+        <!--[/if]-->
+        <!--[/if]-->
+      </td>
+      <!--[if $select.toric>0 AND $search.toric!="=0"]-->
+      <td align="center"><!--[if $contact.toric==1]-->
+        <!--[if $contact.max_cyl_power==-99]-->
+        Any
+        <!--[else]-->
+        <img src="modules/Lenses/pnimages/checkmark.gif" style="width:16px;height:16px;border:0;" alt="yes" /><br/>
+        to
+        <!--[$contact.max_cyl_power]-->
+        <!--[/if]-->
+        <!--[else]-->
+        <img src="modules/Lenses/pnimages/no_x.gif" style="border:0;" alt="no" />
+        <!--[/if]-->
+      </td>
+      <!--[/if]-->
+      <!--[if $select.bifocal>0 AND $search.bifocal!='=0']-->
+      <td align="center"><!--[if $contact.bifocal==1]-->
+        <img src="modules/Lenses/pnimages/checkmark.gif" style="width:16px;height:16px;border:0;" alt="yes" /><br/>
+        to
+        <!--[$contact.max_add|string_format:"%+.2f"]-->
+        <!--[else]-->
+        <img src="modules/Lenses/pnimages/no_x.gif" style="border:0;" alt="no" />
+        <!--[/if]--></td>
+      <!--[/if]-->
+      <!--[if $select.cosmetic>0 AND $search.cosmetic!="=0"]-->
+      <td align="center"><!--[if $contact.cosmetic==1]-->
+        <img src="modules/Lenses/pnimages/checkmark.gif" style="width:16px;height:16px;border:0;" alt="yes" />
+        <!--[else]-->
+        <img src="modules/Lenses/pnimages/no_x.gif" style="border:0;" alt="no" />
+        <!--[/if]--></td>
+      <!--[/if]-->
+
+      <!--[if $select.max_diam>0 OR $select.min_diam>0]-->
+  		<td style="text-align:center;">
+          <!--[if $contact.max_diam==99 OR $contact.min_diam==99]-->
+            any diam.
+          <!--[else]-->
+              <!--[if $contact.min_diam==0 && $contact.max_diam>0]-->
+                   <!--[$contact.max_diam|string_format:"%.1f"]-->mm
+              <!--[/if]-->
+              <!--[if $contact.min_diam==$contact.max_diam]-->
+                   <!--[$contact.max_diam|string_format:"%.1f"]-->mm
+              <!--[/if]-->
+              <!--[if $contact.min_diam>0 && $contact.max_diam==0]-->
+                   <!--[$contact.min_diam|string_format:"%.1f"]-->mm
+              <!--[/if]-->
+              <!--[if $contact.min_diam>0 && $contact.max_diam>0 AND $contact.min_diam!=$contact.max_diam]-->
+                   <!--[$contact.min_diam|string_format:"%.1f"]-->
+                    to <!--[$contact.max_diam|string_format:"%.1f"]-->mm
+              <!--[/if]-->
+   		  <!--[/if]-->
+  		</td>
+      <!--[/if]-->
+
+      <!--[if $select.ct>0]-->
+      <td><!--[if $contact.ct==0]-->
+        ?
+        <!--[else]-->
+        <!--[$contact.ct]-->
+        <!--[/if]--> </td>
+      <!--[/if]-->
+      <!--[if $select.oz>0]-->
+      <td><!--[if $contact.oz==0]-->
+        ?
+        <!--[else]-->
+        <!--[$contact.oz]-->
+        <!--[/if]--> </td>
+      <!--[/if]-->
+      <!--[if $select.dk>0]-->
+      <td><!--[if $contact.dk==0]-->
+        ?
+        <!--[else]-->
+        <!--[$contact.dk]-->
+        <!--[/if]--></td>
+      <!--[/if]-->
+      <!--[if $select.h2o>0]-->
+      <td><!--[if $contact.h2o==0]-->
+        ?
+        <!--[else]-->
+        <!--[$contact.h2o]-->
+        <!--[/if]-->%</td>
+      <!--[/if]-->
+      <td><input type="checkbox" name="lens[<!--[$contact.tid]-->]"  value="1"/> </td>
+    </tr>
+    <!--[/foreach]-->
+  </table>
+   <br /><input type="submit" value="compare selected lenses"/>
+</form>
+<!--[/if]-->
+
+<!--[if $company_options]-->
+   <p>
+      <form method="POST" action="<!--[pnmodurl modname='Lenses' type='user' func='view']-->">
+         Were you looking for lenses manufactured by
+         <select size="1" name="search[comp_id]" id="search[comp_id]" >
+          <!--[foreach from=$company_options  item=company]-->
+            <option value="= <!--[$company.comp_tid]-->" />
+            <!--[$company.comp_name]-->
+          <!--[/foreach]-->
+        </select> ?
+  
+        <input type="hidden" name="display_phrase" id="display_phrase" value="company">
+         <input type="submit" value="go">
+       </form>
+
+  </p>
+<!--[/if]-->

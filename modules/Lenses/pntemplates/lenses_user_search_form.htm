@@ -1,0 +1,65 @@
+<script language="JavaScript">
+        tabs = new Array('phrase','comp','adv','other');
+</script>
+
+<h1>Lens Searches</h1>
+<div style="float:right"><a href="index.php?module=Pagesetter&tid=10&filter=category^sub^151&cv=151">Lenses FAQs</a></div>
+ <div>
+   <a href="javascript: changeTab('phrase', tabs);" id="aphrase" class="lens_nav" style="background:#fff;" >Phrase</a>
+  <a href="javascript: changeTab('comp', tabs);" id="acomp" class="lens_nav" style="background:#d2e1fe;" >Company</a>
+  <a href="javascript: changeTab('adv', tabs);" id="aadv" class="lens_nav" style="background:#d2e1fe;" >Advanced Searches</a>
+  
+  <a href="javascript: changeTab('other', tabs);" id="aother" class="lens_nav" style="background:#d2e1fe;" >Other options</a>
+</div>
+
+
+<div id="phraseDiv" class="lensWhite" >
+  <form method="POST" action="<!--[pnmodurl modname='Lenses' type='user' func='view']-->" name="nameform">
+    <input name="q" type="text" id="q" value="<!--[$phrase]-->">
+	<input type="hidden" id="display_phrase" name="display_phrase" value="phrase">
+        <input name="search[discontinued]" type="checkbox" id="search[discontinued]" value="=0" checked>
+    do not display discontinued lenses
+
+     <input type="submit" name="Submit" value="Search">
+  </form>
+</div>
+
+<div id="compDiv" class="lensWhite" style="display:none">
+  <form  method="POST" action="<!--[pnmodurl modname='Lenses' type='user' func='view']-->" name="compForm">
+    <select size="1" name="search[comp_id]" id="search[comp_id]" >
+      <!--[foreach from=$opt_companies key=key item=company]-->
+      <option value="= <!--[$company.comp_tid]-->" />
+      <!--[$company.comp_name]-->
+      <!--[/foreach]-->
+    </select>
+	<input type="hidden" id="display_phrase" name="display_phrase" value="company">
+
+       <input name="search[discontinued]" type="checkbox" id="search[discontinued]" value="=0" checked>
+    do not display discontinued lenses
+
+    <input type="submit" value="Search" name="B1" >
+
+  </form>
+</div>
+
+
+<div class="lensWhite" id="advDiv" style="display: none;">
+    <!--[include file=lenses_user_adv_form.htm]-->
+
+</div>
+
+<div id="otherDiv" class="lensWhite" style="display:none">
+     <table cellpadding="5">
+     <tr>
+        <td><a href="<!--[pnmodurl modname='Lenses' type='user' func='search_wizard1']-->">Advanced lens searches wizard</a></td>
+        <td>A two step advanced search.</td>
+     </tr>
+     <!--[if $saved_lens_count >1]-->
+        <tr>
+           <td><a href="<!--[pnmodurl modname='Lenses' type='user' func='compare_form']-->">          Recent lenses</a>
+    </td>
+           <td>Compare recently viewed lenses</td>
+        </tr>
+          <!--[/if]--> 
+    </table>
+</div>

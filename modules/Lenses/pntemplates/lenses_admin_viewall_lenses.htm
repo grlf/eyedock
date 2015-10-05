@@ -1,0 +1,75 @@
+<!--[include file=lenses_admin_menu.htm]-->
+
+<h2>View All Lenses</h2>
+
+<div>[ <a href="<!--[pnmodurl modname="Lenses" type="admin" func="create_lens"]-->" title="Add New Lens">Add New Lens</a> ]</div>
+
+<table border="1" cellpadding="3" cellspacing="2">
+
+    <tr>
+
+        <th>ID</th>
+
+        <th>?</th>
+
+        <th>Name</th>
+
+        <th>Company</th>
+
+        <th>Actions</th>
+
+    </tr>
+
+    <!--[foreach from=$lenses_data item=lens]-->
+
+    <tr>
+
+        <td>
+
+            <!--[$lens.tid|pnvarprepfordisplay]-->
+
+        </td>
+
+        <td>
+
+            <!--[if $lens.display]-->
+            <img src="modules/Lenses/pnimages/active.gif" style="width:16px;height:16px;border:0;" alt="Display" /></a>
+            <!--[else]-->
+            <img src="modules/Lenses/pnimages/inactive.gif" style="width:16px;height:16px;border:0;" alt="Do Not Display" /></a>
+            <!--[/if]-->
+
+        </td>
+
+   
+
+        <td>
+<!--[$lens.name|pnvarprepfordisplay]-->
+          
+
+        </td>
+        <td>
+<!--[$lens.comp_name|pnvarprepfordisplay]-->
+          
+
+        </td>
+
+
+        <td>
+
+            [ <a href="<!--[pnmodurl modname="Lenses" type="admin" func="modify_lens" tid=$lens.tid|pnvarprepfordisplay]-->" title="Modify">Modify</a> ]
+
+            [ <a href="<!--[pnmodurl modname="Lenses" type="admin" func="delete" tid=$lens.tid|pnvarprepfordisplay item_type="lens"]-->" title="Delete">Delete</a> ]
+			 
+			 [ <a href="<!--[pnmodurl modname="Lenses" type="user" func="display" tid=$lens.tid|pnvarprepfordisplay]-->" title="View">View</a> ]
+
+        </td>
+
+    </tr>
+
+    <!--[/foreach]-->
+
+</table>
+
+<div>[ <a href="<!--[pnmodurl modname="Lenses" type="admin" func="create_lens"]-->" title="Add New Lens">Add New Lens</a> ]</div>
+
+

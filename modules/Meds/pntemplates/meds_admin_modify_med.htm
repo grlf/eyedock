@@ -1,0 +1,327 @@
+<!--[include file=meds_admin_menu.htm]-->
+<h2>Modify Medication</h2>
+
+<form method="post" action="<!--[pnmodurl modname=Meds type=admin func=update_med]-->" enctype="application/x-www-form-urlencoded">
+<div class="meds_admin_form">
+
+    <input type="hidden" name="authid" value="<!--[pnsecgenauthkey module=Meds]-->" />
+    <input type="hidden" name="med[med_id]" value="<!--[$med_id|pnvarprepfordisplay]-->" />
+
+    <strong>ID:</strong> <!--[$med.med_id|pnvarprepfordisplay]--><br />
+    
+    <br /><br />
+    
+    <strong>Trade Name:</strong><br />
+    <input type="text" name="med[trade]" value="<!--[$med.trade|pnvarprepfordisplay]-->" size="35" maxlength="48" />
+    
+    <br /><br />
+    
+    <strong>Company:</strong><br />
+    <select name="med[comp_id]" size="1">
+        <option value=""<!--[if !$med.comp_id]--> selected="selected"<!--[/if]--> />
+    <!--[foreach from=$companies key=key item=company]-->
+        <option value="<!--[$company.comp_id|pnvarprepfordisplay]-->"<!--[if $med.comp_id == $company.comp_id]--> selected="selected"<!--[/if]--> /><!--[$company.name|pnvarprepfordisplay]--> [<!--[$company.comp_id|pnvarprepfordisplay]-->]
+    <!--[/foreach]-->                
+    </select>
+    
+    <br /><br />
+    
+    <strong>Med Type 1:</strong><br />
+    <select name="med[medType1]" size="1">
+        <option value=""<!--[if !$med.medType2]--> selected="selected"<!--[/if]--> />
+    <!--[foreach from=$medtypes key=key item=medtype]-->
+        <option value="<!--[$medtype|pnvarprepfordisplay]-->"<!--[if $med.medType1 == $medtype]--> selected="selected"<!--[/if]--> /><!--[$medtype|pnvarprepfordisplay]--> [<!--[$key|pnvarprepfordisplay]-->]
+    <!--[/foreach]-->
+    </select>
+    
+    <br /><br />
+    
+    <strong>Med Type 2:</strong><br />
+    <select name="med[medType2]" size="1">
+        <option value=""<!--[if !$med.medType2]--> selected="selected"<!--[/if]--> />
+    <!--[foreach from=$medtypes key=key item=medtype]-->
+        <option value="<!--[$medtype|pnvarprepfordisplay]-->"<!--[if $med.medType2 == $medtype]--> selected="selected"<!--[/if]--> /><!--[$medtype|pnvarprepfordisplay]--> [<!--[$key|pnvarprepfordisplay]-->]
+    <!--[/foreach]-->
+    </select>
+    
+    <br /><br />
+    
+    <strong>Pregnancy Class:</strong><br />
+    <select name="med[preg]" size="1">
+        <option value=""<!--[if !$med.preg]--> selected="selected"<!--[/if]--> />
+    <!--[foreach from=$pregclasses item=class]-->
+        <option value="<!--[$class|pnvarprepfordisplay]-->"<!--[if $med.preg == $class]--> selected="selected"<!--[/if]--> /><!--[$class|pnvarprepfordisplay]-->
+    <!--[/foreach]-->
+    </select>
+    
+    <br /><br />
+    
+    <strong>FDA Schedule:</strong><br />
+    <select name="med[schedule]" size="1">
+        <option value=""<!--[if !$med.schedule]--> selected="selected"<!--[/if]--> />
+    <!--[foreach from=$schedules item=schedule]-->
+        <option value="<!--[$schedule|pnvarprepfordisplay]-->"<!--[if $med.schedule == $schedule]--> selected="selected"<!--[/if]--> /><!--[$schedule|pnvarprepfordisplay]-->
+    <!--[/foreach]-->
+    </select>
+    
+    <br /><br />
+    
+    <strong>Generic:</strong><br />
+    <select name="med[generic]" size="1">
+    <!--[foreach from=$generics key=key item=generic]-->
+        <option value="<!--[$generic|pnvarprepfordisplay]-->"<!--[if $med.generic == $generic]--> selected="selected"<!--[/if]--> /><!--[$generic|pnvarprepfordisplay]-->
+    <!--[/foreach]-->
+    </select>
+    
+    <br /><br />
+    
+    <strong>Image 1:</strong><br />
+    <input type="text" name="med[image1]" value="<!--[$med.image1|pnvarprepfordisplay]-->" size="20" maxlength="48" />
+    
+    <br /><br />
+    
+    <strong>Image 2:</strong><br />
+    <input type="text" name="med[image2]" value="<!--[$med.image2|pnvarprepfordisplay]-->" size="20" maxlength="48" />
+    
+    <br /><br />
+    
+    <strong>Dose:</strong><br />
+    <textarea name="med[dose]" rows="5" cols="35"><!--[$med.dose|pnvarprepfordisplay]--></textarea>
+    
+    <br /><br />
+    
+    <strong>Peds:</strong><br />
+    <select name="med[peds]" size="1">
+        <option value=""<!--[if !$med.ped]--> selected="selected"<!--[/if]--> />
+    <!--[foreach from=$peds item=ped]-->
+        <option value="<!--[$ped|pnvarprepfordisplay]-->"<!--[if $med.peds == $ped]--> selected="selected"<!--[/if]--> /><!--[$ped|pnvarprepfordisplay]-->
+    <!--[/foreach]-->
+    </select>            
+    <select name="med[ped_text]" size="1">
+        <option value=""<!--[if !$med.ped_text]--> selected="selected"<!--[/if]--> />
+    <!--[foreach from=$ped_texts item=text]-->
+        <option value="<!--[$text|pnvarprepfordisplay]-->"<!--[if $med.ped_text == $text]--> selected="selected"<!--[/if]--> /><!--[$text|pnvarprepfordisplay]-->
+    <!--[/foreach]-->
+    </select>
+    and older           
+    
+    <br /><br />
+    
+    <strong>Nurse:</strong><br />
+    <input type="text" name="med[nurse]" value="<!--[$med.nurse|pnvarprepfordisplay]-->" size="50" maxlength="96" />
+    
+    <br /><br />
+    
+    <strong>Preservative 1:</strong><br />
+    <select name="med[pres_id1]" size="1">
+        <option value=""<!--[if !$med.pres_id1]--> selected="selected"<!--[/if]--> />
+    <!--[foreach from=$preserves key=key item=preserve]-->
+        <option value="<!--[$preserve.pres_id|pnvarprepfordisplay]-->"<!--[if $med.pres_id1 == $preserve.pres_id]--> selected="selected"<!--[/if]--> /><!--[$preserve.name|pnvarprepfordisplay]--> [<!--[$preserve.pres_id|pnvarprepfordisplay]-->]
+    <!--[/foreach]-->                
+    </select>
+    
+    <br /><br />
+    
+    <strong>Preservative 2:</strong><br />
+    <select name="med[pres_id2]" size="1">
+        <option value=""<!--[if !$med.pres_id2]--> selected="selected"<!--[/if]--> />
+    <!--[foreach from=$preserves key=key item=preserve]-->
+        <option value="<!--[$preserve.pres_id|pnvarprepfordisplay]-->"<!--[if $med.pres_id2 == $preserve.pres_id]--> selected="selected"<!--[/if]--> /><!--[$preserve.name|pnvarprepfordisplay]--> [<!--[$preserve.pres_id|pnvarprepfordisplay]-->]
+    <!--[/foreach]-->                
+    </select>
+    
+    <br /><br />
+    
+    
+    
+    <strong>Prescribing Info:</strong><br />
+    <input type="text" name="med[rxInfo]" value="<!--[$med.rxInfo|pnvarprepfordisplay]-->" size="50" maxlength="200" />
+    
+    URLs need to be in this format: http://www.xxxx.....<br /><br />
+    
+    <strong>Website:</strong><br />
+    <input type="text" name="med[med_url]" value="<!--[$med.med_url|pnvarprepfordisplay]-->" size="50" maxlength="200" />
+    
+    <br /><br />
+    
+    <table class="max" cellpadding="3" cellspacing="2">
+        <tr class="meds_table_head">
+            <td>#</td>
+            <td>Concentrations</td>
+            <td>Chemicals</td>
+            <td width="100%">Methods of Action</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td><input type="text" name="med[conc1]" value="<!--[$med.conc1|pnvarprepfordisplay]-->" size="20" maxlength="20" /></td>
+            <td>
+                <select name="med[chem_id1]" size="1">
+                    <option value=""<!--[if !$med.chem_id1]--> selected="selected"<!--[/if]--> />
+                <!--[foreach from=$chemicals key=key item=chem]-->
+                    <option value="<!--[$chem.chem_id|pnvarprepfordisplay]-->"<!--[if $med.chem_id1 == $chem.chem_id]--> selected="selected"<!--[/if]--> /><!--[$chem.name|pnvarprepfordisplay]--> [<!--[$chem.chem_id|pnvarprepfordisplay]-->]
+                <!--[/foreach]-->    
+                </select>
+            </td>
+            <td>
+                <select name="med[moa_id1]" size="1">
+                    <option value=""<!--[if !$med.moa_id1]--> selected="selected"<!--[/if]--> />
+                <!--[foreach from=$methods key=key item=moa]-->
+                    <option value="<!--[$moa.moa_id|pnvarprepfordisplay]-->"<!--[if $med.moa_id1 == $moa.moa_id]--> selected="selected"<!--[/if]--> /><!--[$moa.name|pnvarprepfordisplay]--> [<!--[$moa.moa_id|pnvarprepfordisplay]-->]
+                <!--[/foreach]-->    
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td><input type="text" name="med[conc2]" value="<!--[$med.conc2|pnvarprepfordisplay]-->" size="20" maxlength="20" /></td>
+            <td>
+                <select name="med[chem_id2]" size="1">
+                    <option value=""<!--[if !$med.chem_id2]--> selected="selected"<!--[/if]--> />
+                <!--[foreach from=$chemicals key=key item=chem]-->
+                    <option value="<!--[$chem.chem_id|pnvarprepfordisplay]-->"<!--[if $med.chem_id2 == $chem.chem_id]--> selected="selected"<!--[/if]--> /><!--[$chem.name|pnvarprepfordisplay]--> [<!--[$chem.chem_id|pnvarprepfordisplay]-->]
+                <!--[/foreach]-->    
+                </select>
+            </td>
+            <td>
+                <select name="med[moa_id2]" size="1">
+                    <option value=""<!--[if !$med.moa_id2]--> selected="selected"<!--[/if]--> />
+                <!--[foreach from=$methods key=key item=moa]-->
+                    <option value="<!--[$moa.moa_id|pnvarprepfordisplay]-->"<!--[if $med.moa_id2 == $moa.moa_id]--> selected="selected"<!--[/if]--> /><!--[$moa.name|pnvarprepfordisplay]--> [<!--[$moa.moa_id|pnvarprepfordisplay]-->]
+                <!--[/foreach]-->    
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td><input type="text" name="med[conc3]" value="<!--[$med.conc3|pnvarprepfordisplay]-->" size="20" maxlength="20" /></td>
+            <td>
+                <select name="med[chem_id3]" size="1">
+                    <option value=""<!--[if !$med.chem_id3]--> selected="selected"<!--[/if]--> />
+                <!--[foreach from=$chemicals key=key item=chem]-->
+                    <option value="<!--[$chem.chem_id|pnvarprepfordisplay]-->"<!--[if $med.chem_id3 == $chem.chem_id]--> selected="selected"<!--[/if]--> /><!--[$chem.name|pnvarprepfordisplay]--> [<!--[$chem.chem_id|pnvarprepfordisplay]-->]
+                <!--[/foreach]-->    
+                </select>
+            </td>
+            <td>
+                <select name="med[moa_id3]" size="1">
+                    <option value=""<!--[if !$med.moa_id3]--> selected="selected"<!--[/if]--> />
+                <!--[foreach from=$methods key=key item=moa]-->
+                    <option value="<!--[$moa.moa_id|pnvarprepfordisplay]-->"<!--[if $med.moa_id3 == $moa.moa_id]--> selected="selected"<!--[/if]--> /><!--[$moa.name|pnvarprepfordisplay]--> [<!--[$moa.moa_id|pnvarprepfordisplay]-->]
+                <!--[/foreach]-->    
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td><input type="text" name="med[conc4]" value="<!--[$med.conc4|pnvarprepfordisplay]-->" size="20" maxlength="20" /></td>
+            <td>
+                <select name="med[chem_id4]" size="1">
+                    <option value=""<!--[if !$med.chem_id4]--> selected="selected"<!--[/if]--> />
+                <!--[foreach from=$chemicals key=key item=chem]-->
+                    <option value="<!--[$chem.chem_id|pnvarprepfordisplay]-->"<!--[if $med.chem_id4 == $chem.chem_id]--> selected="selected"<!--[/if]--> /><!--[$chem.name|pnvarprepfordisplay]--> [<!--[$chem.chem_id|pnvarprepfordisplay]-->]
+                <!--[/foreach]-->    
+                </select>
+            </td>
+            <td>
+                <select name="med[moa_id4]" size="1">
+                    <option value=""<!--[if !$med.moa_id4]--> selected="selected"<!--[/if]--> />
+                <!--[foreach from=$methods key=key item=moa]-->
+                    <option value="<!--[$moa.moa_id|pnvarprepfordisplay]-->"<!--[if $med.moa_id4 == $moa.moa_id]--> selected="selected"<!--[/if]--> /><!--[$moa.name|pnvarprepfordisplay]--> [<!--[$moa.moa_id|pnvarprepfordisplay]-->]
+                <!--[/foreach]-->    
+                </select>
+            </td>
+        </tr>        
+    </table>
+    
+    <br /><br />
+    
+    <table class="max" cellpadding="3" cellspacing="2">
+        <tr class="meds_table_head">
+            <td>#</td>
+            <td>Form</td>
+            <td>Size</td>
+            <td width="100%">Cost</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>
+                <select name="med[form1]" size="1">
+                    <option value=""<!--[if !$med.form1]--> selected="selected"<!--[/if]--> />
+                <!--[foreach from=$medforms key=key item=form]-->
+                    <option value="<!--[$form|pnvarprepfordisplay]-->"<!--[if $med.form1 == $form]--> selected="selected"<!--[/if]--> /><!--[$form|pnvarprepfordisplay]-->
+                <!--[/foreach]-->    
+                </select>
+            </td>
+            <td><input type="text" name="med[size1]" value="<!--[$med.size1|pnvarprepfordisplay]-->" size="20" maxlength="20" /></td>
+            <td><input type="text" name="med[cost1]" value="<!--[$med.cost1|pnvarprepfordisplay]-->" size="20" maxlength="20" /></td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>
+                <select name="med[form2]" size="1">
+                    <option value=""<!--[if !$med.form1]--> selected="selected"<!--[/if]--> />
+                <!--[foreach from=$medforms key=key item=form]-->
+                    <option value="<!--[$form|pnvarprepfordisplay]-->"<!--[if $med.form2 == $form]--> selected="selected"<!--[/if]--> /><!--[$form|pnvarprepfordisplay]-->
+                <!--[/foreach]-->    
+                </select>
+            </td>
+            <td><input type="text" name="med[size2]" value="<!--[$med.size2|pnvarprepfordisplay]-->" size="20" maxlength="20" /></td>
+            <td><input type="text" name="med[cost2]" value="<!--[$med.cost2|pnvarprepfordisplay]-->" size="20" maxlength="20" /></td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>
+                <select name="med[form3]" size="1">
+                    <option value=""<!--[if !$med.form1]--> selected="selected"<!--[/if]--> />
+                <!--[foreach from=$medforms key=key item=form]-->
+                    <option value="<!--[$form|pnvarprepfordisplay]-->"<!--[if $med.form3 == $form]--> selected="selected"<!--[/if]--> /><!--[$form|pnvarprepfordisplay]-->
+                <!--[/foreach]-->    
+                </select>
+            </td>
+            <td><input type="text" name="med[size3]" value="<!--[$med.size3|pnvarprepfordisplay]-->" size="20" maxlength="20" /></td>
+            <td><input type="text" name="med[cost3]" value="<!--[$med.cost3|pnvarprepfordisplay]-->" size="20" maxlength="20" /></td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>
+                <select name="med[form4]" size="1">
+                    <option value=""<!--[if !$med.form1]--> selected="selected"<!--[/if]--> />
+                <!--[foreach from=$medforms key=key item=form]-->
+                    <option value="<!--[$form|pnvarprepfordisplay]-->"<!--[if $med.form4 == $form]--> selected="selected"<!--[/if]--> /><!--[$form|pnvarprepfordisplay]-->
+                <!--[/foreach]-->    
+                </select>
+            </td>
+            <td><input type="text" name="med[size4]" value="<!--[$med.size4|pnvarprepfordisplay]-->" size="20" maxlength="20" /></td>
+            <td><input type="text" name="med[cost4]" value="<!--[$med.cost4|pnvarprepfordisplay]-->" size="20" maxlength="20" /></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td colspan="2"><strong>For size, use this format:</strong> 5 mL</td>
+        </tr>
+    </table>
+    
+    <br /><br />
+    
+    <strong>Comments:</strong><br />
+    <textarea id = "meds_comments" name="med[comments]" rows="5" cols="35"><!--[$med.comments|pnvarprepfordisplay]--></textarea>
+    
+    <br /><br />
+    <strong>Updated:</strong><br />
+    <input type="text" name="med[updated]" value="<!--[$med.updated|pnvarprepfordisplay]-->" size="10" maxlength="10" />
+    
+    Enter the date in the format, 08/30/10<br /><br />
+    
+    <strong>Display:</strong><br />
+    <input type="checkbox" name="med[display]" value="1"<!--[if $med.display]-->checked="checked"<!--[/if]--> />Check to allow this medication to be displayed.
+    
+    <br /><br /><br />
+    
+    <input type="submit" name="submit" value="Update" />
+    
+    <br /><br /><br />
+    
+    [ <a href="<!--[pnmodurl modname=Meds type=admin func=delete object=med id=$med.med_id|pnvarprepfordisplay]-->" title="Delete">Delete</a> ]
+    
+</div>
+</form>

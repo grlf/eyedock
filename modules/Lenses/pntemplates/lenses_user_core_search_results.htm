@@ -1,0 +1,44 @@
+<strong>Contact lenses</strong>:
+
+          <!--[if !$lenses]-->No lenses were found. <!--[/if]-->
+          
+ <br />
+<!--[if $lenses]-->
+<ul>
+
+<!--[foreach name=outer item=contact from=$lenses]-->
+    <li>
+          <a href="<!--[pnmodurl modname="Lenses" type="user" func="display" tid=$contact.tid|pnvarprepfordisplay]-->"><!--[$contact.name]--></a>
+
+        <!--[if $contact.discontinued]-->
+        <span style="color:#FF0000; font-size: 10px;">(discontinued)</span>
+        <!--[/if]-->
+        
+
+        &nbsp;&nbsp;(<!--[$contact.comp_name]-->)
+<!--[/foreach]-->
+    
+
+  </ul>
+ <!--[/if]-->
+ 
+ <!--[if $count>14]--> <p><a href="<!--[pnmodurl modname='Lenses' type='user' func='view' ]-->&phrase=<!--[$phrase]-->">...See more search results</a></p> <!--[/if]-->
+
+<!--[if $company_options]-->
+       <p>
+      <form method="POST" action="<!--[pnmodurl modname='Lenses' type='user' func='view']-->">
+         <strong>Contact lenses manufacturers</strong>:
+         <select size="1" name="search[comp_id]" id="search[comp_id]" >
+          <!--[foreach from=$company_options  item=company]-->
+            <option value="= <!--[$company.comp_tid]-->" />
+            <!--[$company.comp_name]-->
+          <!--[/foreach]-->
+        </select> ?
+  
+        <input type="hidden" name="display_phrase" id="display_phrase" value="company">
+         <input type="submit" value="go">
+       </form>
+
+  </p>
+
+<!--[/if]-->

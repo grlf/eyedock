@@ -1,0 +1,588 @@
+
+
+<script language="JavaScript">
+
+  var visitint="";
+	var ew="";
+	var toric="";
+	var cosmetic="";
+	var bifocal="";
+	var axisstep="";
+	var torictype="";
+	var comma_count = 0;
+
+function resetLensesForm(){
+    visitint="";
+	ew="";
+	toric="";
+	cosmetic="";
+	bifocal="";
+	axisstep="";
+	torictype="";
+	comma_count = 0;
+    document.getElementById('query').innerHTML='Use the form below to create an advanced search query...';
+    document.getElementById('toric').style.display='none';
+    document.getElementById('bifocal').style.display='none';
+    document.getElementById('cosmetic').style.display='none';
+    
+    return true;
+}
+
+
+
+function sphereChange(which){
+    if (which == 'minus') document.advForm.max_plus.selectedIndex=0;
+    if (which == 'plus')  document.advForm.max_minus.selectedIndex=0;
+    lenses_changed()
+}
+
+
+//a function to parse values from the select input objects
+function getLensesValues (what){
+	if (!document.getElementById(what)) return "";
+
+	var element=document.getElementById(what);
+	var optionElement;
+	var returnText="";
+	var orCount=0;
+	for (var optionIndex=0; optionIndex < element.options.length; optionIndex++){
+		optionElement=element.options[optionIndex];
+	
+		if (optionElement.selected){
+			if (orCount!=0) returnText+=" or ";
+			if (optionElement.value!=0) returnText+=  optionElement.text;
+			orCount++;
+		}
+	}
+	return returnText;
+}
+
+
+function getLensesRadio(which, what){
+	switch (which){
+		case 'torictype':
+			torictype=what;
+			break;
+		case 'axisstep':
+			axisstep=what;
+			break;
+		case 'torictype':
+			torictype=what;
+			break;
+		case 'visi':
+			visitint=what;
+			break;
+		case 'ew':
+			ew=what;
+			break;
+		case 'toric':
+			toric=what;
+			break;
+		case 'bifocal':
+			bifocal=what;
+			break;
+		case 'cosmetic':
+			cosmetic=what;
+			break;
+	
+	}
+	lenses_changed();
+	
+}
+
+function lenses_comma(){
+     comma_count++;
+     if (comma_count>1) {
+         return ", ";
+     } else {
+        return "";
+     }
+
+
+}
+
+function lenses_changed(){
+
+	var findtext= "";
+    comma_count = 0;
+
+	var minus=getLensesValues('max_minus');
+	var plus=getLensesValues('max_plus');
+	var maxdiam=getLensesValues('search[max_diam]');
+	var mindiam=getLensesValues('search[min_diam]');
+	var bc=getLensesValues('bc_simple[]');
+	var comp= getLensesValues('comp_id[]');
+	var replace1= getLensesValues('replace_simple[0]');
+	var replace2= getLensesValues('replace_simple[1]');
+	var dk=getLensesValues('search[dk]');
+	var oz=getLensesValues('search[oz]');
+	var ct=getLensesValues('search[ct]');
+	var process= getLensesValues('process_simple[]');
+	var fda= getLensesValues('fda_grp[]');
+	var h2o= getLensesValues('search[h2o]');
+	var polymer= getLensesValues('search[poly_id]');
+
+
+    if (cosmetic == true){
+        findtext+=lenses_comma()+"COSMETIC lens";
+        var opaque= getLensesValues('opaque_names_simple');
+	    var enh= getLensesValues('enh_names_simple');
+    	if (enh!="" || opaque!="") findtext+=lenses_comma()+"in one of these colors: ";
+    	if (enh!="") findtext+=" "+enh;
+    	if (enh!="" && opaque !="") findtext+=" and ";
+    	if (opaque!="") findtext+=" "+opaque;
+    	document.advForm.hidden_cosmetic.value="=1";
+	} else {
+	    document.advForm.hidden_cosmetic.value="=0";
+	    document.advForm.opaque_names_simple.selectedIndex=-1;
+	    document.advForm.enh_names_simple.selectedIndex=-1;
+	}
+
+	if (toric == true){
+        findtext+=lenses_comma()+"TORIC lens";
+        var maxcyl= getLensesValues('cylPower');
+	    var oblique= getLensesValues('oblique');
+    	if (maxcyl!="0" && maxcyl!="" )findtext+=lenses_comma()+"cylinder power at least "+maxcyl+" D";
+    	if (oblique!="")findtext+=lenses_comma()+"axis "+oblique;
+    	if (axisstep!="")findtext+=lenses_comma()+axisstep+" or smaller axis steps";
+    	if (torictype!="")findtext+=lenses_comma()+torictype+" stabilization";
+        document.advForm.hidden_toric.value="=1";
+	} else {
+	    findtext+=lenses_comma()+"SPHERICAL lens";
+	    document.advForm.toricType[2].checked='true';
+	    document.advForm.cylAxis[0].checked='true';
+	    document.advForm.oblique.selectedIndex=0;
+	    document.advForm.cylPower.selectedIndex=0;
+        document.advForm.hidden_toric.value="=0";
+	}
+	
+    if (bifocal == true){
+        findtext+=lenses_comma()+"BIFOCAL lens";
+        var maxadd= getLensesValues('max_add');
+	    var bifocaltype= getLensesValues('bifocal_type');
+    	if (maxadd!="")findtext+=lenses_comma()+"add power of at least "+maxadd;
+    	if (bifocaltype!="")findtext+=lenses_comma()+bifocaltype+" bifocal";
+    	document.advForm.hidden_bifocal.value="=1";
+	} else {
+         document.advForm.hidden_bifocal.value="=0";
+         document.advForm.max_add.selectedIndex=0;
+         document.advForm.bifocal_type.selectedIndex=-1;
+
+	}
+
+	if (minus!="") findtext+=lenses_comma()+"minus power at least "+minus+" D";
+	if (plus!="")findtext+=lenses_comma()+"plus power at least "+plus+" D";
+	if (maxdiam!="")findtext+=lenses_comma()+"diameter at least "+maxdiam;
+	if (mindiam!="")findtext+=lenses_comma()+"diameter at most "+mindiam;
+	if (bc!="")findtext+=lenses_comma()+"comes in a "+bc+" BC";
+	if (comp!="")findtext+=lenses_comma()+"manufactured by "+comp;
+	if (replace1=="one day" && replace2=="yearly") replace1="";
+	if (replace1!="" && replace2!="" )findtext+=lenses_comma()+"replaced between "+replace1+" and "+replace2;
+	if (visitint==true) findtext+=lenses_comma()+"has a visibility tint";
+	if (ew==true) findtext+=lenses_comma()+"is an EW lens";
+	if (dk!="") findtext+=lenses_comma()+"dk is "+dk;
+	if (oz!="")findtext+=lenses_comma()+"OZ is at least "+oz;
+	if (ct!="")findtext+=lenses_comma()+"CT is "+ct;
+	if (process!="")findtext+=lenses_comma()+"is a "+process+" lens";
+	if (fda!="")findtext+=lenses_comma()+"is made from FDA "+fda+" material";
+	if (polymer!="")findtext+=lenses_comma()+"is made from "+polymer+" material";
+	if (h2o!="")findtext+=lenses_comma()+"H2O content "+h2o;
+
+
+	
+	document.getElementById("query").innerHTML = "Find lenses with these attributes: <br />"+findtext+".";
+
+    document.advForm.display_phrase.value = "with these attributes: ..."+findtext+".";
+	//alert (document.getElementById('display_phrase').value);
+}
+
+</script>
+
+
+
+<form  method="POST" action="<!--[pnmodurl modname='Lenses' type='user' func='view']-->" name="advForm">
+
+       <input type="hidden" name="display_phrase" id="display_phrase" value="" >
+
+<div style="background-color: #FFFFC1; margin-bottom:2px; border: 1px solid gray; padding:1em;">
+  <div id="query" > Use the form below to create an advanced search query...</div>
+    <div style="text-align:right; margin-top:1.5em;">
+  <input name="search[discontinued]" type="checkbox" id="search[discontinued]" value="=0" checked onChange="changed();">
+    <label for="search[discontinued]">Do not display discontinued lenses</label>
+    
+	<input type='submit' value='Submit' >
+    <input type='reset' name='Reset' value='Reset' onClick="resetLensesForm()">
+  </div>
+  </div>
+
+<br />
+  <div style=" margin:2px; border: 1px solid gray; padding:1em; background: #f0f0f0;">
+
+  <strong>SPHERE PARAMETERS</strong>
+  <br />
+  <table style="width:100%">
+   <tr >
+    <td style="text-align: center; vertical-align: top;width: 33%;">
+        Minus at least: <br />
+    <select size="1" name="search[max_minus]" id="max_minus" onChange="sphereChange('minus');">
+      <option selected value="0">any</option>
+      <option value="<=-6.00" >-6.00</option>
+      <option value="<=-8.00" >-8.00</option>
+      <option value="<=-10.00" >-10.00</option>
+      <option value="<=-12.00" >-12.00</option>
+      <option value="<=-15.00" >-15.00</option>
+      <option value="<=-20.00" >-20.00</option>
+    </select>
+   <br />
+  <strong>OR</strong> Plus  at least:<br />
+    <select size="1" name="search[max_plus]" id="max_plus"  onChange="sphereChange('plus');">
+      <option selected value="0">any</option>
+      <option value=">=6.00" >+6.00</option>
+      <option value=">=8.00" >+8.00</option>
+      <option value=">=10.00" >+10.00</option>
+      <option value=">=12.00" >+12.00</option>
+      <option value=">=15.00" >+15.00</option>
+      <option value=">=20.00" >+20.00</option>
+    </select>
+    </td>
+
+    <td style="text-align: center; vertical-align: top; width: 33%;  ">
+       Diameter greater than<br />
+    <select size="1" name="search[max_diam]" id="search[max_diam]" onChange="lenses_changed();">
+      <option selected value="0">any</option>
+      <option value=">=13.8">13.8mm</option>
+      <option value=">=14.0">14.0mm</option>
+      <option value=">=14.2">14.2mm</option>
+      <option value=">=14.4">14.4mm</option>
+      <option value=">=14.5">14.5mm</option>
+      <option value=">=15.0">15.0mm</option>
+      <option value=">=16.0">16.0mm</option>
+    </select>
+    <br />and less than <br />
+    <select size="1" name="search[min_diam]" id="search[min_diam]" onChange="lenses_changed();">
+      <option selected value="0">any</option>
+      <option value="<=13.4">13.4mm</option>
+      <option value="<=13.6">13.6mm</option>
+      <option value="<=13.8">13.8mm</option>
+      <option value="<=14.0">14.0mm</option>
+      <option value="<=14.5">14.5mm</option>
+      <option value="<=15.0">15.0mm</option>
+      <option value="<=16.0">16.0mm</option>
+      <option value="<=18.0">18.0mm</option>
+    </select>
+    </td>
+
+    <td style="text-align: center; vertical-align: top;width: 33%;">
+        Base Curve <br />
+    <input type="hidden"  name="or[]" value="bc_simple">
+    <select size="3" multiple="multiple" name="bc_simple[]" id="bc_simple[]" onChange="lenses_changed();">
+      <option value=" LIKE '%flat%' ">flat</option>
+      <option  value=" LIKE '%median%' ">median</option>
+      <option  value=" LIKE '%steep%' " >steep</option>
+    </select>
+    </td>
+   </tr>
+  
+  </table>
+  
+<hr>
+     <table>
+       <tr>
+         <td style="text-align: center; vertical-align: top;width: 33%;">
+         Replacement between<br />
+  
+        <input type="hidden"  name="and[]" value="replace_simple">
+    
+        <select name="replace_simple[0]" id="replace_simple[0]" onChange="lenses_changed();">
+          <option value=">=0" selected>one day</option>
+          <option value=">=6">one week</option>
+          <option value=">=12">two weeks</option>
+          <option value=">=27">monthly</option>
+          <option value=">=85">3 months</option>
+          <option value=">=170">6 months</option>
+          <option value=">=350">yearly</option>
+        </select>
+         (shortest)<br />
+         and<br />
+        <select name="replace_simple[1]" id="replace_simple[1]" onChange="lenses_changed();">
+          <option value="<=2">one day</option>
+          <option value="<=8">one week</option>
+          <option value="<=16">two weeks</option>
+          <option value="<=35">monthly</option>
+          <option value="<=95">3 months</option>
+          <option value="<=190">6 months</option>
+          <option value="<=400" selected>yearly</option>
+        </select> 
+        (longest)
+       </td>
+       <td style=" text-align: center; width:33%; vertical-align: middle;">
+             Manufacturer
+           <input type="hidden"  name="or[]" value="comp_id">
+          <select size="3" multiple="multiple" name="comp_id[]" id="comp_id[]"  onChange="lenses_changed();">
+            <!--[foreach from=$opt_companies key=key item=company]-->
+            <option value="= <!--[$company.comp_tid]-->" />
+            <!--[$company.comp_name]-->
+            <!--[/foreach]-->
+          </select>
+       </td>
+       <td style="text-align: center; vertical-align: top;width: 33%;  vertical-align: middle;">
+            Manufacturing Process
+          <input type="hidden"  name="or[]" value="process_simple">
+          <select name="process_simple[]" id="process_simple[]" multiple='multiple' onChange="lenses_changed();">
+            <option value="  LIKE '%mold%' ">molded</option>
+            <option value="  LIKE '%lathe%' ">lathe-cut</option>
+            <option value="  LIKE '%spin%' ">spin-cast </option>
+          </select>
+       </td>
+      </tr>
+    </table>
+
+<hr>
+
+    <table width="100%">
+      <tr>
+        <td rowspan="2" style="text-align: center; width:33%;">
+            FDA Group<br>
+            <input type="hidden"  name="or[]" value="fda_grp">
+    <select name="fda_grp[]" id="fda_grp[]" multiple='multiple' size="4" onChange="lenses_changed();">
+      <option value="=1">Group 1</option>
+      <option value="=2">Group 2</option>
+      <option value="=3">Group 3</option>
+      <option value="=4">Group 4</option>
+    </select>
+        </td>
+        
+
+        <td  style="text-align: center; width:33%;  vertical-align: middle;">
+             H2O Content<br />
+    <select name="search[h2o]" size="1" id="search[h2o]" onChange="lenses_changed();">
+      <option value="<=70">less than 70%</option>
+      <option value="<=60">less than 60%</option>
+      <option value="<=50">less than 50%</option>
+      <option value="<=40">less than 40%</option>
+      <option value="<=30">less than 30%</option>
+      <option value="<=20">less than 20%</option>
+      <option selected value="0">any</option>
+      <option value=">=20">greater than 20%</option>
+      <option value=">=30">greater than 30%</option>
+      <option value=">=40">greater than 40%</option>
+      <option value=">=50">greater than 50%</option>
+      <option value=">=60">greater than 60%</option>
+      <option value=">=70">greater than 70%</option>
+    </select>
+
+        </td> 
+        <td rowspan="2"  style="text-align: center; width:33%;  vertical-align: middle;">
+
+            Polymer<br />
+            <select size="1" name="search[poly_id]" id="search[poly_id]" onChange="lenses_changed();">
+              <option value="0" selected>any</option>
+              <!--[foreach from=$opt_polymers key=key item=polymer]-->
+                <option value="=<!--[$polymer.poly_tid]-->" >
+                      <!--[$polymer.poly_name]--> (<!--[$polymer.h2o]-->%)
+                </option>
+              <!--[/foreach]-->
+            </select>
+        </td>
+      </tr>
+      <tr>
+         <td  style="text-align: center; width:33%;  vertical-align: middle;">
+                    dk<br />
+            <select size="1" name="search[dk]" id="search[dk]" onChange="lenses_changed();">
+              <option value="<=150">less than 150</option>
+              <option value="<=100">less than 100</option>
+              <option value="<=75">less than 75</option>
+              <option value="<=50">less than 50</option>
+              <option value="<=30">less than 30</option>
+              <option value="<=20">less than 20</option>
+              <option value="<=15">less than 15</option>
+              <option selected value="0">any</option>
+              <option value=">=15">greater than 15</option>
+              <option value=">=30">greater than 30</option>
+              <option value=">=50">greater than 50</option>
+              <option value=">=75">greater than 75</option>
+              <option value=">=100">greater than 100</option>
+              <option value=">=150">greater than 150</option>
+            </select>
+
+         </td>
+      </tr>
+    </table>
+
+<hr>
+
+     <table width="100%">
+     <tr>
+     <td  style="text-align: center; vertical-align: middle; width:33%;">
+          OZ at least<br />
+      <select size="1" name="search[oz]" id="search[oz]" onChange="lenses_changed();">
+        <option selected value="0">any</option>
+        <option value=">=5">5mm</option>
+        <option value=">=6">6mm</option>
+        <option value=">=7">7mm</option>
+        <option value=">=8">8mm</option>
+        <option value=">=9">9mm</option>
+        <option value=">=10">10mm</option>
+        <option value=">=11">11mm</option>
+        <option value=">=12">12mm</option>
+      </select> mm
+    </td>
+    <td style="text-align: center; vertical-align: middle; width:33%;">
+           CT <br />
+      <select size="1" name="search[ct]" id="search[ct]" onChange="lenses_changed();">
+        <option value="<= .14" >thinner than .14mm</option>
+        <option value="<= .12" >thinner than .12mm</option>
+        <option value="<= .10" >thinner than .10mm</option>
+        <option value="<= .08" >thinner than .08mm</option>
+        <option value="<= .06" >thinner than .06mm</option>
+        <option value="<= .04" >thinner than .04mm</option>
+        <option selected value="0">any</option>
+        <option value=">= .10" >thicker than .10mm</option>
+        <option value=">= .12" >thicker than .12mm</option>
+        <option value=">= .14" >thicker than .14mm</option>
+        <option value=">= .16" >thicker than .16mm</option>
+        <option value=">= .18" >thicker than .18mm</option>
+        <option value=">= .20" >thicker than .20mm</option>
+      </select>
+    </td>
+    <td   style="text-align: center; vertical-align: middle; width:33%;">
+           Visibility tint?
+                 <input name="search[visitint]" type="checkbox" id="search[visitint]" value="=1" onClick="if (this.checked){getLensesRadio('visi',true)}else {getLensesRadio('visi',false)};">  yes
+            <br /><br />Extended wear?
+               <input name="search[ew]" type="checkbox" id="search[ew]" value="=1" onClick="if (this.checked){getLensesRadio('ew',true)}else {getLensesRadio('ew',false)};">
+        yes
+    </td>
+    </tr>
+    </table>
+
+<hr>
+
+    <input type="checkbox" id="toric_lens" value="true" onclick="if(this.checked){document.getElementById('toric').style.display='block';}else{document.getElementById('toric').style.display='none';}" onChange = "if (this.checked){getLensesRadio('toric',true)}else {getLensesRadio('toric',false)};" />
+  <label for="toric_lens"> <strong>TORIC LENS?</strong></label><br>
+  
+  <div id="toric" style="display:none; margin-left: 2em; ">
+  
+   <input type="hidden" id="hidden_toric" name="search[toric]" value="=0" />
+
+     Cylinder power at least:
+      <select  name="search[max_cyl_power]" id="cylPower" onChange="lenses_changed();">
+        <option selected value="0">any</option>
+        <option value="<=-2.25">-2.25</option>
+        <option value="<=-2.75">-2.75</option>
+        <option value="<=-3.25">-3.25</option>
+        <option value="<=-5">-5.00</option>
+        <option value="<=-6">-6.00</option>
+      </select>
+
+   <hr style="border: none 0; border-top: 1px dotted #000; height: 1px;">
+
+     Need an oblique axis?
+      <select  name="search[oblique]" id="oblique" onChange="lenses_changed();">
+        <option value='0' selected>Not necessarily</option>
+        <option value='>=20'>at least 90/180 &plusmn;20&deg;</option>
+        <option value='>=30'>at least 90/180 &plusmn;30&deg;</option>
+        <option value='>=40'>must be full circle</option>
+      </select>
+
+
+   <hr style="border: none 0; border-top: 1px dotted #000; height: 1px;">
+
+     Need Small axis steps?
+      <input name="search[cyl_axis_steps]" id="cylAxis" type="radio" value="0" checked onClick="getLensesRadio('axisstep','');">
+      Nope 
+      <input name="search[cyl_axis_steps]" id="cylAxis" type="radio" value="<=5" onClick="getLensesRadio('axisstep','5&deg;');">
+      5&deg; 
+      <input name="search[cyl_axis_steps]" id="cylAxis" type="radio" value="<=1" onClick="getLensesRadio('axisstep','1&deg;');">
+      1&deg;
+
+    <hr style="border: none 0; border-top: 1px dotted #000; height: 1px;">
+     Toric design?
+      <input name="search[toric_type_simple]" id="toricType" type="radio" value=" LIKE '%prism%'" onClick="getLensesRadio('torictype','prism ballast');">
+      prism ballast 
+      <input name="search[toric_type_simple]" id="toricType" type="radio" value=" LIKE '%thin%'" onClick="getLensesRadio('torictype','thin zones');">
+      thin zones 
+      <input name="search[toric_type_simple]" id="toricType" type="radio" value="0" checked onClick="getLensesRadio('torictype','');">
+      Either
+
+  </div>
+
+<hr>
+
+     <input type="checkbox" id="bifocal_lens"  value="true" onclick="if(this.checked){document.getElementById('bifocal').style.display='block';}else{document.getElementById('bifocal').style.display='none';}" onChange = "if (this.checked){getLensesRadio('bifocal',true)}else {getLensesRadio('bifocal',false)};"/>
+        <label for="bifocal_lens"><strong>BIFOCAL LENS?</strong></label>
+    
+   <div id="bifocal" style="display:none; margin-left: 2em; ">
+        <input type="hidden" id="hidden_bifocal" name="search[bifocal]" value="=0" />
+
+    Bifocal power at least
+      <select size="1" name="search[max_add]" id="max_add" onChange="lenses_changed();" >
+        <option selected value="0">any</option>
+        <option value=">=1" >+1.00</option>
+        <option value=">=2">+2.00</option>
+        <option value=">=3">+3.00</option>
+        <option value=">=4">+4.00</option>
+      </select>
+    
+<hr style="border: none 0; border-top: 1px dotted #000; height: 1px;">
+    
+     <span class="sectionHeader">Bifocal Type</span>
+      <input type="hidden"  name="or[bifocal_type]" value="bifocal_type" >
+      <select name="bifocal_type[]" id="bifocal_type"  multiple="multiple" size="5" onChange="lenses_changed();">
+        <option value=" LIKE '%aspheric%'" >aspheric</option>
+        <option value=" LIKE '%concentric%'" >concentric</option>
+        <option value=" LIKE '%diffractive%'" >diffractive</option>
+        <option value=" LIKE '%monovision%'" >monovision</option>
+        <option value=" LIKE '%translating%'" >translating</option>
+      </select>
+
+
+  </div>
+
+
+  <hr>
+  
+      <input type="checkbox" id="cosmetic_lens"  value="true" onclick="if(this.checked){document.getElementById('cosmetic').style.display='block';}else{document.getElementById('cosmetic').style.display='none';}" onChange = "if (this.checked){getLensesRadio('cosmetic',true)}else {getLensesRadio('cosmetic',false)};"/>
+        <label for="cosmetic_lens"><strong>COSMETIC LENS?</strong></label>
+
+ <div id="cosmetic" style="display:none;  margin-left: 2em;">
+
+        <input type="hidden" id="hidden_cosmetic" name="search[cosmetic]" value="=0" />
+
+
+      <input type="hidden"  name="or[]" value="opaque_names_simple">
+      <input type="hidden"  name="or[]" value="enh_names_simple">
+      Are you looking for specific colors?<br>
+      <select name="opaque_names_simple[]" id="opaque_names_simple"  multiple="multiple" size="8"  onChange="lenses_changed();">
+        <option value=" is not null ">any opaque lens
+        <option value=" LIKE '%aqua%' ">opaque-aqua</option>
+        <option value="   LIKE '%amber%' ">opaque-amber</option>
+        <option value="   LIKE '%blue%' ">opaque-blue</option>
+        <option value="   LIKE '%brown%' ">opaque-brown</option>
+        <option value="   LIKE '%gray%' ">opaque-gray</option>
+        <option value="   LIKE '%green%' ">opaque-green</option>
+        <option value="   LIKE '%hazel%' ">opaque-hazel</option>
+        <option value="   LIKE '%honey%' ">opaque-honey</option>
+        <option value="   LIKE '%yellow%' ">opaque-yellow</option>
+        <option value="   LIKE '%violet%' ">opaque-violet</option>
+        <option value="   LIKE '%novelty%'">opaque-novelty</option>
+      </select>
+      <select name="enh_names_simple[]" id="enh_names_simple" multiple="multiple" size="8" onChange="lenses_changed();">
+        <option value=" is not null ">any enhancer lens
+        <option value=" LIKE '%aqua%' ">enhancer-aqua</option>
+        <option value=" LIKE '%amber%' ">enhancer-amber</option>
+        <option value=" LIKE '%blue%' ">enhancer-blue</option>
+        <option value=" LIKE '%brown%' ">enhancer-brown</option>
+        <option value=" LIKE '%gray%' ">enhancer-gray</option>
+        <option value=" LIKE '%green%' ">enhancer-green</option>
+        <option value=" LIKE '%hazel%' ">enhancer-hazel</option>
+        <option value=" LIKE '%honey%' ">enhancer-honey</option>
+        <option value=" LIKE '%yellow%' ">enhancer-yellow</option>
+        <option value=" LIKE '%violet%' ">enhancer-violet</option>
+        <option value=" LIKE '%novelty%'">enhancer-novelty</option>
+      </select>
+    </div>
+
+</div>
+
+
+</form>

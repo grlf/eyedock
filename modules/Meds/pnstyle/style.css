@@ -1,0 +1,114 @@
+.meds_width_25 {
+    width: 25%;
+	}
+.meds_width_50 {
+    width: 25%;
+	}
+.meds_width_75 {
+    width: 25%;
+	}
+.meds_width_25 {
+    width: 25%;
+	}
+.meds_table_max {
+	width: 100%;
+	border: 1px solid #ccc;
+	background: #fff;
+	border-collapse: collapse;
+	}
+.meds_table_wrap {
+	border: 1px solid #ccc;
+	background: #fff;
+	border-collapse: collapse;
+	}
+.meds_admin_form {
+	text-align: left;
+	padding: 15px;
+	background: #fff;
+	}
+.meds_right_strong {
+	vertical-align: top;
+	font-weight: bold;
+	text-align: right;
+	}
+.meds_right_strong_bg {
+	vertical-align: top;
+	font-weight: bold;
+	text-align: right;
+	background: #f2f2f2;
+	}
+.meds_center_strong {
+	vertical-align: top;
+	font-weight: bold;
+	text-align: center;
+	}
+.meds_center_strong_bg {
+	vertical-align: top;
+	font-weight: bold;
+	text-align: center;
+	background: #f2f2f2;
+	}
+.meds_left_strong {
+	vertical-align: top;
+	font-weight: bold;
+	text-align: left;
+	}
+.meds_table_head {
+	background: #e0e0e0;
+	font-weight: bold;
+	text-align: center;
+	}
+.meds_row_odd {
+	background: #f2f2f2;
+}
+.meds_row_even {
+	background: #fafafa;
+}
+.meds_product_image {
+	border: 1px solid #000;
+	padding: 2px;
+	background: #e0e0e0;
+	}
+.meds_helpcue {
+	cursor: help; 
+	border-bottom: 1px solid #7CC1FC;
+        padding: 2px 5px;
+}
+.meds_helpcue:hover{
+        background:#E5EEEF;
+        
+}
+
+ .medsWhite{
+        border: 1px solid gray;
+        margin: 2px;
+        padding: 1em;
+        background: #FFFFFF;
+ }
+
+.meds_highlight {
+      background: #d2e1fe;
+      padding: 5px;
+      margin: 1.5em 0 1em 0;
+      border: 1px solid gray;
+    }
+
+ .searchTerm{
+        border: 1px solid gray;
+        margin: -1px 5px 0;
+        padding: .5em;
+        /*width: 400px;*/
+        background:#F0F0F0;
+ }
+ div.meds_nav {
+    border: 1px solid gray;
+    margin: 2px;
+    padding: 1em;
+    }
+a.meds_nav:link,
+a.meds_nav:visited {
+    padding: 5px;
+    margin: 2px;
+    border: 1px solid #000;
+    z-index: -99;
+    }

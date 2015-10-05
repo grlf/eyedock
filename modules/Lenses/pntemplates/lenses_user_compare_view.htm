@@ -1,0 +1,158 @@
+<!--[include file=lenses_user_menu.htm]-->
+<div style="float:right"><a href="index.php?module=Pagesetter&tid=10&filter=category^sub^151&cv=151">Lenses FAQs</a></div>
+<div style="margin-bottom:.75em;">
+   [ <a href="javascript:history.go(-1);" title="Choose different lenses to compare">Choose different lenses to compare</a> ] [
+  <a href="<!--[pnmodurl modname='Lenses' type='user' ]-->">Lens searches main page </a> ]
+</div>
+ 
+<h1>Lens Comparison</h1>
+
+<table border="1" cellspacing="0" style="text-align:center;">
+  
+  <tr><td>&nbsp; </td>
+    <!--[foreach  item=name key=tid  from=$field_array.name]-->
+            <th><a href="<!--[pnmodurl modname="Lenses" type="user" func="display" tid=$tid]-->"><!--[$name|pnvarprephtmldisplay]--></a></th>
+    <!--[/foreach]-->
+  </tr>
+
+   <tr><td>Manufacturer: </td>
+    <!--[foreach  item=name  from=$field_array.comp_name]-->
+            <td><!--[$name|pnvarprephtmldisplay]--></td>
+    <!--[/foreach]-->
+  </tr>
+  
+   <tr><td>Sphere range: </td>
+    <!--[foreach  item=name key=id from=$field_array.max_plus]-->
+            <td><!--[if $name==99]-->Any
+        <!--[else]--><!--[$name|string_format:"%+.2f"]--> to <!--[$field_array.max_minus[$id]|string_format:"%+.2f"]--><!--[/if]--></td>
+    <!--[/foreach]-->
+  </tr>
+  
+
+
+  <tr><td>Diam. range: </td>
+    <!--[foreach  item=name key=id from=$field_array.max_diam]-->
+            <td><!--[if $name==99]-->Any
+        <!--[else]-->
+             <!--[$field_array.min_diam[$id]|string_format:"%.1f"]--><!--[if $field_array.min_diam[$id]!=$name]--> to <!--[$name|string_format:"%.1f"]--><!--[/if]--><!--[/if]-->
+            </td>
+    <!--[/foreach]-->
+  </tr>
+
+
+
+   <tr><td>Toric? </td>
+    <!--[foreach  item=name  key=id from=$field_array.toric]-->
+            <td>
+            <!--[if $name==1]-->
+                    <img src="modules/Lenses/pnimages/checkmark.gif" style="width:16px;height:16px;border:0;" alt="yes" />
+                     
+                     <br /><!--[if $field_array.max_cyl_power[$id]==99]-->Any cyl power
+        <!--[else]-->to <!--[$field_array.max_cyl_power[$id]|string_format:"%+.2f"]-->D cyl<!--[/if]-->;
+                        <br /><!--[$field_array.cyl_axis[$id]]-->
+                        
+                         <!--[if $field_array.toric_type[$id]]-->;<br /><!--[$field_array.toric_type[$id]]--><!--[/if]-->
+
+            <!--[else]-->
+                         <img src="modules/Lenses/pnimages/no_x.gif" style="border:0;" alt="no" /><!--[/if]--></td>
+    <!--[/foreach]-->
+  </tr>
+  
+
+
+  <tr><td>Bifocal? </td>
+    <!--[foreach  item=name  key=id from=$field_array.bifocal]-->
+            <td><!--[if $name==1]-->
+            <img src="modules/Lenses/pnimages/checkmark.gif" style="width:16px;height:16px;border:0;" alt="yes" />
+             <br />to <!--[$field_array.max_add[$id]|string_format:"%+.2f"]-->D;
+              <br /><!--[$field_array.bifocal_type[$id]]-->
+            
+
+            <!--[else]-->
+            <img src="modules/Lenses/pnimages/no_x.gif" style="border:0;" alt="no" /><!--[/if]--></td>
+    <!--[/foreach]-->
+  </tr>
+
+    <tr><td>Cosmetic? </td>
+    <!--[foreach  item=name  key=id from=$field_array.cosmetic]-->
+            <td><!--[if $name==1]-->
+            <img src="modules/Lenses/pnimages/checkmark.gif" style="width:16px;height:16px;border:0;" alt="yes" />
+             <!--[foreach  item=enh  key=id2 from=$field_array.enh_names[$id]]-->
+                      <br /><b>enhancers:</b>  <!--[$enh]-->
+               <!--[/foreach]-->
+              <!--[foreach  item=opq  key=id2 from=$field_array.opaque_names[$id]]-->
+                      <br /><b>opaques:</b> <!--[$opq]-->
+               <!--[/foreach]-->
+            <!--[else]-->
+            <img src="modules/Lenses/pnimages/no_x.gif" style="border:0;" alt="no" /><!--[/if]--></td>
+    <!--[/foreach]-->
+  </tr>
+  
+  <tr><td>Material: </td>
+    <!--[foreach  item=name key=id from=$field_array.poly_name]-->
+            <td>&nbsp;<!--[$field_array.h2o[$id]|string_format:"%.0f"]-->% <!--[$name|pnvarprephtmldisplay]--></td>
+    <!--[/foreach]-->
+  </tr>
+
+  <tr><td>FDA group: </td>
+    <!--[foreach  item=name  from=$field_array.fda_grp]-->
+            <td>&nbsp;<!--[$name|pnvarprephtmldisplay]--></td>
+    <!--[/foreach]-->
+  </tr>
+
+  <tr><td>Manufacturing<br />process: </td>
+    <!--[foreach  item=name  from=$field_array.process_text]-->
+            <td>&nbsp;<!--[$name|pnvarprephtmldisplay]--></td>
+    <!--[/foreach]-->
+  </tr>
+
+  <tr><td>CT: </td>
+    <!--[foreach  item=name  from=$field_array.ct]-->
+            <td>&nbsp;<!--[if $name>0]--><!--[$name|pnvarprephtmldisplay]--> mm<!--[else]-->not specified<!--[/if]--></td>
+    <!--[/foreach]-->
+  </tr>
+  
+  <tr><td>OZ: </td>
+    <!--[foreach  item=name  from=$field_array.oz]-->
+            <td>&nbsp;<!--[if $name>0]--><!--[$name|pnvarprephtmldisplay]--> mm<!--[else]-->not specified<!--[/if]--></td>
+    <!--[/foreach]-->
+  </tr>
+  
+  <tr><td>dK:</td>
+      <!--[foreach  item=name  from=$field_array.dk]-->
+            <td>&nbsp;<!--[if $name>0]--><!--[$name|pnvarprephtmldisplay]--> <!--[else]-->not specified<!--[/if]--></td>
+    <!--[/foreach]-->
+  
+  </tr>
+
+  <tr><td>Wear Type: </td>
+    <!--[foreach  item=name  from=$field_array.wear]-->
+            <td>&nbsp;<!--[$name|pnvarprephtmldisplay]--></td>
+    <!--[/foreach]-->
+  </tr>
+  <tr><td>Replacement: </td>
+    <!--[foreach  item=name  from=$field_array.replace_text]-->
+            <td>&nbsp;<!--[$name|pnvarprephtmldisplay]--></td>
+    <!--[/foreach]-->
+  </tr>
+  
+   <tr><td>Quantity: </td>
+    <!--[foreach  item=name  from=$field_array.qty]-->
+            <td>&nbsp;<!--[$name|pnvarprephtmldisplay]--></td>
+    <!--[/foreach]-->
+  </tr>
+
+  <tr><td>Appearance: </td>
+    <!--[foreach  item=name  from=$field_array.markings]-->
+            <td>&nbsp;<!--[$name|pnvarprephtmldisplay]--></td>
+    <!--[/foreach]-->
+  </tr>
+  
+  <tr><td>Visitint? </td>
+    <!--[foreach  item=name  key=id from=$field_array.visitint]-->
+            <td><!--[if $name==1]-->
+            <img src="modules/Lenses/pnimages/checkmark.gif" style="width:16px;height:16px;border:0;" alt="yes" /><!--[else]-->
+            <img src="modules/Lenses/pnimages/no_x.gif" style="border:0;" alt="no" /><!--[/if]--></td>
+    <!--[/foreach]-->
+  </tr>
+</table>

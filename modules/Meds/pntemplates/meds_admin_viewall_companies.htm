@@ -1,0 +1,39 @@
+<!--[include file=meds_admin_menu.htm]-->
+<h2>View All Companies</h2>
+
+<table class="meds_table_max" cellpadding="3" cellspacing="2">
+    <tr class="meds_table_head">
+        <td>ID</td>
+        <td>Name</td>
+        <td>Contact</td>
+        <td>Email</td>
+        <td>URL</td>
+        <td>Comments</td>
+        <td>Actions</td>
+    </tr>
+
+<!--[foreach from=$items key=key item=company]-->
+    <tr class="meds_row_<!--[cycle values="odd,even"]-->">
+        <td class="align_center"><!--[$company.comp_id|pnvarprepfordisplay]--></td>
+        <td class="align_center">
+            <strong><!--[$company.name|pnvarprepfordisplay]--></strong>
+            <!--[if $company.phone]--><br /><!--[$company.phone|pnvarprepfordisplay]--><!--[/if]-->
+        </td>
+        <td class="align_left" nowrap>
+            <!--[if $company.street]--><!--[$company.street|pnvarprepfordisplay]--><br /><!--[/if]-->
+            <!--[if $company.city]--><!--[$company.city|pnvarprepfordisplay]--><!--[if $company.state]-->,<!--[/if]--><!--[/if]-->
+            <!--[if $company.state]--><!--[$company.state|pnvarprepfordisplay]--><!--[if $company.zip]--><br /><!--[$company.zip|pnvarprepfordisplay]--><!--[/if]--><!--[/if]-->
+            <!--[if !$company.street && !$company.city && !$company.state && !$company.zip]-->-<!--[/if]-->
+        </td>
+        <td class="align_center"><!--[if $company.email]--><a href="mailto:<!--[$company.email|pnvarprepfordisplay]-->" title="Email <!--[$company.name|pnvarprepfordisplay]-->">email</a><!--[else]-->-<!--[/if]--></td>
+        <td class="align_center"><!--[if $company.url != 'http://']--><a href="<!--[$company.url|pnvarprepfordisplay]-->" title="<!--[$company.name|pnvarprepfordisplay]--> On The Web">site</a><!--[else]-->-<!--[/if]--></td>
+        <td class="align_left"><!--[if $company.comments]--><!--[$company.comments|pnvarprephtmldisplay]--><!--[else]-->-<!--[/if]--></td>
+        <td class="align_center">
+            [ <a href="<!--[pnmodurl modname=Meds type=admin func=modify_company comp_id=$company.comp_id|pnvarprepfordisplay]-->" title="Modify">Modify</a> ]
+            [ <a href="<!--[pnmodurl modname=Meds type=admin func=delete object=company id=$company.comp_id|pnvarprepfordisplay]-->" title="Delete">Delete</a> ]
+        </td>
+    </tr>
+<!--[/foreach]-->
+
+</table>
+<br />

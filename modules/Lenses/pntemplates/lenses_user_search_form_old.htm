@@ -1,0 +1,109 @@
+<script language="JavaScript">
+        tabs = new Array('phrase','comp','toric','other');
+</script>
+
+<h1>Lens Searches</h1>
+
+ <div>
+   <a href="javascript: changeTab('phrase', tabs);" id="aphrase" class="lens_nav" style="background:#fff;" >Phrase</a>
+  <a href="javascript: changeTab('comp', tabs);" id="acomp" class="lens_nav" style="background:#d2e1fe;" >Company</a>
+  <a href="javascript: changeTab('toric', tabs);" id="atoric" class="lens_nav" style="background:#d2e1fe;" >Toric Markings</a>
+  
+  <a href="javascript: changeTab('other', tabs);" id="aother" class="lens_nav" style="background:#d2e1fe;" >Other options</a>
+</div>
+
+
+<div id="phraseDiv" class="lensWhite" >
+  <form method="POST" action="<!--[pnmodurl modname='Lenses' type='user' func='view']-->" name="nameform">
+    <input name="q" type="text" id="q" value="<!--[$phrase]-->">
+	<input type="hidden" id="display_phrase" name="display_phrase" value="phrase">
+        <input name="search[discontinued]" type="checkbox" id="search[discontinued]" value="=0" checked>
+    do not display discontinued lenses
+
+     <input type="submit" name="Submit" value="Search">
+  </form>
+</div>
+
+<div id="compDiv" class="lensWhite" style="display:none">
+  <form  method="POST" action="<!--[pnmodurl modname='Lenses' type='user' func='view']-->" name="compForm">
+    <select size="1" name="search[comp_id]" id="search[comp_id]" >
+      <!--[foreach from=$opt_companies key=key item=company]-->
+      <option value="= <!--[$company.comp_tid]-->" />
+      <!--[$company.comp_name]-->
+      <!--[/foreach]-->
+    </select>
+	<input type="hidden" id="display_phrase" name="display_phrase" value="company">
+
+       <input name="search[discontinued]" type="checkbox" id="search[discontinued]" value="=0" checked>
+    do not display discontinued lenses
+
+    <input type="submit" value="Search" name="B1" >
+
+  </form>
+</div>
+
+
+<div class="lensWhite" id="toricDiv" style="display: none;">
+<table width="80%"  border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="40%">  <a href="<!--[pnmodurl modname='Lenses' type='user' func='view' markings="LIKE '%fresh%'" ]-->"><img src="modules/Lenses/pnimages/lens_images/lens_letter6.gif" width="20" height="20" border="0">&nbsp; Letters at 6:00</a></td>
+    <td width="60%"><a href="#" onClick="if(document.getElementById('toric_mark3').style.display=='none'){document.getElementById('toric_mark3').style.display='block';}else{document.getElementById('toric_mark3').style.display='none';}"><img src="modules/Lenses/pnimages/lens_images/lens_3line_at6.gif" width="20" height="20" border="0">  &nbsp; Three lines at 6:00</a></td>
+  </tr>
+  <tr>
+    <td>  <a href="<!--[pnmodurl modname='Lenses' type='user' func='view' markings="LIKE '%Dot at 6%'" ]-->"><img src="modules/Lenses/pnimages/lens_images/lens_dot_at6.gif" width="20" height="20" border="0">&nbsp; Dot at 6:00</a></td>
+    <td rowspan="6" valign="top">     <div id="toric_mark3" style="display:none;" >
+	  Choose one:<br/>
+	  <a style="margin-left:1.5em;" href="<!--[pnmodurl modname='Lenses' type='user' func='view' markings="LIKE '%6:00%'" markings2="LIKE '% 10%'"]-->"><img src="modules/Lenses/pnimages/lens_images/toric10.gif" >&nbsp; 10&deg; apart</a><br>
+
+	  
+	  <a style="margin-left:1.5em;" href="<!--[pnmodurl modname='Lenses' type='user' func='view' markings="LIKE '%6:00%'" markings2="LIKE '% 15%'"]-->"><img src="modules/Lenses/pnimages/lens_images/toric15.gif">&nbsp; 15&deg; apart</a><br>
+
+	  
+	
+	  
+      <a style="margin-left:1.5em;" href="<!--[pnmodurl modname='Lenses' type='user' func='view' markings="LIKE '%6:00%'" markings2="LIKE '% 30%'" ]-->"><img src="modules/Lenses/pnimages/lens_images/toric30.gif" >&nbsp; 30&deg; apart</a><br>
+
+	  
+	  <a style="margin-left:1.5em;" href="<!--[pnmodurl modname='Lenses' type='user' func='view' markings="LIKE '%optimark%'" ]-->"><img src="modules/Lenses/pnimages/lens_images/toricTripod.gif" >&nbsp; Three-legged</a> <br>
+
+	  
+	   <a style="margin-left:1.5em;margin-top:1.5em;" href="<!--[pnmodurl modname='Lenses' type='user' func='view' markings="LIKE '%6:00 &plusmn;%'"   ]-->">Do I look like a protracter!?</a>
+
+	    </div>
+		
+		</td>
+  </tr>
+  <tr>
+    <td><a href="<!--[pnmodurl modname='Lenses' type='user' func='view' markings="LIKE '%Dots at 3%'" ]-->" onClick="if(document.getElementById('toric_mark3').style.display=='none'){document.getElementById('toric_mark3').style.display='block';}else{document.getElementById('toric_mark3').style.display='none';}"><img src="modules/Lenses/pnimages/lens_images/lens_2dot_at39.gif" width="20" height="20" border="0">&nbsp; Dots at 3 and 9:00</a></td>
+    </tr>
+  <tr>
+    <td><a href="<!--[pnmodurl modname='Lenses' type='user' func='view' markings="LIKE '%Line at 6:00%'" ]-->"><img src="modules/Lenses/pnimages/lens_images/lens_line_at6.gif" width="20" height="20" border="0">&nbsp; Single line at 6:00</a></td>
+    </tr>
+  <tr>
+    <td><a href="<!--[pnmodurl modname='Lenses' type='user' func='view' markings="LIKE '%Lines at 3 and 9:00%'" ]-->"><img src="modules/Lenses/pnimages/lens_images/lens_2line_at39.gif" width="20" height="20" border="0">&nbsp; Lines at 3 and 9:00</a></td>
+    </tr>
+  <tr>
+    <td><a href="<!--[pnmodurl modname='Lenses' type='user' func='view' markings="LIKE '%6 and 12:00%'" ]-->"><img src="modules/Lenses/pnimages/lens_images/lens_2line_at612.gif" width="20" height="20" border="0">&nbsp; Lines at 6 and 12:00</a></td>
+    </tr>
+	<tr>
+	<td><a href="<!--[pnmodurl modname='Lenses' type='user' func='view' markings="LIKE '%3,6%'" ]-->"><img src="modules/Lenses/pnimages/lens_images/lens_3line_at3612.gif" width="20" height="20" border="0">&nbsp; Lines at 3, 6, and 9:00</a></td>
+	</tr>
+</table>
+
+</div>
+
+<div id="otherDiv" class="lensWhite" style="display:none">
+     <table>
+     <tr>
+        <td><a href="<!--[pnmodurl modname='Lenses' type='user' func='search_wizard1']-->">Advanced lens searches wizard</a></td>
+        <td>A sophisticated tool used to search for lenses in any way imaginable.</td>
+     </tr>
+     <!--[if $saved_lens_count >1]-->
+        <tr>
+           <td><a href="<!--[pnmodurl modname='Lenses' type='user' func='compare_form']-->">          Recent lenses</a>
+    </td>
+           <td>Compare recently viewed lenses</td>
+        </tr>
+          <!--[/if]--> 
+    </table>
+</div>

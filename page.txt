@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb" lang="en-gb" dir="ltr" >
+<head>
+	  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="robots" content="index, follow" />
+  <meta name="keywords" content="joomla, Joomla" />
+  <meta name="title" content="Search Results" />
+  <meta name="author" content="Administrator" />
+  <meta name="description" content="Joomla! - the dynamic portal engine and content management system" />
+  <meta name="generator" content="Joomla! 1.5 - Open Source Content Management" />
+
+  <title>Search Results</title>
+  <link href="/test/templates/beez/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+  <script type="text/javascript" src="/test/includes/js/joomla.javascript.js"></script>
+  <script type="text/javascript" src="/test/media/system/js/mootools.js"></script>
+  <script type="text/javascript" src="/test/media/system/js/caption.js"></script>
+
+	<link rel="stylesheet" href="/test/templates/beez/css/template.css" type="text/css" />
+
+	<link rel="stylesheet" href="/test/templates/beez/css/position.css" type="text/css" media="screen,projection" />
+	<link rel="stylesheet" href="/test/templates/beez/css/layout.css" type="text/css" media="screen,projection" />
+	<link rel="stylesheet" href="/test/templates/beez/css/print.css" type="text/css" media="Print" />
+	<link rel="stylesheet" href="/test/templates/beez/css/general.css" type="text/css" />
+		<!--[if lte IE 6]>
+		<link href="/test/templates/beez/css/ieonly.css" rel="stylesheet" type="text/css" />
+	<![endif]-->
+	<!--[if IE 7]>
+		<link href="/test/templates/beez/css/ie7only.css" rel="stylesheet" type="text/css" />
+	<![endif]-->
+	<script type="text/javascript" src="/test/templates/beez/javascript/md_stylechanger.js"></script>
+	
+	<script type="text/javascript"> 
+   
+   function playVid(id) { 
+ var e = document.getElementById(id); 
+ if(e.style.display == 'block') 
+  e.style.display = 'none'; 
+ else 
+  e.style.display = 'block'; 
+} 
+
+</script> 
+</head>
+<body>
+	<div id="all">
+		<div id="header">
+			<div id="mainnav"><ul id="mainlevel-nav"><li><a href="/test/index.php?option=com_content&amp;view=article&amp;id=25&amp;Itemid=28" class="mainlevel-nav" >About EyeDock</a></li><li><a href="/test/index.php?option=com_content&amp;view=article&amp;id=22&amp;Itemid=29" class="mainlevel-nav" >Contact Us</a></li><li><a href="/test/index.php?option=com_content&amp;view=section&amp;id=1&amp;Itemid=18" class="mainlevel-nav" >FAQs</a></li><li><a href="/test/index.php?option=com_content&amp;view=article&amp;id=43&amp;Itemid=30" class="mainlevel-nav" >Store</a></li><li><a href="/test/index.php?option=com_content&amp;view=article&amp;id=46&amp;Itemid=53" class="mainlevel-nav" >Home</a></li></ul></div>
+
+			<ul>
+
+				<li><a href="#content" class="u2">Skip to Content</a></li>
+				<li><a href="#mainmenu" class="u2">Jump to Main Navigation and Login</a></li>
+				<li><a href="#additional" class="u2">Jump to additional Information</a></li>
+			</ul>
+
+			<h2 class="unseen">
+				Search, View and Navigation			</h2>
+
+			
+
+			
+<form action="index.php" method="post" name="login" class="log">
+		<p>
+	Hi greenleaf,	</p>
+		<p>
+		<input type="submit" name="Submit" class="button" value="Log out" />
+	</p>
+	<input type="hidden" name="option" value="com_user" />
+	<input type="hidden" name="task" value="logout" />
+
+	<input type="hidden" name="return" value="L3Rlc3QvaW5kZXgucGhwP29wdGlvbj1jb21fY29udGVudCZ2aWV3PWFydGljbGUmaWQ9NDYmSXRlbWlkPTUzI2NvbnRlbnQ=" />
+</form>
+
+                        
+                         <div id="breadcrumbs">
+				<p>
+										
+				</p>
+			</div>
+
+			<div class="wrap">&nbsp;</div>
+
+		</div><!-- end header -->
+
+
+		<div id="contentarea">
+			<a name="mainmenu"></a>
+			
+		 
+			<div id="left">
+						<div class="moduletable_calcs">
+						<img src="/test/images/stories/quick-calc.gif" align="absmiddle" /> <a onclick="playVid('vidPane');" href="#" title="Quick Calcs">QUICK CALCS</a>
+<div id="vidPane">
+<div style="text-align: center;" id="flashQuickCalcs">
+<object codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" type="application/x-shockwave-flash" height="400" width="175">
+
+<param name="quality" value="high" />
+<param name="allowFullScreen" value="true" />
+<param name="wmode" value="window" />
+<param name="src" value="/test/../flash_files/quickCalcs.swf" />
+<embed height="400" width="175" src="/test/../flash_files/quickCalcs.swf" wmode="window" allowfullscreen="false" quality="high" type="application/x-shockwave-flash"></embed>
+</object>
+</div>
+</div>		</div>
+			<div class="moduletable">
+							<h3>New Feature</h3>
+						<ul class="menu"><li class="item69"><a href="http://itunes.apple.com/us/app/eyedock/id354889491?mt=8" target="_blank"><span>Check out our new iPhone app!</span></a></li></ul>		</div>
+
+			<div class="moduletable">
+							<h3>Searches</h3>
+						<ul class="menu"><li class="item61"><a href="/test/index.php?option=com_content&amp;view=article&amp;id=69&amp;Itemid=61"><span>Contact Lens Search</span></a></li><li id="current" class="active item62"><a href="/test/index.php?option=com_content&amp;view=article&amp;id=70&amp;Itemid=62"><span>Topical Ophthalmic Medication Database</span></a></li><li class="item63"><a href="/test/index.php?option=com_content&amp;view=article&amp;id=71&amp;Itemid=63"><span>Diagnosis Code Searches</span></a></li></ul>		</div>
+			<div class="moduletable_menu">
+							<h3>User Menu</h3>
+						<ul class="menu"><li class="item20"><a href="/test/index.php?option=com_user&amp;view=user&amp;task=edit&amp;Itemid=20"><span>Your Details</span></a></li><li class="item24"><a href="/test/index.php?option=com_user&amp;view=login&amp;Itemid=24"><span>Logout</span></a></li></ul>		</div>
+
+			<div class="moduletable">
+							<h3>Tools & Calculators</h3>
+						<ul class="menu"><li class="item59"><a href="/test/index.php?option=com_content&amp;view=article&amp;id=67&amp;Itemid=59"><span>Contact Lens Calculator</span></a></li><li class="item60"><a href="/test/index.php?option=com_content&amp;view=article&amp;id=31&amp;Itemid=60"><span>Oblique Crossed Cylinders</span></a></li><li class="item56"><a href="/test/index.php?option=com_content&amp;view=category&amp;layout=blog&amp;id=27&amp;Itemid=56"><span>Contact Lens Tools</span></a></li><li class="item57"><a href="/test/index.php?option=com_content&amp;view=article&amp;id=38&amp;Itemid=57"><span>Clinical Tools</span></a></li><li class="item58"><a href="/test/index.php?option=com_content&amp;view=article&amp;id=64&amp;Itemid=58"><span>Practice Management Tools</span></a></li></ul>		</div>
+			<div class="moduletable">
+							<h3>Patient Education</h3>
+
+						<ul class="menu"><li class="item64"><a href="/test/../eyedrawflash.html"><span>EyeDraw</span></a></li><li class="item65"><a href="/test/index.php?option=com_content&amp;view=article&amp;id=73&amp;Itemid=65"><span>Vision Simulator</span></a></li></ul>		</div>
+			<div class="moduletable">
+							<h3>User Contributed Content</h3>
+						<ul class="menu"><li class="item66"><a href="/test/index.php?option=com_content&amp;view=category&amp;id=42&amp;Itemid=66"><span>Knowledgebase</span></a></li><li class="item67"><a href="/test/index.php?option=com_content&amp;view=category&amp;id=43&amp;Itemid=67"><span>Grand Rounds</span></a></li></ul>		</div>
+			<div class="moduletable">
+
+							<h3>In the news...</h3>
+						<div style="direction: ltr; text-align: left ! important">
+	<table cellpadding="0" cellspacing="0" class="moduletable">
+		<tr>
+		<td>
+			<ul class="newsfeed"  >
+							<li>
+									<a href="http://www.preventblindness.org/news/releases/swing_fore_sight_2010_post_event.html" target="_blank">
+
+					Third Annual Prevent Blindness America Swing Fore Sight Golf Tournament Raises Close to $140,000</a>
+								</li>
+								<li>
+									<a href="http://www.preventblindness.org/news/releases/halloween_tips_2010.html" target="_blank">
+					Planning For A Safe Halloween Can Be a Treat for the Whole Family</a>
+								</li>
+								<li>
+									<a href="http://www.preventblindness.org/news/releases/UV_briefing_post_event.html" target="_blank">
+
+					Prevent Blindness America Issues Call-To-Action to Make UV Eye Protection A National Health Priority</a>
+								</li>
+								<li>
+									<a href="http://www.preventblindness.org/news/releases/falls_prevention.html" target="_blank">
+					Prevent Blindness America Joins in Declaration on National Falls Prevention Awareness Day to Help Protect Seniors</a>
+								</li>
+							</ul>
+		</td>
+
+		</tr>
+	</table>
+</div>
+		</div>
+	
+			</div><!-- left -->
+       
+			<a name="content"></a>
+			<div id="wrapper"> 
+			<div id="main2" class="extrapad">
+			<!-- <div id="main"> -->
+				
+				
+				
+	
+
+				
+
+<div id="page">
+
+
+
+<h2 class="contentheading">
+	Search Results</h2>
+
+
+
+<p class="buttonheading">
+	</p>
+
+
+
+
+<p>###title###</p>
+<p>###content###</p>
+
+
+</div>
+
+			</div><!-- end main or main2 -->
+
+			
+			<div class="wrap"></div>
+			</div><!-- wrapper -->
+
+		</div><!-- contentarea -->
+
+                <div id="footer-top"><!--<img src="/test/../images/footer_grad.jpg" width="960" height="40">--></div>
+		<div id="footer">
+			<p class="syndicate">
+				<!---->
+			</p>
+
+			<p>
+				&copy; 2010 Eye Dock
+			</p>
+
+			<div class="wrap"></div>
+		</div><!-- footer -->
+	</div><!-- all -->
+
+	
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!--[include file=meds_admin_menu.htm]-->
+<h2>Create Preservative</h2>
+
+<form method="post" action="<!--[pnmodurl modname=Meds type=admin func=insert_preserve]-->" enctype="application/x-www-form-urlencoded">
+<div class="meds_admin_form">
+
+    <input type="hidden" name="authid" value="<!--[pnsecgenauthkey module=Meds]-->" />
+
+    <strong>Name:</strong><br />
+    <input type="text" name="preserve[name]" value="<!--[$preserve.name|pnvarprepfordisplay]-->" size="35" />
+    
+    <br /><br />
+    
+    <strong>Comments:</strong><br />
+    <textarea name="preserve[comments]" cols="35" rows="10"><!--[$preserve.comments|pnvarprepfordisplay]--></textarea>
+    
+    <br /><br /><br />
+    
+    <input type="submit" name="submit" value="Create" />
+    <input type="reset" name="reset" value="Reset" />
+    
+</div>
+</form>
+    

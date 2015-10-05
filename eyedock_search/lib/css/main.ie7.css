@@ -1,0 +1,38 @@
+
+.edas-slider-knob{
+ margin-right: 150px;
+}
+
+.edas-adv-param-check label input {
+ width: 14px;
+ height: 14px;
+ margin: 0px;
+ padding: 0px;
+}
+
+#edas-parameters-results .edas-tab-search-lenses-content,
+#eyedock-advanced-results .edas-tab-search-lenses-content,
+.edas-compare-lens-display{
+ position: relative;
+}
+
+.edas-company-list{
+ margin: 0px;
+}
+
+.edas-company-list-title{
+ left: 0px;
+ margin: 0px;
+ background: transparent;
+}
+
+.edas-company-list-title span{
+ display: block;
+ margin: 0 20px 0 0;
+ padding: 0 0 0 20px;
+ background: white;
+}
+
+.edas-company-list-contents{
+ padding: 45px 35px 0 15px;
+}

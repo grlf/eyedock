@@ -1,0 +1,59 @@
+<!--[include file=meds_admin_menu.htm]-->
+<h2>Create Company</h2>
+
+<form method="post" action="<!--[pnmodurl modname=Meds type=admin func=insert_company]-->" enctype="application/x-www-form-urlencoded">
+<div class="meds_admin_form">
+
+    <input type="hidden" name="authid" value="<!--[pnsecgenauthkey module=Meds]-->" />
+
+    <strong>Name:</strong><br />
+    <input type="text" name="company[name]" value="<!--[$company.name|pnvarprepfordisplay]-->" size="35" maxlength="48" />
+    
+    <br /><br />
+    
+    <strong>Phone:</strong> <br />
+    <input type="text" name="company[phone]" value="<!--[$company.phone|pnvarprepfordisplay]-->" size="15" maxlength="15" />
+    <br /> please use this format: 1-800-555-1234
+    <br /><br />
+    
+    <strong>Street:</strong><br />
+    <input type="text" name="company[street]" value="<!--[$company.street|pnvarprepfordisplay]-->" size="35" maxlength="96" />
+    
+    <br /><br />
+    
+    <strong>City:</strong><br />
+    <input type="text" name="company[city]" value="<!--[$company.city|pnvarprepfordisplay]-->" size="35" maxlength="48" />
+    
+    <br /><br />
+    
+    <strong>State:</strong><br />
+    <input type="text" name="company[state]" value="<!--[$company.state|pnvarprepfordisplay]-->" size="2" maxlength="2" />
+    
+    <br /><br />
+    
+    <strong>Zip:</strong><br />
+    <input type="text" name="company[zip]" value="<!--[$company.zip|pnvarprepfordisplay]-->" size="12" maxlength="12" />
+    
+    <br /><br />
+    
+    <strong>Email:</strong><br />
+    <input type="text" name="company[email]" value="<!--[$company.email|pnvarprepfordisplay]-->" size="35" maxlength="64" />
+    
+    <br /><br />
+    
+    <strong>Website:</strong><br />
+    <input type="text" name="company[url]" value="<!--[$company.url|pnvarprepfordisplay]-->" size="35" maxlength="64" />
+    
+    <br /><br />
+    
+    <strong>Comments:</strong><br />
+    <textarea name="company[comments]" cols="35" rows="10"><!--[$company.comments|pnvarprepfordisplay]--></textarea>
+    <br /> please avoid using HTML
+    <br /><br /><br />
+    
+    <input type="submit" name="submit" value="Create" />
+    <input type="reset" name="reset" value="Reset" />
+    
+</div>
+</form>
+    

@@ -1,0 +1,72 @@
+<!--[include file=lenses_admin_menu.htm]-->
+
+<h2>View All Companies</h2>
+
+<div>[ <a href="<!--[pnmodurl modname="Lenses" type="admin" func="create_company"]-->" title="Add New Company">Add New Company</a> ]</div>
+
+<table border="1" cellpadding="3" cellspacing="0">
+
+    <tr>
+
+        <th>Company Info</th>
+
+        <th width="25%">Actions</th>
+
+    </tr>
+
+    <!--[foreach from=$companies key=key item=company]-->
+
+    <tr>
+
+        <td>
+
+            <!--[if $company.url]-->
+            <strong><a href="<!--[$company.url]-->" title="<!--[$company.comp_name]-->">
+
+			<!--[$company.comp_name]--></a></strong><br />
+            <!--[else]-->
+			
+            <strong><!--[$company.comp_name]--></strong><br />
+            <!--[/if]-->
+		<!--[if $company.logo]--><img src="modules/Lenses/pnimages/comp_logos/<!--[$company.logo]-->"  style="border:0;float:right;" alt="company logo"/><!--[/if]-->
+            Company ID: <!--[$company.comp_tid]--><br />
+
+            <!--[if $company.address]--><!--[$company.address]--><br /><!--[/if]-->
+
+            <!--[if $company.city]--><!--[$company.city]--><!--[/if]-->
+
+            <!--[if $company.city && $company.state]-->, <!--[/if]-->
+
+            <!--[if $company.state]--><!--[$company.state]--><!--[/if]-->
+
+            <!--[if $company.zip]--> <!--[$company.zip]--><!--[/if]-->
+
+            <!--[if $company.city || $company.state || $company.zip]--><br /><!--[/if]-->
+
+            <!--[if $company.phone]--><!--[$company.phone]--><br /><!--[/if]-->
+
+            <!--[if $company.email]-->[ <a href="mailto:<!--[$company.email]-->" title="Send Mail">Send Mail</a> ]<!--[/if]-->
+
+            <!--[if $company.url]-->[ <a href="<!--[$company.url]-->" title="Visit Site">Visit Site</a> ]<!--[/if]-->
+
+            <!--[if $company.email || $company.url]--><br /><!--[/if]-->
+
+            <!--[if $company.comp_desc]--><!--[$company.comp_desc]--><br /><!--[/if]-->
+
+        </td>
+
+        <td>
+
+            [ <a href="<!--[pnmodurl modname="Lenses" type="admin" func="modify_company" comp_tid=$company.comp_tid|pnvarprepfordisplay]-->" title="Modify">Modify</a> ]<br />
+            [ <a href="<!--[pnmodurl modname="Lenses" type="admin" func="report_company" comp_tid=$company.comp_tid|pnvarprepfordisplay]-->" title="Report">Report</a> ]<br />
+            [ <a href="<!--[pnmodurl modname="Lenses" type="admin" func="delete" tid=$company.comp_tid|pnvarprepfordisplay item_type="company"]-->" title="Delete">Delete</a> ]
+
+        </td>
+
+    </tr>
+
+<!--[/foreach]-->
+
+</table>
+
+<div>[ <a href="<!--[pnmodurl modname="Lenses" type="admin" func="create_company"]-->" title="Add New Company">Add New Company</a> ]</div>

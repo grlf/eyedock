@@ -1,0 +1,250 @@
+
+#eyedock-compare-lenses{
+ position: absolute;
+ top: 0px;
+ left: 0px;
+ width: 100%;
+ height: 100%;
+ background: transparent;
+}
+
+.edas-compare-content{
+
+}
+
+.edas-compare-lens-display{
+ height: 100%;
+ overflow-x: hidden;
+ overflow-y: scroll;
+}
+
+.edas-compare-lens-head{
+ height: 30px;
+ overflow: hidden;
+ position: relative;
+}
+
+.edas-compare-lens-head *{
+ line-height: 30px;
+ font-size: 13px;
+ font-weight: bold;
+}
+
+.edas-compare-lens-line{
+ height: 39px;
+ position: relative;
+ border-top: 1px solid #CCCCCC;
+}
+
+.edas-compare-lens-line *{
+ font-size: 11px;
+ overflow: hidden;
+}
+
+.edas-compare-lens-cell1{
+ margin: 0 537px 0 0;
+ height: 100%;
+ width: 174px;
+}
+
+.edas-compare-lens-cell2,
+.edas-compare-lens-cell3,
+.edas-compare-lens-cell4,
+.edas-compare-lens-cell5,
+.edas-compare-lens-cell6,
+.edas-compare-lens-cell7,
+.edas-compare-lens-cell8,
+.edas-compare-lens-cell9,
+.edas-compare-lens-cell10{
+ position: absolute;
+ top: 0px;
+ height: 100%;
+}
+
+.edas-compare-lens-cell2{
+ left: 177px;
+ width: 70px;
+}
+
+.edas-compare-lens-cell3{
+ left: 247px;
+ width: 60px;
+}
+
+.edas-compare-lens-cell4{
+ left: 307px;
+ width: 55px;
+}
+
+.edas-compare-lens-cell5{
+ left: 362px;
+ width: 66px;
+}
+
+.edas-compare-lens-cell6{
+ left: 428px;
+ width: 56px;
+}
+
+.edas-compare-lens-cell7{
+ left: 484px;
+ width: 58px;
+}
+
+.edas-compare-lens-cell8{
+ left: 542px;
+ width: 44px;
+}
+
+.edas-compare-lens-cell9{
+ left: 586px;
+ width: 62px;
+}
+
+.edas-compare-lens-cell10{
+ left: 648px;
+ width: 63px;
+}
+
+.edas-compare-lens-head .edas-compare-lens-cell1{
+ margin-left: 10px;
+}
+
+.edas-compare-lens-line .edas-compare-lens-cell1{
+ font-weight: bold;
+ cursor: pointer;
+}
+
+.edas-compare-lens-line .edas-compare-lens-cell1 img{
+ float: left;
+ width: 35px;
+ height: 35px;
+ margin: 2px;
+}
+
+.edas-compare-lens-line .edas-compare-lens-cell2,
+.edas-compare-lens-line .edas-compare-lens-cell3,
+.edas-compare-lens-line .edas-compare-lens-cell4,
+.edas-compare-lens-line .edas-compare-lens-cell5,
+.edas-compare-lens-line .edas-compare-lens-cell6,
+.edas-compare-lens-line .edas-compare-lens-cell7,
+.edas-compare-lens-line .edas-compare-lens-cell8,
+.edas-compare-lens-line .edas-compare-lens-cell9,
+.edas-compare-lens-line .edas-compare-lens-cell10{
+ line-height: 39px;
+}
+
+.edas-compare-lens-line .edas-compare-lens-cell8,
+.edas-compare-lens-line .edas-compare-lens-cell9,
+.edas-compare-lens-line .edas-compare-lens-cell10{
+ text-align: center;
+}
+
+.edas-cell-valign span{
+ display: inline-block;
+ vertical-align: middle;
+ line-height: 13px;
+}
+
+.edas-compare-top{
+ height: 36px;
+}
+
+.edas-compare-top-left{
+ background-image: url('../img/tab-blue-left.gif');
+ background-position: left center;
+ background-repeat: no-repeat;
+ height: 100%;
+}
+
+.edas-compare-top-right{
+ background-image: url('../img/tab-blue-right.gif');
+ background-position: right center;
+ background-repeat: no-repeat;
+ padding: 0 10px;
+ height: 100%;
+}
+
+.edas-compare-top-content{
+ background-image: url('../img/tab-blue-bg.gif');
+ background-position: center center;
+ background-repeat: repeat-x;
+ height: 100%;
+ position: relative;
+}
+
+.edas-compare-search{
+ padding: 5px 0 0 0;
+ width: 360px;
+}
+
+.edas-compare-top .edas-top-search-content{
+ width: 100%;
+ position: relative;
+}
+
+.edas-compare-top .edas-search-dropdown{
+ top: 24px;
+ width: 335px;
+}
+
+.edas-compare-top-other{
+ position: absolute;
+ top: 4px;
+ right: 120px;
+}
+
+.edas-compare-top-options{
+ position: absolute;
+ top: 4px;
+ right: 20px;
+ width: 92px;
+}
+
+.edas-compare-top-options .edas-gray-button{
+ width: 100%;
+ text-align: center;
+}
+
+.edas-compare-main{
+ border: 2px solid #2687ae;
+ background: white;
+}
+
+.edas-compare-main-content{
+ height: 313px;
+ overflow: hidden;
+ position: relative;
+}
+
+#edas-compare-lens-list{
+ height: 100%;
+}
+
+.edas-compare-bottom{
+ display: none;
+ height: 36px;
+}
+
+.edas-compare-bottom-left{
+ height: 100%;
+ background-image: url('../img/bottom-left.gif');
+ background-position: left center;
+ background-repeat: no-repeat;
+}
+
+.edas-compare-bottom-right{
+ height: 100%;
+ background-image: url('../img/bottom-right.gif');
+ background-position: right center;
+ background-repeat: no-repeat;
+ padding: 0 7px;
+}
+
+.edas-compare-bottom-content{
+ height: 100%;
+ background-image: url('../img/bottom-bg.gif');
+ background-position: center center;
+ background-repeat: repeat-x;
+ position: relative;
+}

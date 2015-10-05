@@ -1,0 +1,14 @@
+<strong>Medications</strong>
+<ul>
+
+
+<!--[foreach from=$results key=lens item=parameters]-->
+    <li>
+       <a href="<!--[pnmodurl modname=Meds func=display med_id=$parameters.med_id|pnvarprepfordisplay search=true]-->" title="<!--[$parameters.trade|pnvarprepfordisplay]-->"><!--[$parameters.trade|pnvarprepfordisplay]--></a>
+       ( <!--[$parameters.comp.name|pnvarprepfordisplay]--> )
+    </li>
+    
+<!--[/foreach]-->    
+</ul>
+    
+

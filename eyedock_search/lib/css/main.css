@@ -1,0 +1,703 @@
+#eyedock-search-content{
+ position: relative;
+/* overflow: hidden; was hiding bottom of soft lens advanced parameter search */
+ width: 730px;
+ margin: 0 auto;
+}
+
+#eyedock-search-content label{
+ float: none;
+}
+
+#eyedock-search{
+ overflow: hidden;
+}
+
+.edas-top{
+ height: 36px;
+}
+
+.edas-tabs{
+
+}
+
+.edas-tab{
+ height: 36px;
+ width: 170px;
+ line-height: 34px;
+ float: left;
+ margin: 0 22px 0 0;
+ cursor: pointer;
+}
+
+.edas-tab .edas-tab-left{
+ background-image: url('../img/tab-blue-left.gif');
+ background-position: left center;
+ background-repeat: no-repeat;
+ height: 100%;
+}
+
+.edas-tab .edas-tab-right{
+ background-image: url('../img/tab-blue-right.gif');
+ background-position: right center;
+ background-repeat: no-repeat;
+ padding: 0 10px;
+ height: 100%;
+}
+
+.edas-tab .edas-tab-title{
+ background-image: url('../img/tab-blue-bg.gif');
+ background-position: center center;
+ background-repeat: repeat-x;
+ color: white;
+ font-size: 18px;
+ text-align: center;
+ height: 100%;
+ line-height: 34px;
+ font-family: Arial;
+}
+
+.edas-tab-inactive{
+ height: 36px;
+ width: 170px;
+ line-height: 34px;
+ float: left;
+ margin: 0 22px 0 0;
+ cursor: pointer;
+}
+
+.edas-tab-inactive .edas-tab-left{
+ background-image: url('../img/tab-gray-left.gif');
+ background-position: left center;
+ background-repeat: no-repeat;
+ height: 100%;
+}
+
+.edas-tab-inactive .edas-tab-right{
+ background-image: url('../img/tab-gray-right.gif');
+ background-position: right center;
+ background-repeat: no-repeat;
+ padding: 0 10px;
+ height: 100%;
+}
+
+.edas-tab-inactive .edas-tab-title{
+ background-image: url('../img/tab-gray-bg.gif');
+ background-position: center center;
+ background-repeat: repeat-x;
+ color: white;
+ font-size: 18px;
+ text-align: center;
+ height: 100%;
+ line-height: 34px;
+ font-family: Arial;
+}
+
+.edas-top-search{
+ height: 34px;
+ margin: 0 0 0 476px;
+ width: 100px;
+}
+
+.edas-top-search .edas-top-search-left{
+ height: 100%;
+ background-image: url('../img/tab-gray-left.gif');
+ background-position: left center;
+ background-repeat: no-repeat;
+}
+
+.edas-top-search .edas-top-search-right{
+ height: 100%;
+ background-image: url('../img/tab-gray-right.gif');
+ background-position: right center;
+ background-repeat: no-repeat;
+ padding: 0 13px;
+}
+
+.edas-top-search .edas-top-search-content{
+ height: 26px;
+ background-image: url('../img/tab-gray-bg.gif');
+ background-position: center center;
+ background-repeat: repeat-x;
+ margin: 0 -8px;
+ padding: 4px 0;
+ position: relative;
+}
+
+#edas-top-search-box {
+font-size: 14px;
+position: relative;
+float: left;
+color: #a5a5a5;
+margin-left: 3px;
+padding: 4px;
+top: 4px;
+border: 1px solid #2687ae;
+width: 150px;
+}
+
+#search-compare-lenses {
+right: 24px;
+top: 7px;
+}
+
+.edas-tsc-left{
+ height: 100%;
+ background-image: url('../img/search-left.gif');
+ background-position: left center;
+ background-repeat: no-repeat;
+}
+
+.edas-tsc-right{
+ height: 100%;
+ background-image: url('../img/search-right.gif');
+ background-position: right center;
+ background-repeat: no-repeat;
+ padding: 0 11px;
+}
+
+.edas-tsc-main{
+ height: 100%;
+ background-image: url('../img/search-bg.gif');
+ background-position: center center;
+ background-repeat: repeat-x;
+}
+
+.edas-tsc-text{
+ position: relative;
+}
+
+.edas-tsc-input{
+ margin: 0 30px 0 0;
+ padding: 2px 0;
+}
+
+.edas-tsc-input input{
+ border: 0px;
+ padding: 0px;
+ margin: 0px;
+ height: 22px;
+ width: 100%;
+ color: #6F6F6F;
+ font-weight: bold;
+ outline: none;
+}
+
+.edas-tsc-button{
+ position: absolute;
+ top: 3px;
+ right: 10px;
+}
+
+span.edas-button{
+ display: inline-block;
+ height: 20px;
+ cursor: pointer;
+}
+
+.edas-button-left{
+ height: 100%;
+ background-image: url('../img/btn-left.gif');
+ background-position: left center;
+ background-repeat: no-repeat;
+}
+
+.edas-button-right{
+ height: 100%;
+ background-image: url('../img/btn-right.gif');
+ background-position: right center;
+ background-repeat: no-repeat;
+ padding: 0 9px;
+}
+
+.edas-button-content{
+ height: 100%;
+ background-image: url('../img/btn-bg.gif');
+ background-position: center center;
+ background-repeat: repeat-x;
+ color: white;
+ font-weight: bold;
+ line-height: 19px;
+}
+
+span.edas-gray-button{
+ display: inline-block;
+ height: 25px;
+ cursor: pointer;
+}
+
+.edas-gray-button-left{
+ height: 100%;
+ background-image: url('../img/gray-btn-left.gif');
+ background-position: left center;
+ background-repeat: no-repeat;
+}
+
+.edas-gray-button-right{
+ height: 100%;
+ background-image: url('../img/gray-btn-right.gif');
+ background-position: right center;
+ background-repeat: no-repeat;
+ padding: 0 16px;
+}
+
+.edas-gray-button-content{
+ height: 100%;
+ background-image: url('../img/gray-btn-bg.gif');
+ background-position: center center;
+ background-repeat: repeat-x;
+ color: #333333;
+ font-weight: bold;
+ line-height: 25px;
+}
+
+.edas-gray-button-content-rt{
+ background-image: url('../img/gray-btn-rt-arrow.gif');
+ background-position: right center;
+ background-repeat: no-repeat;
+ padding: 0 40px 0 0;
+ color: #333333;
+ font-weight: bold;
+ line-height: 25px;
+}
+
+.edas-gray-button-content-dn{
+ background-image: url('../img/gray-btn-dn-arrow.gif');
+ background-position: right center;
+ background-repeat: no-repeat;
+ padding: 0 40px 0 0;
+ color: #333333;
+ font-weight: bold;
+ line-height: 25px;
+ position: relative;
+}
+
+.edas-gray-button-content-dn div{
+ position: absolute;
+ top: 0px;
+ right: 15px;
+ width: 1px;
+ height: 100%;
+ background: #cccccc;
+}
+
+.edas-bottom{
+ height: 34px;
+ position: relative;
+}
+
+.edas-bottom-left{
+ height: 100%;
+ background-image: url('../img/bottom-left.gif');
+ background-position: left center;
+ background-repeat: no-repeat;
+}
+
+.edas-bottom-right{
+ height: 100%;
+ background-image: url('../img/bottom-right.gif');
+ background-position: right center;
+ background-repeat: no-repeat;
+ padding: 0 7px;
+}
+
+.edas-bottom-content{
+ height: 100%;
+ background-image: url('../img/bottom-bg.gif');
+ background-position: center center;
+ background-repeat: repeat-x;
+}
+
+.edas-compare-lenses{
+ position: absolute;
+ top: 4px;
+ right: 5px;
+}
+
+.edas-tab-content{
+ height: 308px;
+ overflow: hidden;
+ border-left: 2px solid #2687ae;
+ border-right: 2px solid #2687ae;
+ border-bottom: 2px solid #2687ae;
+ border-top: 7px solid #2687ae;
+}
+
+.edas-company-search{
+ height: 100%;
+}
+
+.edas-company-list{
+ float: left;
+ height: 100%;
+ position: relative;
+ width: 355px;
+ height: 308px;
+}
+
+.edas-company-list-title{
+ position: absolute;
+ top: 0px;
+ left: -20px;
+ height: 45px;
+ line-height: 45px;
+ font-size: 16px;
+ font-weight: bold;
+ background: white;
+ width: 100%;
+ margin: 0 20px 0 0;
+ display: none;
+}
+
+.edas-company-list-title span{
+ margin: 0 0 0 20px;
+ line-height: 45px;
+}
+
+.edas-company-list-contents{
+ overflow: auto;
+ height: 255px;
+ height: 308px;
+}
+
+.edas-company-list-name{
+ padding: 6px 10px 5px 15px;
+ font-weight: bold;
+ white-space: nowrap;
+ cursor: pointer;
+ font-size: 14px;
+ color: #363636;
+ font-family: Arial;
+}
+
+/*TMZ added 05/30/2011 */
+.edas-company-list-name:hover { 
+ background-color: #9fc9e4;
+}
+
+#eyedock-company-lenses{
+ height: 100%;
+}
+
+.edas-company-lenses{
+ height: 100%;
+ overflow: hidden;
+ position: relative;
+}
+
+.edas-tab-search-lenses-list{
+ height: 100%;
+ position: relative;
+}
+
+.edas-tab-search-lenses-title{
+ position: absolute;
+ top: 0px;
+ left: -16px;
+ height: 29px;
+ line-height: 29px;
+ border-bottom: 1px solid #CCCCCC;
+ background: white;
+ width: 100%;
+ margin: 0 16px 0 0;
+ font-size: 15px;
+ font-weight: bold;
+}
+
+.edas-tab-search-lenses-title span{
+ margin: 0 0 0 26px;
+ line-height: 29px;
+}
+
+.edas-tab-search-lenses-content{
+ padding: 30px 0 0 0;
+ height: 280px;
+ overflow: auto;
+}
+
+.edas-tab-search-lens{
+ height: 30px;
+ padding: 5px 0;
+ border-bottom: 1px solid #CCCCCC;
+ cursor: pointer;
+}
+
+.edas-tab-search-lens-image{
+ float: left;
+ margin: 0 10px;
+ height: 30px;
+}
+
+.edas-tab-search-lens-image img{
+ height: 100%;
+}
+
+.edas-tab-search-lens-name{
+ height: 30px;
+ line-height: 30px;
+ font-size: 12px;
+ font-weight: bold;
+ white-space: nowrap;
+ overflow: hidden;
+}
+
+
+.edas-parameter-search{
+ height: 100%;
+}
+
+.edas-parameters{
+ float: left;
+ border-right: 1px solid #CCCCCC;
+ height: 100%;
+}
+
+.edas-parameters-title{
+ height: 25px;
+ line-height: 25px;
+ padding: 0 0 0 20px;
+ font-size: 14px;
+ font-weight: bold;
+}
+
+.edas-parameters-line{
+ position: relative;
+ margin: 15px 0;
+}
+
+.edas-parameters-line-name,
+.edas-parameters-line-label{
+ position: absolute;
+ top: 0px;
+ line-height: 20px;
+}
+
+.edas-ajax-input{
+ line-height: 20px;
+}
+
+.edas-2-lines{
+ line-height: 10px;
+}
+
+.edas-parameters-line-name{
+ left: 1px;
+ width: 79px;
+ text-align: right !important;
+ font-weight: bold;
+}
+
+.edas-parameters-line-name label input{
+ margin: 0 5px 0 0;
+ position: relative;
+ top: 2px;
+}
+
+.edas-parameters-line-label{
+ right: 0px;
+ width: 75px;
+ font-size: 11px;
+ white-space: nowrap;
+}
+
+.edas-parameters-line-slider{
+ padding: 0 80px 0 85px;
+ text-align: center !important;
+}
+
+.edas-parameters-lenses{
+ height: 100%;
+ overflow: hidden;
+ position: relative;
+}
+
+#edas-parameters-results{
+ height: 100%;
+}
+
+.edas-no-lenses-search{
+ font-size: 15px;
+ font-weight: bold;
+ line-height: 20px;
+ padding: 20px;
+ text-align: center;
+}
+
+.edas-slider{
+ height: 20px;
+ width: 150px;
+ background-image: url('../img/slider.gif');
+ background-position: center center;
+ background-repeat: no-repeat;
+}
+
+.edas-slider-knob{
+ width: 12px;
+ height: 20px;
+ background-image: url('../img/slider-knob.gif');
+ background-position: center center;
+ background-repeat: no-repeat;
+ cursor: pointer;
+}
+
+.edas-loader{
+ position: absolute;
+ top: 0px;
+ left: 0px;
+ width: 100%;
+ height: 100%;
+ background-image: url('../img/loader.gif');
+ background-position: center center;
+ background-repeat: no-repeat;
+ display: none;
+}
+
+.edas-relative{
+ position: relative;
+}
+
+.edas-tab-search-lens-popup{
+text-align: left;
+position: absolute;
+z-index: 100;
+
+/*color: #ffffff;
+background-color: #636363;
+background-color: #cadbeb;
+*/
+color: #000; 
+background-image:url('../img/popupBkg.png');
+background-repeat:repeat-x;
+padding: 10px;
+-moz-border-radius: 10px;
+border-radius: 10px;
+white-space: nowrap;
+font-size: 12px;
+display: none;
+border: 1px solid black; /*tmz added;*/
+}
+
+.edas-tab-search-lens-popup-content{
+ text-align: left;
+ font-size: 12px;
+}
+
+.eyedock-detailed-popup{
+ display: none;
+ position: absolute;
+ top: 0px;
+ left: 0px;
+ overflow: hidden;
+
+/*color: #ffffff;
+background-color: #636363;
+background-color: #cadbeb;
+*/
+color: #000; 
+background-image:url('../img/popupBkg.png');
+background-repeat:repeat-x;
+ padding: 10px;
+ -moz-border-radius: 10px;
+ border-radius: 10px;
+ font-size: 12px;
+ border: 1px solid black; /*tmz added;*/
+}
+
+
+.eyedock-detailed-popup-content{
+ padding: 15px;
+ position: relative;
+ cursor: default;
+}
+
+.eyedock-detailed-popup-text{
+ font-size: 13px;
+ font-weight: normal;
+ line-height: 18px;
+ text-align: left;
+}
+
+.eyedock-detailed-popup-close{
+ position: absolute;
+ top: 2px;
+ right: 2px;
+ font-size: 10px;
+ font-weight: bold;
+ cursor: pointer;
+}
+
+.edas-search-dropdown{
+ background: white;
+ border-left: 1px solid #DADADA;
+ border-bottom: 1px solid #DADADA;
+ border-right: 1px solid #DADADA;
+ right: 19px;
+ position: absolute;
+ top: 32px;
+ width: 325px;
+ display: none;
+ overflow: auto;
+ z-index: 1000;
+}
+
+.edas-search-dropdown a{
+ display: block;
+ line-height: 22px;
+ font-size: 13px;
+ padding: 0 0 0 5px;
+ overflow: hidden;
+ white-space: nowrap;
+ text-decoration: none !important;
+}
+
+.edas-search-dropdown a:hover{
+ text-decoration: none !important;
+}
+
+.edas-search-dropdown a.edas-search-dropdown-hover{
+ background: #dadada;
+}
+
+.edas-discontinued{
+ color: red;
+}
+
+.edas-clear{
+ clear: both;
+}
+
+#eyedock-lens-detail-load{
+ position: absolute;
+ top: 0px;
+ left: 0px;
+ width: 100%;
+ height: 100%;
+ z-index: 100;
+ display: none;
+}
+
+#eyedock-lens-detail-load-overlay{
+ width: 100%;
+ height: 100%;
+ background: white;
+ opacity: 0.4;
+ filter: alpha(opacity=40);
+}
+
+#eyedock-lens-detail-load-img{
+ width: 100%;
+ height: 100%;
+ background-image: url('../img/loader.gif');
+ background-position: center center;
+ background-repeat: no-repeat;
+ position: relative;
+ top: -100%;
+}
+
+
+.edas-compare-top-other,
+.edas-compare-top-options,
+#eyedock-compare-lenses .edas-compare-lenses{
+ visibility: hidden;
+}
+ 

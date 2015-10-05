@@ -1,0 +1,291 @@
+<div>
+  <a href="javascript:history.go(-1);" title="Back to company list">[ Go back ]</a>
+  <!--[include file=lenses_admin_menu.htm]-->
+</div><br />
+
+    <div style="border: 1px solid gray; padding:1em; background-color: #d5e7f4;">
+       The text below can be copied and pasted into an email program and mailed to the manufacturer. Make sure the text is formatted correctly, and change the introduction as needed.
+    </div>
+  
+  <p>
+     <p>To whom it may concern,</p>
+
+     <p>We are in the process of updating our lens listings for <!--[$company.comp_name]--> at <a href="www.eyedock.com">www.eyedock.com</a>.  If you are not familiar with us, EyeDock is an online contact lens database for eye care professionals. We have steadily grown since 2003 and currently get over 1,000 visits each day.</p>
+     <p>We have included below a listing of the <!--[$company.comp_name]--> lenses that are currently in our database.  We want to be sure we are representing your lenses as accurately as possible to best serve you and our visitors. </p>
+     <p>We would greatly appreciate it if you could look over our list of your contact information and lenses and let us know if:
+        <ul>
+          <li>We have your correct contact information.</li>
+          <li>Any of these lenses are no longer being manufactured.</li>
+          <li>You manufacture lenses that are not included in this list (if so, could you share the details with us?).</li>
+          <li>Are there any errors?</li>
+          <li>Is any information missing (if so, please enlighten us!).</li>
+          <li>Are you the primary manufacturer of these lenses, or are you a distributor?</li>
+        </ul>
+     </p>
+     
+     <p>If for some reason you cannot read the information in this email, please let us know and we will send it in another form.</p>
+
+     <p>
+        We appreciate your helping us keep your lenses up-to-date in our database!  Please let us know if you have any questions.
+     </p>
+     Sincerely, <br />
+     Todd M Zarwell OD FAAO<br />
+     www.eyedock.com
+
+  </p>
+
+
+<p>&nbsp;</p><p>&nbsp;</p>
+
+
+   <table border="1" cellspacing="7" cellpadding="7" width="100%">
+      <tr>
+         <th colspan="2"> <!--[$company.comp_name]--> Contact Info</th>
+      <tr>
+          <td>Address: </td>
+          <td><!--[$company.address|default:'(address not specified)']--><br />
+              <!--[$company.city|default:'(city not specified)']-->,
+              <!--[$company.state|default:'(state not specified)']-->, 
+              <!--[$company.zip|default:'(zip not specified)']-->
+          </td>
+      </tr>
+      <tr>
+          <td>Phone: </td>
+          <td><!--[$company.phone|default:'not specified']--> </td>
+      </tr>
+      <tr>
+          <td>Email:</td>
+          <td><!--[$company.email|default:'not specified']--> </td>
+      </tr>
+      <tr>
+          <td>Website:</td>
+          <td><!--[$company.url|default:'not specified']--> </td>
+      </tr>
+      <tr>
+          <td>More info: </td>
+          <td><!--[$company.comp_desc|default:'not specified']--> </td>
+      </tr>
+    </table>
+
+
+    <p>&nbsp;</p><p>&nbsp;</p>
+    <h3><!--[$company.comp_name]--> Lenses:</h3>
+    <p>&nbsp;</p>
+
+
+
+<!--[foreach from=$lenses key=key item=lens_data]-->
+
+
+    <!--[if $lens_data.redirect]-->
+        <h3><!--[$lens_data.name|pnvarprepfordisplay]--></h3>
+       <!--[if $lens_data.discontinued]-->(Discontinued lens!<!--[/if]-->
+
+           <!--[*this section will be HTML that will be displayed only for unique lenses that did not fit into the database as it's structured.*]-->
+           <!--[$lens_data.redirect|pnvarprephtmldisplay]-->
+    <!--[else]-->
+
+        
+
+        <table  border="1" cellpadding="3" cellspacing="0">
+        <tr>
+           <td colspan="2" style="text-align:center;">
+                <h2><!--[$lens_data.name|pnvarprepfordisplay]--></h2>
+                <!--[if $lens_data.discontinued]-->(Discontinued lens!)<!--[/if]-->
+           </td>
+        </tr>
+        <tr>
+           <td>Spherical powers</td>
+           <td>
+       
+             
+             <table  border="1" cellpadding="3" cellspacing="2">
+            
+                <tr>
+                    <td>Diameter</td>
+                    <td>Base Curves</td>
+                    <td>Powers</td>
+                </tr>
+                <tr style="text-align:center;">
+                    <td><!--[$lens_data.diam_1|pnvarprepfordisplay]--></td>
+                    <td><!--[$lens_data.base_curves_1|pnvarprepfordisplay]--></td>
+                    <td><!--[$lens_data.powers_1|pnvarprepfordisplay]--></td>
+                </tr>      
+                <!--[if $lens_data.diam_2 >0]-->
+                <tr style="text-align:center;">
+                    <td><!--[$lens_data.diam_2|pnvarprepfordisplay]--></td>
+                    <td><!--[$lens_data.base_curves_2|pnvarprepfordisplay]--></td>
+                    <td><!--[$lens_data.powers_2|pnvarprepfordisplay]--></td>
+                </tr>
+                <!--[/if]-->
+                <!--[if $lens_data.diam_3>0]-->
+                <tr style="text-align:center;">
+                    <td><!--[$lens_data.diam_3|pnvarprepfordisplay]--></td>
+                    <td><!--[$lens_data.base_curves_3|pnvarprepfordisplay]--></td>
+                    <td><!--[$lens_data.powers_3|pnvarprepfordisplay]--></td>
+                </tr>
+                <!--[/if]-->
+               
+                </table>
+                <!--[$lens_data.sph_notes|pnvarprepfordisplay]-->
+           </td>
+        </tr>
+     
+     
+        <!--[if $lens_data.toric]-->
+         <tr>
+           <td>Toric parameters</td>
+            <td>
+          
+                Toric Type: <!--[$lens_data.toric_type|pnvarprepfordisplay|default:'not specified']--><br />
+                Cylinder Power: <!--[$lens_data.cyl_power|pnvarprepfordisplay|default:'not specified']--><br />                                                              Cylinder Axis: <!--[$lens_data.cyl_axis|pnvarprephtmldisplay|default:'not specified']-->
+                Notes: <!--[$lens_data.cyl_notes|pnvarprepfordisplay]-->            
+               
+               </td>
+            </tr>
+        <!--[/if]-->
+     
+        <!--[if $lens_data.bifocal]-->
+        <tr>
+          <td>Bifocal Parameters </td>
+          <td>
+              <table border="1" cellpadding="3" cellspacing="2">
+                <tr>
+                  <td> Bifocal Type: </td>
+                  <td><!--[$lens_data.bifocal_type|pnvarprepfordisplay|default:'not specified']--></td>
+                </tr>
+                <tr>
+                  <td> Bifocal Add Powers: </td>
+                  <td><!--[$lens_data.add_text|pnvarprepfordisplay|default:'not specified']--></td>
+               </tr>
+             </table>
+         </td>
+       </tr>
+         <!--[/if]-->
+
+       <!--[if $lens_data.cosmetic]-->
+       <tr>
+          <td>Cosmetic Parameters</td>
+          <td>
+              <!--[if $lens_data.enh_names]-->
+                     Enhancer Colors:  <!--[$lens_data.enh_names|pnvarprepfordisplay]--><br />
+                    <!--[/if]-->
+                    <!--[if $lens_data.opaque_names]-->
+                     Opaque Colors:  <!--[$lens_data.opaque_names|pnvarprepfordisplay]-->
+                    <!--[/if]-->
+          </td>
+       </tr>
+       <!--[/if]-->
+        
+         
+
+     <tr >
+                <td class="lens_right_strong_bg"> Material: </td>
+                <td class="align_left"><!--[$lens_data.poly_name|pnvarprepfordisplay]--></span></td>
+
+            </tr>
+            <tr>
+                <td class="lens_right_strong_bg"> H<sub>2</sub>O Content: </td>
+                <td class="align_left"><!--[if $lens_data.h2o]--><!--[$lens_data.h2o]-->%<!--[else]-->Not Specified<!--[/if]--></td>
+            </tr>
+            <tr>
+                <td class="lens_right_strong_bg"> FDA Group:  </td>
+                <td class="align_left">
+               <!--[if $lens_data.fda_grp]-->
+                    <span <!--[if $lens_data.fda_grp_desc]-->class="lens_helpcue" <!--[popup trigger=onClick sticky=true caption='FDA Group' text=$lens_data.fda_grp_desc]--><!--[/if]-->><!--[$lens_data.fda_grp]--><span><!--[else]-->Not Specified<!--[/if]-->
+                </td>
+            </tr>
+            <tr>
+                <td class="lens_right_strong_bg"> DK:  </td>
+                <td class="align_left">
+                <!--[if $lens_data.dk > 0]--><!--[$lens_data.dk|pnvarprepfordisplay]-->
+                <!--[else]-->Not Specified<!--[/if]-->
+
+                <!--[if $lens_data.dkt]--> (dk/t: <!--[$lens_data.dkt|pnvarprepfordisplay|truncate:6]-->)<!--[/if]-->
+                </td>
+            </tr>
+            <tr>
+                <td class="lens_right_strong_bg"> CT:  </td>
+                <td class="align_left"><!--[if $lens_data.ct>0]--><!--[$lens_data.ct|pnvarprepfordisplay]-->mm<!--[else]-->Not Specified<!--[/if]--></td>
+            </tr>
+            <tr>
+                <td class="lens_right_strong_bg"> OZ:  </td>
+                <td><!--[if $lens_data.oz>0]--><!--[$lens_data.oz|pnvarprepfordisplay]-->mm<!--[else]-->Not Specified<!--[/if]--></td>
+            </tr>
+            <tr>
+                <td class="lens_right_strong_bg"> EW:  </td>
+                <td class="align_left">
+                    <!--[if $lens_data.ew == 1]-->yes
+                    <!--[else]-->no<!--[/if]-->
+                </td>
+            </tr>
+            <!--[if $lens_data.cosmetic!=1]-->
+            <tr>
+                <td class="lens_right_strong_bg"> Visibility tint:  </td>
+                <td class="align_left">
+                    <!--[if $lens_data.visitint==1]-->yes
+                    <!--[else]-->no <!--[/if]-->
+                </td>
+            </tr>
+            <!--[/if]-->
+            <tr>
+                <td class="lens_right_strong_bg"> Manuf. Process: </td>
+                <td class="align_left"><!--[if $lens_data.process_text]--><!--[$lens_data.process_text|pnvarprepfordisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+            </tr>
+            <tr>
+                <td class="lens_right_strong_bg"> Quantity: </td>
+                <td class="align_left"><!--[if $lens_data.qty]--><!--[$lens_data.qty|pnvarprepfordisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+            </tr>
+            <tr>
+                <td class="lens_right_strong_bg"> Replacement: </td>
+                <td class="align_left"><!--[if $lens_data.replace_text]--><!--[$lens_data.replace_text|pnvarprepfordisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+            </tr>
+            <tr>
+                <td class="lens_right_strong_bg"> Wear Type: </td>
+                <td class="align_left"><!--[if $lens_data.wear]--><!--[$lens_data.wear|pnvarprepfordisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+            </tr>
+
+            <tr>
+                <td class="lens_right_strong_bg"> Lens Appearance: </td>
+                <td class="align_left"><!--[if $lens_data.markings]--><!--[$lens_data.markings|pnvarprephtmldisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+            </tr>
+            <tr>
+               <td>Lens image</td>
+               <td><!--[if $lens_data.image =="" ]-->
+                      We do not have an image of this lens or its packaging.  If you have one, could you share it with us?
+                      <!--[else]-->We have an image of this lens or its packaging.<!--[/if]-->
+               </td>
+            </tr>
+            
+            <tr>
+              <td>Approximate wholesale</td>
+              <td><!--[if $lens_data.price !="0.00"]--><!--[$lens_data.price]-->
+                  <!--[else]--> unknown<!--[/if]-->
+                <br /><span style="font-size: smaller;">note: this information will NOT be available to the general public, only eyecare professionals that subscribe to EyeDock </span>
+              </td>
+
+                 
+            <tr>
+              <td colspan="2">
+
+                  <strong>OTHER INFO</strong>
+                   <div >
+                        <!--[$lens_data.other_info]-->
+                        
+                        <p>Lens website: <!--[$lens_data.website|default:'not specified']--></p>
+
+                        <p>Online fitting guide or package insert: <!--[$lens_data.fitting_guide|default:'not specified']--></p>
+        
+                        <p>Last Updated:  <!--[$lens_data.updated|pnvarprepfordisplay]--></p>
+                    </div>
+               </td>
+            </tr>
+
+        </table>
+        
+        <!--[/if]--><!--[*end non-"redirected" content*]-->
+
+        <p>&nbsp;</p><hr><p>&nbsp;</p><p>&nbsp;</p>
+
+
+<!--[/foreach]-->

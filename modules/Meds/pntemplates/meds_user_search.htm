@@ -1,0 +1,16 @@
+<!--[include file=meds_user_menu.htm]-->
+
+
+<!--[include file=meds_user_search_form.htm]-->
+
+<div class="align_left">
+<!--[if $summary]-->
+    <!--[$summary]-->
+<!--[/if]-->
+<!--[if $results]-->
+    <!--[include file=meds_user_search_result.htm]-->
+<!--[/if]-->
+</div>
+
+<!--[pnmodurl modname=Meds func=view startnum=$startnum assign=returnurl]-->
+<!--[pnmodcallhooks hookobject=category hookaction=display hookid=$startnum module=Meds returnurl=$returnurl]-->

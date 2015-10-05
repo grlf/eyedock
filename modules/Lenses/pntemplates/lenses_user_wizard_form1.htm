@@ -1,0 +1,86 @@
+<!--[include file=lenses_user_menu.htm]-->
+
+<div style="margin-bottom:.75em;">
+  [ <a href="<!--[pnmodurl modname='Lenses' type='user' ]-->">Main search page </a> ]
+ </div>
+<div style="float:right"><a href="index.php?module=Pagesetter&tid=10&filter=category^sub^151&cv=151">Lenses FAQs</a></div>
+<h1>Search Wizard - page 1</h1>
+
+
+
+<div class="lensWhite"  >
+  <form name="searchForm" method="post" action="<!--[pnmodurl modname='Lenses' type='user' func='search_wizard2']-->">
+    <table width="100%" border="0" cellpadding="3" cellspacing="3">
+      <tr valign="top">
+        <td colspan="3">First, what type of lens are you searching for?<br/>
+          <input name="item[toric]" type="radio" value="sphere" checked onclick="if(this.checked){document.getElementById('toricDiv').style.display='none';}else{document.getElementById('toricDiv').style.display='block';}">
+          spherical lenses?
+          <input name="item[toric]" type="radio" value="toric" onclick="if(this.checked){document.getElementById('toricDiv').style.display='block';}else{document.getElementById('toricDiv').style.display='none';}">
+          toric lenses?
+          <input name="item[cosmetic]" type="checkbox" id="item[cosmetic]"  value="1">
+          cosmetic lenses?
+          <input name="item[bifocal]" type="checkbox" id="item[bifocal]" onClick="if(this.checked){document.getElementById('bifocalDiv').style.display='block';}else{document.getElementById('bifocalDiv').style.display='none';}" value="1">
+          bifocal lenses? <br/>
+          <br/>
+          Next, select which lens parameters are most important for your search. </td>
+      </tr>
+      <tr valign="top">
+        <td width="33%"><input name="item[plus]" type="checkbox" id="item[plus]" value="1" >
+          plus sphere power<br>
+          <input name="item[minus]" type="checkbox" id="item[minus]" value="1" >
+          minus sphere power <br>
+          <input name="item[diameter]" type="checkbox" id="item[diameter]" value="1">
+          diameter<br>
+          <input name="item[bc]" type="checkbox" id="item[bc]" value="1">
+          base curve<br>
+          <input name="item[company]" type="checkbox" id="item[company]" value="1">
+          manufacturer<br>
+          <input name="item[replace]" type="checkbox" id="item[replace]" value="1">
+          replacement<br>
+          <input name="item[ew]" type="checkbox" id="item[ew]" value="1">
+          extended wear <br>
+          <input name="item[visi]" type="checkbox" id="item[visi]" value="1">
+          visibility tint <br>
+        </td>
+        <td width="34%"><div  id="bifocalDiv" style="display:none; padding:10px; "> Bifocal Lens parameters<br/>
+            <input type="checkbox" name="item[add]" id="item[add]" value="1">
+            add power<br>
+            <input type="checkbox" name="item[bifocal_type]" id="item[bifocal_type]" value="1">
+            bifocal type <br/>
+            (aspheric, concentric, etc) </div></td>
+        <td><div  id="toricDiv" style="display:none; padding:10px; " > Toric Lens parameters<br/>
+            <input type="checkbox" name="item[cyl_power]" id="item[cyl_power]" value="1">
+            cyl power<br>
+            <input type="checkbox" name="item[oblique]" id="item[oblique]" value="1">
+            cyl axis range<br>
+            <input type="checkbox" name="item[axis_steps]" id="item[axis_steps]" value="1">
+            axis steps<br>
+            <input type="checkbox" name="item[toric_type]" id="item[toric_type]" value="1">
+            toric type<br>
+            (prism ballast, thin zone)
+          </div></td>
+      </tr>
+      <tr valign="top">
+        <td colspan="3"><input name="item[dk]" type="checkbox" id="item[dk]" value="1">
+          dk<br>
+          <input name="item[oz]" type="checkbox" id="item[oz]" value="1">
+          optic zone <br>
+          <input name="item[ct]" type="checkbox" id="item[ct]" value="1">
+          center thickness <br>
+          <input name="item[process]" type="checkbox" id="item[process]" value="1">
+          manufacturing process (molded, lathe-cut, spin-cast) <br>
+          <input name="material" type="checkbox" id="item[material]" value="1">
+          <input name="item[material]" type="radio" value="polymer" onClick="document.searchForm.material.checked='true'">
+          polymer <em>OR</em>
+          <input name="item[material]" id="item[material]" type="radio" value="h2o" checked onClick="document.searchForm.material.checked='true'">
+          water content <em>OR</em>
+          <input name="item[material]" id="item[material]" type="radio" value="fda" onClick="document.searchForm.material.checked='true'">
+          FDA group </td>
+      </tr>
+    </table>
+    <p>
+      <input type="submit" name="Submit" value="Next ->">
+      <input type="reset" name="Reset" value="Reset" onClick="document.getElementById('toricDiv').style.display='none'; document.getElementById('bifocalDiv').style.display='none';">
+    </p>
+  </form>
+</div>

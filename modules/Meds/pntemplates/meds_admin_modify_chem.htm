@@ -1,0 +1,36 @@
+<!--[include file=meds_admin_menu.htm]-->
+<h2>Modify Chemical</h2>
+
+<form method="post" action="<!--[pnmodurl modname=Meds type=admin func=update_chem]-->" enctype="application/x-www-form-urlencoded">
+<div class="meds_admin_form">
+
+    <input type="hidden" name="authid" value="<!--[pnsecgenauthkey module=Meds]-->" />
+    <input type="hidden" name="chem[chem_id]" value="<!--[$chem.chem_id|pnvarprepfordisplay]-->" />
+
+    <strong>ID:</strong> <!--[$chem.chem_id|pnvarprepfordisplay]-->
+            
+    <br /><br />
+            
+    <strong>Name:</strong><br />
+    <input type="text" name="chem[name]" value="<!--[$chem.name|pnvarprepfordisplay]-->" size="35" maxlength="48" />
+    
+    <br /><br />
+    
+    <strong>Method Of Action:</strong><br />
+    <select name="chem[moa_id]" size="1">
+    <!--[foreach from=$moas key=key item=moa]-->
+        <option value="<!--[$moa.moa_id|pnvarprepfordisplay]-->"<!--[if $moa.moa_id == $chem.moa_id]--> selected="selected"<!--[/if]--> /><!--[$moa.name|pnvarprepfordisplay]-->
+    <!--[/foreach]-->                
+    </select>
+    
+    <br /><br /><br />
+    
+    <input type="submit" name="submit" value="Update" />
+    
+    <br /><br /><br />
+    
+    [ <a href="<!--[pnmodurl modname=Meds type=admin func=delete object=chem id=$chem.chem_id|pnvarprepfordisplay]-->" title="Delete">Delete</a> ]
+
+</div>
+</form>
+    

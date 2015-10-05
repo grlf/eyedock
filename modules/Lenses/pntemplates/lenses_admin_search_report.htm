@@ -1,0 +1,49 @@
+<!--[include file=lenses_admin_menu.htm]-->
+
+<h2>Top 40 searched lenses (<!--[$time]-->)</h2>
+
+[ <a href="<!--[pnmodurl modname="Lenses" type="admin" func="search_report" time="this_month"]-->" title="View searched lenses">This Month</a> ] 
+[ <a href="<!--[pnmodurl modname="Lenses" type="admin" func="search_report" time="last_month"]-->" title="View searched lenses"> Last Month</a> ] 
+[ <a href="<!--[pnmodurl modname="Lenses" type="admin" func="search_report" time="total"]-->" title="View searched lenses">All</a> ]
+
+
+<table border="1" cellpadding="3" cellspacing="2">
+
+    <tr>
+
+        <th>Lens</th>
+
+        <th>Instances</th>
+
+
+    </tr>
+
+    <!--[foreach from=$lenses_data item=lens]-->
+
+    <tr>
+
+        <td>
+
+            <!--[$lens.name|pnvarprepfordisplay]-->
+
+        </td>
+
+        <td>
+
+            <!--[if $time == "last_month" ]-->
+				<!--[$lens.last_month|pnvarprepfordisplay]-->
+            <!--[elseif $time == "this_month"]-->    
+                <!--[$lens.this_month|pnvarprepfordisplay]-->
+             <!--[else]-->    
+                <!--[$lens.total|pnvarprepfordisplay]-->
+              <!--[/if]-->  
+                
+        </td>
+
+   
+    <!--[/foreach]-->
+
+</table>
+
+
+

@@ -1,0 +1,335 @@
+<?xml version="1.0"?>
+<files>
+	<patient num="1">\
+		<name>Rex Hassunfluff</name>
+		<age>17</age>
+		<start>glasses</start>
+		<ods>-1.00</ods><odc>0</odc><oda>0</oda>
+		<oss>-1.25</oss><osc>0</osc><osa>0</osa>
+		<odva>30</odva>
+		<osva>25</osva>
+		<rs>-1.75</rs><rc>0</rc><ra>0</ra>
+		<ls>-1.75</ls><lc>0</lc><la>0</la>
+		<odbcva>15</odbcva>
+		<osbcva>15</osbcva>
+		<odpsc>0</odpsc>
+		<odcortical>0</odcortical>
+		<odscissors>0</odscissors>
+		<ospsc>0</ospsc>
+		<oscortical>0</oscortical>
+		<osscissors>0</osscissors>
+		
+		<history>Rex notes that he has been having more trouble seeing things on the board at school over the last year or so.  He feels that his near vision has been fine.</history>
+		<answer>This appears to be a simple case of a teenager becoming more myopic</answer>
+	</patient>
+	
+	<patient num="2">
+		<name>Eunice Schroder</name>
+		<age>74</age>
+		<start>glasses</start>
+		<ods>+1.75</ods><odc>0</odc><oda>0</oda>
+		<oss>+.75</oss><osc>0</osc><osa>0</osa>
+		<odva>60</odva>
+		<osva>40</osva>
+		<rs>+.75</rs><rc>0</rc><ra>0</ra>
+		<ls>+.50</ls><lc>0</lc><la>0</la>
+		<odbcva>30</odbcva>
+		<osbcva>35</osbcva>
+	<odpsc>0</odpsc>
+		<odcortical>1</odcortical>
+		<odscissors>0</odscissors>
+		<ospsc>0</ospsc>
+		<oscortical>2</oscortical>
+		<osscissors>0</osscissors>
+		<history>Ms. Schroeder reports that she has been taking off her glasses to watch TV and it seems that she sees better that way.  A few years ago her doctor told her that she had the start of a cataract in her left eye.</history>
+		<answer>Ms. Schroeder appears to have had some refractive changes and isn't refracting to a nice, clear, 20/20.  It's likely that she has cataracts in each eye and a dilated examination should be done.</answer>
+	</patient>
+	
+	
+	<patient num="3">
+		<name>Michael Millstone</name>
+		<age>39</age>
+		<start>glasses</start>
+		<ods>-3.75</ods><odc>-.75</odc><oda>40</oda>
+		<oss>-4.25</oss><osc>-1.25</osc><osa>132</osa>
+		<odva>25</odva>
+		<osva>30</osva>
+		<rs>-3.50</rs><rc>-1.25</rc><ra>51</ra>
+		<ls>-4.75</ls><lc>-1.50</lc><la>145</la>
+		<odbcva>17</odbcva>
+		<osbcva>16</osbcva>
+	<odpsc>0</odpsc>
+		<odcortical>0</odcortical>
+		<odscissors>0</odscissors>
+		<ospsc>0</ospsc>
+		<oscortical>0</oscortical>
+		<osscissors>0</osscissors>
+		<history>Michael feels that overall his glasses are working well and that he's just here to see if his prescription has changed before he buys new glasses.</history>
+		<answer>This patient has had some simple refractive changes.</answer>
+	</patient>
+	
+<patient num="4">
+		<name>Patty Newsome</name>
+		<age>44</age>
+		<start>none</start>
+		<ods>0</ods><odc>0</odc><oda>0</oda>
+		<oss>0</oss><osc>0</osc><osa>0</osa>
+		<odva>30</odva>
+		<osva>40</osva>
+		<rs>+1</rs><rc>+.50</rc><ra>77</ra>
+		<ls>+1</ls><lc>+1</lc><la>101</la>
+		<odbcva>15</odbcva>
+		<osbcva>15</osbcva>
+		<odpsc>0</odpsc>
+		<odcortical>0</odcortical>
+		<odscissors>0</odscissors>
+		<ospsc>0</ospsc>
+		<oscortical>0</oscortical>
+		<osscissors>0</osscissors>
+		<history>Patty has never had an eye exam.  A few years ago she started wearing some glasses from a local gas station for reading.  They're helpful, but now she's worried that her distance vision seems to be getting a little worse too.</history>
+		<answer>This patient's hyperopia is beginning to manifest as she gets into her 40's.</answer>
+	</patient>
+
+	<patient num="5">
+		<name>Winny Poohstein</name>
+		<age>8</age>
+		<start>autorefractor</start>
+		<ods>-2.25</ods><odc>+.75</odc><oda>170</oda>
+		<oss>-1.75</oss><osc>+.75</osc><osa>012</osa>
+		<odva>25</odva>
+		<osva>25</osva>
+		<rs>-1.25</rs><rc>+.25</rc><ra>180</ra>
+		<ls>-1</ls><lc>+.25</lc><la>003</la>
+		<odbcva>15</odbcva>
+		<osbcva>15</osbcva>
+		<odpsc>0</odpsc>
+		<odcortical>0</odcortical>
+		<odscissors>0</odscissors>
+		<ospsc>0</ospsc>
+		<oscortical>0</oscortical>
+		<osscissors>0</osscissors>
+		<history>Winny is here for her first eye examinations.  She hasn't noticed any problems, but she failed a school screening.  Her uncorrected vision is OD 20/50, OS 20/40.</history>
+		<answer>Winny has become myopic. The autorefractor, as they sometimes do, over-minused her. Make sure you didn't make the same mistake!</answer>
+	</patient>
+	
+	<patient num="6">
+		<name>Molly Dadogg</name>
+		<age>18</age>
+		<start>glasses</start>
+		<ods>-5.25</ods><odc>0</odc><oda>180</oda>
+		<oss>-5.75</oss><osc>+.50</osc><osa>96</osa>
+		<odva>50</odva>
+		<osva>50</osva>
+		<rs>-6.25</rs><rc>-.75</rc><ra>110</ra>
+		<ls>-6.50</ls><lc>-1.25</lc><la>77</la>
+		<odbcva>28</odbcva>
+		<osbcva>28</osbcva>
+<odpsc>0</odpsc>
+		<odcortical>.5</odcortical>
+		<odscissors>.5</odscissors>
+		<ospsc>0</ospsc>
+		<oscortical>.5</oscortical>
+		<osscissors>.5</osscissors>
+		<history>Molly says that she can't see well at far or near.  She mentions that she religiously replaces her 2 week daily wear disposable contacts every 4 months and oftentimes sleeps in them for 3 weeks straight.</history>
+		<answer>Molly has been abusing her contacts.  The resulting corneal changes often result in large increases in minus power but without large improvements in VA.</answer>
+	</patient>
+	
+	<patient num="7">
+		<name>Amy Blopia</name>
+		<age>57</age>
+		<start>glasses</start>
+		<ods>+0.75</ods><odc>+.50</odc><oda>177</oda>
+		<oss>+1.25</oss><osc>0</osc><osa>180</osa>
+		<odva>25</odva>
+		<osva>400</osva>
+		<rs>+.75</rs><rc>+.75</rc><ra>007</ra>
+		<ls>+4.25</ls><lc>+1.00</lc><la>175</la>
+		<odbcva>20</odbcva>
+		<osbcva>65</osbcva>
+		<odpsc>0</odpsc>
+		<odcortical>0</odcortical>
+		<odscissors>0</odscissors>
+		<ospsc>0</ospsc>
+		<oscortical>0</oscortical>
+		<osscissors>0</osscissors>
+		<history>Amy says that her right eye is doing well, but her left eye has never seen very well.  She's not exactly sure why.</history>
+		<answer>Amy is amblyopic in her left eye and cannot be corrected better than 20/60ish.  An eye like this one is difficult to refract.  The best thing to do is make large changes that it can appreciate.  Retinoscopy would have been helpful for finding a starting point.</answer>
+	</patient>
+
+	<patient num="8">
+		<name>Clint Jameson</name>
+		<age>28</age>
+		<start>none</start>
+		<ods>0</ods><odc>0</odc><oda>0</oda>
+		<oss>0</oss><osc>0</osc><osa>0</osa>
+		<odva>30</odva>
+		<osva>30</osva>
+		<rs>-.50</rs><rc>+1.25</rc><ra>020</ra>
+		<ls>-.25</ls><lc>+.75</lc><la>165</la>
+		<odbcva>18</odbcva>
+		<osbcva>18</osbcva>
+		<odpsc>0</odpsc>
+		<odcortical>0</odcortical>
+		<odscissors>0</odscissors>
+		<ospsc>0</ospsc>
+		<oscortical>0</oscortical>
+		<osscissors>0</osscissors>
+		<history>Clint has never had an eye examination.  He recently started a new job where he spends a lot of time on the computer and he finds that he's getting a lot of eyestrain and headaches.</history>
+		<answer>Clint's uncorrected astigmatism could very likely be a source of his headaches and eyestrain.</answer>
+	</patient>
+	
+	<patient num="9">
+		<name>Susan Barber</name>
+		<age>22</age>
+		<start>glasses</start>
+		<ods>-4.25</ods><odc>+2.75</odc><oda>162</oda>
+		<oss>-4.00</oss><osc>+2.50</osc><osa>002</osa>
+		<odva>40</odva>
+		<osva>40</osva>
+		<rs>-4.75</rs><rc>+3.75</rc><ra>170</ra>
+		<ls>-6.75</ls><lc>+4.50</lc><la>005</la>
+		<odbcva>27</odbcva>
+		<osbcva>42</osbcva>
+<odpsc>0</odpsc>
+		<odcortical>0</odcortical>
+		<odscissors>1</odscissors>
+		<ospsc>0</ospsc>
+		<oscortical>0</oscortical>
+		<osscissors>2</osscissors>
+		<history>Susan lost her most recent glasses and she's wearing an older pair. She states that her prescription seems to change with every visit, and she never sees quite as well as she thinks she should.</history>
+		<answer>Susan's astigmatism and myopia have increased, more so in her left eye than her right eye. Her best vision seems to be a bit reduced also.  Based of this and because of the unusual retinoscopy reflex it wouldn't be a bad idea to rule out keratoconus.</answer>
+	</patient>
+	
+	
+	<patient num="10">
+		<name>Oz Pheasant</name>
+		<age>32</age>
+		<start>glasses</start>
+		<ods>-3.00</ods><odc>0</odc><oda>0</oda>
+		<oss>-4.00</oss><osc>+.25</osc><osa>45</osa>
+		<odva>25</odva>
+		<osva>25</osva>
+		<rs>-3.50</rs><rc>+0.25</rc><ra>155</ra>
+		<ls>-4.25</ls><lc>+0.75</lc><la>32</la>
+		<odbcva>15</odbcva>
+		<osbcva>15</osbcva>
+		<odpsc>0</odpsc>
+		<odcortical>0</odcortical>
+		<odscissors>0</odscissors>
+		<ospsc>0</ospsc>
+		<oscortical>0</oscortical>
+		<osscissors>0</osscissors>
+		<history>It's been a couple years since Oz's last eye examination.  He thinks his distance vision could be a bit better.</history>
+		<answer>Oz has had some straightforward refractive changes since his last eye examination.</answer>
+		</patient>
+	
+	<patient num="11">
+		<name>Agatha Montgomery</name>
+		<age>84</age>
+		<start>glasses</start>
+		<ods>-1.25</ods><odc>+.75</odc><oda>93</oda>
+		<oss>-1.75</oss><osc>+.25</osc><osa>83</osa>
+		<odva>50</odva>
+		<osva>50</osva>
+		<rs>-2.75</rs><rc>+0.25</rc><ra>090</ra>
+		<ls>-2.75</ls><lc>0</lc><la>90</la>
+		<odbcva>22</odbcva>
+		<osbcva>27</osbcva>
+		<odpsc>0</odpsc>
+		<odcortical>2</odcortical>
+		<odscissors>0</odscissors>
+		<ospsc>0</ospsc>
+		<oscortical>2</oscortical>
+		<osscissors>0</osscissors>
+		<history>Agatha feels her distance vision has worsened since her last exam three years ago.  She also notes that it seems like she can read up close better without her glasses than she used to.</history>
+		<answer>Agatha has had a myopic shift.  It's possible that this is due to early lens changes (cataracts), which you can sometimes appreaciate when looking at the retinoscopy reflex.  A dilated examination will be needed. </answer>
+	</patient>
+
+	<patient num="12">
+		<name>Sally Henson</name>
+		<age>38</age>
+		<start>glasses</start>
+		<ods>-8.75</ods><odc>+1.00</odc><oda>18</oda>
+		<oss>-7.50</oss><osc>+.75</osc><osa>163</osa>
+		<odva>30</odva>
+		<osva>25</osva>
+		<rs>-8.25</rs><rc>+1.25</rc><ra>012</ra>
+		<ls>-7.00</ls><lc>0+1.00</lc><la>168</la>
+		<odbcva>23</odbcva>
+		<osbcva>24</osbcva>
+	<odpsc>0</odpsc>
+		<odcortical>0</odcortical>
+		<odscissors>0</odscissors>
+		<ospsc>0</ospsc>
+		<oscortical>0</oscortical>
+		<osscissors>0</osscissors>
+		<history>Sally feels that her distance vision is a little blurry and that she has been having some eyestain when working on the computer all day.</history>
+		<answer>Sally's current glasses are overcorrecting her myopia, which is probably contributing to her eyestrain symptoms.  As she approaches presbyopia she will become more intolerant of being over-minused. </answer>
+	</patient>
+
+	<patient num="13">
+		<name>Irvin P. Freely</name>
+		<age>47</age>
+		<start>glasses</start>
+		<ods>-2.25</ods><odc>+.75</odc><oda>97</oda>
+		<oss>-3.25</oss><osc>+.50</osc><osa>082</osa>
+		<odva>80</odva>
+		<osva>70</osva>
+		<rs>-4.75</rs><rc>+1.00</rc><ra>090</ra>
+		<ls>-5.25</ls><lc>+.75</lc><la>090</la>
+		<odbcva>27</odbcva>
+		<osbcva>30</osbcva>
+		<odpsc>0</odpsc>
+		<odcortical>0</odcortical>
+		<odscissors>0</odscissors>
+		<ospsc>0</ospsc>
+		<oscortical>0</oscortical>
+		<osscissors>0</osscissors>
+		<history>Mr. Freely just had an eye examination 3 months ago, and now he feels his vision with his glasses is really blurry.  He states that his prescription keeps going up and down over the last year and he's sick of having to change his glasses.</history>
+		<answer>It's unusual to have such a large refractive shift at this age unless there's some sort of pathology.  Cataracts is one possibility.  However, because of his history of fluctuations it would be a good idea to rule out diabetes.</answer>
+	</patient>
+	
+	<patient num="14">
+		<name>Pete S. Cadillac</name>
+		<age>47</age>
+		<start>glasses</start>
+		<ods>-3.00</ods><odc>+.75</odc><oda>015</oda>
+		<oss>-3.50</oss><osc>+1.25</osc><osa>160</osa>
+		<odva>40</odva>
+		<osva>20</osva>
+		<rs>-3.50</rs><rc>+1.00</rc><ra>020</ra>
+		<ls>-3.25</ls><lc>+1.00</lc><la>164</la>
+		<odbcva>30</odbcva>
+		<osbcva>20</osbcva>
+		<odpsc>3</odpsc>
+		<odcortical>0</odcortical>
+		<odscissors>0</odscissors>
+		<ospsc>0</ospsc>
+		<oscortical>0</oscortical>
+		<osscissors>0</osscissors>
+		<history>Mr. Cadillac feels that his right eye vision has worsened over the last two year.  His left eye seems fine.</history>
+		<answer>Mr. Cadillac's best corrected acuity is reduced in his right eye.  From the appearance of the retinoscopy reflex it appears that he has a posterior subcapsular cataract in this eye.</answer>
+	</patient>
+
+<patient num="15">
+		<name>Maggie LaPooch</name>
+		<age>7</age>
+		<start>none</start>
+		<ods>0</ods><odc>0</odc><oda>0</oda>
+		<oss>0</oss><osc>0</osc><osa>0</osa>
+		<odva>30</odva>
+		<osva>25</osva>
+		<rs>-.50</rs><rc>+1.00</rc><ra>097</ra>
+		<ls>-.75</ls><lc>+.75</lc><la>082</la>
+		<odbcva>15</odbcva>
+		<osbcva>15</osbcva>
+		<odpsc>0</odpsc>
+		<odcortical>0</odcortical>
+		<odscissors>0</odscissors>
+		<ospsc>0</ospsc>
+		<oscortical>0</oscortical>
+		<osscissors>0</osscissors>
+		<history>Maggie is coming in for her first eye exam.  She feels she's doing well, but her teacher has noticed her squinting when reading the chalkboard and when doing homework.  Her parents say that she tends to get a lot of headaches.</history>
+		<answer>Maggies has astigmatism that may be contributing to her symptoms.</answer>
+	</patient>
+</files>

@@ -1,0 +1,168 @@
+<!--[include file=meds_user_menu.htm]-->
+
+
+<!--[if $search]--><div class="align_left" style="padding: 0 0 3px 3px;"> <a href="javascript:history.go(-1);" title="Back To Your Search Results">Back To Your Search Results</a> | <a href="module-Contact.htm" >Report error</a></div><!--[/if]-->
+
+<table class="meds_table_max" style="background:#fff;" cellpadding="3" cellspacing="2">
+    <tr class="meds_table_head">
+        <td colspan="4" class="align_left" style="padding:5px;font-size:16pt;">
+            <!--[$med.trade|pnvarprepfordisplay]--> 
+        </td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Manufacturer:</td>
+        <td class="align_left"><!--[if $med.comp_id]-->
+        
+        <span class="meds_helpcue" <!--[popup trigger=onClick sticky=true caption=$companies[$med.comp_id].name text=$comp_text]--> ><!--[$companies[$med.comp_id].name]--></span>
+        <!--[else]-->Not Specified<!--[/if]--></td>
+
+        <td colspan="2" rowspan="11" style="vertical-align:middle;text-align:center;">
+            <!--[if $med.image1]--><img class="meds_product_image" src="modules/Meds/pnimages/<!--[$med.image1|pnvarprepfordisplay]-->" alt="<!--[$med.image1|pnvarprepfordisplay]-->" /><!--[else]--><img class="meds_product_image" src="modules/Meds/pnimages/No-Picture-Available.jpg" alt="No image available" /><!--[/if]-->
+            <!--[if $med.image2]--><img class="meds_product_image" src="modules/Meds/pnimages/<!--[$med.image2|pnvarprepfordisplay]-->" alt="<!--[$med.image2|pnvarprepfordisplay]-->" /><!--[/if]-->
+        </td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Med Type:</td>
+        <td class="align_left"><!--[if $med.medType1]--><!--[$med.medType1|pnvarprepfordisplay]--><!--[else]-->None Specified<!--[/if]-->
+        <!--[if $med.medType2]--><br />(<!--[$med.medType2|pnvarprepfordisplay]-->)<!--[/if]-->
+        </td>
+    </tr>
+
+    <tr>
+        <td class="meds_right_strong_bg">Preservative:</td>
+        <td class="align_left"><!--[if $med.pres_id1]-->
+          <span class="meds_helpcue" <!--[popup trigger=onClick sticky=true caption=$preserves[$med.pres_id1].name text=$preserve_info1]--> ><!--[$preserves[$med.pres_id1].name]--></span>
+          <!--[else]-->Not Specified<!--[/if]-->
+
+           <!--[if $med.pres_id2]--><br /><span class="meds_helpcue" <!--[popup trigger=onClick sticky=true caption=$preserves[$med.pres_id2].name text=$preserve_info2]--> ><!--[$preserves[$med.pres_id2].name]--></span><!--[/if]-->
+
+        </td>
+    </tr>
+
+    <tr>
+        <td class="meds_right_strong_bg">Pediatrics:</td>
+        <td class="align_left"><!--[if $med.peds>0]--><!--[$med.peds|pnvarprepfordisplay]--> <!--[$med.ped_text|pnvarprepfordisplay]--> and older<!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+
+    <tr>
+        <td class="meds_right_strong_bg">Schedule:</td>
+        <td class="align_left"><!--[if $med.schedule]--><span class="meds_helpcue"<!--[popup trigger=onClick sticky=true caption=$med.schedule|pnvarprepfordisplay text=$sched|pnvarprepfordisplay]-->><!--[$med.schedule|pnvarprepfordisplay]--></span><!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Pregnancy Class:</td>
+        <td class="align_left"><!--[if $med.preg]--><span class="meds_helpcue"<!--[popup trigger=onClick sticky=true caption=$med.preg|pnvarprepfordisplay text=$preg|pnvarprepfordisplay]-->><!--[$med.preg|pnvarprepfordisplay]--></span><!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+
+    <tr>
+        <td class="meds_right_strong_bg">Nursing:</td>
+        <td class="align_left" colspan="3"><!--[if $med.nurse]--><!--[$med.nurse|pnvarprephtmldisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+        <td class="meds_right_strong_bg">Generic:</td>
+        <td class="align_left"><!--[if $med.generic]--><!--[$med.generic|pnvarprepfordisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Website:</td>
+        <td class="align_left"><!--[if $med.med_url != 'http://']--><a href="<!--[$med.med_url|pnvarprepfordisplay]-->" target="_blank" title="<!--[$med.trade|pnvarprepfordisplay]--> on the web"><!--[$med.med_url|pnvarprepfordisplay|truncate:20:"...":true]--></a><!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Rx Info:</td>
+        <td class="align_left"><!--[if $med.rxInfo != 'http://']--><a href="<!--[$med.rxInfo|pnvarprepfordisplay]-->" target="_blank" title="Rx Information"><!--[$med.rxInfo|pnvarprepfordisplay|truncate:20:"...":true]--></a><!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Updated:</td>
+        <td class="align_left"><!--[if $med.updated]--><!--[$med.updated|pnvarprepfordisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+
+    <tr>
+        <td class="meds_right_strong_bg">Dose:</td>
+        <td class="align_left" colspan="3"><!--[if $med.dose]--><!--[$med.dose|pnvarprephtmldisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+    
+    <tr>
+        <td class="meds_right_strong_bg">Components</td>
+        <td class="meds_center_strong_bg">Concentration</td>
+        <td class="meds_center_strong_bg">Chemical</td>
+        <td class="meds_center_strong_bg">Method Of Action</td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">#1:</td>
+        <td class="align_center"><!--[if $med.conc1]--><!--[$med.conc1|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td> 
+        <td class="align_center"><!--[if $med.chem_id1]--><!--[$chemicals[$med.chem_id1].name]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.moa_id1]--><span class="meds_helpcue" <!--[popup trigger=onClick sticky=true caption=$methods[$med.moa_id1].name text=$moa_info1]--> ><!--[$methods[$med.moa_id1].name]--></span>
+        <!--[else]-->--<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">#2:</td>
+        <td class="align_center"><!--[if $med.conc2]--><!--[$med.conc2|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td> 
+        <td class="align_center"><!--[if $med.chem_id2]--><!--[$chemicals[$med.chem_id2].name]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.moa_id2]--><span class="meds_helpcue" <!--[popup trigger=onClick sticky=true caption=$methods[$med.moa_id2].name text=$moa_info2]--> ><!--[$methods[$med.moa_id2].name]--></span>
+        <!--[else]-->--<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">#3:</td>
+        <td class="align_center"><!--[if $med.conc3]--><!--[$med.conc3|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td> 
+        <td class="align_center"><!--[if $med.chem_id3]--><!--[$chemicals[$med.chem_id3].name]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.moa_id3]--><span class="meds_helpcue" <!--[popup trigger=onClick sticky=true caption=$methods[$med.moa_id3].name text=$moa_info3]--> ><!--[$methods[$med.moa_id3].name]--></span>
+        <!--[else]-->--<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">#4:</td>
+        <td class="align_center"><!--[if $med.conc4]--><!--[$med.conc4|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td> 
+        <td class="align_center"><!--[if $med.chem_id4]--><!--[$chemicals[$med.chem_id4].name]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.moa_id4]--><span class="meds_helpcue" <!--[popup trigger=onClick sticky=true caption=$methods[$med.moa_id4].name text=$moa_info4]--> ><!--[$methods[$med.moa_id4].name]--></span>
+        <!--[else]-->--<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Packages</td>
+        <td class="meds_center_strong_bg">Form</td>
+        <td class="meds_center_strong_bg">Size</td>
+        <td class="meds_center_strong_bg"><span class="meds_helpcue" <!--[popup trigger=onClick sticky=true caption='Where does cost info come from?' text='The <i>Estimated Retail Cost</i> represents the medicine\'s cost on Drugstore.com (or if not available there, through Walgreens.com).  The cost is recorded at the time of the medicine\'s last update, indicated at the bottom of the corresponding webpage.  Of course, the actual cost of the medicine may differ depending on the dispensing pharmacy and market fluctuations.  The purpose of the estimated retail cost is to give you an idea of how much your patient might pay for the medicine.']--> >Cost</span></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">#1:</td>
+        <td class="align_center"><!--[if $med.form1]--><!--[$med.form1|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.size1]--><!--[$med.size1|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.cost1]--><!--[$med.cost1|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">#2:</td>
+        <td class="align_center"><!--[if $med.form2]--><!--[$med.form2|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.size2]--><!--[$med.size2|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.cost2]--><!--[$med.cost2|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">#3:</td>
+        <td class="align_center"><!--[if $med.form3]--><!--[$med.form3|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.size3]--><!--[$med.size3|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.cost3]--><!--[$med.cost3|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">#4:</td>
+        <td class="align_center"><!--[if $med.form4]--><!--[$med.form4|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.size4]--><!--[$med.size4|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+        <td class="align_center"><!--[if $med.cost4]--><!--[$med.cost4|pnvarprepfordisplay]--><!--[else]-->--<!--[/if]--></td>
+    </tr>
+    <tr>
+        <td class="meds_right_strong_bg">Comments:</td>
+        <td class="align_left" colspan="3"><!--[if $med.comments]--><!--[$med.comments|pnvarprephtmldisplay]--><!--[else]-->Not Specified<!--[/if]--></td>
+    </tr>
+    
+    <!--[if $is_admin]-->
+    <tr>
+        <td class="meds_right_strong_bg">Actions:</td>
+        <td class="align_left" colspan="3">
+            [ <a href="<!--[pnmodurl modname=Meds type=admin func=modify_med med_id=$med.med_id|pnvarprepfordisplay]-->" title="Edit">Edit</a> ]
+            [ <a href="<!--[pnmodurl modname=Meds type=admin func=delete object=med id=$med.med_id|pnvarprepfordisplay]-->" title="Delete">Delete</a> ]
+        </td>
+    </tr>
+    <!--[/if]-->
+    <tr style="background:#e5e5e5;">
+        <td class="meds_width_25">&nbsp;</td>
+        <td class="meds_width_25">&nbsp;</td>
+        <td class="meds_width_25">&nbsp;</td>
+        <td class="meds_width_25">&nbsp;</td>
+    </tr>
+</table>
+<br />
+<!--[$hooks]-->
+

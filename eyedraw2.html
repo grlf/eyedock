@@ -1,0 +1,354 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us">
+<head>
+<title>EyeDock EyeDraw</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<meta http-equiv="expires" content="0" />
+<meta name="copyright" content="Copyright © Y2K6+ John Alarcon" />
+<meta name="description" content="A resource for eye care professionals" />
+<meta name="distribution" content="Global" />
+<meta name="keywords" content="contact lenses, lenses, eyecare, eyes, contacts, contact lens search, contact lens finder, contact lens information, eye care resources, eye care professionals, todd zarwell, brian chou, eyedock, eyedoc, retina, cornea, glaucoma, spectacles, transitions, RGP calculator, toric lens calculator, oblique crossed cylinders, toric lens overrefraction, icd9 icd-9 codes" />
+<meta name="resource-type" content="document" />
+<meta name="revisit-after" content="1 days" />
+<meta name="robots" content="index,follow" />
+<link rel="alternate" href="backend.php" type="application/rss+xml" title="EyeDock" />
+<link rel="stylesheet" href="../themes/EyeDock/style/style.css" type="text/css" />
+<script type="text/javascript" src="../javascript/showimages.js"></script>
+
+<script type="text/javascript" src="../javascript/openwindow.js"></script>
+
+<link rel="stylesheet" href="../modules/EyeDraw/pnstyle/style.css" type="text/css">
+
+<script type="text/javascript" src="../javascript/overlib/overlib.js"></script>
+<script src="../themes/EyeDock/javascript/quickSearch.js"></script>
+<script src="../themes/EyeDock/javascript/tabChange.js"></script>
+<script src="../themes/EyeDock/javascript/swfobject.js" type="text/javascript"></script>
+<script src="../themes/EyeDock/javascript/quickCalcControl.js"></script>
+<!--<link rel="stylesheet" href="/themes/EyeDock/style/style.css" type="text/css" />-->
+
+</head>
+
+<body>
+
+
+
+
+
+
+<table class="master_width" align="center" cellpadding="0" cellspacing="0">
+  <tr>
+    <td><table class="max" cellpadding="0" cellspacing="0">
+        <tr>
+          <td colspan="2" style="border-bottom:1px solid #fff;padding:2px 0 2px 0;"><a href="index.htm" title="Home"><strong style="color:#fff;">eyedock.com</strong></a></td>
+
+        </tr>
+        <tr>
+          <td style="padding:5px 0 0 0;">&nbsp;</td>
+          <td style="text-align:right;">
+          <a target="_blank" href="/index.php?module=EyeDraw&amp;func=main&amp;theme=PrinterFriendly">Printer Friendly Page</a>       <!-- AddThis Button BEGIN --> | 
+<a href="http://www.addthis.com/bookmark.php?v=250" onMouseOver="return addthis_open(this, '', '[URL]', '[TITLE]')" onMouseOut="addthis_close()" onClick="return addthis_sendto()"><img src="http://s7.addthis.com/static/btn/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0"/></a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js?pub=xa-4a3aba5a28b8c5ce"></script>
+<!-- AddThis Button END -->
+
+          
+          </td>
+        </tr>
+      </table>
+      <!--br /-->
+      <table border="0" cellpadding="5" cellspacing="0">
+        <tr>
+          <td class="quad2"><form style="display:inline; color: #FFF;" method="post" action="index.php?module=Search&action=search" name="main_search_form" class="x" onSubmit="return ActionDeterminator();">
+              <label>
+              <input type="radio" name="where" id="where"  onclick="special_hide();" checked="checked" >
+
+              CLs </label>
+              <label>
+              <input type="radio" name="where" id="where"   onclick="special_hide();">
+              ICD-9 </label>
+              <label>
+              <input type="radio" name="where" id="where"  onclick="special_hide();">
+              Meds </label>
+
+              <label>
+              <input type="radio" name="where" id="where"  onclick="special_hide();">
+              All EyeDock </label>
+              <br />
+              <label>
+              <input type="radio" name="where" id="where" onClick="google_show();">
+              Google</label>
+              <label>
+
+              <input type="radio" name="where" id="where" onClick="epocrates_show();">
+              Epocrates</label>
+              <br />
+              <div id="non_google" style="display: block">
+                <input name="q" type="text" id="q" style="width:175px; margin-top: 7px;"/>
+                <input type="submit" name="Submit" value="Go!" style="text-align:center;" />
+                <!-- lens and meds module hidden inputs-->
+                <input type="hidden" id="display_phrase" name="display_phrase" value="phrase" />
+
+                <input type="hidden" name="active" value="1" />
+                <!-- core search function hidden inputs -->
+                <!--<input type="hidden" name="module" value="Search" />
+<input type="hidden" name="name" value="Search" />
+<input type="hidden" name="action" value="search" />-->
+<input type="hidden" name="file" value="index" />
+<input type="hidden" name="overview" value="1" />
+<input type="hidden" name="bool"  id="search2" value="AND">
+<input type="hidden" name="active_weblinks" id="active_weblinks" value="1" />
+<input type="hidden" name="active_ezcomments" id="active_ezcomments" value="1"  />
+<input type="hidden" name="active_faqs" id="active_faqs" value="1" />
+<input type="hidden" name="active_pagesetter" id="active_pagesetter" value="1" >
+<input type="hidden" name="pnForum_startnum" value="0" />
+<input type="hidden" name="pnForum_forum[]" value="" />
+<input type="hidden" name="pnForum_author" value="" />
+<input type="hidden" name="pnForum_order[]" value="1" />
+
+<input type="hidden" name="pnForum_limit" value="0" />
+<input type="hidden" name="active_pnForum" id="active_pnForum" value="1"  />
+<input type="hidden" name="active_lenses" id="active_lenses" value="1" />
+<input type="hidden" name="active_stories" id="active_stories" value="1"/>
+<input type="hidden" name="stories_topics" id="stories_topics" value="ALL">
+<input type="hidden" name="stories_cat[]" id="stories_cat" value="">
+<input type="hidden" name="active_users" id="active_users" value="1" />
+<input type="hidden" name="active_meds" id="active_meds" value="1" />
+<input type="hidden" name="active_icd9" id="active_icd9" value="1" />
+<input type="hidden" name="active_mediashare" id="active_mediashare" value="1" >                <!-- end core search function hidden inputs-->
+              </div>
+            </form>
+            <div id="google_search" style="display:none; color:#FFF; margin:3px;">
+
+              <!-- Google CSE Search Box Begins -->
+                <form id="searchbox_002258048729432427197:ma0opikbxoi" action="module-google_search.htm" style="margin: 3px;">
+    <input type="hidden" name="cx" value="002258048729432427197:ma0opikbxoi" />
+    <input type="hidden" name="cof" value="FORID:11" />
+    <input name="q" type="text" width="175px" />
+    <input type="submit" name="sa" value="Search" />
+  </form>
+  <script type="text/javascript" src="http://www.google.com/coop/cse/brand?form=searchbox_002258048729432427197%3Ama0opikbxoi"></script>              <!-- Google CSE Search Box Ends -->
+
+            </div>
+            <div id="epocrates_search" style="display:none; color:#FFF; ">
+              <!-- Begin Epocrates MedSearch --->
+               <script type="text/javascript" src="http://online.epocrates.com/public/portkey/start/popup.js"></script>
+        <form id="portkeyform" action="https://online.epocrates.com/public/portkey/" name="portkeyform" target="rxmain" 
+        onsubmit="return epoxOpen('https://online.epocrates.com/public/portkey/?monograph=' 
+        + document.portkeyform.monograph.value)" method="get">
+        <div id="portkey-div" style="margin-top: 2px; width: 220px;">
+        <label for="portkey-input">Drug:</label>
+        <input type="text" id="portkey-input" name="monograph" style="width:160px; left: 46px;"/>
+
+        <input type="image" style="left: 236px; " src="http://online.epocrates.com/public/portkey/dist/go.gif"
+        alt="Go" id="portkey-submit" />
+        </div>
+        <a href="http://www.epocrates.com/">
+        <img src="http://online.epocrates.com/public/portkey/dist/poweredby.gif" border="0" alt="Epocrates Online" />
+        </a>
+        </form>
+        <link href="http://online.epocrates.com/public/portkey/dist/portkey.css" rel="stylesheet" type="text/css" />
+        <noscript>
+        <a href="https://online.epocrates.com/u/10a376/Allegra">Allegra</a>
+        <a href="https://online.epocrates.com/u/10a131/alprazolam">Alprazolam</a>
+        <a href="https://online.epocrates.com/u/10a380/Altace">Altace</a>
+        epocrxsearch
+        </noscript>              <!-- End Epocrates MedSearch --->
+
+            </div></td>
+          <td class="alar_welcome" style="text-align:center;"><h3 style="display:inline;">Welcome Anonymous</h3></td>
+          <td class="alar_account" style="text-align:center;">&nbsp;</td>
+         <!-- <td class="alar_message" style="text-align:center;">< [alar-message]</td>
+          <td class="alar_compose" style="text-align:center;">< [alar-compose]</td> -->
+          <td class="alar_logger" style="text-align:center;"><a href="amember/logout.php" title="Login To Your Account"><img src="images/icon_login.gif" alt="Login To Your Account" id="menu_icon_32" /><br/>Log In</a></td>
+        </tr>
+      </table>
+      <table class="max" cellpadding="3" cellspacing="3">
+
+        <tr>
+          <td style="width:50%;">&nbsp;</td>
+          <td style="width:50%;text-align:right;">            <a class="navlinks" href="index.htm" title="EyeDock's front page">Home</a> ::
+            <!--  <a class="navlinks" href="index.php?module=pagesetter&tid=6" title="Latest News">News</a> :: -->
+            <a class="navlinks" href="module-About.htm" title="About EyeDock">About</a> :: <a class="navlinks" href="index.php?module=pagesetter&tid=10" title="Frequently asked questions about EyeDock">FAQs</a> :: <a class="navlinks" href="Suggest.htm" title="Suggest EyeDock to a colleague">Suggest Us</a> :: <a class="navlinks" href="Contact.htm" title="Contact us about a problem, a compliment, or just say hello">Contact Us</a> :: <a class="navlinks" href="module-amazon_store.htm" title="Buy products you need at Amazon and support EyeDock">Store</a> </td>
+
+        </tr>
+      </table>
+      <table class="max" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+          <td>&nbsp;</td>
+          <td class="topfront"  style="text-align:left; border-bottom:20px;"><div id="navblock" > <a  title="Quick Calcs" style="vertical-align:middle;" href="javascript:playVid()"> <img id="menu_icon_24" style="vertical-align:middle;" src="themes/EyeDock/images/icons/icon_calc_24.gif" alt="Quick Calcs" /> Quick Calcs </a></div>
+          
+
+<!-- ***** QUCIK CALCS  ******  -->          
+<div id='vidPane' class='vidFrame'>
+<div style="text-align: center;" id="flashQuickCalcs"> You must have the Flash player installed to use this tool. </div>
+<script type="text/javascript">
+   var so = new SWFObject("flash_files/quickCalcs.swf", "quickCalcs", "175", "400", "8", "#FFFFFF");
+   so.useExpressInstall('/flash_files/expressinstall.swf');
+   so.write("flashQuickCalcs");
+</script>
+</div>
+
+
+            <div style="text-align:center; display:none;"> <br />
+              <a href="module-About.htm" title="About EyeDock"><img id="menu_icon_32" src="themes/EyeDock/images/icons/icon_about_32.gif" alt="About EyeDock" /></a> <a href="module-FAQ.htm" title="Frequently Asked Questions"><img id="menu_icon_32" src="themes/EyeDock/images/icons/icon_faq_32.gif" alt="Frequently Asked Questions" /></a><br />
+            </div>
+
+            <br />
+            <div style="width:180px">
+                            <div id="left_block_container">
+    <div id="left_block_title">New Feature!</div>
+    <div id="left_block_content"><div style=" padding:.5em;"><a href="http://itunes.apple.com/us/app/eyedock/id354889491?mt=8"><img style="float:left; margin-right:.5em; border:none;" src="/images/eyedock/whole iphone v small.gif" width="27" height="50" alt="iphone app"  /></a>  Check out our new <a href="http://itunes.apple.com/us/app/eyedock/id354889491?mt=8">iPhone app!</a><p> &nbsp;</p><p></p></div></div>
+</div><br /><div id="left_block_container">
+    <div id="left_block_title">Searches</div>
+
+    <div id="left_block_content"><ul>
+<li><a href="module-Lenses-flash.htm" title="Search for contact lens parameters.">Contact Lenses</a></li>
+<li><a href="module-Meds.htm" title="Search for topical ophthalmic medications">Ophth. Medications</a></li>
+<li><a href="module-icd9.htm" title="Search ICD-9 Codes">Diagnosis Codes</a></li>
+</ul>
+</div>
+</div><br /><div id="left_block_container">
+    <div id="left_block_title">Tools & Calculators</div>
+    <div id="left_block_content"><ul>
+
+<li><a href="module-Tools-display-tool-contact_lens.htm" title="Calculate the power of SCLs and RGPs">CL Calculator</a></li>
+<li><a href="module-Tools-display-tool-oblique.htm" title="Add a cylindrical overrefractio to a toric lens">Oblique X-Cyl</a></li>
+<li><a href="module-Tools.htm" title="">...more tools &amp; calculators</a></li>
+</ul>
+</div>
+</div><br /><div id="left_block_container">
+    <div id="left_block_title">Patient Education</div>
+    <div id="left_block_content"><ul>
+<li><a href="module-EyeDraw.htm" title="Interactive images of the visual system for patient education">EyeDraw</a></li>
+
+<li><a href="module-VisionSimulation.htm" title="Simulate different types of refractive error"> Vision Simulator</a></li>
+</ul>
+</div>
+</div><br /><div id="left_block_container">
+    <div id="left_block_title">User Contributed Content</div>
+    <div id="left_block_content"><ul>
+<li><a href="index.php?module=Pagesetter&amp;tid=4" title="Random articles">Knowledgebase</a></li>
+<li><a href="http://www.eyedock.com/index.php?module=Pagesetter&amp;tid=5" title="Interesting cases">Grand Rounds</a></li>
+</ul>
+</div>
+
+</div><br /><div id="left_block_container">
+    <div id="left_block_title">In the news...</div>
+    <div id="left_block_content">  
+    <a href="http://mnt.to/f/3L75" target="_blank">How Deaf People's Brains Change To Boost Sight</a>
+    <hr />
+  
+    <a href="http://mnt.to/f/3L6w" target="_blank">American Academy Of Ophthalmology Warns Against The Danger Of Transforming Your Eyes This Halloween</a>
+    <hr />
+  
+    <a href="http://mnt.to/f/3L6b" target="_blank">Alcon Introduces New Systane(R) BALANCE Lubricant Eye Drops For Dry Eye Patients With Meibomian Gland Dysfunction</a>
+
+    <hr />
+  
+    <a href="http://mnt.to/f/3L3C" target="_blank">Research Reveals How The Deaf Have Super Vision</a>
+    <hr />
+    <a href="module-RSS.htm">..more news feeds</a></div>
+</div><br />            </div></td>
+          <td>&nbsp;&nbsp;&nbsp;</td>
+          <td class="topfront" style="text-align:left; padding:5px 20px 5px 20px; width:100%; border:0px solid #c6e3f9;" valign="top"><!-- [admin-messages] -->
+                        
+
+<!-- Open Module Styles -->
+<div id="EyeDraw" class="module">
+
+
+<script src="../themes/EyeDock/javascript/AC_RunActiveContent.js" type="text/javascript"></script>
+
+
+<div class="tool" align="center">
+    <script type="text/javascript">
+AC_FL_RunContent( 'id','eyedraw','codebase','http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0','width','750','height','550','name','eyedraw','src','../EyeDropper_xml','quality','high','bgcolor','#ffffff','pluginspage','http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash','movie','../EyeDropper_xml','allowscriptaccess','sameDomain' ); //end AC code
+</script><noscript><object id="eyedraw" classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" width="750" height="550">
+        <param name="movie" value="../EyeDropper_xml.swf" />
+        <param name="allowScriptAccess" value="sameDomain" />
+        <param name="quality" value="high" />
+        <param name="bgcolor" value="#ffffff" />
+        <embed name="eyedraw" src="../EyeDropper_xml.swf" quality="high" bgcolor="#ffffff" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" type="application/x-shockwave-flash" width="750" height="550" />
+    </object></noscript>
+</div>  
+<div style="text-align:center;">
+    These images are copyright (c) 2004 - 2009 by 3conX Corp and EyeDock LLC,<br /> 
+    all rights reserved. Permission is granted for personal viewing of these images for non-commercial use only.
+
+</div>
+<!-- Close Module Styles -->
+</div>
+
+            <br />
+            <br />
+            <table  cellpadding="5" cellspacing="5">
+              <tr>
+                <td width="45%"></td>
+                <td width="45%"></td>
+              </tr>
+
+              <tr>
+                <td width="45%"></td>
+                <td width="45%"></td>
+              </tr>
+            </table></td>
+          <td>&nbsp;</td>
+          <td style="margin: 5px 0px 10px 20px;"></td>
+        </tr>
+      </table>
+
+      <br />
+      <br />
+      <br />
+      <div class="align_center"> <a href="index.htm" title="The Eye Dock"><img src="themes/EyeDock/images/eyedock_logo_hover.gif" style="width:150px;height:150px;border:0;" alt="The Eye Dock" /></a>
+        <div id="foot_bold"> [ <a href="module-Lenses.htm" title="Contact Lens Search">Contact Lens Search</a> ]
+          [ <a href="module-Meds.htm" title="Medication Search">Medication Search</a> ]
+          [ <a href="module-icd9.htm" title="ICD-9 Diagnosis Codes Search">ICD-9 Search</a> ] </div>
+
+        <br />
+        <div id="foot_menu"> [ <a href="index.htm" title="The Eye Dock Home Page">Home</a> ]
+          [ <a href="module-About.htm" title="About The Eye Dock">About</a> ]
+          
+          [ <a href="module-Contact.htm" title="Make Contact">Contact Us</a> ] <br />
+          [ <a href="module-Legal-privacy.htm" title="Privacy Statement">Privacy</a> ]
+          [ <a href="module-Legal-termsofuse.htm" title="Terms Of Using The Eye Dock">Terms</a> ]
+          [ <a href="module-Legal-accessibilitystatement.htm" title="Accessibility Statement">Accessibility</a> ] </div>
+
+        <br />
+        <div id="foot_bold"><strong>&#169; 2004-2009 The Eye Dock</strong></div>
+        <div id="foot_cred"> <br />
+          <br />
+          <img src="themes/EyeDock/images/xbrowser.gif" style="" alt="Designed For You" /><br />
+          <br />
+          <br />
+
+          <a href="http://www.alarconceptsdesign.com/" title="Website Development By AlarConcepts">Website Development by AlarConcepts</a> </div>
+      </div></td>
+  </tr>
+</table>
+<!--google analytics-->
+	<script type="text/javascript">
+    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script type="text/javascript">
+    var pageTracker = _gat._getTracker("UA-4108420-1");
+    pageTracker._initData();
+    pageTracker._trackPageview();
+    </script>
+    
+    
+   <!--moveable layer popup-->
+
+    <script type="text/javascript">
+   var savedTarget=null;                           // The target layer (effectively vidPane)
+   var orgCursor=null;                             // The original mouse style so we can restore it
+   var dragOK=false;                               // True if we're allowed to move the element under mouse
+   var dragXoffset=0;                              // How much we've moved the element on the horozontal
+   var dragYoffset=0;                              // How much we've moved the element on the verticle
+   vidPaneID = document.getElementById('vidPane'); // Our movable layer
+   vidPaneID.style.top='75px';                     // Starting location horozontal
+   vidPaneID.style.left='75px';                    // Starting location verticle
+</script>
+<script type="text/javascript">VISUAL=0; FULLCTRL=1; SECURE=1; USETABLE=1; USEFORM=1; LANGUAGE="language.js";</script>
+<!--<script type="text/javascript" src="modules/typetool/pnincludes/quickbuild.js"></script>-->
+</body>
+</html>

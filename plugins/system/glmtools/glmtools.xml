@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<extension type="plugin" version="3.0" group="system" method="upgrade">
+	<name>System - GLM Tools</name>
+	<author>Matt Scott</author>
+	<creationDate>October 2014</creationDate>
+	<copyright>Copyright (C) 2014 Greenleaf Media</copyright>
+	<license>GNU General Public License version 3 or later</license>
+	<authorEmail>matt@greenleafmedia.com</authorEmail>
+	<authorUrl>www.greenleafmedia.com</authorUrl>
+	<version>1.0.0</version>
+	<description>This plugin contains custom global plugin functions for use on Eyedock</description>
+	<files>
+		<filename plugin="glmtools">glmtools.php</filename>
+		<filename>index.html</filename>
+	</files>
+</extension>

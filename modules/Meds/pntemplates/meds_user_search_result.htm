@@ -1,0 +1,32 @@
+<div style="padding:0 25px 0 25px;">
+
+
+
+<table border="1" cellspacing="0" cellpadding="4">
+   <tr>
+       <th>Trade name</th>
+       <th>Manufacturer</th>
+       <th>Components</th>
+       <th>Med type</th>
+    </tr>
+
+<!--[foreach from=$results key=lens item=parameters]-->
+    <tr style="background-color:<!--[cycle values="#FFFFFF,#E5EBFF"]-->;">
+       <td><a href="<!--[pnmodurl modname=Meds func=display med_id=$parameters.med_id|pnvarprepfordisplay search=true]-->" title="<!--[$parameters.trade|pnvarprepfordisplay]-->"><!--[$parameters.trade|pnvarprepfordisplay]--></a></td>
+       <td><!--[$parameters.comp.name|pnvarprepfordisplay]--></td>
+       <td><!--[$parameters.chem1.name|pnvarprepfordisplay]-->
+           <!--[if $parameters.chem2.name]-->
+                   <br /><!--[$parameters.chem2.name|pnvarprepfordisplay]--><!--[/if]-->
+           <!--[if $parameters.chem3.name]-->
+                   <br /><!--[$parameters.chem3.name|pnvarprepfordisplay]--><!--[/if]-->
+           <!--[if $parameters.chem4.name]-->
+                   <br /><!--[$parameters.chem4.name|pnvarprepfordisplay]--><!--[/if]-->
+       </td>
+       <td><!--[$parameters.medType1|pnvarprepfordisplay]--> <!--[if $parameters.medType2]-->&nbsp;(<!--[$parameters.medType2|pnvarprepfordisplay]-->)<!--[/if]--></td>
+    </tr>
+    
+<!--[/foreach]-->    
+</table>
+    
+
+</div>

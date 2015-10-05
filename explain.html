@@ -1,0 +1,582 @@
+<html>
+
+<head>
+
+<title>EyeDock Explanations</title>
+<link REL=stylesheet type='text/css' HREF='../style.css'/>
+<script src="/__utm.js" type="text/javascript"></script>
+</head>
+
+<body background="../backgrounds/background.gif">
+
+<h1 align="center"><font color="#0000FF">More about contact lens calculations</font></h1>
+<p align="center"><font color="#0000FF"><a href="/calcs/calc_menu.php">Go to EyeDock Calculations</a> </font></p>
+<p align="center"><a href="#softSph">Soft Spherical</a>&nbsp;&nbsp;&nbsp; <a href="#softToric">Soft toric</a>&nbsp;&nbsp;&nbsp;
+<a href="#RGPsphere">RGP Sphere</a>&nbsp;&nbsp;&nbsp; <a href="#RGPbitoric">RGP Bitoric</a>&nbsp;&nbsp;&nbsp;
+<a href="#RGPback">RGP Back
+Toric</a>&nbsp;&nbsp;&nbsp; <a href="#RGPfront">RGP Front Toric</a></p>
+
+<p>I'm glad you're looking at this page.&nbsp; You really shouldn't trust a
+computer program to calculate your contact lenses unless you know exactly how
+the calculations are done.&nbsp; There's definitely nothing magic about these
+calculators:&nbsp; The formulas and the concepts that are being employed are the
+same ones that you would use.&nbsp;</p>
+<p><img border="0" src="../images/philosopher.gif" align="left" width="189" height="131"></p>
+<p>However, there are a lot of different fitting philosophies out there for each
+one of these types of contact lense<img border="0" src="../images/philosopher2.gif" align="right" width="185" height="132">s.&nbsp;
+Each one has it's merits and I had
+to choose just one for each type of lens (actually, I couldn't decide for the
+spherical RGPs so I chose two). I want you to know exactly which
+philosophies were employed in these calculations so you can decide if they are
+in agreement with the way you want to do things.&nbsp; If they are, great.&nbsp; Go ahead and use the calculators and maybe save yourself a little
+time.&nbsp; If there're not, don't use the calculators and stick to what you
+prefer.&nbsp;&nbsp;</p>
+<p>Be aware that <b>this program has limitations!&nbsp; </b>It's stupid,
+actually. It doesn't take into account pupil size.&nbsp; It doesn't take into
+account lid position.&nbsp; It doesn't even take into account palpebral aperture,
+lid tension, iris diameter, or any of the other factors a contact lens fitter
+needs to evaluate.&nbsp; And it can't look at the lens on the eye and decide if
+it's fitting appropriately and, if not, what should be modified.&nbsp; In fact,
+all it can do is the simplest mathematics, which is the easiest part of the
+whole process.&nbsp; <i>Only you, the professional, experienced eye doctor can
+make the ultimate decision</i> on which lens a patient should leave your office
+with.&nbsp;</p>
+<p>Furthermore, there are some compelling studies demonstrating the advantages
+of&nbsp; <i>diagnostic</i> fitting (as opposed to the <i>empirical</i>
+recommendations that this program is making).&nbsp; Largely, these studies
+indicate that diagnostic
+fitting yields greater patient satisfaction and less contact lens
+refits.&nbsp; If you have the resources, using diagnostic lenses for the initial
+contact lens fits will be superior to anything a computer program can do for you,
+especially with the more complicated toric lenses.</p>
+<p>The concepts used in this program are a conglomeration of ideas from the
+following sources: Milton Hom's <i>Manual of Contact Lens Prescribing and
+Fitting</i>, Bennet &amp; Henry's <i>Clinical Manual of Contact Lenses</i>,
+Carol Schwartz's <i>Specialty Contact Lens: A Fitter's Guide</i>, Fannin &amp;
+Grovsner's <i>Clinical Optics,</i> and my lecture notes from my contact lens
+classes at ICO.</p>
+<p>As always, if you feel my logic is flawed in any way or have any other
+thoughts, advice, or comments, please <a href="../about/contact_me.php" target="_self">contact
+me</a></p>
+<p>Ok, here goes:</p>
+<p align="center">&nbsp;<a name="softSph"></a><a name="softToric" href="#top">back
+to top</a></p>
+  <table border="0" cellpadding="4" cellspacing="4" width="100%">
+    <tr>
+      <td width="13%" bgcolor="#6699FF"><b><u>Spherical Soft Lenses</u></b></td>
+      <td width="87%" bgcolor="#6699FF"></td>
+    </tr>
+    <tr>
+      <td width="13%"></td>
+      <td width="87%"><b>Advice:&nbsp;&nbsp;</b>
+        <ul>
+          <li>Spherical lenses are advised if refractive cylinder (after
+            vertexing)&nbsp; is less than 0.75 D.&nbsp;</li>
+          <li>If this cylinder is greater than or equal to .50 D an aspheric
+            lens is suggested as an option.</li>
+        </ul>
+        <p><b>Suggested parameters</b>:&nbsp;&nbsp;</p>
+        <ul>
+          <li>The suggested power for the lens is simply the spherical
+            equivalent of the vertexed spectacle prescription.&nbsp;&nbsp;</li>
+          <li>The suggested diameter is always &quot;usually btwn.
+            14-15mm&quot;.&nbsp;&nbsp;</li>
+          <li>The suggested base curve is based on the average keratometry
+            value:&nbsp;
+            <ul>
+              <li>If it's &lt;= 42.00 D a &quot;flat&quot; BC is suggested.</li>
+              <li>If it's &gt; 42.00 D and &lt;= 43.00 D &quot;flat to
+                median&quot; is suggested.</li>
+              <li>If it's &gt; 43.00 D and &lt;= 44.00 a &quot;median&quot; BC
+                is suggested.</li>
+              <li>If it's &gt;44.00 D and &lt;= 45.00 D&nbsp; "median to
+                steep&quot; is suggested.</li>
+              <li>If it's &gt; 45.00 D a &quot;steep&quot; base curve is
+                suggested.</li>
+            </ul>
+          </li>
+        </ul>
+        <p><font size="2">(These recommendations are only made if the user has
+        input a valid keratometry measurement)</font></p>
+        <p><b>Comments:&nbsp;</b></p>
+        <ul>
+          <li>If the refractive cylinder after vertexing is greater than .6 D
+            you may want to consider a toric lens, especially if the cylinder is
+            greater than 30% of the overall prescription.&nbsp;&nbsp;</li>
+          <li>If this cylinder is less than .6 D but more than .37 D, you may
+            want to consider an aspheric design.</li>
+        </ul>
+        <p align="center">&nbsp;<a name="softToric" href="#top">back to top</a></td>
+    </tr>
+    <tr>
+      <td width="13%" bgcolor="#6699FF"><b><u>Toric Soft Lenses</u></b></td>
+      <td width="87%" bgcolor="#6699FF"></td>
+    </tr>
+    <tr>
+      <td width="13%"></td>
+      <td width="87%"><b>Advice:&nbsp;&nbsp;</b>
+        <ul>
+          <li>Toric lenses are advised if refractive cylinder (after vertexing)&nbsp;
+            is greater than 0.75 D.&nbsp;</li>
+        </ul>
+        <p><b>Suggested parameters</b>:&nbsp;&nbsp;</p>
+        <ul>
+          <li>The suggested power for the lens is simply the vertexed spectacle
+            prescription converted to minus cyl format.&nbsp;&nbsp;</li>
+          <li>The suggested diameter is always &quot;usually btwn
+            14-15mm&quot;.&nbsp;&nbsp;</li>
+          <li>The suggested base curve is based on the average keratometry
+            value:&nbsp;
+            <ul>
+              <li>If it's &lt;= 42.00 D a &quot;flat&quot; BC is suggested.</li>
+              <li>If it's &gt; 42.00 D and &lt;= 43.00 D &quot;flat to
+                median&quot; is suggested.</li>
+              <li>If it's &gt; 43.00 D and &lt;= 44.00 a &quot;median&quot; BC
+                is suggested.</li>
+              <li>If it's &gt;44.00 D and &lt;= 45.00 D&nbsp; "median to
+                steep&quot; is suggested.</li>
+              <li>If it's &gt; 45.00 D a &quot;steep&quot; base curve is
+                suggested.</li>
+            </ul>
+          </li>
+        </ul>
+        <p><font size="2">(These recommendations are only made if the user has
+        input a valid keratometry measurement)</font></p>
+        <p><b>Comments: </b></p>
+        <ul>
+          <li>If the refractive cylinder after vertexing is less than .6 D you
+            may want to consider a spherical lens.&nbsp; </li>
+          <li>If the corneal cylinder is ATR consider a thin zone
+            toric.&nbsp;&nbsp; </li>
+          <li>If the corneal cylinder is oblique, stabilization may be
+            difficult, which can be aided by lager diameters.</li>
+          <li>If corneal toricity is less than 1.25 D a front surface toric may
+            work best.</li>
+          <li>If corneal toticity is greater than 2.00 D a back surface toric
+            may work best.</li>
+        </ul>
+        <p align="center"><a name="RGPsphere"></a><a name="softToric" href="#top">back
+        to top</a>
+      </td>
+    </tr>
+    <tr>
+      <td width="13%" bgcolor="#6699FF"><u><b>RGP Sphere</b></u></td>
+      <td width="87%" bgcolor="#6699FF">&nbsp;</td>
+    </tr>
+    <tr>
+      <td width="13%"></td>
+      <td width="87%">As I said above, I couldn't decide which fitting method to
+        use for spherical RGPs, so I provided two options:&nbsp; One based on
+        the ICO mid-k method, the other on the method recommended by Bennet
+        &amp; Henry in their book (mentioned above).&nbsp;&nbsp;
+        <p><b>Advice:&nbsp; </b>
+        </p>
+        <ul>
+          <li>Advised if corneal cylinder is less than 3.00 D and residual
+            astigmatism is less than 1.00 D.</li>
+          <li>&nbsp;</li>
+        </ul>
+        <p><b>Suggested parameters</b>:&nbsp; </p>
+        <p><u>ICO mid-K method</u>&nbsp;&nbsp; (mid K refers to the average of
+        the two keratometric readings)</p>
+        <p>If mid-K&gt;45.00 use the smaller (8.5mm) OAD.</p>
+        <p>If mid-K &lt;41.50 use the larger (9.5mm) OAD.</p>
+        <p>Otherwise, use the middle (9.0) OAD.</p>
+        <blockquote>
+          <div align="center">
+            <center>
+          <table border="1" cellpadding="4" cellspacing="4">
+            <tr>
+              <td>OAD</td>
+              <td align="center">8.5mm</td>
+              <td align="center">9.0mm</td>
+              <td align="center">9.5mm</td>
+            </tr>
+            <tr>
+              <td>BC</td>
+              <td align="center">mid K</td>
+              <td align="center">mid K-0.50 D</td>
+              <td align="center">mid K -1.00 D</td>
+            </tr>
+            <tr>
+              <td>OZ</td>
+              <td align="center">7.3mm</td>
+              <td align="center">7.8mm</td>
+              <td align="center">8.3mm</td>
+            </tr>
+            <tr>
+              <td>ICR/W</td>
+              <td align="center">BC + 1.0mm/0.2</td>
+              <td align="center">BC + 1.0mm/0.2</td>
+              <td align="center">BC + 1.0mm/0.2</td>
+            </tr>
+            <tr>
+              <td>PCR/W</td>
+              <td align="center">10.50/0.4</td>
+              <td align="center">11.25/0.4</td>
+              <td align="center">12.25/0.4</td>
+            </tr>
+          </table>
+            </center>
+          </div>
+        </blockquote>
+        <p>The <u>lens power</u> was calculated by:</p>
+        <ol>
+          <li>Subtracting the dioptric base curve from the flat keratometric
+            reading.</li>
+          <li>Adding this value to the vertexed sphere power of the manifest
+            refraction (while in minus cyl form, of course).</li>
+        </ol>
+        <p>&nbsp;</p>
+        <p><u>Bennet &amp; Henry Method</u></p>
+        <ul>
+          <li>OAD=9.0 - 9.2</li>
+          <li>OZ=7.8 - 8.0</li>
+          <li>SCR/W= BC + 0.8/0.3mm</li>
+          <li>&nbsp;ICR/W=SCR+1.0/0.2</li>
+          <li>PCR/W=ICR+1.4/0.2</li>
+          <li>Base curve:&nbsp; Determined by corneal cylinder, as seen in the
+            graph below. Note that this is a slight modification of Bennet &amp;
+            Henry's principles.&nbsp; This was necessary to make clear-cut
+            divisions between the corneal cylinder categories - there was some
+            ambiguity in their categories, which is fine for a person but
+            troublesome for a computer!</li>
+        </ul>
+        <div align="center">
+          <center>
+              <table border="1" cellpadding="4" cellspacing="4" width="347">
+                <tr>
+                  <td width="113">
+                    <p align="left">Corneal Cylinder</p>
+                  </td>
+                  <td width="200">Base Curve (Diagnostic Lens)</td>
+                </tr>
+                <tr>
+                  <td width="113">0.0 - .50 D&nbsp;</td>
+                  <td width="200">0.75 D flatter than flat K</td>
+                </tr>
+                <tr>
+                  <td width="113">0.50 - 1.00 D</td>
+                  <td width="200">0.50 D flatter than flat K</td>
+                </tr>
+                <tr>
+                  <td width="113">1.00 - 1.25 D</td>
+                  <td width="200">0.25 flatter than flat K</td>
+                </tr>
+                <tr>
+                  <td width="113">1.25 - 1.75 D</td>
+                  <td width="200">On K</td>
+                </tr>
+                <tr>
+                  <td width="113">1.75 - 2.00 D</td>
+                  <td width="200">0.25 steeper than flat K</td>
+                </tr>
+                <tr>
+                  <td width="113">2.00 - 3.00 D</td>
+                  <td width="200">0.50 steeper than flat K</td>
+                </tr>
+                <tr>
+                  <td width="113">3.00 to infinity (and beyond)</td>
+                  <td width="200">0.75 steeper than flat K</td>
+                </tr>
+              </table>
+          </center>
+        </div>
+        <p align="left">&nbsp;</p>
+        <p>The <u>lens power</u> was calculated by:</p>
+        <ol>
+          <li>Subtracting the dioptric base curve from the flat keratometric
+            reading.</li>
+          <li>Adding this value to the vertexed sphere power of the manifest
+            refraction (while in minus cyl form, of course).</li>
+        </ol>
+        <p><b>Comments: </b></p>
+        <ul>
+          <li>If there's more than 2.75 D of corneal cylinder a toric lens is
+            recommended.</li>
+          <li>If there's more than 3.00 D of refractive cylinder a toric lens is
+            recommended.</li>
+          <li>If there's more than 1.25 D of residual astigmatism a toric lens
+            is recommended.</li>
+          <li>If there's 0.5 - 1.25 D of residual astigmatism and it's not WTR
+            it may not be acceptable.</li>
+        </ul>
+        <p>Some other advice:&nbsp; If you're changing the diameter of the optic
+        zone and you want to maintain the fitting relationship of the lens, <i>flatten</i>
+        the BC 0.25 D for every 0.5 mm <i>increase</i> in optic zone.&nbsp;
+        Conversely, <i>steepen</i> the BC by .25D&nbsp; for every 0.5mm <i>decrease</i>
+        in optic zone.
+        <p><p align="center"><a name="RGPbitoric"></a><a name="softToric" href="#top">back
+        to top</a></td>
+    </tr>
+    <tr>
+      <td width="13%" bgcolor="#6699FF"><b>RGP Bitoric</b></td>
+      <td width="87%" bgcolor="#6699FF">&nbsp;
+        <p></td>
+    </tr>
+    <tr>
+      <td width="13%"></td>
+      <td width="87%"><b>Advice:&nbsp;&nbsp;</b>
+        <ul>
+          <li>Recommended when corneal cylinder is &gt;= 2.00.&nbsp; (This is a
+            situation where I was forced to make a judgment call:&nbsp; My
+            sources recommended bitoric lenses anywhere between 1.50 and 3.00 D
+            cyl)</li>
+        </ul>
+        <p><b>Suggested parameters</b>:&nbsp;&nbsp;</p>
+        <p><font size="2"><i>The calculations are based on the Mandell-Moore
+        method.&nbsp; For another description of this, visit the <a href="http://www.rgpli.org/mandell.htm" target="_blank">RGPLI</a>
+        website.</i></font></p>
+        <ul>
+          <li>The <i>fit factor</i> is determined by the following:&nbsp;
+            <ul>
+              <li>If&nbsp; corneal cyl &lt; 2.75, the fit factor = 0.50</li>
+              <li>If&nbsp; corneal cyl &lt; 3.75, the fit factor = 0.75</li>
+              <li>If&nbsp; corneal cyl &lt; 4.25, the&nbsp; fit factor = 1.00</li>
+              <li>If&nbsp; corneal cyl &gt; 4.25 , the fit factor = 1.25</li>
+            </ul>
+          </li>
+          <li>The first base curve is the flat keratometry reading minus 0.25 D</li>
+          <li>The other base curve is the steep keratometry reading minus the<i>
+            fit factor</i>.</li>
+          <li>The refraction is vertexed and separated into an optical cross.</li>
+          <li>The first power adds 0.25 D&nbsp; to the meridian that corresponds
+            with the flatter keratometric reading.</li>
+          <li>The second power adds the fit factor to the meridian that
+            corresponds with the steeper keratometric reading.</li>
+          <li>The suggested diameter is always &quot;usually btwn 8.8-9.8&quot;.&nbsp;</li>
+        </ul>
+        <p><b>Comments:&nbsp;</b></p>
+        <ul>
+          <li>If the corneal cylinder is less than 2.00 D a bitoric lens may not
+            align on the cornea correctly.</li>
+        </ul>
+        <p><b>Other Info:</b></p>
+        <p><b>&nbsp;&nbsp; </b>Bitoric lenses are usually the most popular
+        choice when there are larger amounts of corneal astigmatism.</p>
+        <p>&nbsp;&nbsp; When verifying bitoric lenses, the radiuscope mires will
+        come into focus at two different points, corresponding to the two base
+        curves.&nbsp; The lensometer mires will also focus at two different
+        points, corresponding with the two different powers.&nbsp; The magnitude
+        of cylinder measured on the lensometer and the radiuscope should be
+        similar (this is not true of back toric RGPs - discussed below).</p>
+        <p>&nbsp;&nbsp; Spherical Power Effect (SPE) and Cylinder Power Effect (CPE)
+        are trial lens sets that are available for diagnostic fittings.</p>
+        <p>
+        <p align="center"><a name="RGPback"></a><a name="softToric" href="#top">back
+        to top</a></td>
+    </tr>
+    <tr>
+      <td width="13%" bgcolor="#6699FF"><b>RGP Back Toric</b></td>
+      <td width="87%" bgcolor="#6699FF">&nbsp;</td>
+    </tr>
+    <tr>
+      <td width="13%"></td>
+      <td width="87%"><b>Advice:&nbsp;&nbsp;</b>
+        <ul>
+          <li>Recommended when residual astigmatism with a spherical lens would
+            be &gt; 0.75 D and corneal cylinder is &gt;=1.50 D.&nbsp;&nbsp;
+            <ul>
+              <li>Back torics are further emphasized if the cornea is ATR, as
+                they tend to work best on these corneas.&nbsp;</li>
+            </ul>
+          </li>
+        </ul>
+        <p><b>Suggested parameters</b>:&nbsp;&nbsp;</p>
+        <ul>
+          <li>The <i>base curve span</i> is determined by multiplying the
+            refractive cylinder (after vertexing) by .66.</li>
+          <li>The lens power is the refractive power that corresponds with the
+            flat corneal meridian.</li>
+          <li>The first base curve is the flat corneal measurement.</li>
+          <li>The second base curve is the flat corneal measurement plus the<i>
+            base curve span</i>.</li>
+          <li>The diameter is always &quot;between 8.8-9.8&quot;.</li>
+          <li>Peripheral curves:
+            <ul>
+              <li>Toric peripheral curves are recommended if the difference
+                between the base curves is greater than .7mm.&nbsp; For the
+                first curve, 1mm is added to each base curve.&nbsp; For the
+                second, 3mm is added.</li>
+              <li>If the difference between base curves is less than .7,
+                spherical peripheral curves are recommended.&nbsp; The average
+                of the two base curves is taken, 1mm is added for the first
+                peripheral curve, 3mm for the second.</li>
+            </ul>
+          </li>
+        </ul>
+        <p><b>Comments:&nbsp;</b></p>
+        <ul>
+          <li>A good choice if the refractive cylinder is greater than the
+            corneal cylinder.</li>
+          <li>Work best on against-the-rule corneas.</li>
+          <li>Work best when there's at least .50 D of corneal cylinder.</li>
+          <li>May not work if the axis of the corneal cylinder is more than 20
+            degrees different from the axis of the refractive cylinder <font size="2">(Most
+            textbooks said they should be 'close'.&nbsp; 20 degrees was a
+            judgment call on my part)</font>.&nbsp;</li>
+          <li>If corneal cylinder is greater than 2.25 D, a bitoric may be an
+            appropriate choice.</li>
+        </ul>
+        <p><b>Other Info:</b></p>
+        <p>Back toric lenses induce cylinder on the eye.&nbsp; As a result, the
+        power in air (on a lensometer) will be different than on the eye.&nbsp;
+        Largely, the cylinder is determined by refractive index of the contact
+        lens, which, of course, is determined by the lens material.&nbsp; The
+        conversions can be based on the following table:
+        <div align="center">
+          <center>
+          <table border="1" cellpadding="4" cellspacing="4" width="274">
+            <tr>
+              <td width="134" align="center"><u>Material</u></td>
+              <td width="106" height="19" align="center"><u>Conversion</u></td>
+            </tr>
+            <tr>
+              <td width="134" height="19">PMMA</td>
+              <td width="106" height="19">
+                <p align="left">BC span x 1.45</td>
+            </tr>
+            <tr>
+              <td width="134" height="19">Silicone/acrylate</td>
+              <td width="106" height="19">BC span x 1.40</td>
+            </tr>
+            <tr>
+              <td width="134" height="4">Fluoro-silicon/acrylate</td>
+              <td width="106" height="4">BC span x 1.32</td>
+            </tr>
+          </table>
+          </center>
+        </div>
+        <p>Example:&nbsp; You have a FS/A lens that has a back surface toricity
+        of 41.00/44.00 as measure on the radiuscope.&nbsp; The base curve span
+        is 3.00 D, so it should measure 3 x 1.32 = 3.96, or approximately 4.00 D
+        of cylinder on the lensometer.&nbsp;&nbsp;</p>
+        <p>* This is a good way to determine if an unknown toric RGP lens is a
+        back toric lens or a bitoric lens.&nbsp; This formula will apply to a
+        back toric lens.&nbsp; However, a bitoric lens will measure similar
+        cylinder amounts on the radiuscope and the lensometer.&nbsp;
+        <p align="center"><a name="RGPfront"></a><a name="softToric" href="#top">back
+        to top</a></td>
+    </tr>
+    <tr>
+      <td width="13%" bgcolor="#6699FF"><b>RGP Front Toric</b></td>
+      <td width="87%" bgcolor="#6699FF"></td>
+    </tr>
+    <tr>
+      <td width="13%"></td>
+      <td width="87%"><b>Advice:&nbsp;&nbsp;</b>
+        <ul>
+          <li>Suggested if residual astigmatism is greater than 1.00 D with a
+            spherical RGP and corneal cylinder is less than 1.00D.&nbsp;</li>
+          <li>No matter how appropriate a front toric is, it is always
+            recommended you try another option first (such as a soft toric).</li>
+        </ul>
+        <p><b>Suggested parameters</b>:&nbsp;&nbsp;</p>
+        <ul>
+          <li>The base curve is based on the flatter base curve:</li>
+        </ul>
+        <div align="center">
+          <center>
+          <table border="1" cellpadding="4" cellspacing="4" width="64%">
+            <tr>
+              <td width="39%" align="center"><u>Corneal Toricity</u></td>
+              <td width="61%" align="center"><u>Base Curve</u></td>
+            </tr>
+            <tr>
+              <td width="39%">less than .12 D</td>
+              <td width="61%">flatter than flat k by 0.50 D</td>
+            </tr>
+            <tr>
+              <td width="39%">.12 to .37 D</td>
+              <td width="61%">flatter than flat k by 0.25 D</td>
+            </tr>
+            <tr>
+              <td width="39%">.37 to .67 D</td>
+              <td width="61%">On flat K</td>
+            </tr>
+            <tr>
+              <td width="39%">.67 to 1.12 D</td>
+              <td width="61%">steeper than flat k by 0.25 D</td>
+            </tr>
+            <tr>
+              <td width="39%">1.12 to 1.67 D</td>
+              <td width="61%">steeper than flat k by 0.45 D</td>
+            </tr>
+            <tr>
+              <td width="39%">more than 1.67 D</td>
+              <td width="61%">steep than flat k by 0.62 D</td>
+            </tr>
+          </table>
+          </center>
+        </div>
+        <ul>
+          <li>The lens power is determined by creating an optical cross.&nbsp;
+            This is done by taking the corneal curvature in each meridian,
+            subtracting the base curve, and adding the (vertexed) manifest
+            refraction for that&nbsp; meridian.&nbsp;&nbsp; The optical cross is
+            then converted to a plus cylinder prescription (because the
+            cylindrical component of these lenses is on the front).
+            <ul>
+              <li>The axis is changed to counter the nasal rotation of the lens
+                induced by lid forces and the prism ballast. 12° is added to
+                the axis of a left lens, subtracted from a right lens.</li>
+            </ul>
+          </li>
+          <li>The diameter is &quot;Usually btwn 9.0-10.0&quot;.</li>
+          <li>The first peripheral curve is the base curve + 1, the second is
+            the base curve +3.&nbsp; Both are .3mm width.
+          </li>
+          <li>Prism is base down at axis 102° in the right eye or 78° in the
+            left.&nbsp; The magnitude is based on the following table:</li>
+        </ul>
+        <div align="center">
+          <center>
+          <table border="1" cellpadding="4" cellspacing="4" width="69%">
+            <tr>
+              <td width="53%" align="center"><u>Spherical Equivalent</u></td>
+              <td width="47%" align="center"><u>Prism Ballast Power</u></td>
+            </tr>
+            <tr>
+              <td width="53%">Myopes less than -2.00 D</td>
+              <td width="47%" align="center">1.25 pd</td>
+            </tr>
+            <tr>
+              <td width="53%">Myopes greater than -2.00 D</td>
+              <td width="47%" align="center">1.50 pd</td>
+            </tr>
+            <tr>
+              <td width="53%">Hyperopes less than +2.00 D</td>
+              <td width="47%" align="center">1.25 pd</td>
+            </tr>
+            <tr>
+              <td width="53%">Hyperopes greater than +2.00 D</td>
+              <td width="47%" align="center">1.00 pd</td>
+            </tr>
+          </table>
+          </center>
+        </div>
+        <p><b>Comments:&nbsp;</b></p>
+        <ul>
+          <li>If there's more than 1.00 D of corneal astigmatism a front toric
+            may not work.</li>
+          <li>If a spherical RGP would have less than 1.00 D of residual
+            astigmatism, a front toric may not be the best choice.</li>
+        </ul>
+        <p><b>Other Info:</b></p>
+        <p>Front toric lenses are designed to be stabilized with a prism ballast.  If
+        they do not rotate correctly, the prism can be increased or it can be truncated.&nbsp;
+        Because it is difficult to achieve rotational stability with these lenses, it is usually recommended that you try a soft toric lens first (unless it's contraindicated).
+        A higher dk (>50) is recommended, as the prism makes these lenses thicker.  Also,
+        small diameter lenses tend to decenter inferiorly because of the
+        increased mass and may not give enough pupil coverage.&nbsp;
+        Consequently, a larger diameter lenses may be indicated. </p>
+        <p align="center">&nbsp;<a name="softToric" href="#top">back to top</a></td>
+    </tr>
+  </table>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+</body>
+
+</html>
