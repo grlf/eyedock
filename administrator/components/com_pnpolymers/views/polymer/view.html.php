@@ -21,7 +21,7 @@ class PnpolymersViewPolymer extends JViewLegacy {
 		$edit = JRequest::getVar( 'edit', true );
 
 		if($edit) {
-			
+
 			//$mysqli = new mysqli(self::GPHOST, self::GPUSER, self::GPPASS, self::GPDB);
 			$mysqli = DBAccess::getConnection();
 			$query = 'SELECT * from pn_lenses_polymers where pn_poly_tid = ' . $uid;
