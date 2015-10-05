@@ -21,7 +21,7 @@ class HelpdeskMessage extends Am_Record
     public function getTicket()
     {
         if (is_null($this->_ticket)) {
-            $this->_ticket = $this->getDi()->helpdeskTicketTable->load((int) $this->ticket_id);
+            $this->_ticket = $this->getDi()->helpdeskTicketTable->load($this->ticket_id);
         }
         return $this->_ticket;
     }

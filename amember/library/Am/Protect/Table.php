@@ -163,7 +163,7 @@ class Am_Protect_Table extends Am_Table
                     break;
                 default:
                     if (is_callable($k))
-                        $val = call_user_func($k, $user, $this);
+                        $val = call_user_func($k, $user, $record, $this);
                     elseif ($k[0] == ':')
                         $val = substr($k, 1);
                     elseif ($k[0] == '!')
@@ -209,7 +209,7 @@ class Am_Protect_Table extends Am_Table
                     break;
                 default:
                     if (is_callable($k))
-                        $val = call_user_func($k, $user, $this);
+                        $val = call_user_func($k, $user, $record, $this);
                     elseif ($k[0] == ':')
                         break;
                     elseif ($k[0] == '!')
@@ -275,6 +275,10 @@ class Am_Protect_Table extends Am_Table
      */
     public function disableRecord(Am_Record $record, $groups)
     {
+        if($this->getPlugin()->getConfig('super_groups'))
+        {
+            $groups = $this->getPlugin()->addSuperGroups($groups, $record);
+        }
         $this->setGroups($record, $groups);
     }
     /** Find related amember user based on current record login

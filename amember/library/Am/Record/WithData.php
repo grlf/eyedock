@@ -1,11 +1,12 @@
 <?php
+
 /*
-*     Author: Alex Scott
-*      Email: alex@cgi-central.net
-*        Web: http://www.amember.com/
-*    Release: 4.4.2
-*    License: LGPL http://www.gnu.org/copyleft/lesser.html
-*/
+ *     Author: Alex Scott
+ *      Email: alex@cgi-central.net
+ *        Web: http://www.amember.com/
+ *    Release: 4.7.0
+ *    License: LGPL http://www.gnu.org/copyleft/lesser.html
+ */
 
 /**
  * An abstract custom-field class
@@ -13,7 +14,6 @@
  */
 abstract class Am_CustomField
 {
-
     const ACCESS_TYPE = 'customfield';
 
     public $name;
@@ -108,24 +108,23 @@ abstract class Am_CustomField
      * @param HTML_QuickForm2_Container
      * @return HTML_QuickForm2_Node
      */
-    public function addToQF2(HTML_QuickForm2_Container $container, $params = array())
+    public function addToQF2(HTML_QuickForm2_Container $container, $attr = array(), $data = array())
     {
-        $el = $container->addElement($this->qfType, $this->name, $params)
-            ->setLabel(!empty($this->description) ? ___($this->title)."\n".___($this->description) : ___($this->title));
+        $el = $container->addElement($this->qfType, $this->name, $attr, $data)
+            ->setLabel(!empty($this->description) ? ___($this->title) . "\n" . ___($this->description) : ___($this->title));
         if (!empty($this->size))
             $el->setAttribute('size', $this->size);
         if (!empty($this->default))
             $el->setValue($this->default);
-        if(!(defined('AM_ADMIN') && AM_ADMIN)) $this->addValidateFunction($el);
+        if (!(defined('AM_ADMIN') && AM_ADMIN))
+            $this->addValidateFunction($el);
         return $el;
     }
-    
+
     function addValidateFunction(HTML_QuickForm2_Node $el)
     {
-        foreach ((array)$this->validateFunc as $f)
-        {
-            switch ($f)
-            {
+        foreach ((array) $this->validateFunc as $f) {
+            switch ($f) {
                 case 'required' :
                     $el->addRule('required');
                     break;
@@ -139,7 +138,8 @@ abstract class Am_CustomField
                     $el->addRule('callback', ___("Please enter a valid e-mail address"), array('Am_Validate', 'empty_or_email'));
                     break;
                 default:
-                    if (is_callable($f)) $el->addRule('callback2', '--error--', $f);
+                    if (is_callable($f))
+                        $el->addRule('callback2', '--error--', $f);
                     break;
             };
         }
@@ -147,8 +147,9 @@ abstract class Am_CustomField
 
     function valueFromTable($val)
     {
-        if (!$this->isArray) return $val;
-        return is_array($val) ? $val : (array)unserialize($val);
+        if (!$this->isArray)
+            return $val;
+        return is_array($val) ? $val : (array) unserialize($val ? $val : 'a:0:{}');
     }
 
     function valueToTable($val)
@@ -156,14 +157,17 @@ abstract class Am_CustomField
         return $this->isArray ? serialize($val) : $val;
     }
 
-}
+    public function isArray()
+    {
+        return $this->isArray;
+    }
 
-;
+}
 
 class Am_CustomFieldHidden extends Am_CustomField
 {
 
-    public function addToQF2(HTML_QuickForm2_Container $container, $params = array())
+    public function addToQF2(HTML_QuickForm2_Container $container, $attr = array(), $data = array())
     {
         return null;
     }
@@ -172,7 +176,7 @@ class Am_CustomFieldHidden extends Am_CustomField
 
 class Am_CustomFieldUnknown extends Am_CustomFieldHidden
 {
-    
+
 }
 
 class Am_CustomFieldText extends Am_CustomField
@@ -185,7 +189,7 @@ class Am_CustomFieldText extends Am_CustomField
 class Am_CustomFieldReadonly extends Am_CustomFieldText
 {
 
-    public function addToQF2(HTML_QuickForm2_Container $container, $params = array())
+    public function addToQF2(HTML_QuickForm2_Container $container, $attr = array(), $data = array())
     {
         $el = parent::addToQF2($container);
         $el->toggleFrozen(true); //@todo fix
@@ -196,12 +200,13 @@ class Am_CustomFieldReadonly extends Am_CustomFieldText
 
 class Am_CustomFieldSelect extends Am_CustomField
 {
+
     public $qfType = 'select';
 
-    public function addToQF2(HTML_QuickForm2_Container $container, $params = array())
+    public function addToQF2(HTML_QuickForm2_Container $container, $attr = array(), $data = array())
     {
         $el = parent::addToQF2($container);
-        $o = array();
+        $o = $this->isArray ? array() : array('' => '');
         foreach ($this->options as $k => $v)
             $o[htmlentities($k, ENT_QUOTES, 'UTF-8')] = htmlentities(___($v), ENT_QUOTES, 'UTF-8');
         $el->loadOptions($o);
@@ -213,14 +218,16 @@ class Am_CustomFieldSelect extends Am_CustomField
 
 class Am_CustomFieldRadio extends Am_CustomField
 {
+
     public $qfType = 'advradio';
 
-    public function addToQF2(HTML_QuickForm2_Container $container, $params = array())
+    public function addToQF2(HTML_QuickForm2_Container $container, $attr = array(), $data = array())
     {
         $el = parent::addToQF2($container);
         $el->loadOptions(array_map('___', $this->options));
         return $el;
     }
+
 }
 
 class Am_CustomFieldMulti_Select extends Am_CustomFieldSelect
@@ -229,7 +236,7 @@ class Am_CustomFieldMulti_Select extends Am_CustomFieldSelect
     public $qfType = 'multi_select';
     protected $isArray = true;
 
-    public function addToQF2(HTML_QuickForm2_Container $container, $params = array())
+    public function addToQF2(HTML_QuickForm2_Container $container, $attr = array(), $data = array())
     {
         $el = parent::addToQF2($container);
         $el->setAttribute('size', 5);
@@ -239,14 +246,56 @@ class Am_CustomFieldMulti_Select extends Am_CustomFieldSelect
 
 }
 
+class Am_CustomFieldUpload extends Am_CustomField
+{
+    const UPLOAD_PREFIX = 'custom-field';
+    public $qfType = 'upload';
+
+    public function addToQF2(HTML_QuickForm2_Container $container, $attr = array(), $data = array())
+    {
+        $urlUpload = '/upload/upload';
+        $urlGet = '/upload/get';
+
+        $el = parent::addToQF2($container, $attr, array_merge($data, array(
+            'secure' => true,
+            'prefix' => self::UPLOAD_PREFIX)));
+
+        if (defined('AM_ADMIN') && AM_ADMIN) {
+            $urlUpload = '/admin-upload/upload';
+            $urlGet = '/admin-upload/get';
+            $el->toggleFrozen(true);
+        }
+
+        $el->setJsOptions(<<<CUT
+{
+    fileBrowser: false,
+    urlUpload : '$urlUpload',
+    urlGet : '$urlGet'
+}
+CUT
+            );
+        return $el;
+    }
+}
+
+class Am_CustomFieldMulti_Upload extends Am_CustomFieldUpload
+{
+    protected $isArray = true;
+
+    public function addToQF2(HTML_QuickForm2_Container $container, $attr = array(), $data = array())
+    {
+        return parent::addToQF2($container, array_merge($attr, array('multiple' => 1)), $data);
+    }
+}
+
 class Am_CustomFieldPeriod extends Am_CustomFieldText
 {
-    
+
 }
 
 class Am_CustomFieldMoney extends Am_CustomFieldText
 {
-    
+
 }
 
 class Am_CustomFieldCheckbox extends Am_CustomField
@@ -255,20 +304,20 @@ class Am_CustomFieldCheckbox extends Am_CustomField
     var $qfType = 'advcheckbox';
     protected $isArray = true;
 
-    public function addToQF2(HTML_QuickForm2_Container $container, $params = array())
+    public function addToQF2(HTML_QuickForm2_Container $container, $attr = array(), $data = array())
     {
         if (empty($this->options))
             $el = parent::addToQF2($container, array('value' => 1));
-        else
-        {
+        else {
             $this->qfType = 'group';
             $el = parent::addToQF2($container);
             $el->setSeparator("<br />");
-            foreach ($this->options as $k => $v){
+            foreach ($this->options as $k => $v) {
                 $chkbox = $el->addAdvCheckbox(null, array('value' => $k))->setContent(___($v));
-                if(in_array($k, (array)$this->default)) $chkbox->setAttribute('checked', 'checked');
+                if (in_array($k, (array) $this->default))
+                    $chkbox->setAttribute('checked', 'checked');
             }
-            $el->addHidden(null, array('value'=>''));
+            $el->addHidden(null, array('value' => ''));
             $el->addFilter('array_filter');
         }
         return $el;
@@ -281,7 +330,7 @@ class Am_CustomFieldTextarea extends Am_CustomFieldText
 
     var $qfType = 'textarea';
 
-    public function addToQF2(HTML_QuickForm2_Container $container, $params = array())
+    public function addToQF2(HTML_QuickForm2_Container $container, $attr = array(), $data = array())
     {
         $el = parent::addToQF2($container);
         $el->setAttribute('rows', !empty($this->rows) ? $this->rows : 2);
@@ -294,15 +343,18 @@ class Am_CustomFieldTextarea extends Am_CustomFieldText
 class Am_CustomFieldHeader extends Am_CustomFieldText
 {
 
-    public function addToQF2(HTML_QuickForm2_Container $container, $params = array())
+    public function addToQF2(HTML_QuickForm2_Container $container, $attr = array(), $data = array())
     {
         throw new Am_Exception_InternalError("Not Implemented");
     }
 
 }
 
-class Am_CustomFieldDate extends Am_CustomFieldText{
+class Am_CustomFieldDate extends Am_CustomFieldText
+{
+
     public $qfType = 'Date';
+
 }
 
 /**
@@ -326,8 +378,7 @@ class Am_CustomFieldsManager
      */
     function add($field)
     {
-        if (!$field instanceof Am_CustomField)
-        {
+        if (!$field instanceof Am_CustomField) {
             $args = func_get_args();
             if (count($args) == 1)
                 $args[1] = $args[0]; // set fieldtitle == fieldname
@@ -386,8 +437,7 @@ class Am_CustomFieldsManager
     function compatGetAll()
     {
         $res = array();
-        foreach ($this->getAll() as $f)
-        {
+        foreach ($this->getAll() as $f) {
             $a = $f->toArray();
             $a['type'] = $f->getType();
             if ($a['type'] == 'unknown')
@@ -427,8 +477,7 @@ class Am_CustomFieldsManager
      */
     function __call($method, $arguments)
     {
-        if (strpos($method, 'add') === 0)
-        {
+        if (strpos($method, 'add') === 0) {
             $class = 'Am_CustomField' . substr($method, 3);
             if (!class_exists($class, false))
                 throw new Am_Exception_InternalError("Method " . get_class($this) . "->" . $method . " is not implemented, because [$class] is not defined");
@@ -446,8 +495,7 @@ class Am_CustomFieldsManager
 
     function valuesFromTable(array $vars)
     {
-        foreach ($this->getAll() as $field)
-        {
+        foreach ($this->getAll() as $field) {
             $fn = $field->name;
             if (isset($vars[$fn]))
                 $vars[$fn] = $field->valueFromTable($vars[$fn]);
@@ -457,8 +505,7 @@ class Am_CustomFieldsManager
 
     function valuesToTable(array $vars)
     {
-        foreach ($this->getAll() as $field)
-        {
+        foreach ($this->getAll() as $field) {
             $fn = $field->name;
             if (isset($vars[$fn]))
                 $vars[$fn] = $field->valueToTable($vars[$fn]);
@@ -498,10 +545,8 @@ class Am_DataFieldStorage
     function get($fieldName)
     {
         $this->load();
-        if (array_key_exists($fieldName, $this->data))
-        {
-            if (!empty($this->blobFields[$fieldName]))
-            {
+        if (array_key_exists($fieldName, $this->data)) {
+            if (!empty($this->blobFields[$fieldName])) {
                 return self::BLOB_VALUE;
             } else
                 return $this->data[$fieldName];
@@ -515,13 +560,10 @@ class Am_DataFieldStorage
     {
         $this->load();
         $this->data[$fieldName] = $value;
-        if ($value === null)
-        {
+        if ($value === null) {
             $this->deletedFields[$fieldName] = true;
             unset($this->changedFields[$fieldName]);
-        }
-        else
-        {
+        } else {
             $this->changedFields[$fieldName] = true;
             unset($this->deletedFields[$fieldName]);
         }
@@ -564,7 +606,7 @@ class Am_DataFieldStorage
         if ($this->isLoaded || $this->changedFields || !$this->record->pk())
             return false;
         $this->data = $this->record->getAdapter()->select(
-                "SELECT `key` as ARRAY_KEY,`type`,
+            "SELECT `key` as ARRAY_KEY,`type`,
             CASE `type`
                 WHEN ? THEN NULL
                 WHEN ? THEN `blob`
@@ -572,10 +614,8 @@ class Am_DataFieldStorage
             END AS `value`
             FROM ?_data WHERE `table`=? AND `id`=?
             ", self::TYPE_BLOB, self::TYPE_SERIALIZED, $this->record->getTable()->getName(true), $this->record->pk());
-        foreach ($this->data as $k => $arr)
-        {
-            switch ($arr['type'])
-            {
+        foreach ($this->data as $k => $arr) {
+            switch ($arr['type']) {
                 case self::TYPE_SCALAR: $this->data[$k] = $arr['value'];
                     break;
                 case self::TYPE_SERIALIZED: $this->data[$k] = unserialize($arr['value']);
@@ -592,23 +632,17 @@ class Am_DataFieldStorage
     {
         $rows = array();
         $db = $this->record->getAdapter();
-        foreach (array_keys($this->changedFields) as $fieldName)
-        {
+        foreach (array_keys($this->changedFields) as $fieldName) {
             $blob = null;
             $val = $this->data[$fieldName];
-            if (!empty($this->blobFields[$fieldName]))
-            {
+            if (!empty($this->blobFields[$fieldName])) {
                 $type = self::TYPE_BLOB;
                 $blob = $val;
                 $val = null;
-            }
-            elseif (is_scalar($val) || is_null($val))
-            {
+            } elseif (is_scalar($val) || is_null($val)) {
                 $type = self::TYPE_SCALAR;
                 $val = $this->data[$fieldName];
-            }
-            else
-            {
+            } else {
                 $type = self::TYPE_SERIALIZED;
                 $blob = serialize($val);
                 $val = null;
@@ -664,10 +698,11 @@ class Am_DataFieldStorage
         $this->deletedFields = array();
         $this->isLoaded = true;
     }
+
 }
 
 /**
- * Class to handle related meta-data from "am_data" table 
+ * Class to handle related meta-data from "am_data" table
  */
 class Am_Record_WithData extends Am_Record
 {
@@ -752,30 +787,41 @@ class Am_Record_WithData extends Am_Record
     {
         $extra = array();
         $fields = $this->getTable()->getFields(true);
-        foreach ($vars as $k => $v)
-        {
-            if (in_array($k, $fields))
-            {
+        foreach ($vars as $k => $v) {
+            if (in_array($k, $fields)) {
                 // nop
-            }
-            elseif ($this->getTable()->customFields()->get($k))
-            {
+            } elseif ($this->getTable()->customFields()->get($k)) {
                 $this->data()->set($k, $v);
                 unset($vars[$k]);
-            }
-            else
-            {
+            } else {
                 unset($vars[$k]);
             }
         }
     }
+
+    public function __sleep()
+    {
+        $ret = parent::__sleep();
+        $ret[] = '_dataStorage';
+        return $ret;
+    }
+
 }
 
 class Am_Table_WithData extends Am_Table
 {
+
     protected $_recordClass = 'Am_Record_WithData';
+
     /** @var Am_CustomFieldsManager */
     protected $_customFields;
+    protected $_customFieldsConfigKey = null;
+
+    public function init()
+    {
+        $this->customFields()->addCallback(array($this, 'addFieldsFromSavedConfig'));
+    }
+
     /** @return Am_CustomFieldsManager */
     public function customFields()
     {
@@ -783,6 +829,14 @@ class Am_Table_WithData extends Am_Table
             $this->_customFields = new Am_CustomFieldsManager;
         return $this->_customFields;
     }
+
+    public function getCustomFieldsConfigKey()
+    {
+        return $this->_customFieldsConfigKey ?
+            $this->_customFieldsConfigKey :
+            $this->getName(true) . '_fields';
+    }
+
     /**
      * Find records by related ?_data record
      * @param type $key
@@ -795,6 +849,7 @@ class Am_Table_WithData extends Am_Table
                 LEFT JOIN ?_data d ON (d.`table` = ? AND d.`id` = t.{$this->_key} AND d.`key`=?)
             WHERE d.`value`=? LIMIT ?d", $this->getName(true), $key, $value, $limit);
     }
+
     /**
      * First first record by related ?_data record
      * @param string $key
@@ -805,4 +860,61 @@ class Am_Table_WithData extends Am_Table
     {
         return current($this->findByData($key, $value, 1));
     }
+
+    function addFieldsFromSavedConfig()
+    {
+        $config_key = $this->getCustomFieldsConfigKey();
+        foreach ((array) $this->getDi()->config->get($config_key) as $f) {
+            $this->customFields()->add($f['name'], $f['title'], $f['type'], $f['description'], $f['validate_func'], (array) $f['additional_fields'] + array('from_config' => 1));
+        }
+    }
+
+    function syncSortOrder()
+    {
+        $db = $this->getDi()->db;
+        $fields = array();
+        foreach ($this->customFields()->getAll() as $f)
+            $fields[] = $f->getName();
+        // delete records that are not found in config
+        $db->query("DELETE FROM ?_custom_field_sort
+            WHERE custom_field_table=?
+             { and custom_field_name NOT IN (?a) }", $this->getName(true), count($fields) ? $fields : DBSIMPLE_SKIP);
+
+        if ($fields) {
+            // add records that present in config
+            $x = (int) $db->selectCell("SELECT MAX(sort_order)
+                FROM ?_custom_field_sort
+                WHERE custom_field_table=?", $this->getName(true));
+            if (!$x)
+                $x = 0;
+            foreach ($fields as $field_name) {
+                $x++;
+                $db->query("INSERT IGNORE INTO ?_custom_field_sort
+                    (custom_field_table, custom_field_name, sort_order)
+                    VALUES (?, ?, ?)", $this->getName(true), $field_name, $x);
+            }
+        }
+    }
+
+    function sortCustomFields($a, $b)
+    {
+        static $max, $sort_order;
+
+        if (!$sort_order) {
+            $sort_order = $this->getDi()->db->selectCol("SELECT custom_field_name as ARRAY_KEY, sort_order
+                FROM ?_custom_field_sort
+                WHERE custom_field_table = ?", $this->getName(true));
+            $max = $sort_order ? max($sort_order) : 1;
+        }
+
+        //$max+1 is just enough big integer value to place field to the end
+        //in case order is not defined
+        if (!isset($sort_order[$a]))
+            $sort_order[$a] = $max + 1;
+        if (!isset($sort_order[$b]))
+            $sort_order[$b] = $max + 1;
+
+        return $sort_order[$a] - $sort_order[$b];
+    }
+
 }

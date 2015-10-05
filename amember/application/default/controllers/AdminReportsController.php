@@ -7,7 +7,7 @@
  *      choose report in scrollable radio list
  *      [ajax loadable form or pre-selected pre-filled form if report chosen]
  *      [[the report output]]
- * 
+ *
  * @todo choose date from pre-selected constants
  * @todo save last used reports in admin profile
  *
@@ -16,7 +16,7 @@
  *        Web: http://www.cgi-central.net
  *    Details: Admin index
  *    FileName $RCSfile$
- *    Release: 4.4.2 ($Revision$)
+ *    Release: 4.7.0 ($Revision$)
  *
  * Please direct bug reports,suggestions or feedback to the cgi-central forums.
  * http://www.cgi-central.net/forum/
@@ -82,7 +82,7 @@ class AdminReportsController_Index extends Am_Controller
 
             $result = $r->getReport();
             foreach ($r->getOutput($result) as $output)
-                $this->view->content .= $output->render() . "<br /><br />";
+                $this->view->content .= $output->render();
             // default
             $default = $r->getForm()->getValue();
             unset($default['_save_']);
@@ -105,6 +105,23 @@ class AdminReportsController_Index extends Am_Controller
         }
         $this->view->assign('reports', $reports);
         $this->view->display('admin/report.phtml');
+    }
+
+    function getformAction()
+    {
+        $id = $this->getParam('id');
+        foreach (Am_Report_Abstract::getAvailableReports() as $r) {
+            if ($r->getId() == $id) {
+                $title = $this->escape($r->getTitle());
+                $form = $r->getForm();
+                echo <<<CUT
+<h2>$title</h2>
+$form
+CUT;
+                throw new Am_Exception_Redirect;
+            }
+        }
+        throw new Am_Exception_InputError(sprintf('Can not find report with id [%s]', $id));
     }
 
     function savefrequencyAction()
@@ -232,5 +249,19 @@ class AdminReportsController extends Am_Controller_Pages {
 
     public function createSavedController($id, $title, Am_Controller $controller) {
         return new AdminReportsController_Saved($controller->getRequest(), $controller->getResponse(), $this->_invokeArgs);
+    }
+
+    public function exportAction()
+    {
+        $reportId = $this->getFiltered('report_id');
+        $request = unserialize($this->getParam('request'));
+        $r = Am_Report_Abstract::createById($reportId);
+        $r->applyConfigForm(new Am_Request($request));
+        $result = $r->getReport();
+        $dat = date('YmdHis');
+        $output = new Am_Report_Csv($result);
+        $data = $output->render();
+        $this->_helper->sendFile->sendData($data, 'text/csv', "amember_reports-{$reportId}-{$dat}.csv");
+        throw new Am_Exception_Redirect;
     }
 }

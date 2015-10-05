@@ -27,7 +27,7 @@ abstract class Am_Newsletter_Plugin extends Am_Plugin
     function canGetLists()
     {
         $rm = new ReflectionMethod($this, 'getLists');
-        return ($rm->getDeclaringClass()->getName() !== __CLASS__);
+        return ($rm->getDeclaringClass()->getName() !== __CLASS__) && $this->isConfigured();
     }       
     
     public function deactivate()
@@ -93,6 +93,16 @@ CUT
     }
     
     public function onPaymentAfterInsert(Am_Event_PaymentAfterInsert $e)
+    {
+        $this->handlePayment($e);
+    }
+    
+    public function onPaymentWithAccessAfterInsert(Am_Event_PaymentWithAccessAfterInsert $e)
+    {
+        $this->handlePayment($e);
+    }
+
+    public function handlePayment(Am_Event $e)
     {
         if($this->getConfig('unsubscribe_after_signup') != self::UNSUBSCRIBE_AFTER_PAID) return;
         $user = $e->getUser();

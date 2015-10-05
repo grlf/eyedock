@@ -15,6 +15,7 @@ $title = $report->getTitle();
     '<a href="javascript:;" id="save-report" class="local" data-report-id="' . $this->escape($reportId) . '" data-request="' . $this->escape($serializedRequest) . '">', '</a>') ?></div>
 <?php endif; ?>
 <?php echo $content ?>
+<div style="margin-bottom:1em; overflow: hidden"><a style="float:right" href="<?php p(REL_ROOT_URL . '/admin-reports/export?' . http_build_query(array('report_id'=>$reportId,'request'=>$serializedRequest))) ?>" class="link"><?php __e('Download CSV') ?></a></div>
 <div style="display:none">
     <div id="save-report-form">
         <?php echo $saveReportForm ?>

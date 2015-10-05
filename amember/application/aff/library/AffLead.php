@@ -35,17 +35,19 @@ class AffLeadTable extends Am_Table
         {
             $referer = $click->referer;
             $first_visited = $click->time;
+            $keyword_id = $click->keyword_id;
         } else {
             $referer = null;
             $first_visited = null;
+            $keyword_id = null;
         }
         $this->_db->query("INSERT INTO $this->_table
             SET aff_id=?d, 
             user_id=?, time=?, banner_id=?,
-            remote_addr=?, referer=?, first_visited=?
+            remote_addr=?, referer=?, first_visited=?, keyword_id=?
             ", $aff_id, $user_id, 
             $this->getDi()->sqlDateTime,
             $banner_id, 
-            $_SERVER['REMOTE_ADDR'], $referer, $first_visited);
+            $_SERVER['REMOTE_ADDR'], $referer, $first_visited, $keyword_id);
     }
 }

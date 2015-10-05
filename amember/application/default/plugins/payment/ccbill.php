@@ -14,7 +14,7 @@ class Am_Paysystem_Ccbill extends Am_Paysystem_Abstract
 {
 
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.0';
 
     protected $defaultTitle = 'ccBill';
     protected $defaultDescription = 'Pay by credit card/debit card';
@@ -105,6 +105,7 @@ class Am_Paysystem_Ccbill extends Am_Paysystem_Abstract
         $a->payment_id = $invoice->public_id;
         $a->customVar1 = $invoice->public_id;
         $a->invoice = $invoice->getSecureId("THANKS");
+        $a->referer = $invoice->getUser()->aff_id;
         if($this->getConfig('dynamic_pricing'))
         {
             $a->formPrice = $invoice->first_total;
@@ -112,7 +113,7 @@ class Am_Paysystem_Ccbill extends Am_Paysystem_Abstract
             $a->currencyCode = $invoice->currency;
             if($invoice->rebill_times)
             {
-                if($invoice->rebill_times == 99999)
+                if($invoice->rebill_times == IProduct::RECURRING_REBILLS)
                     $invoice->rebill_times = 99;
                 $a->formRecurringPrice = $invoice->second_total;
                 $a->formRecurringPeriod = $this->getDays($invoice->second_period);
@@ -175,7 +176,7 @@ class Am_Paysystem_Ccbill extends Am_Paysystem_Abstract
 
     }
     
-    function doUpgrade(\Invoice $invoice, \InvoiceItem $item, \Invoice $newInvoice, \ProductUpgrade $upgrade)
+    function doUpgrade(Invoice $invoice, InvoiceItem $item, Invoice $newInvoice, ProductUpgrade $upgrade)
     {
         if (!$this->getConfig('datalink_user') || !$this->getConfig('datalink_pass'))
         {
@@ -209,7 +210,7 @@ class Am_Paysystem_Ccbill extends Am_Paysystem_Abstract
         {
             $vars['recurringPrice'] = $newInvoice->second_total;
             $vars['recurringPeriod']    =   $this->getDays($newInvoice->second_period);
-            $vars['rebills'] = $newInvoice->rebill_times == 99999 ? 99 : $newInvoice->rebill_times;
+            $vars['rebills'] = $newInvoice->rebill_times == IProduct::RECURRING_REBILLS ? 99 : $newInvoice->rebill_times;
         }else{
             $vars['recurringPrice'] = 0;
             $vars['recurringPeriod']    =   0;
@@ -522,8 +523,14 @@ EOT;
                 $invoice = $this->getDi()->invoiceTable->findByReceiptIdAndPlugin($line[3], $this->getId());
                 if (!$invoice)
                 {
-                    $this->getDi()->errorLogTable->log('ccBill Datalink error: unable to find invoice for this record:  ' . $line_orig);
-                    continue;
+                    // In case of free trial there is no payment. So try to find invoice by external_id
+                    
+                    $invoice = $this->getDi()->invoiceTable->findFirstByData('external_id', $line[3]);
+                    if(!$invoice || ($invoice->paysys_id != $this->getId()))
+                    {
+                        $this->getDi()->errorLogTable->log('ccBill Datalink error: unable to find invoice for this record:  ' . $line_orig);
+                        continue;
+                    }
                 }
 // "REBILL","434344","0001","0312112601000035671","2012-05-21","0112142105000024275","5.98" 
 // "REBILL","545455","0001","0312112601000035867","2012-05-21","0112142105000024293","6.10"                
@@ -730,6 +737,8 @@ class Am_Paysystem_Transaction_Ccbill_Datalink_Expire extends Am_Paysystem_Trans
 class Am_Paysystem_Transaction_Ccbill extends Am_Paysystem_Transaction_Incoming
 {
     protected $_autoCreateMap = array(
+        'login' => 'username',
+        'pass' => 'password',
         'name_f' => 'customer_fname',
         'name_l' => 'customer_lname',
         'country' => 'country',
@@ -738,12 +747,12 @@ class Am_Paysystem_Transaction_Ccbill extends Am_Paysystem_Transaction_Incoming
         'city' => 'city',
         'street' => 'address1',
         'user_external_id' => 'email',
-        'invoice_external_id' => 'originalSubscriptionId',
+        'invoice_external_id' => array('originalSubscriptionId', 'subscription_id'),
     );
 
     public function autoCreateGetProducts()
     {
-        $cbId = $this->request->getFiltered('productId');
+        $cbId = $this->request->getFiltered('productId') ? $this->request->getFiltered('productId') : intval($this->request->getFiltered('typeId'));
         if (empty($cbId)) return;
         $pl = $this->getPlugin()->getDi()->billingPlanTable->findFirstByData('ccbill_product_id', $cbId);
         if (!$pl) return;
@@ -795,6 +804,22 @@ class Am_Paysystem_Transaction_Ccbill extends Am_Paysystem_Transaction_Incoming
         }
 
         return true;
+    }
+    
+    public function processValidated()
+    {
+        if(!count($this->invoice->getAccessRecords()) && (floatval($this->invoice->first_total) == 0))
+        {
+            if(!$this->invoice->data()->get('external_id') && $this->request->get('subscription_id'))
+            {
+                $this->invoice->data()->set('external_id', $this->request->get('subscription_id'))->update();
+            }
+            $this->invoice->addAccessPeriod($this);
+        }
+        else 
+        {
+            $this->invoice->addPayment($this);
+        }
     }
 
 }

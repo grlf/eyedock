@@ -27,6 +27,7 @@
     <field name="banner_id" type="int" notnull="0" />
     <field name="remote_addr" type="varchar" len="15"/>
     <field name="referer" type="varchar" len="255"/>
+    <field name="keyword_id" type="int" unsigned="1" notnull="0" />
     <index name="PRIMARY" unique="1">
       <field name="log_id"/>
     </index>
@@ -37,6 +38,9 @@
     </index>
     <index name="time">
       <field name="time"/>
+    </index>
+    <index name="keyword_id">
+        <field name="keyword_id" />
     </index>
   </table>
   <!-- register successful signups by the banner link to get banner eff. stats -->
@@ -49,12 +53,17 @@
     <field name="remote_addr" type="varchar" len="15"/>
     <field name="referer" type="varchar" len="255"/>
     <field name="first_visited" type="datetime" notnull="0" />
+    <field name="keyword_id" type="int" unsigned="1" notnull="0" />
     <index name="PRIMARY" unique="1">
       <field name="lead_id"/>
     </index>
     <index name="time">
       <field name="time"/>
     </index>
+    <index name="keyword_id">
+        <field name="keyword_id" />
+    </index>
+    
   </table>
   <!-- commission records -->
   <table name="aff_commission">
@@ -69,10 +78,11 @@
     <field name="receipt_id" type="char" len="32"/>
     <field name="product_id" type="int" notnull="1"/>
     <field name="is_first" type="int" notnull="1"/>
-    <field name="payout_detail_id" type="int" unsigned="1" notnull="0" />
+    <field name="payout_detail_id" type="int" unsigned="0" notnull="0" />
     <field name="tier" type="smallint" default="0"/>
     <field name="is_voided" type="tinyint" default="0" />
     <field name="commission_id_void" type="int" unsigned="1" notnull="0" />
+    <field name="keyword_id" type="int" unsigned="1" notnull="0" />
     <index name="PRIMARY" unique="1">
       <field name="commission_id"/>
     </index>
@@ -91,6 +101,10 @@
     <index name="ac">
       <field name="date"/>
     </index>
+    <index name="keyword_id">
+        <field name="keyword_id" />
+    </index>
+    
   </table>
   <table name="aff_commission_rule">
     <field name="rule_id" type="int" notnull="1" extra="auto_increment"/>
@@ -186,12 +200,28 @@
     <field name="aff_id" type="int" unsigned="1" notnull="0" />
   </table>
   <table name="coupon_batch">
-      <field name="aff_id" type="int" unsigned="1" notnull="0" />
+    <field name="aff_id" type="int" unsigned="1" notnull="0" />
   </table>
   <table name="invoice">
-      <field name="aff_id" type="int" unsigned="1" notnull="0" />
+    <field name="aff_id" type="int" unsigned="1" notnull="0" />
+    <field name="keyword_id" type="int" unsigned="1" notnull="0" />
   </table>
   <table name="user">
-      <field name="aff_custom_redirect" type="tinyint" notnull="1" default="0" />
+    <field name="aff_custom_redirect" type="tinyint" notnull="1" default="0" />
+    <index name="aff_id">
+      <field name="aff_id"/>
+    </index>
+  </table>
+  <table name="aff_keyword">
+      <field name="keyword_id" type="int" unsigned="1" notnull="1" extra="auto_increment" />
+      <field name="aff_id" type="int" unsigned="1" notnull="1" />
+      <field name="value" type="varchar" len="64" />
+    <index name="PRIMARY" unique="1">
+      <field name="keyword_id"/>
+    </index>
+    <index name="keyword" unique="1">
+        <field name="aff_id" />
+        <field name="value" />
+    </index>
   </table>
 </schema>

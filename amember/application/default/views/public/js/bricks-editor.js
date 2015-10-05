@@ -72,7 +72,7 @@ var bricksEditor = {
                 $(this).toggleClass('changed', $(this).val() != '');
             });
             if (labels[i]) input.addClass("custom-label");
-            newRow.find(".element-title").text(i);
+            newRow.find(".element-title").html($("<div />").text(i).html().replace(/\r?\n/, '<br />'));
             row.after(newRow);
         }
         row.remove();

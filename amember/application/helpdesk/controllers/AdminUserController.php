@@ -8,7 +8,7 @@
  *        Web: http://www.cgi-central.net
  *    Details: Admin Access log
  *    FileName $RCSfile$
- *    Release: 4.4.2 ($Revision: 4649 $)
+ *    Release: 4.7.0 ($Revision: 4649 $)
  *
  * Please direct bug reports,suggestions or feedback to the cgi-central forums.
  * http://www.cgi-central.net/forum/
@@ -17,7 +17,7 @@
  *
  */
 
-require_once(APPLICATION_PATH . '/default/controllers/AdminUsersController.php');
+require_once APPLICATION_PATH . '/default/controllers/AdminUsersController.php';
 
 class Am_Helpdesk_Grid_UserTab extends Am_Helpdesk_Grid_Admin
 {

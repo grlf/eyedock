@@ -11,4 +11,5 @@ interface Am_Form_Bricked
     public function getDefaultBricks();
     public function getAvailableBricks();
     public function isMultiPage();
+    public function isHideBricks();
 }

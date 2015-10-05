@@ -5,7 +5,9 @@
     <?php foreach ($cart->getItems() as $item): ?>
     <tr class="am-basket-preview-item">
         <td class="am-basket-preview-item-title"><?php p($item->item_title) ?></td>
+        <?php if (!$di->config->get('cart.layout_hide_qty')) : ?>
         <td class="am-basket-preview-item-qty">&times;<?php p($item->qty) ?></td>
+        <?php endif; ?>
         <td class="am-basket-preview-item-total"><?php p($this->cart->getCurrency($item->first_total)) ?></td>
     </tr>
     <?php endforeach ?>

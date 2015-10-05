@@ -2,9 +2,6 @@
 
 abstract class Am_Helpdesk_Strategy_Abstract
 {
-
-    private static $cacheUsers = array();
-    private static $cacheAdmins = array();
     protected $_di = null;
 
     abstract public function isMessageAvalable($message);
@@ -75,6 +72,9 @@ abstract class Am_Helpdesk_Strategy_Abstract
             'controller' => $this->getControllerName(),
             ) + $params, $route, true);
     }
+
+    abstract public function ticketUrl($ticket);
+
 
     /**
      * @return Am_Helpdesk_Strategy_Abstract
@@ -151,21 +151,12 @@ abstract class Am_Helpdesk_Strategy_Abstract
 
     protected function getAdmin($admin_id)
     {
-        if (!isset(self::$cacheAdmins[$admin_id])) {
-            self::$cacheAdmins[$admin_id] = $this->getDi()->adminTable->load($admin_id, false);
-        }
-
-        return self::$cacheAdmins[$admin_id];
+        return $this->getDi()->adminTable->load($admin_id, false);
     }
 
     protected function getUser($user_id)
     {
-        if (!isset(self::$cacheUsers[$user_id])) {
-            self::$cacheUsers[$user_id] = $this->getDi()->userTable->load($user_id);
-        }
-
-        return self::$cacheUsers[$user_id];
+        return $this->getDi()->userTable->load($user_id);
     }
 
 }
-

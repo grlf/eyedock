@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
 *
 *
@@ -7,11 +7,11 @@
 *        Web: http://www.cgi-central.net
 *    Details: Admin accounts
 *    FileName $RCSfile$
-*    Release: 4.4.2 ($Revision$)
+*    Release: 4.7.0 ($Revision$)
 *
 * Please direct bug reports,suggestions or feedback to the cgi-central forums.
 * http://www.cgi-central.net/forum/
-*                                                                          
+*
 * aMember PRO is a commercial software. Any distribution is strictly prohibited.
 *
 */
@@ -22,7 +22,7 @@ class AdminAdminsController extends Am_Controller_Grid
     {
         return $admin->isSuper();
     }
-    
+
     public function createGrid()
     {
         $ds = new Am_Query($this->getDi()->adminTable);
@@ -41,7 +41,7 @@ class AdminAdminsController extends Am_Controller_Grid
         $grid->addCallback(Am_Grid_Editable::CB_BEFORE_DELETE, array($this, 'beforeDelete'));
         return $grid;
     }
-    
+
     public function checkSelfPassword($pass) {
         return $this->getDi()->authAdmin->getUser()->checkPassword($pass);
     }
@@ -52,10 +52,11 @@ class AdminAdminsController extends Am_Controller_Grid
         $form = $mainForm->addFieldset()->setLabel(___('Admin Settings'));
         $login = $form->addText('login')
             ->setLabel(___('Admin Username'));
-        
+
         $login->addRule('required')
             ->addRule('length', ___('Length of username must be from %d to %d', 4, 16), array(4,16))
-            ->addRule('regex', ___('Admin username must be alphanumeric in small caps'), '/^[a-z][a-z0-9_-]+$/');
+            ->addRule('regex', ___('Admin username must be alphanumeric in small caps'), '/^[a-z][a-z0-9_-]+$/')
+            ->addRule('callback2', '-error-', array($this, 'checkUniqLogin'));
 
         $set = $form->addGroup()->setLabel(___('First and Last Name'));
         $set->setSeparator(' ');
@@ -72,7 +73,8 @@ class AdminAdminsController extends Am_Controller_Grid
 
         $form->addText('email')
             ->setLabel(___('E-Mail Address'))
-            ->addRule('required');
+            ->addRule('required')
+            ->addRule('callback2', '-error-', array($this, 'checkUniqEmail'));;
         $super = $form->addAdvCheckbox('super_user')
             ->setId('super-user')
             ->setLabel(___('Super Admin'));
@@ -115,7 +117,7 @@ CUT
         }
 
         $self_password = $mainForm->addFieldset()
-                ->setLabel(___('Authentification'))
+                ->setLabel(___('Authentication'))
                 ->addPassword('self_password')
                 ->setLabel(___("Your Password\n".
                     "enter your current password\n".
@@ -123,10 +125,31 @@ CUT
         $self_password->addRule('callback', ___('Wrong password'), array($this, 'checkSelfPassword'));
         return $mainForm;
     }
+
+    function checkUniqLogin($login)
+    {
+        $r = $this->grid->getRecord();
+
+        if(!$r->isLoaded() || (strcasecmp($r->login, $login)!==0)) {
+            if ($this->getDi()->adminTable->findFirstByLogin($login))
+                return ___('Username %s is already taken. Please choose another username', Am_Controller::escape($login));
+        }
+    }
+
+    function checkUniqEmail($email)
+    {
+        $r = $this->grid->getRecord();
+
+        if(!$r->isLoaded() || (strcasecmp($r->email, $email)!==0)) {
+            if ($this->getDi()->adminTable->findFirstByEmail($email))
+                return ___('An Admin Account with the same email already exists.');
+        }
+    }
+
     function renderLoginAt(Admin $a){
         return $this->renderTd($a->last_login ? $a->last_ip . ___(' at ') . amDatetime($a->last_login) : null);
     }
-    
+
     function valuesToForm(& $values, Admin $record)
     {
         $values['perms'] = $record->getPermissions();
@@ -137,7 +160,7 @@ CUT
         $record->setPermissions($values['perms']);
         unset($values['perms']);
     }
-    
+
     public function beforeSave(array & $values, $record) {
         check_demo();
         unset($values['self_password']);

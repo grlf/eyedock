@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
 *
 *
@@ -7,11 +7,11 @@
 *        Web: http://www.cgi-central.net
 *    Details: Admin Info / PHP
 *    FileName $RCSfile$
-*    Release: 4.4.2 ($Revision$)
+*    Release: 4.7.0 ($Revision$)
 *
 * Please direct bug reports,suggestions or feedback to the cgi-central forums.
 * http://www.cgi-central.net/forum/
-*                                                                          
+*
 * aMember PRO is a commercial software. Any distribution is strictly prohibited.
 *
 */
@@ -22,7 +22,7 @@ class AdminInfoController extends Am_Controller
     {
         return $admin->hasPermission(Am_Auth_Admin::PERM_SYSTEM_INFO);
     }
-    
+
     function indexAction()
     {
         check_demo();
@@ -51,9 +51,14 @@ class AdminInfoController extends Am_Controller
         $os=substr(php_uname(),0,28);
         if (strlen($os)==28) $os="$os...";
         $mysql = $this->getDi()->db->selectCell("SELECT VERSION()");
+
+        $db = $this->getDi()->getParameter('db');
+        $dsn = sprintf("mysql://%s@%s:%d/%s.%s", $db['mysql']['user'],
+            $db['mysql']['host'], $db['mysql']['port'] ? $db['mysql']['port'] : 3306,
+            $db['mysql']['db'], $db['mysql']['prefix']);
         $root  = ROOT_DIR;
         $root_title = ___('Root Folder');
-        
+
         $modules = array();
         foreach ($this->getDi()->modules->getEnabled() as $m)
         {
@@ -61,13 +66,13 @@ class AdminInfoController extends Am_Controller
             if (!file_exists($fn)) continue;
             $xml = simplexml_load_file($fn);
             if (!$xml) continue;
-            
+
             $version = "(" . $xml->version . ")";
             $modules[] = "$m $version";
         }
         $modules = join("<br />", $modules);
         $modules_title = ___('Modules');
-        
+
         $plugins = "";
         foreach (array_merge(
             $this->getDi()->plugins_payment->loadEnabled()->getAllEnabled(),
@@ -77,9 +82,13 @@ class AdminInfoController extends Am_Controller
                 $p->getId(),
                 preg_replace('/\$'.'Revision: (\d+).*/', '$1', $rClass->getConstant('PLUGIN_REVISION')),
                 preg_replace('/\$'.'Date: (.+?)\s+.+/', '$1',  $rClass->getConstant('PLUGIN_DATE')));
-        
+
         }
         $plugins_title = ___('Plugins');
+
+        $_ = explode('_', get_class($this->getDi()->cacheBackend));
+        $cacheBackend = array_pop($_);
+        $cacheBackend_title = ___('Cache Backend');
 
         $version_title = ___('Software version info');
         $amInfo = <<<CUT
@@ -90,18 +99,16 @@ class AdminInfoController extends Am_Controller
 </tr>
 <tr>
     <td align="right">$now_title</td>
-    <td><strong>$now</strong>
-    </td>
+    <td><strong>$now</strong></td>
 </tr>
 <tr>
     <td align="right">$timezone_title</td>
-    <td><strong>$timezone</strong>
-    </td>
+    <td><strong>$timezone</strong></td>
 </tr>
 <tr>
     <td align="right">aMember</td>
     <td><strong>$am_version</strong>
-    $trial    
+    $trial
     </td>
 </tr>
 <tr class="odd">
@@ -117,22 +124,29 @@ class AdminInfoController extends Am_Controller
     <td><strong>$os</strong></td>
 </tr>
 <tr>
-    <td align="right">MySQL</td>
+    <td align="right" rowspan="2">MySQL</td>
     <td><strong>$mysql</strong></td>
 </tr>
+<tr>
+    <td><strong>$dsn</strong></td>
+</tr>
 <tr class="odd">
+    <td align="right">$cacheBackend_title</td>
+    <td><strong>$cacheBackend</strong></td>
+</tr>
+<tr>
     <td align="right">$root_title</td>
     <td><strong>$root</strong></td>
 </tr>
-<tr>
+<tr class="odd">
     <td align="right">$cron_last_run_title</td>
     <td><strong>$cron_last_run</strong></td>
 </tr>
-<tr class="odd">
+<tr>
     <td align="right">$modules_title</td>
     <td>$modules</td>
 </tr>
-<tr>
+<tr class="odd">
     <td align="right">$plugins_title</td>
     <td>$plugins</td>
 </tr>

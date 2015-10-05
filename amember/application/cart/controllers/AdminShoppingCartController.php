@@ -186,7 +186,7 @@ class Am_Form_Setup_Cart extends Am_Form_Setup
                 ->loadOptions(array('' => '-- ' . ___('Root') . ' --') + Am_Di::getInstance()->productCategoryTable->getAdminSelectOptions());
         
         $this->addAdvCheckbox('cart.redirect_to_cart')
-            ->setLabel(___('Redirect to Signup Cart Page by Default'));
+            ->setLabel(___('Redirect Default Signup Page to Cart'));
 
         $gr = $this->addGroup()
                 ->setLabel(___("Hide 'Add/Renew Subscription' tab (User Menu)\n" .
@@ -268,6 +268,9 @@ CUT
 
         $fs->addAdvCheckbox('cart.layout_no_basket')
             ->setLabel(___('Hide Your Basket Widget'));
+
+        $fs->addAdvCheckbox('cart.layout_hide_qty')
+            ->setLabel(___('Hide Qty Column in Basket'));
 
         $fs->addText('cart.records_per_page', array('size' => 3))
             ->setLabel(___('Products per Page'));

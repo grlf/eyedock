@@ -7,11 +7,11 @@
 *        Web: http://www.cgi-central.net
 *    Details: Admin accounts
 *    FileName $RCSfile$
-*    Release: 4.4.2 ($Revision: 4649 $)
+*    Release: 4.7.0 ($Revision: 4649 $)
 *
 * Please direct bug reports,suggestions or feedback to the cgi-central forums.
 * http://www.cgi-central.net/forum/
-*                                                                          
+*
 * aMember PRO is a commercial software. Any distribution is strictly prohibited.
 */
 
@@ -55,7 +55,7 @@ class Am_Form_Admin_SavedForm extends Am_Form_Admin
     protected $record;
     /** @var Am_Form_Element_BricksEditor */
     protected $brickEditor;
-    
+
     public function __construct(SavedForm $record) {
         $this->record = $record;
         parent::__construct();
@@ -63,7 +63,7 @@ class Am_Form_Admin_SavedForm extends Am_Form_Admin
 
     public function init() {
         parent::init();
-        
+
         $typeDef = $this->record->getTypeDef();
 
         $type = $this->addSelect('type', null, array('options' => Am_Di::getInstance()->savedFormTable->getTypeOptions()));
@@ -73,21 +73,28 @@ class Am_Form_Admin_SavedForm extends Am_Form_Admin
         $title = $this->addText('title', array('class' => 'el-wide'))->setLabel(
             ___("Custom Signup Form Title\n".
             "keep empty to use default title"));
-        
+
         $comment = $this->addText('comment', array('class' => 'el-wide'))
             ->setLabel(
             ___("Comment\nfor admin reference"));
 
-        if ($this->record->isSignup())
+        if ($this->record->isSignup() || $this->record->isProfile())
         {
-        if (!empty($typeDef['generateCode']))
-            $code = $this->addText('code')
-                ->setLabel(___("Secret Code\n".
-                    "if form is not choosen as default, this code\n".
-                    "(inside URL) will be necessary to open form"))
-                ->addRule('regex', ___('Value must be alpha-numeric'), '/[a-zA-Z0-9_]/');
+            if (!empty($typeDef['generateCode'])) {
+                $code = $this->addText('code')
+                    ->setLabel(___("Secret Code\n".
+                        "if form is not choosen as default, this code\n".
+                        "(inside URL) will be necessary to open form"))
+                    ->addRule('regex', ___('Value must be alpha-numeric'), '/[a-zA-Z0-9_]/');
+            }
         }
 
+        if ($this->record->type == SavedForm::T_SIGNUP || $this->record->type == SavedForm::T_PROFILE) {
+            $this->addAdvCheckbox('hide')
+                ->setLabel(___("Hide from Menu\n" .
+                    "do not include link to this form in members menu"));
+
+        }
 
         $this->brickEditor = $this->addElement(new Am_Form_Element_BricksEditor('fields', array(), $this->record->createForm()))
             ->setLabel(array('Fields'));
@@ -95,7 +102,7 @@ class Am_Form_Admin_SavedForm extends Am_Form_Admin
         if ($this->record->isSignup()) {
             $this->addSelect('tpl')
                 ->setLabel(___("Template\nalternative template for signup page").
-                               "\n" . 
+                               "\n" .
                            ___("aMember will look for templates in [application/default/views/signup/] folder\n".
                                "and in theme's [signup/] folder\n".
                                "and template filename must start with [signup]"))
@@ -115,7 +122,7 @@ class Am_Form_Admin_SavedForm extends Am_Form_Admin
             ->setLabel(___('Description'));
 
     }
-    
+
     public function render(HTML_QuickForm2_Renderer $renderer)
     {
         return parent::render($renderer);
@@ -175,22 +182,28 @@ class AdminSavedFormController extends Am_Controller_Grid
         $ds->addOrderRaw("`type`='signup' DESC");
         $grid = new Am_Grid_Editable('_s', ___('Forms Editor'), $ds, $this->_request, $this->view);
         $grid->setPermissionId(Am_Auth_Admin::PERM_FORM);
+        $grid->setEventId('gridSavedForm');
         $grid->setForm(array($this, 'createForm'));
         $grid->setRecordTitle(' ');
-        
+
         //$grid->addField(new Am_Grid_Field('saved_form_id', '#', true, '', null, '5%'));
-        
+
         $grid->addField(SavedForm::D_SIGNUP, ___('Default Signup'), false)
             ->setWidth('5%')
-            ->setRenderFunction(array($this, 'renderDefault'));
+            ->setRenderFunction(array($this, 'renderSignupDefault'));
         $grid->addField(SavedForm::D_MEMBER, ___('Default for Members'), false)
             ->setWidth('5%')
-            ->setRenderFunction(array($this, 'renderDefault'));
-        
+            ->setRenderFunction(array($this, 'renderSignupDefault'));
+        $grid->addField(SavedForm::D_PROFILE, ___('Default for Profile'), false)
+            ->setWidth('5%')
+            ->setRenderFunction(array($this, 'renderProfileDefault'));
+
+        $grid->addField('hide', ___('Hide'));
+
         $existingTypes = $this->getDi()->savedFormTable->getExistingTypes();
-        
+
         $grid->actionGet('edit')->setTarget('_top');
-        
+
         $grid->actionDelete('insert');
         foreach ($this->getDi()->savedFormTable->getTypeDefs() as $type => $typeDef)
         {
@@ -203,13 +216,18 @@ class AdminSavedFormController extends Am_Controller_Grid
         $grid->addField(new Am_Grid_Field('type', ___('Type')));
         $grid->addField(new Am_Grid_Field('title', ___('Title')));
         $grid->addField(new Am_Grid_Field('comment', ___('Comment')));
-        $grid->addField(new Am_Grid_Field('code', ___('Code')));
         $grid->addField(new Am_Grid_Field('url', ___('URL'), false))
             ->setRenderFunction(array($this, 'renderUrl'));
-        $grid->actionGet('delete')->setIsAvailableCallback(create_function('$record', 
+        $grid->actionGet('delete')->setIsAvailableCallback(create_function('$record',
             'return $record->canDelete();'));
         $grid->actionAdd(new Am_Grid_Action_CopySavedForm())->setIsAvailableCallback(create_function('$record',
             'return !$record->isSingle();'));
+
+        $grid->actionAdd(new Am_Grid_Action_LiveCheckbox('hide'))
+            ->setIsAvailableCallback(function($r) {
+                return $r->type == SavedForm::T_SIGNUP || $r->type == SavedForm::T_PROFILE;
+            });
+
         return $grid;
     }
     public function beforeSave(array & $values)
@@ -235,10 +253,10 @@ $(function(){
 });
 CUT;
     }
-    public function renderDefault(SavedForm $record, $field)
+    public function renderDefault(SavedForm $record, $field, $type)
     {
         $html = "";
-        if ($record->type == SavedForm::T_SIGNUP)
+        if ($record->type == $type)
         {
             $checked = $record->isDefault($field) ? "checked='checked'" : "";
             $html = sprintf('
@@ -249,16 +267,26 @@ CUT;
                 $this->escape(REL_ROOT_URL . '/admin-saved-form/set-default'),
                 $field, $record->saved_form_id,
                 $checked);
-        } 
+        }
         return $this->renderTd($html, false);
     }
+    public function renderSignupDefault(SavedForm $record, $field)
+    {
+        return $this->renderDefault($record, $field, SavedForm::T_SIGNUP);
+    }
+
+    public function renderProfileDefault(SavedForm $record, $field)
+    {
+        return $this->renderDefault($record, $field, SavedForm::T_PROFILE);
+    }
+
     public function setDefaultAction()
     {
         foreach ($this->getRequest()->getPost('default') as $d => $id)
             $this->getDi()->savedFormTable->setDefault($d, $id);
         $this->_redirect('admin-saved-form');
     }
-    public function createForm() 
+    public function createForm()
     {
         $record = $this->grid->getRecord();
         $post = $this->grid->getCompleteRequest()->getPost();
@@ -285,11 +313,12 @@ CUT;
         $el = $this->grid->getForm()->getElementById('code-0');
         if ($el && strlen($code = $el->getValue()))
         {
-            if ($id = $this->getDi()->db->selectCell("SELECT saved_form_id 
+            if ($id = $this->getDi()->db->selectCell("SELECT saved_form_id
                     FROM ?_saved_form
-                    WHERE code=? AND saved_form_id<>?d", 
-                        $code, 
-                        (int)@$value['_s_id']))
+                    WHERE code=? AND saved_form_id<>?d AND type=?",
+                        $code,
+                        (int)@$value['_s_id'],
+                        $value['type']))
             {
                 $code = $this->escape($code);
                 $el->setError(___('The code [%s] is already used by signup form #%s, please choose another code', $code, $id));

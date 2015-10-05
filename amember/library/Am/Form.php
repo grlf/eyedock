@@ -17,7 +17,7 @@ HTML_Common2::setOption('charset', 'UTF-8');
 class Am_Form extends HTML_QuickForm2 {
     protected $width;
     protected static $_usedIds = array();
-    
+
     protected $prolog = null;
     protected $epilog = null;
 
@@ -96,13 +96,13 @@ class Am_Form extends HTML_QuickForm2 {
     function setAction($url) {
         $this->setAttribute('action', $url);
     }
-    public function __toString() 
+    public function __toString()
     {
         $view = new Am_View();
         $view->form = $this;
         return $view->render('_form.phtml');
     }
-    public function render(HTML_QuickForm2_Renderer $renderer) 
+    public function render(HTML_QuickForm2_Renderer $renderer)
     {
         if (method_exists($renderer->getJavascriptBuilder(), 'addValidateJs'))
         {
@@ -139,14 +139,14 @@ class Am_Form extends HTML_QuickForm2 {
                 $ret[] = $el->getError();
         return $ret;
     }
-    
+
     public function removeElementByName($name)
     {
         foreach ($this->getIterator() as $el)
             if ($el->getName() == $name)
                 $el->getContainer()->removeChild($el);
     }
-    
+
     public function findRuleMessage(HTML_QuickForm2_Rule $rule, HTML_QuickForm2_Node $el)
     {
         $strings = array(
@@ -158,19 +158,19 @@ class Am_Form extends HTML_QuickForm2 {
         if (array_key_exists($fuzzy, $strings))
             return $strings[$fuzzy];
     }
-    
+
     /**
      * @return array of elements for easy custom form building
      */
     public function renderEasyArray()
     {
         $renderer = HTML_QuickForm2_Renderer::factory('array');
-        
+
         $renderer->setJavascriptBuilder(new Am_Form_JavascriptBuilder);
-        
+
         $renderer->getJavascriptBuilder()->addValidateJs('errorElement: "span"');
-        
-        
+
+
         /* @var $renderer HTML_QuickForm2_Renderer_Array */
         $this->render($renderer);
         $arr = $renderer->toArray();
@@ -215,7 +215,32 @@ class Am_Form extends HTML_QuickForm2 {
             }
         }
     }
-}    
+}
+
+HTML_QuickForm2_Factory::registerElement('period', 'Am_Form_Element_Period');
+HTML_QuickForm2_Factory::registerElement('date', 'Am_Form_Element_Date');
+HTML_QuickForm2_Factory::registerElement('integer', 'Am_Form_Element_Integer');
+HTML_QuickForm2_Factory::registerElement('advcheckbox', 'Am_Form_Element_AdvCheckbox');
+HTML_QuickForm2_Factory::registerElement('advradio', 'Am_Form_Element_AdvRadio');
+HTML_QuickForm2_Factory::registerElement('email_checkbox', 'Am_Form_Element_EmailCheckbox');
+HTML_QuickForm2_Factory::registerElement('email_select', 'Am_Form_Element_EmailSelect');
+HTML_QuickForm2_Factory::registerElement('email_link', 'Am_Form_Element_EmailLink');
+HTML_QuickForm2_Factory::registerElement('email_with_days', 'Am_Form_Element_EmailWithDays');
+HTML_QuickForm2_Factory::registerElement('upload', 'Am_Form_Element_Upload');
+HTML_QuickForm2_Factory::registerElement('script', 'Am_Form_Element_Script');
+HTML_QuickForm2_Factory::registerElement('html', 'Am_Form_Element_Html');
+HTML_QuickForm2_Factory::registerElement('csrf', 'Am_Form_Element_Csrf');
+HTML_QuickForm2_Factory::registerElement('options_editor', 'Am_Form_Element_OptionsEditor');
+HTML_QuickForm2_Factory::registerElement('htmleditor', 'Am_Form_Element_HtmlEditor');
+HTML_QuickForm2_Factory::registerElement('magicselect', 'Am_Form_Element_MagicSelect');
+HTML_QuickForm2_Factory::registerElement('sortablemagicselect', 'Am_Form_Element_SortableMagicSelect');
+HTML_QuickForm2_Factory::registerElement('checkboxedgroup', 'Am_Form_Element_CheckboxedGroup');
+HTML_QuickForm2_Factory::registerElement('advfieldset', 'Am_Form_Container_AdvFieldset');
+HTML_QuickForm2_Factory::registerElement('multi_select', 'Am_Form_Element_MultiSelect');
+HTML_QuickForm2_Factory::registerElement('category', 'Am_Form_Element_Category');
+
+HTML_QuickForm2_Factory::registerRule('callback2', 'Am_Rule_Callback2');
+HTML_QuickForm2_Factory::registerRule('remote', 'HTML_QuickForm2_Rule_Remote');
 
 /**
  * Callback function must return error message if failed,
@@ -247,7 +272,7 @@ class HTML_QuickForm2_Rule_Remote extends HTML_QuickForm2_Rule {
     }
     protected function getJavascriptCallback()
     {
-        return "function () { return true; }";        
+        return "function () { return true; }";
     }
 }
 
@@ -282,7 +307,7 @@ class Am_Form_Element_OptionsEditor extends HTML_QuickForm2_Element_Input {
 }
 
 class Am_Form_Element_AdvCheckbox extends HTML_QuickForm2_Element_InputCheckbox {
-    
+
     // Do not change element value if there is no element in datasources;
     function setValue($value){
         if(is_null($value)) return $this;
@@ -369,7 +394,7 @@ $(function(){
         $(this).closest(".element").find(".checkboxed-cnt").toggle( this.checked );
     });
 });
-// end of init checkboxed group    
+// end of init checkboxed group
 CUT
 );
     }
@@ -381,9 +406,9 @@ class Am_Form_Element_AdvRadio extends HTML_QuickForm2_Element_Select {
      * Support list of options like it is done for <select>
      * @param array of options key => value
      */
-    public function __toString() 
+    public function __toString()
     {
-        if ($this->frozen) 
+        if ($this->frozen)
         {
             //to add data-* attributes to frozen hidden input
             $html = $this->getFrozenHtml();
@@ -439,7 +464,7 @@ class Am_Form_Element_AdvRadio extends HTML_QuickForm2_Element_Select {
 class Am_Form_Element_SignupCheckboxGroup extends HTML_QuickForm2_Element {
     protected $options = array();
     protected $type = 'checkbox';
-    
+
     public function __construct($name = null, $options, $type)
     {
         parent::__construct($name, null, null);
@@ -452,13 +477,13 @@ class Am_Form_Element_SignupCheckboxGroup extends HTML_QuickForm2_Element {
         /*
          * <div class="element group">
          * <label for="166-0">
-         *   <input type="checkbox" id="166-0" name="product_id_page-0[166]" data-second_price="22.00" data-first_price="11.00" value="166"> 
+         *   <input type="checkbox" id="166-0" name="product_id_page-0[166]" data-second_price="22.00" data-first_price="11.00" value="166">
          *   &nbsp;<b>Resell Package (5 users)</b> $11.00 for first day, then $22.00 for each one day<br>
          * <span class="small"></span>
          * <br>
          * </label>
-         * 
-         * 
+         *
+         *
          * <label for="164-0"><input type="checkbox" id="164-0" name="product_id_page-0[164]" data-second_price="2.44" data-first_price="1.22" value="164"> &nbsp;<b>Recurring</b> $1.22 for first day, then $2.44 for each one day<br><span class="small"></span><br></label><label for="68-0"><input type="checkbox" id="68-0" name="product_id_page-0[68]" data-second_price="" data-first_price="0.00" value="68"> &nbsp;<b>4Images plugin</b> Бесплатно<br><span class="small">integration with <a href="http://www.4homepages.de/" target="_blank">4Images</a>
 image gallery script</span><br></label><label for="122-0"><input type="checkbox" id="122-0" name="product_id_page-0[122]" data-second_price="" data-first_price="40.00" value="122"> &nbsp;<b>4Images plugin</b> $40.00 for 6 months<br><span class="small">integration with <a href="http://www.4homepages.de/" target="_blank">4Images</a>
 image gallery script</span><br></label></div>
@@ -469,9 +494,9 @@ image gallery script</span><br></label></div>
         {
             $value = Am_Controller::escape($o['options']['value']);
             $id = 'product-' . $value;
-            
+
             $label = $o['options']['label'];
-            
+
             $attrs = "";
             foreach ($o as $k=>$v)
             {
@@ -485,8 +510,8 @@ image gallery script</span><br></label></div>
             {
                 $qty = (int)$o['options']['qty'];
                 if (!$qty) $qty = 1;
-                $qty_attrs = $this->type != 'hidden' ? 
-                        "disabled='disabled' style='display:none;'" : ""; 
+                $qty_attrs = $this->type != 'hidden' ?
+                        "disabled='disabled' style='display:none;'" : "";
                 $qty_input = "<input type='text' class='am-product-qty' name='{$name}[_qty-{$value}]'".
                     " value='$qty' $qty_attrs onclick='return false;' size=2 />";
             }
@@ -528,7 +553,7 @@ image gallery script</span><br></label></div>
             [2] => 2
             [_qty-2] => 3
         ) */
-        foreach ($value as $k => $v) 
+        foreach ($value as $k => $v)
         {
             // restore from getValue() format
             if (preg_match('#(\d+-\d+)-(\d+)#', $v, $regs))
@@ -542,13 +567,13 @@ image gallery script</span><br></label></div>
             $opt = & $this->options[$v]['options'];
             $opt['selected'] = true;
             $qk = '_qty-' . $v;
-            if ($opt['variable_qty'] 
-                    && array_key_exists($qk, $value) 
+            if ($opt['variable_qty']
+                    && array_key_exists($qk, $value)
                     && (trim($value[$qk])>0))
                 $opt['qty'] = trim($value[$qk]);
         }
     }
-    
+
 }
 
 class Am_Form_Element_Upload extends HTML_QuickForm2_Element_InputText {
@@ -557,7 +582,7 @@ class Am_Form_Element_Upload extends HTML_QuickForm2_Element_InputText {
     protected $secure = null;
     protected $mimeTypes = array();
     protected $jsOptions = '{}';
-
+    const EMPTY_VAL = -1;
 
     public function  __construct($name = null, $attributes = null, $data = null) {
         if (!is_null($attributes) && isset($attributes['class'])) {
@@ -624,7 +649,7 @@ class Am_Form_Element_Upload extends HTML_QuickForm2_Element_InputText {
             );
             $hiddens[] = sprintf('<input type="hidden" name="%s" value="%s" />',
                     $this->getName() . (empty($this->attributes['multiple']) ? '' : '[]'),
-                    $upload->pk()
+                    ($this->secure ? $this->signValue($upload->pk()) : $upload->pk())
             );
         }
 
@@ -660,6 +685,7 @@ class Am_Form_Element_Upload extends HTML_QuickForm2_Element_InputText {
 
     public static function signValue($val)
     {
+        if ($val == self::EMPTY_VAL) return $val;
         if (strpos($val, '|')!==false) return $val;
         $val = $val . '|' . self::sign($val);
         return $val;
@@ -667,7 +693,10 @@ class Am_Form_Element_Upload extends HTML_QuickForm2_Element_InputText {
 
     protected function checkSign($val)
     {
-        list($val, $sign) = explode('|', $val);
+        if ($val == self::EMPTY_VAL) return true;
+        if(!$val) return false;
+        @list($val, $sign) = explode('|', $val);
+        if (!$sign) return false;
         return $this->sign($val) == $sign;
     }
 
@@ -681,26 +710,39 @@ class Am_Form_Element_Upload extends HTML_QuickForm2_Element_InputText {
         $error = array();
         $value = array_filter(empty($this->attributes['multiple']) ? array($value) : (array)$value);
 
+        $hasEmpty = false;
+        foreach ($value as $k => $v) {
+            if ($v == self::EMPTY_VAL) {
+                unset($value[$k]);
+                $hasEmpty = true;
+                break;
+            }
+        }
+
         foreach ($value as $k => $upload_id) {
-            $_upload_id = $this->secure ? $this->trimSign($upload_id) : $upload_id;
             try {
-                $upload = Am_Di::getInstance()->plugins_storage->getFile($_upload_id);
+                $upload = Am_Di::getInstance()->plugins_storage->getFile($upload_id);
                 if ($upload) {
-                    $data[$upload_id] = $upload->info();
+                    $data[$this->secure ? $this->signValue($upload_id) : $upload_id] = $upload->info();
                 }
             } catch (Exception $e) {
                 Am_Di::getInstance()->errorLogTable->logException($e);
                 $error[] = $e->getMessage();
                 unset($value[$k]);
             }
-
         }
 
         $this->setAttribute('data-error', Am_Controller::getJson($error));
+
+        if (!$hasEmpty && !$value) return;
         reset($value);
 
+        if ($this->secure) {
+            $value = array_map(array($this, 'signValue'), $value);
+        }
+
         $plainValue = empty($this->attributes['multiple']) ? current($value) : implode(',', $value);
-        
+
         $this->setAttribute('data-info', Am_Controller::getJson($data));
         parent::setValue($plainValue);
     }
@@ -738,6 +780,10 @@ class Am_Form_Element_Upload extends HTML_QuickForm2_Element_InputText {
             if (null !== ($value = $ds->getValue($name))) {
                 break;
             }
+        }
+
+        if ($this->secure && $value && isset($ds) && ($ds instanceof HTML_QuickForm2_DataSource_Submit)) {
+            $value = $this->filterValue($value);
         }
 
         if (empty($this->attributes['multiple'])) {
@@ -840,9 +886,9 @@ class Am_Form_Element_Date extends HTML_QuickForm2_Element_InputText {
         $this->addRule('callback2', 'error', array($this, 'checkDate'));
     }
 
-    public function checkDate($date) 
+    public function checkDate($date)
     {
-        if ($date === false) 
+        if ($date === false)
         {
             return ___('Date must be in format %s',
                 Zend_Registry::get('Am_Locale')->getDateFormat());
@@ -872,25 +918,31 @@ class Am_Form_Element_Date extends HTML_QuickForm2_Element_InputText {
     }
 
     /*
-     * 
+     *
      * @param string $date date in Readable format
-     * @return mixed (string|false|null) date in SQL format, 
-     * null - if string is empty, 
-     * false - if string is incorrect 
-     * 
+     * @return mixed (string|false|null) date in SQL format,
+     * null - if string is empty,
+     * false - if string is incorrect
+     *
     */
-    public function convertReadableToSQL($date) 
+    public function convertReadableToSQL($date)
     {
         if (!$date) return null;
         $format = Zend_Registry::get('Am_Locale')->getDateFormat();
-        if (is_callable(array('DateTime', 'createFromFormat')))
+        if (is_callable(array('DateTime', 'createFromFormat'))) {
             $d = DateTime::createFromFormat($format, $date);
-        else
+            if(!$d)
+                $d = new DateTime($date);
+            if(!$d)
+                return $date;
+            if ($d->format('Y') > 2037) //respect cutoff year
+                $d->modify('-100 years');
+        } else
             $d = self::createFromFormat($format, $date);
         if ($d === false) return false;
         return $d->format('Y-m-d');
     }
-    
+
     /**
      * Parse date from string (for PHP 5.2.x)
      * @param string $dateFormat subset of DateTime::createFromFormat() : dmyYM or null to use default
@@ -909,22 +961,22 @@ class Am_Form_Element_Date extends HTML_QuickForm2_Element_InputText {
             {
                 case 'd':
                     $vars[] = 'day';
-                    $regex .= "([0-3]*[0-9])"; 
+                    $regex .= "([0-3]*[0-9])";
                     break;
                 case 'm':
                     $vars[] = 'month';
-                    $regex .= "([0-1]*[0-9])"; 
+                    $regex .= "([0-1]*[0-9])";
                     break;
                 case 'y':
                     $vars[] = 'year';
-                    $regex .= "([0-9]{2})"; 
+                    $regex .= "([0-9]{2})";
                     break;
                 case 'Y':
                     $vars[] = 'year';
-                    $regex .= "([0-9]{4})"; 
+                    $regex .= "([0-9]{4})";
                     break;
 //                case 'M':
-//                    $regex .= "(?<MONTH>\w+)"; 
+//                    $regex .= "(?<MONTH>\w+)";
 //                    break;
                 default:
                     $regex .= preg_quote($dateFormat[$i], '/');
@@ -938,13 +990,13 @@ class Am_Form_Element_Date extends HTML_QuickForm2_Element_InputText {
                 $regs[ $vars[$k] ] = $v;
         }
         // work it out
-        if ($regs['year'] < 100) 
+        if ($regs['year'] < 100)
             if($regs['year'] > 37)
-                $regs['year'] += 1900; // If year is more  used for lifetime subscriptions assuming that date is in the past. 
+                $regs['year'] += 1900; // If year is more  used for lifetime subscriptions assuming that date is in the past.
             else
                 $regs['year'] += 2000;
-                
-            
+
+
         if (empty($regs['month']) && !empty($regs['MONTH']))
         {
             $monthNames = Zend_Registry::get('Am_Locale')->getMonthNames();
@@ -1149,7 +1201,7 @@ class Am_Form_Element_PendingNotificationRules extends HTML_QuickForm2_Element {
 
         $url = REL_ROOT_URL . '/admin-email-templates/add-pending-notification-rule/?';
 
-        
+
 
         $params = array(
             'name' => Am_Form_Setup::name2dots($this->getName()),
@@ -1289,7 +1341,7 @@ class Am_Form_Element_Html extends HTML_QuickForm2_Element {
         $this->html = $html;
         return $this;
     }
-    
+
     public function getHtml()
     {
         return $this->html;
@@ -1303,13 +1355,13 @@ class Am_Form_Element_Html extends HTML_QuickForm2_Element {
 class Am_Form_Element_Csrf extends HTML_QuickForm2_Element_InputHidden {
     /** @var Zend_Session_Namespace */
     protected $session;
-    
+
     protected $sessionNamespace = 'amember_admin_csrf';
     protected $startCleanup = 100;
     protected $keepAfterCleanup = 80;
-    
+
     const LEN = 8;
-    
+
     public function __construct($name = null, $attributes = null, $data = null) {
         parent::__construct($name, $attributes, $data);
         $this->addRule('regex', "CSRF protection error - no value provided", '/^[a-zA-Z0-9_]{'.self::LEN.'}$/');
@@ -1327,7 +1379,7 @@ class Am_Form_Element_Csrf extends HTML_QuickForm2_Element_InputHidden {
     {
         $keys = $this->getSession()->keys;
         $keys[] = $ret = Am_Di::getInstance()->app->generateRandomString(self::LEN);
-        if (count($keys) > $this->startCleanup) // if we got > 100 
+        if (count($keys) > $this->startCleanup) // if we got > 100
             array_splice($keys, 0, count($keys) - $this->keepAfterCleanup ); // keep last 80 keys\
         $this->getSession()->keys = $keys;
         return $ret;
@@ -1389,16 +1441,16 @@ class Am_Form_Element_HtmlEditor extends HTML_QuickForm2_Element_Textarea {
         $id = $this->getId();
         $url = REL_ROOT_URL . '/application/default/views/public/js/ckeditor/ckeditor.js';
         $renderer->getJavascriptBuilder()->addElementJavascript(<<<CUT
-if (!window.CKEDITOR) {            
-    var script = $('<script type="text/javascript" src="$url"></' + 'script>');  
-    $('head').append(script);    
+if (!window.CKEDITOR) {
+    var script = $('<script type="text/javascript" src="$url"></' + 'script>');
+    $('head').append(script);
 }
 CUT
 );
         if (!$this->dontInitMce) {
             $options = $this->mceOptions ? Am_Controller::getJson($this->mceOptions) : '{}';
             $renderer->getJavascriptBuilder()->addElementJavascript(<<<CUT
-$(function(){            
+$(function(){
     initCkeditor('$id', $options);
 });
 CUT
@@ -1412,7 +1464,7 @@ class Am_Form_Element_MagicSelect extends HTML_QuickForm2_Element_Select {
     public function __construct($name = null, $attributes = null, array $data = array())
     {
         if ($attributes === null) $attributes = array();
-        $attributes['class'] = empty($attributes['class']) ? 
+        $attributes['class'] = empty($attributes['class']) ?
             'magicselect' : $attributes['class'] . ' magicselect';
         $attributes['multiple'] = 'multiple';
         $attributes['data-offer'] = '-- ' . ___("Please Select") . ' --';
@@ -1473,7 +1525,8 @@ class Am_Form_Element_SortableMagicSelect extends HTML_QuickForm2_Element_Select
     public function __construct($name = null, $attributes = null, array $data = array())
     {
         if ($attributes === null) $attributes = array();
-        $attributes['class'] = 'magicselect-sortable';
+        $attributes['class'] = empty($attributes['class']) ?
+            'magicselect-sortable' : $attributes['class'] . ' magicselect-sortable';
         $attributes['multiple'] = 'multiple';
         $attributes['data-offer'] = '-- ' . ___("Please Select") . ' --';
         parent::__construct($name, $attributes, $data);
@@ -1548,7 +1601,7 @@ CUT;
 class Am_Form_Element_SortableList extends HTML_QuickForm2_Element {
     protected $options = array();
     protected $val = array();
-    
+
     public function loadOptions(array $options)
     {
         $this->options = $options;
@@ -1560,7 +1613,7 @@ class Am_Form_Element_SortableList extends HTML_QuickForm2_Element {
         $id = Am_Controller::escape($this->getId());
         $name = Am_Controller::escape($this->getName());
         $ret  = "<ul class='am-sortable-list' id='$id'>\n";
-        
+
         // sort list by $this->val, then remaining entries
         $options = array();
         $uoptions = $this->options; // unsorted options
@@ -1710,14 +1763,14 @@ CUT
             $sign = '&minus;';
             $points = '';
         }
-        $label[0]  = '[<span class="plus-minus"><b>' . $sign. '</b></span>]&nbsp;' . $label[0] . 
+        $label[0]  = '[<span class="plus-minus"><b>' . $sign. '</b></span>]&nbsp;' . $label[0] .
             '<span class="dots">'.$points.'</span>';
         return $label;
     }
 }
 
 class Am_Form_Element_AddressFields extends Am_Form_Element_SortableMagicSelect {
-    function  setValue($value)
+    function setValue($value)
     {
         parent::setValue(array_keys($value));
         return $this;
@@ -1824,7 +1877,7 @@ CUT;
 }
 
 class Am_Form_Renderer extends HTML_QuickForm2_Renderer_Default {
-    public function __construct() 
+    public function __construct()
     {
         parent::__construct();
         $this->setOption(array(
@@ -1840,7 +1893,7 @@ class Am_Form_Renderer extends HTML_QuickForm2_Renderer_Default {
         $this->setTemplateForClass('am_form_container_prefixfieldset',   '<fieldset{attributes}><qf:label><legend id="{id}-legend">{label}</legend></qf:label><div class="fieldset">{content}</div></fieldset>'."\n");
         $this->setElementTemplateForGroupClass('am_form_container_prefixfieldset', 'html_quickform2_element', '<div class="row" id="row-{id}"><div class="element-title"><label for="{id}"><qf:required><span class="required">* </span></qf:required>{label}</label><qf:label_2><div class="comment">{label_2}</div></qf:label_2></div><div class="element<qf:error> error</qf:error>">{element}<qf:error><span class="error">{error}</span></qf:error></div></div>'."\n");
     }
-    public function finishForm(HTML_QuickForm2_Node $form) 
+    public function finishForm(HTML_QuickForm2_Node $form)
     {
         // a bug in QF2 - form errors are not added to array
         if ($form->getError())
@@ -1862,7 +1915,7 @@ class Am_Form_Renderer extends HTML_QuickForm2_Renderer_Default {
             $this->errors[] = $err;
         return parent::renderHidden($element);
     }
-    public function findTemplate(HTML_QuickForm2_Node $element, $default = null) 
+    public function findTemplate(HTML_QuickForm2_Node $element, $default = null)
     {
         $ret = parent::findTemplate($element, $default);
         if ($element->hasClass('no-label'))
@@ -1890,10 +1943,10 @@ class Am_Form_Renderer extends HTML_QuickForm2_Renderer_Default {
             }
             if (count($label) > 1)
                 $label[1] = nl2br($label[1]);
-            
+
             if ($url = $this->findHelpUrl($el))
                 $label[0] .= sprintf("&nbsp;<span class='admin-help'><a href='%s' target='_blank'><sup>?</sup></a></span>", Am_Controller::escape($url));
-            
+
             $el->setLabel($label);
         }
         return parent::startForm($form);
@@ -1932,28 +1985,3 @@ class Am_Form_Container_PrefixFieldset extends HTML_QuickForm2_Container_Group
         return 'fieldset';
     }
 }
-
-HTML_QuickForm2_Factory::registerElement('period', 'Am_Form_Element_Period');
-HTML_QuickForm2_Factory::registerElement('date', 'Am_Form_Element_Date');
-HTML_QuickForm2_Factory::registerElement('integer', 'Am_Form_Element_Integer');
-HTML_QuickForm2_Factory::registerElement('advcheckbox', 'Am_Form_Element_AdvCheckbox');
-HTML_QuickForm2_Factory::registerElement('advradio', 'Am_Form_Element_AdvRadio');
-HTML_QuickForm2_Factory::registerElement('email_checkbox', 'Am_Form_Element_EmailCheckbox');
-HTML_QuickForm2_Factory::registerElement('email_select', 'Am_Form_Element_EmailSelect');
-HTML_QuickForm2_Factory::registerElement('email_link', 'Am_Form_Element_EmailLink');
-HTML_QuickForm2_Factory::registerElement('email_with_days', 'Am_Form_Element_EmailWithDays');
-HTML_QuickForm2_Factory::registerElement('upload', 'Am_Form_Element_Upload');
-HTML_QuickForm2_Factory::registerElement('script', 'Am_Form_Element_Script');
-HTML_QuickForm2_Factory::registerElement('html', 'Am_Form_Element_Html');
-HTML_QuickForm2_Factory::registerElement('csrf', 'Am_Form_Element_Csrf');
-HTML_QuickForm2_Factory::registerElement('options_editor', 'Am_Form_Element_OptionsEditor');
-HTML_QuickForm2_Factory::registerElement('htmleditor', 'Am_Form_Element_HtmlEditor');
-HTML_QuickForm2_Factory::registerElement('magicselect', 'Am_Form_Element_MagicSelect');
-HTML_QuickForm2_Factory::registerElement('sortablemagicselect', 'Am_Form_Element_SortableMagicSelect');
-HTML_QuickForm2_Factory::registerElement('checkboxedgroup', 'Am_Form_Element_CheckboxedGroup');
-HTML_QuickForm2_Factory::registerElement('advfieldset', 'Am_Form_Container_AdvFieldset');
-HTML_QuickForm2_Factory::registerElement('multi_select', 'Am_Form_Element_MultiSelect');
-HTML_QuickForm2_Factory::registerElement('category', 'Am_Form_Element_Category');
-
-HTML_QuickForm2_Factory::registerRule('callback2', 'Am_Rule_Callback2');
-HTML_QuickForm2_Factory::registerRule('remote', 'HTML_QuickForm2_Rule_Remote');

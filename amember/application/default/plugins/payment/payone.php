@@ -11,13 +11,13 @@
 //api doc http://www.payone.de/downloads/Platform-Server-API-EN
 class Am_Paysystem_Payone extends Am_Paysystem_Abstract{
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.0';
 
     protected $defaultTitle = 'Payone';
     protected $defaultDescription = 'Credit Card Payment';
-   
+
     const API_URL = 'https://secure.pay1.de/frontend/';
-    
+
     public function __construct(Am_Di $di, array $config)
     {
         parent::__construct($di, $config);
@@ -28,31 +28,31 @@ class Am_Paysystem_Payone extends Am_Paysystem_Abstract{
             'you have to create similar offer in PayOne and enter its number here'
             )
         );
-        
+
     }
 
     public function _initSetupForm(Am_Form_Setup $form)
     {
         $form->addText("aid")->setLabel(array(
-            'Sub-Account-ID', 
+            'Sub-Account-ID',
             ''))->addRule('required');
         $form->addText("portalid")->setLabel(array(
-            'Portal-ID', 
+            'Portal-ID',
             ''))->addRule('required');
         $form->addText('secret_key', 'size=40')->setLabel(array('Key',
             ''))->addRule('required');
         $form->addSelect("testing", array(), array('options' => array(
                 ''=>'No',
-                '1'=>'Yes' 
+                '1'=>'Yes'
             )))->setLabel('Test Mode');
 
     }
-    
+
     function getSupportedCurrencies()
     {
         return array('EUR', 'AUD', 'CHF', 'DKK', 'GBP', 'NOK', 'NZD', 'SEK', 'USD');
-    }    
-    
+    }
+
     public function _process(Invoice $invoice, Am_Request $request, Am_Paysystem_Result $result)
     {
         $u = $invoice->getUser();
@@ -65,9 +65,9 @@ class Am_Paysystem_Payone extends Am_Paysystem_Abstract{
             'aid'           => $this->getConfig('aid'),                         //Sub Account ID
             'portalid'      => $this->getConfig('portalid'),                    //Payment portal ID
             'mode'          => $this->getConfig('testing') ? 'test' : 'live',   //Test: Test mode, Live: Live mode
-            
+
             'encoding'      => 'UTF-8',                                         //ISO 8859-1 (default), UTF-8
-            
+
             'clearingtype'  => 'cc',                                            //elv: Debit payment
                                                                                 //cc: Credit card
                                                                                 //vor: Prepayment
@@ -85,7 +85,7 @@ class Am_Paysystem_Payone extends Am_Paysystem_Abstract{
             'backurl'       => $this->getCancelUrl()                            //URL "faulty payment" (only if responsetype=REDIRECT or required by corresponding request)
 
         );
-            
+
         //Parameter („createaccess“)
         $first_period = new Am_Period($invoice->first_period);
         $params['request']                  = 'createaccess';
@@ -99,7 +99,7 @@ class Am_Paysystem_Payone extends Am_Paysystem_Abstract{
         $params['de_trail']              = $invoice->getItem(0)->item_description; // + + AN..255 Description (initial term)
         $params['ti_trail']              = $invoice->getItem(0)->item_title; // + + AN..100 Title (initial term)
         //$params['va_trail']              = ''; // - + N..4 VAT rate (% or bp) (initial term) value < 100 = percent value > 99 = basis points
-        
+
         if($invoice->second_total>0){
             $second_period = new Am_Period($invoice->second_period);
             $params['amount_recurring']         = $invoice->second_total * 100; // - + N..6 Total price of all items during the subsequent term. Must equal the sum (quantity * price) of all items for the subsequent term (in the smallest currency unit, e.g. Cent).
@@ -126,11 +126,11 @@ class Am_Paysystem_Payone extends Am_Paysystem_Abstract{
             //$params['va']  = '';                        //VAT (optional)
             /////
             */
-        
+
         ksort($params);
         $a->hash = strtolower(md5(implode('', $params) . $this->getConfig('secret_key'))); //Hash value (see chapter 3.1.4)
 
-        
+
 
         //Parameter ( personal data )
         $params['firstname']     = $u->name_f;  //AN..50 First name
@@ -149,9 +149,9 @@ class Am_Paysystem_Payone extends Am_Paysystem_Abstract{
 
         foreach ($params as $k=>$v)
             $a->addParam ($k, $v);
-        
-        
-        $result->setAction($a);        
+
+
+        $result->setAction($a);
     }
     public function createTransaction(Am_Request $request, Zend_Controller_Response_Http $response, array $invokeArgs)
     {
@@ -182,7 +182,7 @@ class Am_Paysystem_Payone extends Am_Paysystem_Abstract{
 3. Configure 'PayOne Offer ID' at aMember CP -> Manage Products -> Edit
    Set it up first at Payone Merchant Interface -> Configuration -> Payment Portals: Offers
 CUT;
-        
+
     }
 }
 
@@ -192,12 +192,12 @@ class Am_Paysystem_Transaction_Payone_Thanks extends Am_Paysystem_Transaction_In
     {
         return $this->request->get('param');
     }
-    
+
     public function getUniqId()
     {
         return $this->request->get('txid');
     }
-    
+
     public function validateSource()
     {
         if ($this->getPlugin()->getConfig('secret_key') != $this->request->get('key'))
@@ -205,17 +205,17 @@ class Am_Paysystem_Transaction_Payone_Thanks extends Am_Paysystem_Transaction_In
         else
             return true;
     }
-    
+
     public function validateStatus()
     {
         return ($this->request->get('txaction ') == 'paid');
     }
-    
+
     public function validateTerms()
     {
         return true;
     }
-    
+
     public function getInvoice()
     {
         return $this->invoice;
@@ -227,15 +227,15 @@ class Am_Paysystem_Transaction_Payone extends Am_Paysystem_Transaction_Incoming{
     function __construct(Am_Paysystem_Abstract $plugin, Am_Request $request, Zend_Controller_Response_Http $response, $invokeArgs)
     {
         parent::__construct($plugin, $request, $response, $invokeArgs);
-        
+
         //SessionStatus. As a reply to the request, the string "SSOK" is expected.
-        //TransactionStatus. As a reply to the request, the string "TSOK" is expected. 
+        //TransactionStatus. As a reply to the request, the string "TSOK" is expected.
         if ($this->request->get('txid') || $this->request->get('txaction'))
             print "TSOK";
         else
             print "SSOK";
     }
-    
+
     public function findInvoiceId()
     {
         $param = $this->request->get('param');
@@ -243,7 +243,7 @@ class Am_Paysystem_Transaction_Payone extends Am_Paysystem_Transaction_Incoming{
             $param = $param[1];
         return $param;
     }
-        
+
     public function getUniqId()
     {
         $txid = $this->request->get('txid');
@@ -251,10 +251,10 @@ class Am_Paysystem_Transaction_Payone extends Am_Paysystem_Transaction_Incoming{
             $txid = $txid[1];
         return $txid;
     }
-    
+
     public function validateSource()
     {
-        
+
         $params = $this->request->getParams();
         unset($params['key']);
         ksort($params);
@@ -267,13 +267,13 @@ class Am_Paysystem_Transaction_Payone extends Am_Paysystem_Transaction_Incoming{
 217.70.200.0-217.70.200.24
 IPS
         );
-        
+
 //        if ($hash != $this->request->get('key'))
 //            return false;
 
         return true;
     }
-    
+
     public function validateStatus()
     {
         if($this->request->get('mode') == 'test' && !$this->getPlugin()->getConfig('testing')){
@@ -281,12 +281,12 @@ IPS
         }
         return true;
     }
-    
+
     public function validateTerms()
-    {        
+    {
         return true;
     }
-    
+
     public function processValidated()
     {
         $action = $this->request->get('action');
@@ -295,7 +295,7 @@ IPS
         $txaction = $this->request->get('txaction');
         if (is_array($txaction))
             $txaction = $txaction[1];
-        
+
         //if ($action == 'add')
         if ($txaction == 'appointed') // 'paid'
         {
@@ -307,5 +307,5 @@ IPS
         }
     }
 
-    
+
 }

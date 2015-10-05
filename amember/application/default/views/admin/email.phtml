@@ -30,6 +30,8 @@ $(function(){
             event.preventDefault();
 
             var f = $("form#am-form-email");
+            var reply_to = $('<input type="hidden" name="reply_to" />').val(f.find("select[name='reply_to']").val());
+            var reply_to_other = $('<input type="hidden" name="reply_to_other" />').val(f.find("input[name='reply_to_other']").val());
             var subj = $('<input type="hidden" name="subject" />').val(f.find("input[name='subject']").val());
             var is_html = f.find("input[name='format'][value='html']").is(':checked');
             var fmt = $('<input type="hidden" name="format" />').val(is_html ? 'html' : 'text');
@@ -40,7 +42,18 @@ $(function(){
             $('[name^=files][type=hidden]', f).each(function(){
                 $this.append($('<input type="hidden" name="files[]" />').val($(this).val()))
             })
-            $(this).append(subj).append(fmt).append(body);
+            $(this).append(subj).append(fmt).append(body).append(reply_to).append(reply_to_other);
+
+            $('input,select', f).each(function(){
+                if ($(this).attr('name').substr(0,2) == '__') {
+                    $this.append($('<input type="hidden" />').attr('name', $(this).attr('name')).val($(this).val()));
+                }
+            });
+
+            if ($('[name=email_template_layout_id]', f).length) {
+                $this.append($('<input type="hidden" />').attr('name', 'email_template_layout_id').val($('[name=email_template_layout_id]', f).val()));
+            }
+
             $(this).attr('method', 'post');
             $(this).submit(); // resubmit form with new fields
         }

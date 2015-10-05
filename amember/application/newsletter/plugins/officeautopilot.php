@@ -31,6 +31,12 @@ class Am_Newsletter_Plugin_Officeautopilot extends Am_Newsletter_Plugin
         $form->addText('app_key', array('size' => 40))->setLabel('OfficeAutoPilot App KEY')->addRule('required');
 
     }
+
+    public function isConfigured()
+    {
+        return $this->getConfig('app_id') && $this->getConfig('app_key');
+    }
+
     public function getLists()
     {
         $res = array();

@@ -34,10 +34,15 @@ class AjaxController extends Am_Controller
 
         $email = $vars['email'];
         $msg = null;
-
+        if($_url = @$vars['_url'])
+        {
+            $url = base64_decode($_url);
+        }
+        else
+            $url = REL_ROOT_URL . '/member';
         if (!$this->getDi()->userTable->checkUniqEmail($email, $user_id))
             $msg = ___('An account with the same email already exists.').'<br />'.
-                    ___('Please %slogin%s to your existing account.%sIf you have not completed payment, you will be able to complete it after login','<a href="'.Am_Controller::escape(REL_ROOT_URL . '/member').'" class="ajax-link">','</a>','<br />');
+                    ___('Please %slogin%s to your existing account.%sIf you have not completed payment, you will be able to complete it after login','<a href="'.Am_Controller::escape($url).'" class="ajax-link">','</a>','<br />');
 
         if (!$msg)
             $msg = Am_Di::getInstance()->banTable->checkBan(array('email'=>$email));

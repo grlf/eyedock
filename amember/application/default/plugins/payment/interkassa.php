@@ -7,11 +7,12 @@
  * @visible_link http://interkassa.com/
  * @recurring none
  * @country RU
+ * @logo_url interkassa.png
  */
 class Am_Paysystem_Interkassa extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.0';
 
     const URL = "https://sci.interkassa.com/";
 
@@ -62,9 +63,8 @@ class Am_Paysystem_Interkassa extends Am_Paysystem_Abstract
             'ik_pm_no' => $invoice->public_id,
             'ik_cur' => $invoice->currency,
             'ik_am' => $invoice->first_total,
-            'ik_am_ed' => 0,
             'ik_desc' => $invoice->getLineDescription(),
-            'ik_usr' => $invoice->getUser()->email,
+            'ik_cli' => $invoice->getUser()->email,
             'ik_ia_u' => $this->getPluginUrl('ipn'),
             'ik_suc_u' => $this->getReturnUrl(),
             'ik_fal_u' => $this->getCancelUrl(),
@@ -77,6 +77,7 @@ class Am_Paysystem_Interkassa extends Am_Paysystem_Abstract
             $a->addParam($k, $v);
         }
 
+        $this->logRequest($a);
         $result->setAction($a);
     }
 

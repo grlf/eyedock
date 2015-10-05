@@ -401,5 +401,3 @@ class Am_Icontact_Api extends Am_HttpRequest
     }
     */
 }
-
-?>

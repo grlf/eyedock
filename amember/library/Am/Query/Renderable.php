@@ -194,9 +194,11 @@ class Am_Query_Renderable_Condition_Field extends Am_Query_Condition_Field
     const BOOL = 2;
     const STRING = 3;
     const DATE = 4;
+    const IS_NULL = 5;
 
     protected $title;
     protected $fieldType;
+    protected $isNull;
 
     protected $fieldGroupTitle = "FIELDS";
 
@@ -204,11 +206,13 @@ class Am_Query_Renderable_Condition_Field extends Am_Query_Condition_Field
         self::NUM => array('=' => '=', '<>'=>'<>', '>'=>'>', '<'=>'<', '>='=>'>=', '<='=>'<=', ),
         self::DATE => array('=' => '=', '<>'=>'<>', '>'=>'>', '<'=>'<', '>='=>'>=', '<='=>'<=', ),
         self::STRING => array('='=>'=', '<>'=>'<>', 'LIKE'=>'LIKE', 'NOT LIKE'=>'NOT LIKE', 'IN' => 'IN'),
-        self::BOOL => null,
+        self::BOOL => array(),
+        self::IS_NULL => array('IS NULL' => 'IS NULL', 'IS NOT NULL' => 'IS NOT NULL'),
     );
     /** @var array User fields that must be displayed as select instead of op=>value inputs */
-    public function __construct($field, $title, $mysqlFieldType) {
+    public function __construct($field, $title, $mysqlFieldType, $isNull = false) {
         $this->field = $field;
+        $this->isNull = $isNull;
         $this->title = $title;
         @list($type,$len) = explode('(', $mysqlFieldType);
         $len = intval($len);
@@ -257,7 +261,10 @@ class Am_Query_Renderable_Condition_Field extends Am_Query_Condition_Field
     public function getId(){ return 'field-'.$this->field; }
     public function renderElement(HTML_QuickForm2_Container $form) {
         $group = $this->addGroup($form);
-        if ($operations = self::$renderOperations[$this->fieldType])
+        $operations = self::$renderOperations[$this->fieldType];
+        if ($this->isNull)
+            $operations += self::$renderOperations[self::IS_NULL];
+        if ($operations)
             $group->addSelect('op')->loadOptions($operations);
         switch ($this->fieldType) {
             case self::BOOL:
@@ -277,6 +284,6 @@ class Am_Query_Renderable_Condition_Field extends Am_Query_Condition_Field
         return $this->op === null;
     }
     public function getDescription(){
-        return $this->title . ' ' . $this->op . ' [' . htmlentities($this->value).']';
+        return $this->title . ' ' . $this->op . (isset(self::$renderOperations[self::IS_NULL][$this->op]) ? '' : ' [' . htmlentities($this->value).']');
     }
 }

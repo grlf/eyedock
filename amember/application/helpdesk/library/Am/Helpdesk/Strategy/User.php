@@ -61,7 +61,7 @@ class Am_Helpdesk_Strategy_User extends Am_Helpdesk_Strategy_Abstract
                     $et->setTicket($message->getTicket());
                     $et->setUser($user);
                     $et->setMessage($message);
-                    $et->setUrl(sprintf('%s/helpdesk/admin/p/view/view/ticket/%s',
+                    $et->setUrl(sprintf('%s/helpdesk/admin/ticket/%s',
                             $this->getDi()->config->get('root_surl'),
                             $message->getTicket()->ticket_mask)
                     );
@@ -83,7 +83,7 @@ class Am_Helpdesk_Strategy_User extends Am_Helpdesk_Strategy_Abstract
             if ($et) {
                 $et->setTicket($ticket);
                 $et->setUser($user);
-                $et->setUrl(sprintf('%s/helpdesk/index/p/view/view/ticket/%s',
+                $et->setUrl(sprintf('%s/helpdesk/ticket/%s',
                         $this->getDi()->config->get('root_surl'),
                         $ticket->ticket_mask)
                 );
@@ -157,6 +157,7 @@ class Am_Helpdesk_Strategy_User extends Am_Helpdesk_Strategy_Abstract
     public function createForm()
     {
         $form = new Am_Form();
+        $form->addCsrf();
         $form->setAttribute('class', 'am-helpdesk-form');
 
         return $form;
@@ -176,6 +177,13 @@ class Am_Helpdesk_Strategy_User extends Am_Helpdesk_Strategy_Abstract
 CUT
             );
         }
+    }
+
+    public function ticketUrl($ticket)
+    {
+        return $this->assembleUrl(array(
+                'ticket' => $ticket->ticket_mask
+                ), 'helpdesk-ticket');
     }
 
     protected function getControllerName()

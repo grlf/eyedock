@@ -11,6 +11,12 @@ class Bootstrap_Cc extends Am_Module
     function onSetupEmailTemplateTypes(Am_Event $event)
     {
         $event->addReturn(array(
+                'id' => 'cc.admin_rebill_stats',
+                'title' => 'Cc Rebill Rebill Stats',
+                'mailPeriodic' => Am_Mail::USER_REQUESTED,
+                'isAdmin' => true,
+            ), 'cc.admin_rebill_stats');
+        $event->addReturn(array(
                 'id' => 'cc.rebill_failed',
                 'title' => 'Cc Rebill Failed',
                 'mailPeriodic' => Am_Mail::USER_REQUESTED,
@@ -20,6 +26,7 @@ class Bootstrap_Cc extends Am_Module
                 'id' => 'cc.rebill_failed_admin',
                 'title' => 'Cc Rebill Failed Admin',
                 'mailPeriodic' => Am_Mail::USER_REQUESTED,
+                'isAdmin' => true,
                 'vars' => array('user'),
             ), 'cc.rebill_failed_admin');
         $event->addReturn(array(
@@ -46,9 +53,6 @@ class Bootstrap_Cc extends Am_Module
             {
                 $event->addReturn("Encryption subsystem error: " . $e->getMessage());
             }
-            //
-            if (!extension_loaded("curl") && !$this->getDi()->config->get('curl'))
-                $event->addReturn("You must <a href='$setupUrl/advanced'>enter cURL path into settings</a>, because your host doesn't have built-in cURL functions.");
         }
     }
     public function onHourly(Am_Event $event)

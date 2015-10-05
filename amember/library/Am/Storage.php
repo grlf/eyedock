@@ -11,7 +11,7 @@ class Am_Plugins_Storage extends Am_Plugins
     {
         if (ctype_digit((string)$path))
             return array('upload', $path, array());
-        list($id, $path) = explode('::', $path, 2);
+        @list($id, $path) = explode('::', $path, 2);
         $id = filterId($id);
         @list($path, $query) = explode('?', $path, 2);
         $path = preg_replace('|[^A-Za-z0-9 _:\\\/._-]|', '', $path);
@@ -53,7 +53,8 @@ abstract class Am_Storage extends Am_Plugin
 {
     protected $_idPrefix = 'Am_Storage_';
     protected $prefix;
-    
+    protected $_configPrefix = 'storage.';
+
     public function setPrefix($prefix)
     {
         $this->prefix = $prefix;

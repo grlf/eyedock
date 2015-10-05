@@ -27,6 +27,7 @@ class Cc_AdminRebillsController extends Am_Controller_Grid
         $q->addField('SUM(IF(t.status=3, 1, 0))', 'status_3');
         $q->addField('SUM(IF(t.status=4, 1, 0))', 'status_4');
         $u = new Am_Query(new InvoiceTable, 'i');
+        $u->addWhere('i.paysys_id IN (?a)', $this->getPlugins());
         $u->groupBy('rebill_date');
         $u->clearFields()->addField('i.rebill_date');
         $u->addField('(0)', 'is_log');
@@ -55,6 +56,16 @@ class Cc_AdminRebillsController extends Am_Controller_Grid
         $grid->addField('_action', '', true)->setRenderFunction(array($this, 'renderLink'));
         $grid->addCallback(Am_Grid_ReadOnly::CB_TR_ATTRIBS, array($this, 'getTrAttribs'));
         return $grid;
+    }
+
+    public function getPlugins()
+    {
+        $this->getDi()->plugins_payment->loadEnabled();
+        $ret = array();
+        foreach ($this->getDi()->plugins_payment->getAllEnabled() as $ps)
+            if ($ps instanceof Am_Paysystem_CreditCard || $ps instanceof Am_Paysystem_Echeck)
+                $ret[] = $ps->getId();
+        return $ret;
     }
 
     public function renderDate(CcRebill $obj)
@@ -230,7 +241,7 @@ CUT;
         if ($form->isSubmitted() && $form->validate()) {
             $value = $form->getValue();
             $this->doRun($value['paysys_id'], $value['date']);
-            echo sprintf('<div class="info">%s</div><script type="text/javascript">window.location.href="' . $value['back_url'] . '"</script>', ___('Rebill Opereation Completed for %s', amDate($date)));
+            echo sprintf('<div class="info">%s</div><script type="text/javascript">window.location.href="' . $value['back_url'] . '"</script>', ___('Rebill Operation Completed for %s', amDate($value['date'])));
         } else {
             echo $form;
         }

@@ -18,6 +18,8 @@ class Am_Interval {
     const PERIOD_THIS_MONTH = 'this-month';
     const PERIOD_LAST_30_DAYS = 'last-30-days';
     const PERIOD_LAST_MONTH = 'last-month';
+    const PERIOD_THIS_QUARTER = 'this-quarter';
+    const PERIOD_LAST_QUARTER = 'last-quarter';
     const PERIOD_LAST_90_DAYS = 'last-90-days';
     const PERIOD_LAST_6_MONTHS = 'last-6-months';
     const PERIOD_LAST_YEAR = 'last-year';
@@ -39,6 +41,8 @@ class Am_Interval {
             self::PERIOD_THIS_MONTH => ___('This Month'),
             self::PERIOD_LAST_30_DAYS => ___('Last 30 Days'),
             self::PERIOD_LAST_MONTH => ___('Last Month'),
+            self::PERIOD_THIS_QUARTER => ___('This Quarter'),
+            self::PERIOD_LAST_QUARTER => ___('Last Quarter'),
             self::PERIOD_LAST_90_DAYS => ___('Last 90 Days'),
             self::PERIOD_LAST_6_MONTHS => ___('Last 6 Months'),
             self::PERIOD_LAST_YEAR => ___('Last Year'),
@@ -53,6 +57,36 @@ class Am_Interval {
         return isset($options[$type]) ? $options[$type] : null;
     }
 
+    function getDuration($type)
+    {
+        switch($type) {
+            case self::PERIOD_TODAY:
+            case self::PERIOD_YESTERDAY:
+                return '1 day';
+            case self::PERIOD_LAST_WEEK_BUSINESS:
+            case self::PERIOD_THIS_WEEK_FROM_SUN:
+            case self::PERIOD_THIS_WEEK_FROM_MON:
+            case self::PERIOD_LAST_WEEK_FROM_SUN:
+            case self::PERIOD_LAST_WEEK_FROM_MON:
+                return '1 week';
+            case self::PERIOD_THIS_MONTH:
+            case self::PERIOD_LAST_MONTH:
+                return '1 month';
+            case self::PERIOD_LAST_30_DAYS:
+                return '30 days';
+            case self::PERIOD_LAST_90_DAYS:
+                return '90 days';
+            case self::PERIOD_LAST_6_MONTHS:
+                return '6 month';
+            case self::PERIOD_THIS_QUARTER:
+            case self::PERIOD_LAST_QUARTER:
+                return '3 month';
+            case self::PERIOD_LAST_YEAR:
+            case self::PERIOD_THIS_YEAR:
+                return '1 year';
+        }
+    }
+    
     function getStartStop($type, DateTime $now = null)
     {
         is_null($now) && $now = Am_Di::getInstance()->dateTime;
@@ -75,6 +109,8 @@ class Am_Interval {
                 $w = $start->format('w');
                 $start->modify("-$w days");
                 $nearestSunday = $start;
+                $stop = clone $start;
+                $stop->modify("+7 days");
                 return array(
                     $nearestSunday->format('Y-m-d 00:00:00'),
                     $stop->format('Y-m-d 23:59:59'));
@@ -83,6 +119,8 @@ class Am_Interval {
                 $day = (7 + $w - 1) % 7;
                 $start->modify("-$day days");
                 $nearestMonday = $start;
+                $stop = clone $start;
+                $stop->modify("+7 days");
                 return array(
                     $nearestMonday->format('Y-m-d 00:00:00'),
                     $stop->format('Y-m-d 23:59:59'));
@@ -129,7 +167,7 @@ class Am_Interval {
             case self::PERIOD_THIS_MONTH :
                 return array(
                     $start->format('Y-m-01 00:00:00'),
-                    $stop->format('Y-m-d 23:59:59'));
+                    $stop->format('Y-m-t 23:59:59'));
             case self::PERIOD_LAST_30_DAYS :
                 $start->modify('-30 days');
                 return array(
@@ -141,6 +179,31 @@ class Am_Interval {
                 return array(
                     $start->format('Y-m-01 00:00:00'),
                     $stop->format('Y-m-t 23:59:59'));
+            case self::PERIOD_THIS_QUARTER:
+                $m = $start->format('m');
+                $q = (ceil($m/3)-1)*3+1;
+                $qe = $q+2;
+                $dq = $q-$m;
+                $dqe = $qe-$m;
+                $start->modify("$dq month");
+                $stop->modify("$dqe month");
+                return array(
+                    $start->format("Y-m-1 00:00:00"),
+                    $stop->format("Y-m-t 23:59:59")
+                );
+            case self::PERIOD_LAST_QUARTER:
+                $m = $start->format('m');
+                $q = (ceil($m/3)-1)*3+1;
+                $q -= 3; //prev quarter
+                $qe = $q+2;
+                $dq = $q-$m;
+                $dqe = $qe-$m;
+                $start->modify("$dq month");
+                $stop->modify("$dqe month");
+                return array(
+                    $start->format("Y-m-1 00:00:00"),
+                    $stop->format("Y-m-t 23:59:59")
+                );
             case self::PERIOD_LAST_90_DAYS :
                 $start->modify('-90 days');
                 return array(
@@ -162,7 +225,7 @@ class Am_Interval {
             case self::PERIOD_THIS_YEAR :
                 return array(
                     $start->format('Y-01-01 00:00:00'),
-                    $stop->format('Y-m-d 23:59:59'));
+                    $stop->format('Y-12-t 23:59:59'));
             case self::PERIOD_ALL :
                 return array(
                     date('Y-m-d 00:00:00', 0),

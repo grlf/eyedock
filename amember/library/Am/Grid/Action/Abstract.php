@@ -3,13 +3,13 @@
 *     Author: Alex Scott
 *      Email: alex@cgi-central.net
 *        Web: http://www.amember.com/
-*    Release: 4.4.2
+*    Release: 4.7.0
 *    License: LGPL http://www.gnu.org/copyleft/lesser.html
 */
 
 /**
  * Represents a grid action
- * @package Am_Grid 
+ * @package Am_Grid
  */
 abstract class Am_Grid_Action_Abstract
 {
@@ -17,22 +17,23 @@ abstract class Am_Grid_Action_Abstract
     const SINGLE = 'single';
     const GROUP  = 'group';
     const HIDDEN = 'hidden';
-    
+
     protected $type = self::SINGLE;
     protected $id, $title;
     protected $attributes = array();
+    protected $cssClass = "button";
     /** @var Am_Grid_Editable */
     protected $grid;
     protected $isAvailableCallback = null;
     /** permission (default null====grid.grid_id), and priviledge to request */
     protected $permission=null, $privilege = 'edit';
-    
+
     public function __construct($id = null, $title = null)
     {
         if ($id !== null) $this->id = $id;
         if ($title !== null) $this->title = $title;
     }
-    
+
     function getType()
     {
         return $this->type;
@@ -42,6 +43,16 @@ abstract class Am_Grid_Action_Abstract
         $this->type = $type;
         return $this;
     }
+    function getCssClass()
+    {
+        return $this->cssClass;
+    }
+    function setCssClass($cssClass)
+    {
+        $this->cssClass = $cssClass;
+        return $this;
+    }
+
     function setPrivilegeId($privilege)
     {
         $this->privilege = $privilege;
@@ -50,9 +61,9 @@ abstract class Am_Grid_Action_Abstract
     {
         if ($this->id === null)
         {
-            $a = explode('_', get_class($this));
+            $a = preg_split('#[\\\\_]#', get_class($this));
             $this->id = fromCamelCase(array_pop($a), '-');
-        } 
+        }
         return $this->id;
     }
     function getUrl($record = null, $id = null)
@@ -87,7 +98,7 @@ abstract class Am_Grid_Action_Abstract
         return empty($this->attributes['target']) ? null : $this->attributes['target'];
     }
     /**
-     * @param type $record 
+     * @param type $record
      * @return bool
      */
     public function isAvailable($record)
@@ -96,7 +107,7 @@ abstract class Am_Grid_Action_Abstract
             return (bool)call_user_func($this->isAvailableCallback, $record);
         return true;
     }
-    
+
     public function setIsAvailableCallback($callback)
     {
         $this->isAvailableCallback = $callback;
@@ -108,7 +119,7 @@ abstract class Am_Grid_Action_Abstract
     {
         $this->grid = $grid;
     }
-    
+
     abstract function run();
     public function renderTitle()
     {
@@ -148,7 +159,7 @@ abstract class Am_Grid_Action_Abstract
         ), false);
         $this->grid->redirect($url);
     }
-    
+
     protected function _runFormAction($action)
     {
         if ($this->grid->doFormActions($action))
@@ -161,17 +172,17 @@ abstract class Am_Grid_Action_Abstract
         return false;
     }
 
-    
+
     protected function getConfirmationText()
     {
-        return ___("Do you really want to %s?", 
+        return ___("Do you really want to %s?",
             $this->grid->getRecordTitle($this->getTitle()));
     }
-    
+
     public function renderConfirmation()
     {
         $message = Am_Controller::escape($this->getConfirmationText());
-        
+
         $form = $this->renderConfirmationForm();
         $back = $this->renderBackButton(___('No, cancel'));
         return <<<CUT
@@ -188,21 +199,19 @@ CUT;
     {
         $url_no  = $this->grid->escape($this->grid->getBackUrl());
         $target = $this->getTarget();
-        $returnCode = !$target ? 
+        $returnCode = !$target ?
             "data-url='$url_no' data-target='$target'" :
             "onclick='window.location=".$this->grid->escape(json_encode($this->grid->getBackUrl()))."'";
         return sprintf('<input type="button" value="%s" %s />'.PHP_EOL,
             htmlentities($text, ENT_QUOTES, 'UTF-8'),
             $returnCode);
     }
-    public function renderConfirmationForm($btn=null, $page = null, $addHtml = null)
+    public function renderConfirmationForm($btn=null, $addHtml = null)
     {
         if (empty($btn))
             $btn = ___("Yes, continue");
         $vars = $this->grid->getCompleteRequest()->toArray();
         $vars[$this->grid->getId() . '_confirm'] = 'yes';
-        if ($page !== null)
-            $vars[$this->grid->getId() . '_group_page'] = (int)$page;
         $hidden = Am_Controller::renderArrayAsInputHiddens($vars);
         $btn = $this->grid->escape($btn);
         $url_yes = $this->grid->makeUrl(null);
@@ -210,6 +219,32 @@ CUT;
 <form method="post" action="$url_yes" style="display: inline;">
     $hidden
     $addHtml
+    <input type="submit" value="$btn" id='group-action-continue' />
+</form>
+<script type="text/javascript">
+  $('#group-action-continue').click(function(){
+    $(this).closest('.grid-wrap').
+        find('input[type=submit], input[type=button]').
+        attr('disabled', 'disabled');
+    $(this).closest('form').submit();
+    return false;
+  })
+</script>
+CUT;
+    }
+    public function renderContinueForm($btn=null, $context = null) {
+        if (empty($btn))
+            $btn = ___("Yes, continue");
+        $vars = $this->grid->getCompleteRequest()->toArray();
+        $vars[$this->grid->getId() . '_confirm'] = 'yes';
+        if ($context !== null)
+            $vars[$this->grid->getId() . '_group_context'] = $context;
+        $hidden = Am_Controller::renderArrayAsInputHiddens($vars);
+        $btn = $this->grid->escape($btn);
+        $url_yes = $this->grid->makeUrl(null);
+        return <<<CUT
+<form method="post" action="$url_yes" style="display: inline;">
+    $hidden
     <input type="submit" value="$btn" id='group-action-continue' />
 </form>
 CUT;
@@ -264,5 +299,57 @@ $(function(){
 </script>
 CUT;
     }
-    
+
+    protected function _simpleSort(Am_Table $table, $item, $after, $before) {
+        $after = $after ? $after['id'] : null;
+        $before = $before ? $before['id'] : null;
+        $id = $item['id'];
+
+        $table_name = $table->getName();
+        $pk = $table->getKeyField();
+
+        $db = Am_Di::getInstance()->db;
+        $item = $table->load($id);
+        if ($before) {
+            $beforeItem = $table->load($before);
+
+            $sign = $beforeItem->sort_order > $item->sort_order ?
+                '-':
+                '+';
+
+            $newSortOrder = $beforeItem->sort_order > $item->sort_order ?
+                $beforeItem->sort_order-1:
+                $beforeItem->sort_order;
+
+            $db->query("UPDATE $table_name
+                SET sort_order=sort_order{$sign}1 WHERE
+                sort_order BETWEEN ? AND ? AND $pk<>?",
+                min($newSortOrder, $item->sort_order),
+                max($newSortOrder, $item->sort_order),
+                $id);
+
+            $db->query("UPDATE $table_name SET sort_order=? WHERE $pk=?", $newSortOrder, $id);
+
+        } elseif ($after) {
+            $afterItem = $table->load($after);
+
+            $sign = $afterItem->sort_order > $item->sort_order ?
+                '-':
+                '+';
+
+             $newSortOrder = $afterItem->sort_order > $item->sort_order ?
+                $afterItem->sort_order:
+                $afterItem->sort_order+1;
+
+            $db->query("UPDATE $table_name
+                SET sort_order=sort_order{$sign}1 WHERE
+                sort_order BETWEEN ? AND ? AND $pk<>?",
+                min($newSortOrder, $item->sort_order),
+                max($newSortOrder, $item->sort_order),
+                $id);
+
+            $db->query("UPDATE $table_name SET sort_order=? WHERE $pk=?", $newSortOrder, $id);
+        }
+    }
+
 }

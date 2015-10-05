@@ -3,13 +3,17 @@ class Am_Paysystem_CcDemo extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.0';
 
     public function __construct(Am_Di $di, array $config)
     {
         $this->defaultTitle = ___("CC Demo");
         $this->defaultDescription = ___("use 4111-1111-1111-1111 for successful transaction");
         parent::__construct($di, $config);
+    }
+    public function allowPartialRefunds()
+    {
+        return true;
     }
     public function getRecurringType()
     {

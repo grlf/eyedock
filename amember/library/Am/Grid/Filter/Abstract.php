@@ -3,7 +3,7 @@
 *     Author: Alex Scott
 *      Email: alex@cgi-central.net
 *        Web: http://www.amember.com/
-*    Release: 4.4.2
+*    Release: 4.7.0
 *    License: LGPL http://www.gnu.org/copyleft/lesser.html
 */
 
@@ -155,11 +155,9 @@ CUT;
         $out = '';
 
         foreach ($options as $value => $title) {
-            $out .= sprintf('<option value="%s"%s>%s</option>',
-                        htmlentities($value, ENT_QUOTES, 'UTF-8'),
-                        (($value == $this->getParam($name)) ? ' selected="selected"' : ''),
-                        htmlentities($title, ENT_QUOTES, 'UTF-8')
-                    );
+            $out .= is_array($title) ?
+                $this->_renderOptgroup($name, $value, $title) :
+                $this->_renderOption($name, $value, $title);
         }
 
         $out = sprintf('<select name="%s"%s>%s</select>',
@@ -169,6 +167,25 @@ CUT;
                 );
 
         return $out ;
+    }
+
+    protected function _renderOption($name, $value, $title)
+    {
+        return sprintf('<option value="%s"%s>%s</option>',
+                        htmlentities($value, ENT_QUOTES, 'UTF-8'),
+                        (($value == $this->getParam($name)) ? ' selected="selected"' : ''),
+                        htmlentities($title, ENT_QUOTES, 'UTF-8')
+                    );
+    }
+
+    protected function _renderOptgroup($name, $title, $options)
+    {
+        $out = '';
+        foreach ($options as $v => $t) {
+            $out .= $this->_renderOption($name, $v, $t);
+        }
+        return sprintf('<optgroup label="%s">%s</optgroup>',
+            htmlentities($title, ENT_QUOTES, 'UTF-8'), $out);
     }
 
     function renderAttributes($attributes) {

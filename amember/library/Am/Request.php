@@ -344,13 +344,13 @@ class Am_Request extends Zend_Controller_Request_Http
             }
             $x->endElement();
         }
+        $x->endElement();
         if (!$count) 
         {
             $x->startElement('raw-body');
             $x->writeCdata($this->getRawBody());
             $x->endElement();
         }
-        $x->endElement();
     }
     
     static function fromXml($xmlString)
@@ -373,6 +373,10 @@ class Am_Request extends Zend_Controller_Request_Http
         $r->_remoteAddr = (string)$url->remote_addr;
         $r->_scheme = (string)$url->scheme;
         $r->_host = (string)$url->host;
+        if ($xmlString->{'raw-body'}) {
+            $r->setRawBody((string)$xmlString->{'raw-body'});
+        }
+
         return $r;
     }
     

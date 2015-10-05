@@ -40,6 +40,10 @@ class SavedForm extends Am_Record
     {
         return $this->type == self::T_CART;
     }
+    public function isProfile()
+    {
+        return $this->type == self::T_PROFILE;
+    }
     public function getDefaultFor()
     {
         return array_filter(explode(',',$this->default_for));
@@ -245,10 +249,10 @@ class SavedFormTable extends Am_Table {
             'title' => 'Profile Form',
             'defaultTitle' => 'Customer Profile',
             'defaultComment' => 'customer profile form',
-            'isSingle' => true,
+            'isSingle' => false,
             'isSignup' => false,
-            'noDelete' => true,
-            'urlTemplate'  => 'profile',
+            'generateCode' => true,
+            'urlTemplate'  => array('Am_Form_Profile', 'getSavedFormUrl'),
         ),
     );
     
@@ -324,9 +328,11 @@ class SavedFormTable extends Am_Table {
         {
             case SavedForm::D_SIGNUP:
             case SavedForm::D_MEMBER:
+            case SavedForm::D_PROFILE:
                 $f = $this->load($saved_form_id);
-                if ($f->type != SavedForm::T_SIGNUP)
-                    throw new Am_Exception_InputError("Could not set default form - it has no 'signup' type");
+                if ($f->type != SavedForm::T_SIGNUP &&
+                    $f->type != SavedForm::T_PROFILE)
+                    throw new Am_Exception_InputError("Could not set default form - it has no 'signup' or 'profile' type");
                 $f->addDefaultFor($d)->update();
                 // now remove default from all other forms, there should not be too many
                 foreach ($this->selectObjects("

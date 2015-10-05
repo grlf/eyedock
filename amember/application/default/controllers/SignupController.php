@@ -6,7 +6,7 @@ class SignupController extends Am_Controller
     protected $form;
     /** @var array */
     protected $vars;
-    
+
     function init()
     {
         if (!class_exists('Am_Form_Brick', false)) {
@@ -34,19 +34,17 @@ class SignupController extends Am_Controller
             }
             else
                 $this->record = $this->getDi()->savedFormTable->findFirstBy(array(
-                    'code' => $c, 
+                    'code' => $c,
                     'type' => SavedForm::T_SIGNUP,
                 ));
         } else {
-            if ($this->getDi()->config->get('cart.redirect_to_cart') && $this->getDi()->auth->getUser() == null)
-                $this->_redirect('signup/cart/');
             $this->record = $this->getDi()->savedFormTable->getDefault
             (
-                $this->getDi()->auth->getUserId() ? 
-                    SavedForm::D_MEMBER : SavedForm::D_SIGNUP 
+                $this->getDi()->auth->getUserId() ?
+                    SavedForm::D_MEMBER : SavedForm::D_SIGNUP
             );
         }
-        
+
         // call a hook to allow load another form
         $event = new Am_Event(Am_Event::LOAD_SIGNUP_FORM, array(
             'request' => $this->_request,
@@ -55,9 +53,12 @@ class SignupController extends Am_Controller
         $event->setReturn($this->record);
         $this->getDi()->hook->call($event);
         $this->record = $event->getReturn();
-        
-        if (!$this->record)
-            throw new Am_Exception_InputError("Wrong signup form code - the form does not exists");
+
+        if (!$this->record) {
+            $this->getDi()->errorLogTable->log("Wrong signup form code - the form does not exists. Redirect Customer to default form. Referrer: " . $this->getRequest()->getHeader('REFERER'));
+            $this->redirect('/signup', array('code'=>302));
+        }
+
         /* @var $this->record SavedForm */
         if (!$this->record->isSignup())
             throw new Am_Exception_InputError("Wrong signup form loaded [$this->record->saved_form_id] - it is not a signup form!");
@@ -68,19 +69,27 @@ class SignupController extends Am_Controller
             $this->view->headMeta()->setName('keywords', $this->record->meta_keywords);
         if ($this->record->meta_description)
             $this->view->headMeta()->setName('description', $this->record->meta_description);
+        $this->view->code = $this->record->code;
     }
-    
+
     function indexAction()
     {
 
         /*
-         *  First check user's login. user can be logged in plugin or user's login info can be in cookies. 
+         *  First check user's login. user can be logged in plugin or user's login info can be in cookies.
          *  Result does not matter here so skip it;
-         *  
+         *
          */
         if(!$this->getDi()->auth->getUserId() && $this->_request->isGet())
             $result = $this->getDi()->auth->checkExternalLogin($this->_request);
         /*==TRIAL_SPLASH==*/
+
+        if (!$this->getDi()->auth->getUserId() && $this->getDi()->config->get('signup_disable')) {
+            $e = new Am_Exception_InputError(___('New Signups is Disabled'));
+            $e->setLogError(false);
+            throw $e;
+        }
+
         $this->loadForm();
         $this->view->title = $this->record->title;
         $this->form = new Am_Form_Signup();
@@ -114,7 +123,9 @@ class SignupController extends Am_Controller
     {
         $this->getDi()->hook->call(Am_Event::SIGNUP_PAGE_BEFORE_PROCESS, array(
            'vars' => $vars,
+           'savedForm' => $this->record
         ));
+
         $this->vars = $vars;
         // do actions here
         $this->user = $this->getDi()->auth->getUser();
@@ -144,10 +155,10 @@ class SignupController extends Am_Controller
         {
             $this->user = $this->getDi()->userRecord;
             $this->user->setForInsert($this->vars); // vars are filtered by the form !
-            
+
             if (empty($this->user->login))
                 $this->user->generateLogin();
-                            
+
             if (empty($this->vars['pass']))
                 $this->user->generatePassword();
             else {
@@ -164,6 +175,7 @@ class SignupController extends Am_Controller
                 'vars' => $this->vars,
                 'user' => $this->user,
                 'form' => $this->form,
+                'savedForm' => $this->record
             ));
             if ($this->getDi()->config->get('registration_mail'))
                 $this->user->sendRegistrationEmail();
@@ -179,24 +191,23 @@ class SignupController extends Am_Controller
             unset($this->vars['pass']);
             unset($this->vars['login']);
             unset($this->vars['email']);
-            unset($this->vars['name_f']);
-            unset($this->vars['name_l']);
             $this->user->setForUpdate($this->vars)->update();
             // user updated
             $this->getDi()->hook->call(Am_Event::SIGNUP_USER_UPDATED, array(
                 'vars' => $this->vars,
                 'user' => $this->user,
                 'form' => $this->form,
+                'savedForm' => $this->record
             ));
         }
 
         // keep reference to e-mail confirmation link so it still working after signup
         if (!empty($this->vars['code']))
         {
-            $this->getDi()->store->setBlob(Am_Form_Signup_Action_SendEmailCode::STORE_PREFIX . $this->vars['code'], 
+            $this->getDi()->store->setBlob(Am_Form_Signup_Action_SendEmailCode::STORE_PREFIX . $this->vars['code'],
                 $this->user->pk(), '+7 days');
         }
-        
+
         if ($this->record->isCart())
         {
             $url = $this->getSession()->redirectUrl;
@@ -209,8 +220,10 @@ class SignupController extends Am_Controller
         $invoice = $this->getDi()->invoiceRecord;
         $this->getDi()->hook->call(Am_Event::INVOICE_SIGNUP, array(
             'vars' => $this->vars,
+            'user' => $this->user,
             'form' => $this->form,
             'invoice' => $invoice,
+            'savedForm' => $this->record
         ));
         $invoice->setUser($this->user);
         foreach ($this->vars as $k => $v) {
@@ -250,21 +263,25 @@ class SignupController extends Am_Controller
             !(float)$invoice->first_discount &&
             !(float)$invoice->second_discount) {
 
-            $page = $this->form->findPageByElementName('coupon');
-            if (!$page) throw new Am_Exception_InternalError('Coupon brick is not found but coupon code presents in request');
+            $coupon = $this->getDi()->couponTable->findFirstByCode($this->vars['coupon']);
+            $batch = $coupon->getBatch();
+            if ($batch->discount > 0) {
+                $page = $this->form->findPageByElementName('coupon');
+                if (!$page) throw new Am_Exception_InternalError('Coupon brick is not found but coupon code presents in request');
 
-            list($el) = $page->getForm()->getElementsByName('coupon');
-            $el->setError(___('The coupon entered is not valid with any product(s) being purchased. No discount will be applied'));
+                list($el) = $page->getForm()->getElementsByName('coupon');
+                $el->setError(___('The coupon entered is not valid with any product(s) being purchased. No discount will be applied'));
 
-            //now active datasource is datasource of current page
-            //retrieve datasource for page with coupon element from
-            //session and set it to form to populate it correctly
-            $values = $page->getController()->getSessionContainer()->getValues($page->getForm()->getId());
-            $page->getForm()->setDataSources(array(
-                new HTML_QuickForm2_DataSource_Array($values)
-            ));
-            $page->handle('display');
-            return false;
+                //now active datasource is datasource of current page
+                //retrieve datasource for page with coupon element from
+                //session and set it to form to populate it correctly
+                $values = $page->getController()->getSessionContainer()->getValues($page->getForm()->getId());
+                $page->getForm()->setDataSources(array(
+                    new HTML_QuickForm2_DataSource_Array($values)
+                ));
+                $page->handle('display');
+                return false;
+            }
         }
 
         $invoice->insert();
@@ -272,6 +289,7 @@ class SignupController extends Am_Controller
             'vars' => $this->vars,
             'form' => $this->form,
             'invoice' => $invoice,
+            'savedForm' => $this->record
         ));
         try {
             $payProcess = new Am_Paysystem_PayProcessMediator($this, $invoice);
@@ -287,7 +305,7 @@ class SignupController extends Am_Controller
         }
         // if we got back here, there was an error in payment!
         /** @todo offer payment method if previous failed */
-        
+
         $page = $this->form->findPageByElementName('paysys_id');
         if (!$page) $page = $this->form->getFirstPage(); // just display first page
         foreach ($page->getForm()->getElementsByName('paysys_id') as $el)
@@ -302,9 +320,8 @@ class SignupController extends Am_Controller
        return $this->_request->getScheme() . '://' .
               $this->_request->getHttpHost() .
               $this->_request->getBaseUrl() . '/' .
-              $this->_request->getControllerName() . '/' .
-              $this->_request->getActionName() .  '/' .
-              ($c ? "c/$c/" : '');
+              $this->_request->getControllerName() .
+              ($c ? "/$c" : '');
    }
    public function getForm()
    {

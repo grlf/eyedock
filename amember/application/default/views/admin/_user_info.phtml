@@ -1,7 +1,14 @@
 <div class="info">
+    <?php if ($di->authAdmin->getUser()->hasPermission('grid_u', 'delete')) : ?>
+    <a style="color:red; float:right" target="_top"
+       href="<?php p(REL_ROOT_URL.'/default/admin-users/delete?' . http_build_query(array(
+           'id' => $user->pk()
+       ))) ?>"
+    ><?php __e('Delete User') ?></a>
+    <?php endif; ?>
     <?php 
     printf('%s#: <strong>%d</strong>, %s: <strong>%s</strong>%s, %s%s: <a class="link" href="mailto:%s"><strong>%s</strong></a>',
-        ___('User'), $user->user_id,
+        ___('User'), $user->pk(),
         ___('Login'), $user->login,
         $di->authAdmin->getUser()->hasPermission('grid_u', 'login-as') ?
             sprintf(' <a class="link" href="%s" target="_blank"><strong>%s</strong></a>',

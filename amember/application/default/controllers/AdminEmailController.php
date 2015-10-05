@@ -7,7 +7,7 @@
  *        Web: http://www.cgi-central.net
  *    Details: Admin Info / PHP
  *    FileName $RCSfile$
- *    Release: 4.4.4 ($Revision$)
+ *    Release: 4.7.0 ($Revision$)
  *
  * Please direct bug reports,suggestions or feedback to the cgi-central forums.
  * http://www.cgi-central.net/forum/
@@ -42,7 +42,7 @@ class AdminEmailController extends Am_Controller
     {
         ignore_user_abort(true);
         @set_time_limit(0);
-        @ini_set('memory_limit', '128M');
+        @ini_set('memory_limit', '256M');
         $this->setActiveMenu('users-email');
         if ($this->queue_id = $this->getFiltered('queue_id')) {
             $this->saved = $this->getDi()->emailSentTable->load($this->queue_id);
@@ -50,7 +50,9 @@ class AdminEmailController extends Am_Controller
         } elseif ($id = $this->getInt('resend_id')) {
             $this->saved = $this->getDi()->emailSentTable->load($id);
             unset($_GET['resend_id']);
-            $this->getRequest()->fromArray($_POST = $this->saved->unserialize());
+            $_POST = $this->saved->unserialize();
+            unset($_POST['_save_']);
+            $this->getRequest()->fromArray($_POST);
         }
         $this->_request->set('format', $this->getParam('format', 'html'));
         $this->searchUi = new Am_Query_Ui;
@@ -95,7 +97,7 @@ class AdminEmailController extends Am_Controller
         foreach ($this->getRequest()->toArray() as $k => $v)
             $config->set($k, strip_tags($v));
 
-        $m = new Am_Mail;
+        $m = $this->getDi()->mail;
         $m->addTo($this->getParam('email'), 'Test E-Mail')
             ->setSubject('Test E-Mail Message from aMember ')
             ->setBodyText("This is a test message sent from aMember CP\n\nURL: " . htmlentities(ROOT_URL));
@@ -179,14 +181,54 @@ class AdminEmailController extends Am_Controller
         $this->view->display('admin/layout.phtml');
     }
 
+    protected function getReplyToOptions()
+    {
+        $op = array();
+        $op['default'] = Am_Controller::escape(sprintf('%s <%s>',
+            $this->getConfig('admin_email_name', $this->getConfig('site_title')),
+            $this->getConfig('admin_email_from', $this->getConfig('admin_email'))));
+        foreach (Am_Di::getInstance()->adminTable->findBy() as $admin) {
+           $op['admin-' . $admin->pk()] = Am_Controller::escape(sprintf('%s <%s>', $admin->getName(), $admin->email));
+        }
+        $op['other'] = ___('Other') . ':';
+        return $op;
+    }
+
     function createForm()
     {
         $form = new Am_Form_Admin('am-form-email');
         $form->setDataSources(array($this->getRequest()));
         $form->setAction($this->getUrl(null, 'preview'));
+
+        if ($options = $this->getDi()->emailTemplateLayoutTable->getOptions()) {
+            $form->addSelect('email_template_layout_id')
+                ->setLabel(___('Layout'))
+                ->loadOptions(array(''=>___('No Layout')) + $options);
+        }
+
+        $gr = $form->addGroup()
+            ->setLabel(___("Reply To\n" .
+                "mailbox for replies to message"))
+            ->setSeparator(' ');
+
+        $sel = $gr->addSelect('reply_to')
+            ->loadOptions($this->getReplyToOptions());
+        $id = $sel->getId();
+
+        $gr->addText('reply_to_other', array('placeholder' => ___('Email Address')))
+            ->setId($id.'-other')
+            ->persistentFreeze(true); // ??? why is it necessary? but it is
+        $gr->addScript()
+            ->setScript(<<<CUT
+$('#$id').change(function(){
+   $('#{$id}-other').toggle($(this).val() == 'other');
+}).change();
+CUT
+                );
+
         $subj = $form->addText('subject', array('class' => 'el-wide'))
                 ->setLabel(___('Email Subject'));
-        $subj->persistentFreeze(true); // ??? why is it necessary? but it is 
+        $subj->persistentFreeze(true); // ??? why is it necessary? but it is
         $subj->addRule('required', ___('Subject is required'));
 //        $arch = $form->addElement('advcheckbox', 'do_archive')->setLabel(array('Archive Message', 'if you are sending it to newsletter subscribers'));
         $format = $form->addGroup(null)->setLabel(___('E-Mail Format'));
@@ -219,8 +261,6 @@ class AdminEmailController extends Am_Controller
         foreach ($this->searchUi->getHidden() as $k => $v)
             $form->addHidden($k)->setValue($v);
 
-        $buttons = $form->addGroup('buttons');
-        $buttons->addElement('submit', 'send', array('value' => ___('Preview')));
         $id = 'body-0';
         $vars = "";
         foreach ($this->tagsOptions as $k => $v)
@@ -238,7 +278,7 @@ $(function(){
         $("#$id").insertAtCaret(val);
         $(this).prop("selectedIndex", -1);
     });
-            
+
     if (CKEDITOR.instances["$id"]) {
         delete CKEDITOR.instances["$id"];
     }
@@ -252,7 +292,7 @@ $(function(){
             if (!editor) {
                 editor = initCkeditor("$id", { placeholder_items: [
                     $vars
-                ]});
+                ],entities_greek: false});
             }
             $('select#insert-tags').hide();
         } else {
@@ -263,10 +303,16 @@ $(function(){
             $('select#insert-tags').show();
         }
     }).change();
-});            
-   
+});
+
 CUT
         );
+
+        $this->getDi()->hook->call(Am_Event::MAIL_SIMPLE_INIT_FORM, array('form' => $form));
+
+        $buttons = $form->addGroup('buttons');
+        $buttons->addSubmit('send', array('value' => ___('Preview')));
+
         return $form;
     }
 
@@ -305,7 +351,7 @@ $(function(){
     if ($("input[name='format']").val() == 'text')
         html = html.replace(/\\n/g, "<br />\\n");
     $("#row-body-group .element.group").html(html);
-    
+
     $("input.form-back").click(function(){
         $(this).closest('form').prop('action', $(this).data('href')).submit();
     });
@@ -397,15 +443,46 @@ CUT
 
         $i = 0;
         $db = $this->getDi()->db;
+        $foundrows = false;
         while ($r = $db->fetchRow($q)) {
+            $foundrows = true;
             if (!$batch->checkLimits()) return false;
             $r['name'] = $r['name_f'] . ' ' . $r['name_l'];
             $this->saved->updateQuick(array('last_email' => $r['email'], 'sent_users' => $this->saved->sent_users + 1));
             if ($r['email'] == '')
                 continue;
+            $m = $this->getDi()->mail;
+            $m->setPeriodic(Am_Mail::ADMIN_REQUESTED);
+            $m->addHeader('X-Amember-Queue-Id', $this->_request->getFiltered('queue_id'));
+            $m->addUnsubscribeLink(Am_Mail::LINK_USER);
+            $m->addTo($r['email'], $r['name']);
+
+            if ($reply_to = $this->getParam('reply_to')) {
+                switch ($reply_to) {
+                    case 'default' :
+                        $email = false;
+                        break;
+                    case 'other' :
+                        $email = $this->getParam('reply_to_other');
+                        $name = null;
+                        break;
+                    default:
+                        preg_match('/^admin-(\d+)$/', $reply_to, $match);
+                        $admin = $this->getDi()->adminTable->load($match[1], false);
+                        if ($admin) {
+                            $email = $admin->email;
+                            $name = $admin->getName();
+                        }
+                        break;
+                }
+                if ($email = filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $m->setReplyTo($email, $name);
+                }
+            }
+
             $subject = $this->getParam('subject');
             $body = $this->getParam('body');
-            // assign variables
+
             $tpl = new Am_SimpleTemplate();
             $tpl->assignStdVars();
             if ((strpos($body, '%user.unsubscribe_link%') !== false) ||
@@ -414,21 +491,33 @@ CUT
                 $r['unsubscribe_link'] = Am_Mail::getUnsubscribeLink($r['email'], Am_Mail::LINK_USER);
             }
             $tpl->user = $r;
-            $this->getDi()->hook->call(Am_Event::MAIL_SIMPLE_TEMPLATE_BEFORE_PARSE, array('template' => $tpl, 'body' => $body, 'subject' => $subject));
+            $this->getDi()->hook->call(Am_Event::MAIL_SIMPLE_TEMPLATE_BEFORE_PARSE, array(
+                'template' => $tpl,
+                'body' => $body,
+                'subject' => $subject,
+                'mail' => $m,
+                'request' => $this->getRequest()
+            ));
             $subject = $tpl->render($subject);
             $body = $tpl->render($body);
-            // 
-            $m = new Am_Mail;
-            $m->addUnsubscribeLink(Am_Mail::LINK_USER);
-            $m->addTo($r['email'], $r['name'])
-                ->setSubject($subject);
-            //->setFrom($this->getDi()->config->get('admin_email'), $this->getDi()->config->get('site_title') . ' Admin');
-            if ($this->getParam('format') == 'text')
+            if ($this->getParam('email_template_layout_id') &&
+                ($layout = $this->getDi()->emailTemplateLayoutTable->load($this->getParam('email_template_layout_id', false)))) {
+
+                $tpl->assign('content', $body);
+                $body = $tpl->render($layout->layout);
+            }
+
+            $m->setSubject($subject);
+            if ($this->getParam('format') == 'text') {
                 $m->setBodyText($body);
-            else
-                $m->setBodyHtml($body);
-            $m->setPeriodic(Am_Mail::ADMIN_REQUESTED);
-            $m->addHeader('X-Amember-Queue-Id', $this->_request->getFiltered('queue_id'));
+            } else {
+                $text = strip_tags($body);
+                $html = strpos($body, '<html') === false ?
+                    "<html><head><title>$subject</title></head><body>$body</body></html>" :
+                    $body;
+                $m->setBodyHtml($html);
+                $m->setBodyText($text);
+            }
             foreach ($this->getAttachments() as $at)
                 $m->addAttachment($at);
             try {
@@ -438,6 +527,8 @@ CUT
             }
         }
         $this->getDi()->db->freeResult($q);
+        if(!$foundrows)
+            return true;
         if ($this->saved->count_users <= $this->saved->sent_users)
             return true; // we are done;
 

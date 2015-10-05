@@ -11,21 +11,22 @@
 # For syntax checking, see:
 # http://tool.motoricerca.info/robots-checker.phtml
 
-User-agent: *
-Disallow: /administrator/
-Disallow: /bin/
-Disallow: /cache/
-Disallow: /cli/
-Disallow: /components/
-Disallow: /includes/
-Disallow: /installation/
-Disallow: /language/
-Disallow: /layouts/
-Disallow: /libraries/
-Disallow: /logs/
-Disallow: /media/
-Disallow: /modules/
-Disallow: /plugins/
-Disallow: /templates/
-Disallow: /tmp/
+Disallow: /
+*User-agent: *
+*Disallow: /administrator/
+*Disallow: /bin/
+*Disallow: /cache/
+*Disallow: /cli/
+*Disallow: /components/
+*Disallow: /includes/
+*Disallow: /installation/
+*Disallow: /language/
+*Disallow: /layouts/
+*Disallow: /libraries/
+*Disallow: /logs/
+*Disallow: /media/
+*Disallow: /modules/
+*Disallow: /plugins/
+*Disallow: /templates/
+*Disallow: /tmp/
 

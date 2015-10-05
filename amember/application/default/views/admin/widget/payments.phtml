@@ -19,7 +19,7 @@
             ?>>
                 <td nowrap="nowrap"><time datetime="<?php p(date('c', amstrtotime($p->dattm))) ?>" title="<?php p($this->getElapsedTime($p->dattm)) ?>"><?php p(amDate($p->dattm)) ?><br /><small><?php p(amTime($p->dattm)) ?></small></time></td>
                 <td><a class="link" href="<?php echo REL_ROOT_URL ?>/admin-user-payments/index/user_id/<?php p($p->user_id) ?>#invoice-<?php p($p->invoice_id) ?>"><?php p($p->invoice_id) ?>/<?php p($p->public_id) ?></a><br />
-                    <small><?php p($p->paysys_id) ?></small></td>
+                    <small><?php p($p->paysys_id) ?><?php if($p->coupon_code): p(', ' . $p->coupon_code); endif; ?></small></td>
                 <td><?php p($p->items) ?></td>
                 <td>
                     <?php p(Am_Currency::render($p->amount, $p->currency)) ?>

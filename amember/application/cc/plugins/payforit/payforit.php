@@ -35,7 +35,7 @@ class Am_Paysystem_Payforit extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.0';
 
     const URL = 'https://payforit.txtnation.com/api/';
     
@@ -184,7 +184,7 @@ CUT;
             if ($this->invoice->first_total > 0 && $this->invoice->first_period != $this->invoice->second_period)
                 throw new Am_Exception_InternalError('If product has no free trial first period must be the same second period');
 
-            $post['sub_repeat'] = $this->invoice->rebill_times == 99999 ? 0 : $this->invoice->rebill_times;
+            $post['sub_repeat'] = $this->invoice->rebill_times == IProduct::RECURRING_REBILLS ? 0 : $this->invoice->rebill_times;
 
             $period = $this->parsePeriod($this->invoice->second_period);
             $post['sub_period'] = $period['period'];

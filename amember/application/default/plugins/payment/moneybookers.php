@@ -14,7 +14,7 @@
  */
 class Am_Paysystem_Moneybookers extends Am_Paysystem_Abstract{
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.0';
 
     protected $defaultTitle = 'Moneybookers';
     protected $defaultDescription = 'Credit Card Payment';
@@ -29,8 +29,7 @@ class Am_Paysystem_Moneybookers extends Am_Paysystem_Abstract{
             ));
         $form->addText("password")->setLabel(array(
             'Secret word', 
-            'lostpassword answer to question 1 of the merchant\'s<br />
-            moneybookers account.'
+            'Get it from Settings > Developer Settings > Secret Word'
             ));
     }
     

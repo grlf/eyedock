@@ -1,12 +1,12 @@
 <?php
 /**
- * This file defines abstract payment system class 
+ * This file defines abstract payment system class
  * @package Am_Paysystem
  */
 
 /**
  * Paysystem exception
- * @package Am_Paysystem 
+ * @package Am_Paysystem
  */
 class Am_Exception_Paysystem extends Am_Exception {}
 /** not configured plugin can not work */
@@ -27,12 +27,12 @@ class Am_Exception_Paysystem_NotImplemented extends Am_Exception {}
 
 /**
  * Abstract payment system class
- * @package Am_Paysystem 
+ * @package Am_Paysystem
  */
-abstract class Am_Paysystem_Abstract extends Am_Plugin 
+abstract class Am_Paysystem_Abstract extends Am_Plugin
 {
     protected $_idPrefix = 'Am_Paysystem_';
-    
+
     const ACTION_IPN = 'ipn';
 
     const LOG_REQUEST = 'request';
@@ -52,13 +52,13 @@ abstract class Am_Paysystem_Abstract extends Am_Plugin
      * about next payment and will not report when rebilling failed,
      * it must be done manually by admin */
     const REPORTS_NOTHING = 3;
-    
+
     /**
-     *  Plugin will attempt to rebill payments itself. 
+     *  Plugin will attempt to rebill payments itself.
      */
     const REPORTS_CRONREBILL = 4;
 
-    
+
     protected $_configPrefix = 'payment.';
     /**
      * Default title of the paysystem
@@ -93,7 +93,7 @@ abstract class Am_Paysystem_Abstract extends Am_Plugin
      * @var Invoice
      */
     protected $invoice;
-    
+
     /**
      * Set to true to enable payment->signup processflow
      * @var bool
@@ -123,11 +123,19 @@ abstract class Am_Paysystem_Abstract extends Am_Plugin
         /////////////////////////////
     }
 
-    
+
     function storesCcInfo(){
         return false;
     }
-    
+
+    /**
+     * Ability to change amount for refunds from the backend
+     */
+    function allowPartialRefunds()
+    {
+        return false;
+    }
+
     /**
      * @return array of 3-letter ISO currency codes supported by this payment system like array('USD', 'EUR');
      */
@@ -135,33 +143,33 @@ abstract class Am_Paysystem_Abstract extends Am_Plugin
     {
         return array(Am_Currency::getDefault());
     }
-    
+
     protected function _afterInitSetupForm(Am_Form_Setup $form)
     {
         if ($this->canAutoCreate())
             $form->addAdvCheckbox('auto_create')->setLabel(___("Accept Direct Payments\n".
                 "handle payments made on payment system side\n".
                 "(without signup to aMember first)"));
-        
+
         return parent::_afterInitSetupForm($form);
     }
-    
+
     protected function _beforeInitSetupForm()
     {
         $form = parent::_beforeInitSetupForm();
         $form->setTitle($this->getConfigPageId());
         $plugin = $this->getId();
-        
+
         $form->addText('title', array('class' => 'el-wide'))
              ->setLabel(___('Payment System Title'));
         $form->setDefault("payment.$plugin.title", @$this->defaultTitle);
-        
+
         $form->addText('description', array('class' => 'el-wide'))
              ->setLabel(___('Payment System Description'));
         $form->setDefault("payment.$plugin.description", @$this->defaultDescription);
         /*
         $form->addAdvCheckbox("disable_postback_log")
-             ->setLabel(___("Disable PostBack messages Logging (not recommended)\n". 
+             ->setLabel(___("Disable PostBack messages Logging (not recommended)\n".
             "By default aMember logs all payment system postback messages\n".
             "you can disable it by changing this configuration value"
              ));
@@ -175,7 +183,7 @@ abstract class Am_Paysystem_Abstract extends Am_Plugin
 
         return $form;
     }
-    
+
     function getConfigPageId(){
         return get_first($this->defaultTitle, $this->getId(true));
     }
@@ -197,7 +205,7 @@ abstract class Am_Paysystem_Abstract extends Am_Plugin
      * Must report one from Am_Payment_Abstract::REPORTS_xx constants
      */
     abstract function getRecurringType();
-    
+
     /**
      * get payment system title
      * @return string
@@ -218,10 +226,10 @@ abstract class Am_Paysystem_Abstract extends Am_Plugin
      * Check if the $invoice can be processed by given
      * payment processor. Example checks may be for changed
      * price of products, user country, recurring billing,
-     * trials, and so on. 
+     * trials, and so on.
      *
      * Default function checks if given invoice has no not-zero amounts
-     * 
+     *
      * @param Invoice $invoice
      * @return null|array of translated error messages if process could not be used
      */
@@ -229,7 +237,7 @@ abstract class Am_Paysystem_Abstract extends Am_Plugin
     {
         if ($invoice->isZero())
             return array(___('This payment system could not handle zero-total invoices'));
-        
+
         $supportedCurrencies = $this->getSupportedCurrencies();
         if ($supportedCurrencies && !in_array($invoice->currency, $supportedCurrencies))
             return array(___('This payment system could not handle payments in [%s] currency', $invoice->currency));
@@ -241,7 +249,7 @@ abstract class Am_Paysystem_Abstract extends Am_Plugin
      * action with
      *   Zend_Form with defined defaults (with result code?!)
      *   Zend_Response_Http with redirect ?
-     * and/or  
+     * and/or
      *   OK result code with Am_Paysystem_Transaction_Abstract
      *   Fatal Failure result code Am_Paysystem_Transaction_Abstract
      *   Fixable Failure result code with Am_Paysystem_Transaction_Abstract
@@ -250,14 +258,14 @@ abstract class Am_Paysystem_Abstract extends Am_Plugin
      * @access protected will be called from
      */
     abstract function _process(Invoice $invoice, Am_Request $request, Am_Paysystem_Result $result);
-    
+
     /**
      * Process refund if that is possible
      * @param InvoicePayment $payment
      * @param Am_Paysystem_Result $result - returned result
      * @param amount - refund amount, in payment currency
      * @throws Am_Exception_Paysystem_NotImplemented
-     * 
+     *
      * @return nothing, check $result
      */
     function processRefund(InvoicePayment $payment, Am_Paysystem_Result $result, $amount)
@@ -281,7 +289,7 @@ abstract class Am_Paysystem_Abstract extends Am_Plugin
         $errors = $this->isNotAcceptableForInvoice($invoice);
         if (null != $errors)
             return $ret->setFailed($errors);
-        try { 
+        try {
             $this->_process($invoice, $request, $ret);
         } catch (Am_Exception_Redirect $e) {
             // pass
@@ -407,7 +415,7 @@ abstract class Am_Paysystem_Abstract extends Am_Plugin
     /** Create transaction object based on request or return null if nope
      * @return Am_Paysystem_Transaction_Incoming|null  */
     abstract function createTransaction(Am_Request $request, Zend_Controller_Response_Http $response, array $invokeArgs);
-    
+
     /**
      * Override this function to handle /amember/payment/paysysid/thanks page
      * @link thanksAction
@@ -416,13 +424,13 @@ abstract class Am_Paysystem_Abstract extends Am_Plugin
     {
         throw new Am_Exception_Paysystem_NotImplemented("To handle [thanks] requests, paysystem plugin must override " . __METHOD__);
     }
-    
+
     /**
      * By default this method handles request as IPN
      * If actionName=='thanks', it is handled by thanksAction() handler (override createThanksTransaction for that)
      * @param Am_Request $request
      * @param Zend_Controller_Response_Http $response
-     * @param array $invokeArgs 
+     * @param array $invokeArgs
      */
     public function directAction(Am_Request $request, Zend_Controller_Response_Http $response, array $invokeArgs)
     {
@@ -434,12 +442,12 @@ abstract class Am_Paysystem_Abstract extends Am_Plugin
                 break;
             case 'cancel':
                 $invoice = $this->getDi()->invoiceTable->findBySecureId($request->getFiltered('id'), 'STOP'.$this->getId());
-                if (!$invoice) 
+                if (!$invoice)
                     throw new Am_Exception_InputError("No invoice found [$id]");
                 $result = new Am_Paysystem_Result();
                 $result->setSuccess();
                 $this->cancelAction($invoice, $request->getActionName(), $result);
-                
+
                 if ($result->isSuccess())
                 {
                     $invoice->setCancelled(true);
@@ -470,7 +478,7 @@ abstract class Am_Paysystem_Abstract extends Am_Plugin
                     $invoiceLog->setProcessed();
         }
     }
-    
+
     public function thanksAction(Am_Request $request, Zend_Controller_Response_Http $response, array $invokeArgs)
     {
         $log = $this->logRequest($request);
@@ -514,7 +522,7 @@ abstract class Am_Paysystem_Abstract extends Am_Plugin
         $this->config['disable_postback_log'] = (bool)$flag;
         return $prev;
     }
-    
+
     /**
      * Return a link to stop recurring subscription
      * @param Invoice $invoice
@@ -525,7 +533,7 @@ abstract class Am_Paysystem_Abstract extends Am_Plugin
         $m = new ReflectionMethod($this, 'cancelAction');
         if ($m->getDeclaringClass()->getName() == __CLASS__)
             return;
-        
+
         return REL_ROOT_URL . '/admin-user-payments/stop-recurring/user_id/'.$invoice->user_id.'?invoice_id=' . $invoice->pk();
     }
     /**
@@ -538,25 +546,41 @@ abstract class Am_Paysystem_Abstract extends Am_Plugin
         $m = new ReflectionMethod($this, 'cancelAction');
         if ($m->getDeclaringClass()->getName() == __CLASS__)
             return;
-        
+
         return REL_ROOT_URL . '/payment/'.$this->getId().'/cancel?id=' . $invoice->getSecureId('STOP'.$this->getId());
     }
-    
+
+
+    public function getUserRestoreUrl(Invoice $invoice)
+    {
+        try{
+            $newInvoice = $invoice->doRestoreRecurring($invoice);
+            $newInvoice->setPaysystem($this->getId());
+            $err = $newInvoice->validate();
+            if ($err)
+                throw new Am_Exception_InputError($err[0]);
+
+        }catch(Exception $e){
+            return; // Unable to get Restored invoice for some reason. Do not show link;
+        }
+        return REL_ROOT_URL . '/member/restore-recurring?invoice_id='.$invoice->public_id;
+    }
+
     public function changeSubscription(Invoice $invoice, InvoiceItem $item, BillingPlan $newBillingPlan)
     {
     }
-    
+
     /**
      * Return array of brick names to be hidden and not validated if
      * given payment system is selected
      * @example array('name', 'email')
-     * @return array of brick names 
+     * @return array of brick names
      */
     public function hideBricks()
     {
         return array();
     }
-    
+
     /**
      * Display Thanks page for given Invoice
      */
@@ -571,7 +595,7 @@ abstract class Am_Paysystem_Abstract extends Am_Plugin
         $c = new ThanksController($request, $response, $invokeArgs);
         return $c->run($request, $response);
     }
-    
+
     /** @return bool true if plugin is able to create customers without signup */
     public function canAutoCreate()
     {
@@ -582,7 +606,7 @@ abstract class Am_Paysystem_Abstract extends Am_Plugin
         return $this->_canResendPostback;
     }
     /**
-     * 
+     *
      * @param Invoice $invoice
      * @param BillingPlan $from
      * @param BillingPlan $to

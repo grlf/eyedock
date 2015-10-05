@@ -22,3 +22,14 @@
         <input type="button" class="am-popup-close upgrade-subscription-no" value="<?php __e('Cancel')?>" />
     </div>
 </form>
+
+<script>
+    jQuery(document).ready(function($){
+        $(".upgrade-subscription-yes").on('click', function(){
+            $(this).closest('.am-popup').hide();
+            $("<div><?php __e('Your upgrade is being processed please wait');?></div>").amPopup({'title':'<?php __e('Upgrade Status');?>'});
+            return true;
+        });
+        
+    });
+</script>

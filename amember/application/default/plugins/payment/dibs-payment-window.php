@@ -10,7 +10,7 @@
 class Am_Paysystem_DibsPaymentWindow extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.0';
 
     const WINDOW_URL = 'https://sat1.dibspayment.com/dibspaymentwindow/entrypoint';
 
@@ -33,7 +33,7 @@ class Am_Paysystem_DibsPaymentWindow extends Am_Paysystem_Abstract
             'NOK' => '578',
             'CHF' => '756',
             'TRY' => '949');
- 
+
     public function _initSetupForm(Am_Form_Setup $form)
     {
         $form->addText('merchant', array('size' => 20, 'maxlength' => 16))
@@ -57,7 +57,7 @@ class Am_Paysystem_DibsPaymentWindow extends Am_Paysystem_Abstract
     }
 
     public function _process(Invoice $invoice, Am_Request $request, Am_Paysystem_Result $result)
-    {       
+    {
         $a = new Am_Paysystem_Action_Form(self::WINDOW_URL);
         $currency = $this->getCurrencyCode($invoice);
         /* Mandatory input parameters: */
@@ -76,14 +76,14 @@ class Am_Paysystem_DibsPaymentWindow extends Am_Paysystem_Abstract
         /* Invoice's parameters: */
         $formKeyValues['oiTypes'] = 'QUANTITY;DESCRIPTION;AMOUNT;ITEMID';
         $formKeyValues['oiNames'] = 'Items;Description;Amount;ItemId';
-        
+
         $i = 0;
         foreach($invoice->getItems() as $item)
         {
             $row_name = "oiRow".++$i;
             $formKeyValues[$row_name] = $item->qty.";".$item->item_title.";".intval($item->first_total * 100).";".$item->item_id;
         }
-         
+
         if($this->getConfig('test'))
             $formKeyValues['test'] = 1;
 
@@ -91,7 +91,7 @@ class Am_Paysystem_DibsPaymentWindow extends Am_Paysystem_Abstract
         {
             $a->addParam($k, $v);
         }
-       
+
         $a->addParam('MAC', $this->calculateMac($formKeyValues, $this->getConfig('hmackey')));
 
         $result->setAction($a);

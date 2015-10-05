@@ -2,7 +2,7 @@
 /**
  * @table paysystems
  * @id eway
- * @title eWay
+ * @title eWay Direct Payments
  * @visible_link http://www.eway.com.au/
  * @recurring cc
  * @logo_url eway.png
@@ -12,7 +12,7 @@ class Am_Paysystem_Eway extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.0';
 
     const GATEWAY_URL = 'https://www.eway.com.au/gateway_cvn/xmlpayment.asp';
     const GATEWAY_URL_TEST = "https://www.eway.com.au/gateway_cvn/xmltest/testpage.asp";
@@ -20,15 +20,6 @@ class Am_Paysystem_Eway extends Am_Paysystem_CreditCard
     protected $defaultTitle = "Pay with your Credit Card";
     protected $defaultDescription = "accepts all major credit cards";
 
-    public function storesCcInfo()
-    {
-        return false;
-    }
-
-    public function getRecurringType()
-    {
-        return self::REPORTS_CRONREBILL;
-    }
     
     public function getSupportedCurrencies()
     {
@@ -57,7 +48,7 @@ class Am_Paysystem_Eway extends Am_Paysystem_CreditCard
     {
         $xml = new SimpleXMLElement('<ewaygateway></ewaygateway>');
         $xml->ewayCustomerID = $this->getConfig('customer_id');
-        $xml->ewayTotalAmount = $invoice->first_total * 100;
+        $xml->ewayTotalAmount = $doFirst ? ($invoice->first_total * 100) : ($invoice->second_total * 100);
         $xml->ewayCustomerFirstName = $cc->cc_name_f;
         $xml->ewayCustomerLastName = $cc->cc_name_l;
         $xml->ewayCustomerEmail = $invoice->getUser()->email;

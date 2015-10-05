@@ -58,6 +58,7 @@ class Am_Controller_Echeck extends Am_Controller
         $this->view->form = $this->form;
         $this->view->invoice = $this->invoice;
         $this->view->display_receipt = true;
+        $this->view->layoutNoMenu = true;
         $this->view->display('echeck/info.phtml');
     }
 
@@ -118,6 +119,6 @@ class Am_Controller_Echeck extends Am_Controller
         $this->view->form = $this->form;
         $this->view->invoice = null;
         $this->view->display_receipt = false;
-        $this->view->display('cecheck/info.phtml');
+        $this->view->display('echeck/info.phtml');
     }
 }

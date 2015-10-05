@@ -10,6 +10,12 @@ class Am_Newsletter_Plugin_Madmimi extends Am_Newsletter_Plugin
             ->setLabel('Madmimi Username')
             ->addRule('required');        
     }
+
+    public function isConfigured()
+    {
+        return $this->getConfig('api_key') && $this->getConfig('username');
+    }
+
     /** @return Am_Plugin_Madmimi */
     function getApi()
     {

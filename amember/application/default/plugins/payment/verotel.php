@@ -12,12 +12,13 @@
  */
 class Am_Paysystem_Verotel extends Am_Paysystem_Abstract {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.0';
     
     protected $defaultTitle = 'Verotel';
     protected $defaultDescription = 'Credit Card Payment';
     
     const URL = "https://secure.verotel.com/cgi-bin/vtjp.pl";
+    const DYNAMIC_URL = "https://secure.verotel.com/order/purchase";
 
     public function _initSetupForm(Am_Form_Setup $form) {
         $form->addInteger('merchant_id',array('size'=>20,'maxlength'=>20))
@@ -41,25 +42,27 @@ class Am_Paysystem_Verotel extends Am_Paysystem_Abstract {
             ""));
     }
     public function _process(Invoice $invoice, Am_Request $request, Am_Paysystem_Result $result) {
-        $a  = new Am_Paysystem_Action_Redirect(self::URL);
         if($this->getConfig('dynamic_pricing'))
         {
+            $a  = new Am_Paysystem_Action_Redirect(self::DYNAMIC_URL);
             $a->version = 1;
             $a->shopID = $this->getConfig('site_id');
             $a->priceAmount = $invoice->first_total;
             $a->priceCurrency = $invoice->currency;
             $a->description = $invoice->getLineDescription();
-            $a->signature = sha1($this->getConfig('secret').":description=" . $invoice->getLineDescription() . ":priceAmount=" . $invoice->first_total . ":priceCurrency=" . $invoice->first_total . ":referenceID=" . ":shopID=" . $this->getConfig('site_id') . ":version=1");
+            $a->referenceID = $invoice->public_id;        
+            $a->signature = sha1($q = $this->getConfig('secret').":description=" . $invoice->getLineDescription() . ":priceAmount=" . $invoice->first_total . ":priceCurrency=" . $invoice->currency . ":referenceID=" . $invoice->public_id . ":shopID=" . $this->getConfig('site_id') . ":version=1");
         }
         else
         {
+            $a  = new Am_Paysystem_Action_Redirect(self::URL);
             $a->verotel_id = $this->getConfig('merchant_id');
             $a->verotel_product = $invoice->getItem(0)->getBillingPlanData("verotel_id") ?  $invoice->getItem(0)->getBillingPlanData("verotel_id") : $this->getConfig('site_id');
             $a->verotel_website = $invoice->getItem(0)->getBillingPlanData("verotel_id") ?  $invoice->getItem(0)->getBillingPlanData("verotel_id") : $this->getConfig('site_id');
             $a->verotel_usercode = $invoice->getLogin();
             $a->verotel_passcode = 'FromSignupForm';//$invoice->getUser()->getPlaintextPass();
+            $a->verotel_custom1 = $invoice->public_id;        
         }
-        $a->verotel_custom1 = $invoice->public_id;        
         $a->filterEmpty();
         $result->setAction($a);
     }
@@ -88,8 +91,7 @@ class Am_Paysystem_Verotel extends Am_Paysystem_Abstract {
             case Am_Paysystem_Transaction_Verotel::MODIFY : 
                 return new Am_Paysystem_Transaction_Verotel_Modify($this, $request, $response,$invokeArgs);
             default : 
-                print "ERROR";
-                exit();
+                return new Am_Paysystem_Transaction_Verotel_Dynamic($this, $request, $response,$invokeArgs);
         }
         
     }
@@ -183,6 +185,7 @@ class Am_Paysystem_Transaction_Verotel_Charge extends Am_Paysystem_Transaction_V
 class Am_Paysystem_Transaction_Verotel_Cancellation extends Am_Paysystem_Transaction_Verotel{
     public function processValidated() {
         $this->invoice->setCancelled(true);
+        $this->invoice->stopAccess($this);
         parent::processValidated();
     }
 }
@@ -191,4 +194,40 @@ class Am_Paysystem_Transaction_Verotel_Modify extends Am_Paysystem_Transaction_V
     public function processValidated() {
         parent::processValidated();
     }
+}
+
+class Am_Paysystem_Transaction_Verotel_Dynamic extends Am_Paysystem_Transaction_Incoming
+{
+    protected $ip  = array(
+        '195.20.32.202',
+        '217.115.203.18',
+        '89.187.131.244',
+        '93.185.97.248'
+    );
+
+    public function findInvoiceId(){
+        return $this->request->get('referenceID');
+    }
+    public function getUniqId() {
+        return $this->request->get("saleID");
+    }
+    
+    public function validateSource() {
+        $this->_checkIp($this->ip);
+        return true;
+    }
+    
+    public function validateStatus() {
+        return true;
+    }
+    
+    public function validateTerms() {
+        return true;
+    }
+    
+    public function processValidated() {
+        $this->invoice->addPayment($this);
+        print "OK";
+    }    
+    
 }

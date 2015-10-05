@@ -8,7 +8,7 @@
 class Am_Paysystem_PayflowLink extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.0';
 
     protected $defaultTitle = 'PayFlow Link';
     protected $defaultDescription = 'Credit Card Payment';
@@ -62,7 +62,7 @@ CUT;
     
     public function directAction(Am_Request $request, Zend_Controller_Response_Http $response, array $invokeArgs)
     {
-        if($request->getFiltered('INVOICE')=='')
+        if($request->getFiltered('INVNUM', $request->getFiltered('INVOICE'))=='')
             $response->setRedirect($this->getRootUrl() . '/thanks');
         else
             parent::directAction($request, $response, $invokeArgs);
@@ -72,7 +72,7 @@ class Am_Paysystem_Transaction_PayflowLink extends Am_Paysystem_Transaction_Inco
 {
     public function findInvoiceId()
     {
-        return $this->request->getFiltered('INVOICE');
+        return $this->request->getFiltered('INVNUM', $this->request->getFiltered('INVOICE'));
     }
 
     public function getUniqId()
@@ -93,6 +93,6 @@ class Am_Paysystem_Transaction_PayflowLink extends Am_Paysystem_Transaction_Inco
 
     public function validateTerms()
     {
-        return (doubleval($this->request->get('AMOUNT')) == doubleval($this->invoice->first_total));
+        return (doubleval($this->request->get('AMT',$this->request->get('AMOUNT'))) == doubleval($this->invoice->first_total));
     }
 }

@@ -46,7 +46,7 @@ class Am_Protect_<?php echo ucfirst(toCamelCase($plugin))?> extends Am_Protect_D
         return null; // must return crypted password and use or set salt if necessary
     }
 <?php endif ?>
-
+<?php if (empty($table['session'])) : ?>
     /**
      * Return record of customer currently logged-in to the
      * third-party script, or null if not found or not logged-in
@@ -65,7 +65,7 @@ class Am_Protect_<?php echo ucfirst(toCamelCase($plugin))?> extends Am_Protect_D
     {
         // logout user from third-party script
     }
-
+<?php endif; ?>
     public function createTable()
     {
         $table = new Am_Protect_Table($this, $this->getDb(), '?_<?php echo $table['user']?>', '<?php echo $key['user']?>');
@@ -100,15 +100,24 @@ class Am_Protect_<?php echo ucfirst(toCamelCase($plugin))?> extends Am_Protect_D
 <?php if (!empty($table['session'])): ?>
     public function createSessionTable()
     {
-        return new Am_Protect_SessionTable(
+        $table = new Am_Protect_SessionTable(
             $this, $this->getDb(),
-            '?_<?php echo $table['session'] ?>', '<?php echo $field['session']['id'] ?>',
-            array(
+            '?_<?php echo $table['session'] ?>', '<?php echo $key['session'] ?>');
+        $table->setTableConfig(array(
+                Am_Protect_SessionTable::FIELD_SID => '<?php echo $key['session'] ?>',
 <?php foreach ($field['session'] as $k => $f): ?>
-                array('<?php echo $k?>' => '<?php echo $f?>'),
-<?php endforeach ?>            
+<?php if (empty($f['field'])) continue; ?>
+                <?php echo $f['field'] ?> => '<?php echo $k?>',
+<?php endforeach ?>
+                Am_Protect_SessionTable::SESSION_COOKIE => $this->getSessionCookieName(),
             )
         );
+        return $table;
+    }
+
+    function getSessionCookieName()
+    {
+        //return name of cookie that used for sessions
     }
 <?php endif ?>
     

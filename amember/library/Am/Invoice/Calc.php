@@ -4,16 +4,16 @@
  * Base class for InvoiceItem amount calculations
  * @package Am_Invoice
  */
-abstract class Am_Invoice_Calc 
+abstract class Am_Invoice_Calc
 {
     /** @var Invoice */
     protected $invoiceBill;
     /** @var string */
     protected $currentPrefix; // to be retreived in calculatePiece
-    
+
     // prefix of field names to calculate, order makes se
     static public $_prefixes = array('first_', 'second_', );
-    
+
     // fields to pass into the function
     static public $_noPrefixFields = array(
         'qty',
@@ -27,13 +27,13 @@ abstract class Am_Invoice_Calc
         'total',
         'shipping',
     );
-    
+
     /**
      * Calculate piece of information
-     * @param stdClass $fields to be calculated and modified 
+     * @param stdClass $fields to be calculated and modified
      */
     public function calculatePiece(stdClass $fields) { }
-    
+
     public function calculate(Invoice $invoiceBill)
     {
         $this->invoiceBill = $invoiceBill;
@@ -73,7 +73,7 @@ class Am_Invoice_Calc_Coupon extends Am_Invoice_Calc
     /** @var Coupon */
     protected $coupon;
     protected $user;
-    
+
     public function calculate(Invoice $invoiceBill)
     {
         $this->coupon = $invoiceBill->getCoupon();
@@ -127,6 +127,49 @@ class Am_Invoice_Calc_Coupon extends Am_Invoice_Calc
     }
 }
 
+class Am_Invoice_Calc_Discount extends Am_Invoice_Calc
+{
+    protected $first, $second;
+
+    public function __construct($first, $second)
+    {
+        $this->first = moneyRound($first);
+        $this->second = moneyRound($second);
+    }
+
+    public function calculate(Invoice $invoiceBill)
+    {
+        if (!$this->first && !$this->second) return;
+
+        $discountFirst = $this->first;
+        $discountSecond = $this->second;
+
+        $first_discountable = $second_discountable = array();
+        $first_total = $second_total = 0;
+        foreach ($invoiceBill->getItems() as $item) {
+            $first_total += $item->first_total;
+            $first_discountable[] = $item;
+            $second_total += $item->second_total;
+            $second_discountable[] = $item;
+        }
+        if ($first_total) {
+            $k = max(0,min($discountFirst / $first_total, 1)); // between 0 and 1!
+            foreach ($first_discountable as $item) {
+                $item->first_discount += moneyRound($item->first_total * $k);
+            }
+        }
+        if ($second_total) {
+            $k = max(0,min($discountSecond / $second_total, 1)); // between 0 and 1!
+            foreach ($second_discountable as $item) {
+                $item->second_discount += moneyRound($item->second_total * $k);
+            }
+        }
+        foreach ($invoiceBill->getItems() as $item) {
+            $item->_calculateTotal();
+        }
+    }
+}
+
 class Am_Invoice_Calc_Shipping extends Am_Invoice_Calc
 {
     public function calculatePiece(stdClass $fields)
@@ -140,20 +183,27 @@ class Am_Invoice_Calc_Tax extends Am_Invoice_Calc
 {
     /** @var float */
     protected $tax_rate = 0.0;
-    
-    public function __construct($tax_id, $tax_title, $tax_rate)
+
+    /** @var Am_Invoice_Tax **/
+    protected $plugin;
+
+    public function __construct($tax_id, $tax_title, Am_Invoice_Tax $plugin)
     {
         $this->tax_id = $tax_id;
         $this->tax_type = $tax_title;
-        $this->tax_rate = $tax_rate;
+        $this->plugin = $plugin;
     }
-    
-    public function calculate(Invoice $invoiceBill) {
-        $invoiceBill->tax_rate = $this->tax_rate;
+
+    public function calculate(Invoice $invoiceBill)
+    {
+        $this->invoice  = $invoiceBill;
         parent::calculate($invoiceBill);
     }
     public function calculatePiece(stdClass $fields)
     {
+        $this->tax_rate = $this->plugin->getRate($this->invoice,$this->item);
+        $this->invoiceBill->tax_rate = $this->tax_rate;
+
         if ($fields->tax_group && ($fields->tax_group != IProduct::NO_TAX))
             $fields->tax = moneyRound($fields->total * $this->tax_rate / 100);
         else
@@ -162,14 +212,20 @@ class Am_Invoice_Calc_Tax extends Am_Invoice_Calc
     }
 }
 
-class Am_Invoice_Calc_Tax_Gst extends Am_Invoice_Calc_Tax
+class Am_Invoice_Calc_Tax_Absorb extends Am_Invoice_Calc_Tax
 {
     public function calculatePiece(stdClass $fields)
     {
-        if ($fields->tax_group && ($fields->tax_group != IProduct::NO_TAX))
-            $fields->tax = moneyRound($fields->total * $this->tax_rate / ( 100 + $this->tax_rate));
-        else
+        $this->tax_rate = $this->plugin->getRate($this->invoice,$this->item);
+        $this->invoiceBill->tax_rate = $this->tax_rate;
+
+        if ($fields->tax_group && ($fields->tax_group != IProduct::NO_TAX)) {
+            $price = $fields->price;
+            $fields->price = moneyRound(($fields->discount * ($this->tax_rate/100) + $fields->price *  $fields->qty) / ($fields->qty* (1+($this->tax_rate/100))));
+            $fields->tax = $price * $fields->qty - ($fields->price * $fields->qty - $fields->discount) - $fields->discount;
+        } else {
             $fields->tax = 0.0;
+        }
     }
 }
 
@@ -185,6 +241,8 @@ class Am_Invoice_Calc_Zero extends Am_Invoice_Calc
 {
     public function calculatePiece(stdClass $fields)
     {
+        $orig_price = $this->item->data()->get('orig_' . $this->currentPrefix . 'price');
+        $fields->price = $orig_price ? $orig_price : $fields->price;
         $fields->tax = $fields->discount = $fields->shipping = 0.0;
         $fields->total = moneyRound($fields->price * $fields->qty);
     }

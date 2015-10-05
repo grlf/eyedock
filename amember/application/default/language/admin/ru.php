@@ -31,9 +31,6 @@
   'Add User Fields' => 'Добавить поля',
   'Add points to affiliate for each %s in payment' => 'Добавить очки партнерам для каждого %s в платеже',
   'Add to Basket only' => 'Добавить в корзину',
-  'Added' => 'Добавлен',
-  'Additional Fields' => 'Дополнительные поля',
-  'Additionally to "Access", add "Invoice" and "Payment" record with given %s amount, like they have really made a payment' => 'Дополнительно к "Access", и "Invoice" и "Payment" записать с данным %s количеством, как будто они действително выполнили платеж  ',
   'Admin Accounts' => 'Администраторы',
   'Admin E-Mail Address
 used to send email notifications to admin
@@ -50,7 +47,6 @@ to admin once free signup is completed' => 'Уведомление админи�
 to admin once payment is received' => 'Уведомление администратора о платеже
 администратору когда платеж получен',
   'Admin Settings' => 'Настройки администратора',
-  'Admin Username' => 'Имя пользователя администратора',
   'Admin notification' => 'Уведомление администратора',
   'Admin username must be alphanumeric in small caps' => 'Имя и фамилия должны быть буквенно-цифровыми',
   'Administrator Login' => 'Вход администратора',
@@ -97,7 +93,6 @@ apply coupon discount to recurring rebills?' => 'Применять купон �
   'Approve' => 'Утвержден',
   'Assign Category' => 'Назначить категорию',
   'At least one billing plan must be added' => 'Должен быть добвален хотя бы один план платежей',
-  'Authentification' => 'Аутентификация',
   'Autoclose Tickets Due to Inactivity' => 'Автоматически закрывать Запрос в случае отсутствия активности',
   'Available' => 'Доступно',
   'Available Locales
@@ -169,6 +164,7 @@ between 5 and 32' => 'Длина кода
   'Collapse Menu' => 'Скрыть меню',
   'Comma' => 'Запятая',
   'Comment for Your Reference' => 'Комментарий',
+  'Commission earned' => 'Заработанная комиссия',
   'Commission for First Payment
 calculated for first payment in each invoice' => 'Комиссия за первый платеж 
 вычисляется для первого платежа в каждой покупке',
@@ -176,9 +172,6 @@ calculated for first payment in each invoice' => 'Комиссия за перв
 calculated for first customer invoice only' => 'Комиссия за бесплатную подписку
 вычисляется только однажды для каждого пользователя',
   'Commission for Rebills' => 'Комиссия для повторного платежа',
-  'Company Logo for Invoice
-it must be png/jpeg/tiff file (%s)' => 'Логотип компании для заказа
-должен быть png/jpeg/tiff файл (%s)',
   'Conditions' => 'Условия',
   'Configuration' => 'Настройки',
   'Configured License Keys' => 'Настроенные лицензионные ключи',
@@ -190,7 +183,6 @@ it must be png/jpeg/tiff file (%s)' => 'Логотип компании для �
   'Could not fetch upgrades list from remote server. %sTry again%' => 'Не могу скачать список обновлений с удаленного сервера. %sПопробуйте снова%s',
   'Could not fetch upgrades list. Connection error [%s]' => 'Не могу скачать список обновлений. Ошибка соединения [%s]',
   'Countries/States' => 'Страны/Регионы',
-  'Country Title' => 'Название страны',
   'Coupon Batch' => 'Серия купонов',
   'Coupon Code' => 'Код купона',
   'Coupon Codes' => 'Коды купонов',
@@ -206,7 +198,6 @@ how many times coupon can be used' => 'Количество использова
   'Create Folder' => 'Создать папку',
   'Create Session Key' => 'Создать ключ сессии',
   'Create ticket as' => 'Создать тикет как',
-  'Currency' => 'Валюта',
   'Currency Exchange Rates' => 'Курсы валют',
   'Custom Bold Font for Invoice (optional)' => 'Пользовательский жирный шрифт для заказа (выборочно)',
   'Custom Commission Rules added' => 'Созданы специальные правила комиссии',
@@ -218,7 +209,6 @@ keep empty to use default title' => 'Название формы регистр�
   'Customer' => 'Пользователь',
   'Customize Dashboard' => 'Настроить панель управления',
   'Daily' => 'Ежедневно',
-  'Dashboard' => 'Информация',
   'Date Time' => 'Дата время',
   'Date to Purge
 all records prior to this date will be removed from selected tables' => 'Дата для очистки
@@ -314,17 +304,14 @@ used to display name of sender in outgoing e-mails' => 'Имя отправит�
   'Edit Groups' => 'Редактировать группы',
   'Edit Messages' => 'Редактирование сообщений',
   'Edit States' => 'Редактировать регион',
-  'Email' => 'Email',
   'Email Addresses Separated by Comma' => 'Email адреса через запятую',
   'Email Backup Frequency' => 'Частота отсылки резервной копии базы данных на E-Mail',
   'Email Sending method
 PLEASE DO NOT CHANGE if emailing from aMember works' => 'Метод отправки email
 ПОЖАЛУЙСТА НЕ ИЗМЕНЯЙТЕ если отправка сообщений от aMember работает',
   'Email Sent' => 'Письмо отправлено',
-  'Email Subject' => 'Тема письма',
   'Email address is required field.' => 'Email адрес это обязательное поле.',
   'Enable plugins if necessary' => 'Включить плагины если необходимо',
-  'End Date' => 'Дата окончания',
   'Enter Maintenance Mode' => 'Войти в режим техобслуживания',
   'Enter admin password for confirmation' => 'Ввести пароль администратора для подтверждения',
   'Enter title for your new category' => 'Введите название новой категории',
@@ -339,10 +326,8 @@ PLEASE DO NOT CHANGE if emailing from aMember works' => 'Метод отправ
   'Exchange Rate
 enter cost of 1 (one) %s' => 'Обменный курс 
 введите цену 1 (одного) %s',
-  'Field' => 'Поле',
   'Field Name' => 'Имя поля',
   'Field Title' => 'Название поля',
-  'Field Type' => 'Тип поля',
   'Field Values' => 'Значения полей',
   'File
 (max filesize %s)' => 'Файл
@@ -360,7 +345,6 @@ enter cost of 1 (one) %s' => 'Обменный курс
   'Filter by IP or Referrer or URL' => 'Фильтровать по IP или по отправителю или по URL',
   'Filter by Paysystem' => 'Фильтровать по платежной системе',
   'Filter by Product' => 'Фильтровать по продукту',
-  'Filter by Subject' => 'Фильтровать по теме',
   'Filter by User/Product' => 'Фильтровать по клиенту/продукту',
   'Filter by name or description' => 'Фильтровать по имени/описанию',
   'Filter by record_id or by message' => 'Фильтровать по record_id или по тексту сообщения',
@@ -387,9 +371,11 @@ you may get your key in %smembers area%s' => 'Лицензионный ключ 
   'Folder URL' => 'URL папки',
   'Form Type' => 'Тип формы',
   'Forms Editor' => 'Редактор форм',
-  'From' => 'От',
   'Future' => 'Будущее',
   'General' => 'Основные',
+  'General Affiliate Link Redirect URL
+It is url of landing page for default affiliate link (which does not related to any banner), home page will be used if you keep it empty' => 'Редирект URL для партнерской ссылки
+Это URL страницы для партнерской ссылки по умолчанию (которая не связана ни с какими баннерами). Главная страница вашего сайта будет использованна если вы оставите это поле пустым',
   'General Link' => 'Основная ссылка',
   'General Settings' => 'Общие настройки',
   'Generate' => 'Генерировать',
@@ -449,7 +435,6 @@ Existing invoices are not affected.
   'Is Disabled?
 disable product ordering, hide it from signup and renewal forms' => 'Выключено?
 выключить заказ продуктов, не показывать на формах регистрации и возобновления',
-  'Is Paid?' => 'Выплачено?',
   'It is required to setup a cron job to trigger backup generation' => 'необходимо добавить следующую задачу в cron-tab на вашем сервере',
   'Items' => 'Продукты',
   'JavaScript Code' => 'JavaScript код',
@@ -464,14 +449,12 @@ disable product ordering, hide it from signup and renewal forms' => 'Выклю�
   'Last Invoices List' => 'Список поледних счетов',
   'Last Payments List' => 'Список последних платежей',
   'Last Refunds List' => 'Список последних возвратов',
-  'Last Signin' => 'Последний вход',
   'Last User Logins List' => 'Список последних входов',
   'Last Users List' => 'Список последних пользователей',
   'Last available protected url' => 'Последний доступный защищенный url',
   'Last existing subscription date of this product' => 'Последняя дата подписки на этот продукт',
   'Last expiration date in the renewal group' => 'Последняя дата истечения в обновленной группе',
   'Last login' => 'Последние посещение',
-  'Leads' => 'Регистрации',
   'Length of admin password must be from %d to %d' => 'Длина пароля адмистратора должна быть от %d до %d',
   'Length of username must be from %d to %d' => 'Длина имени пользователя должна быть от %d до %d',
   'Light Boxes' => 'Лайтбоксы',
@@ -489,8 +472,8 @@ disable product ordering, hide it from signup and renewal forms' => 'Выклю�
   'Log In' => 'Вход',
   'Log Outgoing E-Mail Messages for ... days' => 'Вести лог исходящих сообщений для ... дней',
   'Log in' => 'Вход',
+  'Logged in as %s' => '%s',
   'Login Page' => 'Страница входа',
-  'Login as User' => 'Войти как пользователь',
   'Logs' => 'Логи',
   'Logs: Access' => 'Логи: Доступ',
   'Logs: Admin Log' => 'Логи: лог администратора',
@@ -579,9 +562,7 @@ to customers. If empty, [Admin E-Mail Address] is used' => 'Адрес исхо�
   'Payments (amount of all payments made by user minus refunds)' => 'Платежи (сумма всех платежей сделанных клиентом минус возвраты)',
   'Payout' => 'Выплаты',
   'Payout %d Details' => 'Детали выплаты %d',
-  'Payout Date' => 'Дата выплаты',
   'Payout Details' => 'Детали выплат',
-  'Payout Method' => 'Способ выплат',
   'Paysystem' => 'Платежная система',
   'Pending Invoice Notification Rules' => 'Правила уведомления об обрабатываемом заказе',
   'Permissions' => 'Права доступа',
@@ -627,7 +608,6 @@ First and Second Price is the total for specified qty' => 'Количество
   'REST API Documentation' => 'документация REST API',
   'RadioButtons' => 'Радиокнопки',
   'Re Send Payment Link' => 'Выслать ссылку на оплату',
-  'ReCaptcha' => 'ReCaptcha',
   'Rebill' => 'Повторный платеж',
   'Rebill Date' => 'Дата следующего платежа',
   'Rebill Second Price until cancelled' => 'Взимать стоимость второго периода до его отмены',
@@ -644,7 +624,6 @@ will occur at the Second Price' => 'Количество повторных пл
   'Record modified, original dates:' => 'Запись изменена, исходные даты',
   'Records Deleted Sucessfully' => 'Записи удалены успешно',
   'Records per Page (for grids)' => 'Записей на странице (для таблиц)',
-  'Recurring' => 'Повторные платежи',
   'Redirect URL' => 'Ссылка (перенаправление)',
   'Referrer' => 'Отправитель',
   'Refund Amount' => 'Вернуть сумму',
@@ -692,7 +671,6 @@ URL корневого скрипта, обычно %s',
   'SMTP Username' => 'Имя пользователя SMTP',
   'SQL (could not be used for multi-select and checkbox fields)' => 'SQL (не может быть использован для multi-select и checkbox полей)',
   'SQL Date Format' => 'формат даты SQL',
-  'Sales' => 'Продажи',
   'Sales Statistic' => 'Статистика продаж',
   'Save This Search' => 'Сохранить этот поиск',
   'Saved Credit Cards' => 'Сохранить кредитные карты',
@@ -724,7 +702,6 @@ if nothing selected - all products' => 'Продукты
   'Select option' => 'Выбрать опцию',
   'Selected for E-Mailing' => 'Выбрано для отправки писем',
   'Semicolon' => 'Точка с запятой',
-  'Send' => 'Отправить',
   'Send Cancel Notifications to Admin
 send email to admin when recurring subscription cancelled by member' => 'Отправить администратору уведомление об отмене
 отправлять email с уведомлением администратору когда клиент отменил подписку с автопродлением',
@@ -770,8 +747,6 @@ it will be expanded to first and last name of admin in operation' => 'Текст
   'Signup Form Configuration' => 'Конфигурация формы регистрации',
   'Signup Info' => 'Информация о подписке',
   'Signup Messages' => 'Сообщения о регистрации',
-  'Signups' => 'Регистрации',
-  'Site Title' => 'Название сайта',
   'Site is temporarily disabled for maintenance' => 'Сайт временно переведен в режим обслуживания',
   'Size' => 'Размер',
   'Size of input field' => 'Размер поля ввода',
@@ -783,7 +758,6 @@ it will be expanded to first and last name of admin in operation' => 'Текст
   'Source' => 'Основание',
   'Space' => 'Пробел',
   'Standard PHP Sessions' => 'Стандартная сессия PHP',
-  'Start Date' => 'Дата старта',
   'Start Date Calculation
 rules for subscription start date calculation.
 MAX date from alternatives will be chosen.
@@ -793,7 +767,6 @@ This settings has no effect for recurring subscriptions' => 'Вычислени�
 Эти  настройки не повлияют на подписки с повторяющимися платежами',
   'Start and Expiration Dates' => 'Даты начала и истечения ',
   'Started' => 'Стартовала',
-  'State Title' => 'Название региона',
   'Step %d of %d' => 'Шаг %d из %d',
   'Stop Recurring' => 'Остановить подписку',
   'String' => 'Строка',
@@ -809,7 +782,6 @@ aMember не взимает первоночальный платеж при о�
   'System Info' => 'Иформация о системе',
   'Table' => 'Таблица',
   'Tabulation' => 'Табуляция',
-  'Tax Id' => 'Id налога',
   'Template' => 'Шаблон',
   'Template
 alternative template for signup page' => 'Шаблон
@@ -831,7 +803,6 @@ Press [Skip] to type it manually from scratch.' => 'Шаблон письма п
 Нажмите [Copy] для копирования из языка по умолчанию [English] 
 Нажмите [Skip] для ввода его вручную с нуля',
   'This field is requred' => 'Это поле обязательно',
-  'Thresehold Date' => 'Дата отсечения',
   'Ticket Categories' => 'Категории обращений',
   'Ticket#' => 'Запрос#',
   'Tickets Assigned to Me' => 'Запросы назначенные на меня',
@@ -841,7 +812,6 @@ displayed to customers' => 'Название
 показывать покупателям',
   'Title of Element' => 'Заголовок',
   'Title of Report for your Reference' => 'Название отчета для справки',
-  'To' => 'До',
   'To order this product user must have an
 when user orders this subscription, it will be checked
 that user has one from the following subscriptions' => 'Для заказа данного продукта пользователь должен иметь
@@ -886,7 +856,6 @@ that user has one from the following subscriptions' => 'Для того чтоб
   'Used For' => 'Использован для',
   'Used Rules' => 'Использованное правило',
   'Useful for invoices with non-Latin symbols' => 'Полезно для заказов с не латинскими символами',
-  'User' => 'Клиент',
   'User Access' => 'Доступ клиента',
   'User Coupon Usage Count
 how many times a coupon code can be used by customer' => 'Количество использования купона клиентом
@@ -899,6 +868,7 @@ how many times a coupon code can be used by customer' => 'Количество �
   'User had access to the following products' => 'Пользователь имел или имеет доступ к следующим продуктам',
   'User is locked' => 'Пользователь заблокирован',
   'User is not approved' => 'Пользователь не утвержден',
+  'User is not found in database' => 'Пользователь не найден  в базе данных',
   'User notification' => 'Уведомление пользователя',
   'User-Affiliate Relation Lifetime
 how long (in days) calculate commission for referred affiliate (default: 0 - forever)' => 'Время жизни связи Пользователь-Партнер 
@@ -911,7 +881,6 @@ how long (in days) calculate commission for referred affiliate (default: 0 - for
   'Users Report' => 'Отчет о пользователях',
   'Utilities' => 'Утилиты',
   'Valid license key are one-line string,starts with L and ends with X' => 'Корректный лицензионный ключ это строка, начинающаяся с L и заканчивающаяся на X',
-  'Validation' => 'Проверка',
   'Value
 use % as wildcard mask' => 'Значение
 используйте % как знак подстановки',

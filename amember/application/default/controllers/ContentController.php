@@ -2,7 +2,7 @@
 
 class ContentController extends Am_Controller
 {
-    
+
     /** @access private for unit testing */
     public function _setHelper($v)
     {
@@ -26,7 +26,7 @@ class ContentController extends Am_Controller
         if ($path = $f->getFullPath())
         {
             @ini_set('zlib.output_compression', 'Off'); // for IE
-            $this->_helper->sendFile($path, $f->getMime(), 
+            $this->_helper->sendFile($path, $f->getMime(),
                 array(
                     //'cache'=>array('max-age'=>3600),
                     'filename' => $f->getDisplayFilename(),
@@ -34,7 +34,7 @@ class ContentController extends Am_Controller
         } else
             $this->redirectLocation($f->getProtectedUrl(600));
     }
-    
+
     /**
      * Display saved page
      */
@@ -54,6 +54,9 @@ class ContentController extends Am_Controller
      */
     function cAction()
     {
+        if (!$this->getDi()->auth->getUserId()) {
+            $this->_redirect('login?amember_redirect_url=' . urlencode($this->getFullUrl()));
+        }
         /* @var $cat ResourceCategory */
         $cat = $this->getDi()->resourceCategoryTable->load($this->getParam('id'));
         $this->view->resources = $cat->getAllowedResources($this->getDi()->user);
@@ -65,23 +68,23 @@ class ContentController extends Am_Controller
     {
         if ($id<=0)
             throw new Am_Exception_InputError(___('Wrong link - no id passed'));
-        
+
         $p = $table->load($id);
         if (!$this->getDi()->auth->getUserId()) // not logged-in
         {
             if ($p->hasAccess(null)) // guest access allowed?
                 return $p;           // then process
-            $this->_redirect('login?amember_redirect_url=' . $this->getFullUrl());
+            $this->_redirect('login?amember_redirect_url=' . urlencode($this->getFullUrl()));
         }
         if (!$p->hasAccess($this->getDi()->user))
         {
             if(!empty($p->no_access_url))
                 $this->_redirect($p->no_access_url);
             else
-                $this->_redirect('no-access/content/'.sprintf('?id=%d&type=%s', 
+                $this->_redirect('no-access/content/'.sprintf('?id=%d&type=%s',
                     $id, $table->getName(true)));
         }
-        
+
         return $p;
     }
 }

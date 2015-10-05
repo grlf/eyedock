@@ -208,10 +208,6 @@ abstract class Am_Form_Brick
     static function getAvailableBricks(Am_Form_Bricked $form)
     {
         $ret = array();
-
-        // tax plugins are special - preload them
-        Am_Di::getInstance()->plugins_tax->getAllEnabled();
-
         foreach (get_declared_classes () as $className) {
             if (is_subclass_of($className, 'Am_Form_Brick')) {
                 $class = new ReflectionClass($className);
@@ -245,7 +241,7 @@ class Am_Form_Brick_Name extends Am_Form_Brick
         'Please enter your First Name',
         'Please enter your Last Name',
     );
-    protected $hideIfLoggedInPossible = self::HIDE_ALWAYS;
+    protected $hideIfLoggedInPossible = self::HIDE_DESIRED;
 
     public function __construct($id = null, $config = null)
     {
@@ -278,6 +274,9 @@ class Am_Form_Brick_Name extends Am_Form_Brick
             $name_f->addRule('required', $this->___('Please enter your First Name'));
             $name_f->addRule('regex', $this->___('Please enter your First Name'), '/^[^=:<>{}()"]+$/D');
 
+            if ($this->getConfig('ucfirst'))
+                $name_f->addFilter(function($v){return ucfirst(strtolower($v));});
+
             if ($this->getConfig('disabled'))
                 $name_f->toggleFrozen(true);
 
@@ -288,6 +287,9 @@ class Am_Form_Brick_Name extends Am_Form_Brick
             $name_l = $row2->addElement('text', 'name_l', array('size' => $len));
             $name_l->addRule('required', $this->___('Please enter your Last Name'));
             $name_l->addRule('regex', $this->___('Please enter your Last Name'), '/^[^=:<>{}()"]+$/D');
+
+            if ($this->getConfig('ucfirst'))
+                $name_l->addFilter(function($v){return ucfirst(strtolower($v));});
 
             if ($this->getConfig('disabled'))
                 $name_l->toggleFrozen(true);
@@ -308,6 +310,7 @@ class Am_Form_Brick_Name extends Am_Form_Brick
             ->setId('name-two_rows')
             ->setLabel(___('Display in 2 rows'));
 
+        $form->addAdvCheckbox('ucfirst')->setLabel(___('Make the first letters of first and last name Uppercase'));
         $form->addAdvCheckbox('disabled')->setLabel(___('Read-only'));
 
         $both = self::DISPLAY_BOTH;
@@ -337,22 +340,101 @@ class Am_Form_Brick_HTML extends Am_Form_Brick
 
     public function initConfigForm(Am_Form $form)
     {
+        $form->addSelect('position', array('class' => 'brick-html-position'))
+            ->setLabel(___('Position for HTML'))
+            ->loadOptions(array(
+                '' => ___('Default'),
+                'header' => ___('Above Form (Header)'),
+                'footer' => ___('Below Form (Footer)'),
+            ));
+
         $form->addTextarea('html', array('rows' => 15, 'class' => 'el-wide'))
             ->setLabel(___('HTML Code that will be displayed'));
-        $form->addText('label', array('class' => 'el-wide'))->setLabel(___('Label'));
-        $form->addAdvCheckbox('no_label')->setLabel(___('Remove Label'));
+
+        $form->addText('label', array('class' => 'el-wide', 'rel' => 'position-default'))->setLabel(___('Label'));
+        $form->addAdvCheckbox('no_label', array('rel' => 'position-default'))->setLabel(___('Remove Label'));
+
+        $form->addMagicSelect('lang')
+            ->setLabel(___("Language\n" .
+                'Display this brick only for the following languages. ' .
+                'Keep it empty to display for any language.'))
+            ->loadOptions($this->getLangaugeList());
+        $form->addScript()
+            ->setScript(<<<CUT
+$(function(){
+    $('.brick-html-position').change(function(){
+        $(this).closest('form').find('[rel=position-default]').closest('.row').toggle($(this).val() == '');
+    }).change();
+})
+CUT
+            );
+    }
+
+    public function getLangaugeList()
+    {
+        $di = Am_Di::getInstance();
+        $avail = $di->languagesListUser;
+        $_list = array();
+        if ($enabled = $di->config->get('lang.enabled', array()))
+            foreach ($enabled as $lang)
+                if (!empty($avail[$lang]))
+                    $_list[$lang] = $avail[$lang];
+        return $_list;
+    }
+
+    public function getLanguage()
+    {
+        $_list = $this->getLangaugeList();
+        $_locale = key(Zend_Locale::getDefault());
+        if (!array_key_exists($_locale, $_list))
+            list($_locale) = explode('_', $_locale);
+        return $_locale;
     }
 
     public function insertBrick(HTML_QuickForm2_Container $form)
     {
-        $attrs = $data = array();
-        $data['content'] = $this->getConfig('html');
-        if ($this->getConfig('no_label')) {
-            $attrs['class'] = 'no-label';
-        } else {
-            $data['label'] = $this->getConfig('label');
+        $lang = $this->getConfig('lang');
+        if ($lang && !in_array($this->getLanguage(), $lang)) return;
+
+        switch ($this->getConfig('position')) {
+            case 'header' :
+                $form->addProlog($this->getConfig('html'));
+                break;
+            case 'footer' :
+                $form->addEpilog($this->getConfig('html'));
+                break;
+            default:
+                $attrs = $data = array();
+                $data['content'] = $this->getConfig('html');
+                if ($this->getConfig('no_label')) {
+                    $attrs['class'] = 'no-label';
+                } else {
+                    $data['label'] = $this->getConfig('label');
+                }
+                $form->addStatic('html' . (++self::$counter), $attrs, $data);
         }
-        $form->addStatic('html' . (++self::$counter), $attrs, $data);
+    }
+
+    public function isMultiple()
+    {
+        return true;
+    }
+
+}
+
+class Am_Form_Brick_JavaScript extends Am_Form_Brick
+{
+
+    public function initConfigForm(Am_Form $form)
+    {
+        $form->addTextarea('code', array('rows' => 15, 'class' => 'el-wide'))
+            ->setLabel(___("JavaScript Code\n" .
+                "it will be injected on signup form"));
+    }
+
+    public function insertBrick(HTML_QuickForm2_Container $form)
+    {
+        $form->addScript()->setScript($this->getConfig('code'));
     }
 
     public function isMultiple()
@@ -411,7 +493,7 @@ CUT
 
         if (!Am_Di::getInstance()->userTable->checkUniqEmail($email, $user_id))
             return $this->___('An account with the same email already exists.') . '<br />' .
-            $this->___('Please %slogin%s to your existing account.%sIf you have not completed payment, you will be able to complete it after login', '<a href="' . Am_Controller::escape(REL_ROOT_URL . '/member') . '">', '</a>', '<br />');
+            $this->___('Please %slogin%s to your existing account.%sIf you have not completed payment, you will be able to complete it after login', '<a href="' . Am_Controller::escape(REL_ROOT_URL . '/login?amember_redirect_url='.urlencode($_SERVER['REQUEST_URI'])) . '">', '</a>', '<br />');
         return Am_Di::getInstance()->banTable->checkBan(array('email' => $email));
     }
 
@@ -425,7 +507,7 @@ CUT
             $email->toggleFrozen(true);
         $email->addRule('callback2', '--wrong email--', array($this, 'check'))
             ->addRule('remote', '--wrong email--', array(
-                'url' => REL_ROOT_URL . '/ajax?do=check_uniq_email'
+                'url' => REL_ROOT_URL . '/ajax?do=check_uniq_email&_url='.base64_encode(REL_ROOT_URL . '/login?amember_redirect_url='.urlencode($_SERVER['REQUEST_URI']))
             ));
         if ($this->getConfig('confirm', 0)) {
             $email0 = $form->addText('_email', array('size' => 30))
@@ -600,7 +682,7 @@ CUT
     public function insertBrick(HTML_QuickForm2_Container $form)
     {
         $len = Am_Di::getInstance()->config->get('pass_min_length', 6);
-        $pass = $form->addPassword('pass', array('size' => 30, 'maxlength' => Am_Di::getInstance()->config->get('pass_max_length', 64)))
+        $pass = $form->addPassword('pass', array('size' => 30, 'autocomplete'=>'off', 'maxlength' => Am_Di::getInstance()->config->get('pass_max_length', 64)))
                 ->setLabel($this->___("Choose a Password\nmust be %d or more characters", $len));
 
         $pass->addRule('required', $this->___('Please enter Password'));
@@ -613,7 +695,7 @@ CUT
         }
 
         if (!$this->getConfig('do_not_confirm')) {
-            $pass0 = $form->addPassword('_pass', array('size' => 30))
+            $pass0 = $form->addPassword('_pass', array('size' => 30, 'autocomplete'=>'off'))
                     ->setLabel(array($this->___('Confirm Your Password')))
                     ->setId('pass-confirm');
             $pass0->addRule('required');
@@ -629,6 +711,8 @@ jQuery(function($){
 })');
             }
             return array($pass, $pass0);
+        } else {
+            $pass->setAttribute('class', 'am-pass-reveal');
         }
         return $pass;
     }
@@ -688,11 +772,11 @@ CUT
     {
         $len = Am_Di::getInstance()->config->get('pass_min_length', 6);
         if (!$this->getConfig('do_not_ask_current_pass')) {
-            $oldPass = $form->addPassword('_oldpass', array('size' => 30))
+            $oldPass = $form->addPassword('_oldpass', array('size' => 30, 'autocomplete'=>'off'))
                     ->setLabel($this->___("Your Current Password\nif you are changing password, please\n enter your current password for validation"));
             $oldPass->addRule('callback2', 'wrong', array($this, 'validateOldPass'));
         }
-        $pass = $form->addPassword('pass', array('size' => 30, 'maxlength' => Am_Di::getInstance()->config->get('pass_max_length', 64)))
+        $pass = $form->addPassword('pass', array('size' => 30, 'autocomplete'=>'off', 'maxlength' => Am_Di::getInstance()->config->get('pass_max_length', 64)))
                 ->setLabel($this->___("New Password\nyou can choose new password here or keep it unchanged\nmust be %d or more characters", $len));
         $pass->addRule('length', sprintf($this->___('Password must contain at least %d letters or digits'), $len),
             array($len, Am_Di::getInstance()->config->get('pass_max_length', 64)));
@@ -703,7 +787,7 @@ CUT
         }
 
         if (!$this->getConfig('do_not_confirm')) {
-            $pass0 = $form->addPassword('_pass', array('size' => 30))
+            $pass0 = $form->addPassword('_pass', array('size' => 30, 'autocomplete'=>'off'))
                     ->setLabel($this->___('Confirm New Password'))
                     ->setId('pass-confirm');
 
@@ -774,7 +858,9 @@ class Am_Form_Brick_Address extends Am_Form_Brick
 
     public function insertBrick(HTML_QuickForm2_Container $form)
     {
-        $fieldSet = $form->addElement('fieldset', 'address', array('id' => 'row-address-0'))->setLabel($this->___('Address Information'));
+        $fieldSet = $this->getConfig('hide_fieldset') ?
+            $form :
+            $form->addElement('fieldset', 'address', array('id' => 'row-address-0'))->setLabel($this->___('Address Information'));
 
         foreach ($this->getConfig('fields', array()) as $f => $required) {
             switch ($f) {
@@ -889,6 +975,7 @@ class Am_Form_Brick_Address extends Am_Form_Brick
         }');
 
         $form->addSelect('country_default')->setLabel('Default Country')->loadOptions(Am_Di::getInstance()->countryTable->getOptions(true));
+        $form->addAdvCheckbox('hide_fieldset')->setLabel(___('Hide Brick Title'));
     }
 
 }
@@ -1043,11 +1130,12 @@ class Am_Form_Brick_Product extends Am_Form_Brick
         $event = new Am_Event(Am_Event::SIGNUP_FORM_GET_PRODUCTS_FILTERED);
         $event->setReturn($ret);
         Am_Di::getInstance()->hook->call($event);
-        return $ret;
+        return $event->getReturn();
     }
 
     public function insertBrick(HTML_QuickForm2_Container $form)
     {
+        $product_paysys = Am_Di::getInstance()->config->get('product_paysystem');
         $base_name = 'product_id_' . $form->getId();
         $name = self::$bricksAdded ? $base_name . '_' . self::$bricksAdded : $base_name;
 
@@ -1086,6 +1174,7 @@ class Am_Form_Brick_Product extends Am_Form_Brick
             $attrs[$pid] = array(
                 'data-first_price' => $plan->first_price,
                 'data-second_price' => $plan->second_price,
+                'data-paysys' => $product_paysys && $plan->paysys_id
             );
             $dataOptions[$pid] = array(
                 'label' => $options[$pid],
@@ -1117,6 +1206,7 @@ class Am_Form_Brick_Product extends Am_Form_Brick
                     $data[$p->product_id . '-' . $plan->pk()] = array(
                         'data-first_price' => $plan->first_price,
                         'data-second_price' => $plan->second_price,
+                        'data-paysys' => $product_paysys && $plan->paysys_id,
                         'options' => array(
                             'value' => $p->product_id . '-' . $plan->pk(),
                             'label' => $this->renderProduct($p, $plan),
@@ -1236,6 +1326,12 @@ jQuery(function($){
 EOF;
             $form->addScript()->setScript($script);
         }
+
+        if (($d = $this->getConfig('default')) && $inputType != 'none' && $inputType != 'hidden') {
+            $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(
+                $name => ($inputType == 'checkbox' || $inputType == 'advradio') ? array($d) : $d
+            )));
+        }
     }
 
     public function initConfigForm(Am_Form $form)
@@ -1265,6 +1361,10 @@ EOF;
 
         $bps = $form->addSortableMagicSelect('bps', array('data-type' => self::DISPLAY_BP,))->setLabel(___('Billing Plan(s) to display'));
         $bps->loadOptions($bpOptions);
+
+        $form->addSelect('default')
+            ->setLabel(___('Select by default'))
+            ->loadOptions(array(''=>'') + $bpOptions);
 
         $inputType = $form->addSelect('input-type')->setLabel(___('Input Type'));
         $inputType->loadOptions(array(
@@ -1433,18 +1533,28 @@ class Am_Form_Brick_Paysystem extends Am_Form_Brick
             null, HTML_QuickForm2_Rule::SERVER);
         $el0->addFilter('filterId');
         $el->setLabel($this->___('Payment System'));
+        /**
+         * hide payment system selection if:
+         * - there are only free products in the form
+         * - there are selected products, and all of them are free
+         * - option product_psysytem is enabled and user choose product with assign payment system
+         */
         $form->addScript()->setScript(<<<CUT
 jQuery(document).ready(function($) {
-    /// hide payment system selection if:
-    //   - there are only free products in the form
-    //   - there are selected products, and all of them are free
     $(":checkbox[name^='product_id'], select[name^='product_id'], :radio[name^='product_id'], input[type=hidden][name^='product_id']").change(function(){
-        var count_free = 0, count_paid = 0, total_count_free = 0, total_count_paid = 0;
+        var count_free = 0, count_paid = 0, total_count_free = 0, total_count_paid = 0,
+            total_count_paysys = 0, total_count_no_paysys = 0, count_paysys = 0, count_no_paysys = 0;
         $(":checkbox[name^='product_id']:checked, select[name^='product_id'] option:selected, :radio[name^='product_id']:checked, input[type=hidden][name^='product_id']").each(function(){
             if (($(this).data('first_price')>0) || ($(this).data('second_price')>0))
                 count_paid++;
             else
                 count_free++;
+
+            if ($(this).data('paysys'))
+                count_paysys++;
+            else
+                count_no_paysys++;
+
         });
 
         $(":checkbox[name^='product_id'], select[name^='product_id'] option, :radio[name^='product_id'], input[type=hidden][name^='product_id']").each(function(){
@@ -1452,8 +1562,16 @@ jQuery(document).ready(function($) {
                 total_count_paid++;
             else
                 total_count_free++;
+
+            if ($(this).data('paysys'))
+                total_count_paysys++;
+            else
+                total_count_no_paysys++;
         });
-        if ( ((count_free && !count_paid) || (!total_count_paid && total_count_free)) && (total_count_paid + total_count_free)>0)
+        if ( ((count_free && !count_paid) ||
+            (!total_count_paid && total_count_free) ||
+            (!total_count_no_paysys && total_count_paysys) ||
+            (count_paysys)) && (total_count_paid + total_count_free)>0)
         { // hide select
             $("#row-paysys_id").hide().after("<input type='hidden' name='paysys_id' value='free' class='hidden-paysys_id' />");
         } else { // show select
@@ -1500,27 +1618,27 @@ CUT
 class Am_Form_Brick_Recaptcha extends Am_Form_Brick
 {
 
+    protected $name = 'reCAPTCHA';
     protected $labels = array(
-        "Enter Verification Text\nplease type text from image",
-        'Text has been entered incorrectly' => 'Text has been entered incorrectly',
+        'Anti Spam',
+        'Anti Spam check failed'
     );
-    protected $theme_options = array('clean' => 'clean', 'red' => 'red', 'white' => 'white', 'blackglass' => 'blackglass');
+    protected $theme_options = array('light' => 'light', 'dark' => 'dark');
     /** @var HTML_QuickForm2_Element_Static */
     protected $static;
 
     public function initConfigForm(Am_Form $form)
     {
         $form->addSelect('theme')
-            ->setLabel(___("reCaptcha Theme\n" .
-                '%sexamples%s', '<a target="_blank" href="https://developers.google.com/recaptcha/docs/customization">', '</a>'))
+            ->setLabel(___("reCAPTCHA Theme"))
             ->loadOptions($this->theme_options);
     }
 
     public function insertBrick(HTML_QuickForm2_Container $form)
     {
         $captcha = $form->addGroup()
-                ->setLabel($this->___("Enter Verification Text\nplease type text from image"));
-        $captcha->addRule('callback', $this->___('Text has been entered incorrectly'), array($this, 'validate'));
+                ->setLabel($this->___("Anti Spam"));
+        $captcha->addRule('callback', $this->___('Anti Spam check failed'), array($this, 'validate'));
         $this->static = $captcha->addStatic('captcha')->setContent(Am_Di::getInstance()->recaptcha->render($this->getConfig('theme')));
     }
 
@@ -1537,19 +1655,14 @@ class Am_Form_Brick_Recaptcha extends Am_Form_Brick
         while ($np = $form->getContainer())
             $form = $np;
 
-        $challenge = $response = null;
         foreach ($form->getDataSources() as $ds) {
-            $challenge = $ds->getValue('recaptcha_challenge_field');
-            $resp = $ds->getValue('recaptcha_response_field');
-            if ($challenge)
+            if ($resp = $ds->getValue('g-recaptcha-response'))
                 break;
         }
 
         $status = false;
         if ($resp)
-            $status = Am_Di::getInstance()->recaptcha->validate($challenge, $resp);
-        if (!$status)
-            $this->static->setContent(Am_Di::getInstance()->recaptcha->render($this->config['theme']));
+            $status = Am_Di::getInstance()->recaptcha->validate($resp);
         return $status;
     }
 
@@ -1621,6 +1734,12 @@ class Am_Form_Brick_Field extends Am_Form_Brick
         foreach (Am_Di::getInstance()->userTable->customFields()->getAll() as $field) {
             if (strpos($field->name, 'aff_') === 0)
                 continue;
+
+            // Do not create bricks for fields started with _
+
+            if (strpos($field->name, '_') === 0)
+                continue;
+
             $res[] = new self('field-' . $field->getName());
         }
         return $res;
@@ -1643,7 +1762,7 @@ class Am_Form_Brick_Field extends Am_Form_Brick
 
     function insertBrick(HTML_QuickForm2_Container $form)
     {
-        if (isset($this->field->from_config) && $this->field->from_config) {
+        if (!$this->getConfig('skip_access_check') && isset($this->field->from_config) && $this->field->from_config) {
             $hasAccess = Am_Di::getInstance()->auth->getUserId() ?
                 Am_Di::getInstance()->resourceAccessTable->userHasAccess(Am_Di::getInstance()->auth->getUser(), amstrtoint($this->field->name), Am_CustomField::ACCESS_TYPE) :
                 Am_Di::getInstance()->resourceAccessTable->guestHasAccess(amstrtoint($this->field->name), Am_CustomField::ACCESS_TYPE);
@@ -1654,8 +1773,9 @@ class Am_Form_Brick_Field extends Am_Form_Brick
 
         switch ($this->getConfig('display_type', self::TYPE_NORMAL)) {
             case self::TYPE_HIDDEN :
+                $v = $this->getConfig('value');
                 $form->addHidden($this->field->getName())
-                    ->setValue($this->getConfig('value'));
+                    ->setValue($v ? $v : @$this->field->default);
                 break;
             case self::TYPE_READONLY :
                 $el = $this->field->addToQF2($form);
@@ -1688,7 +1808,10 @@ class Am_Form_Brick_Field extends Am_Form_Brick
                 self::TYPE_READONLY => ___('Read-only'),
                 self::TYPE_HIDDEN => ___('Hidden')
             ));
-        $form->addText('value')
+        $form->addText('value', array(
+                'placeholder' => ___('Keep empty to use default value from field settings'),
+                'class' => 'el-wide'
+            ))
             ->setId($id_value)
             ->setLabel(___("Default Value for this field\n" .
                 'hidden field will be populated with this value'));
@@ -1703,6 +1826,8 @@ $(function(){
 });
 CUT
         );
+        $form->addAdvCheckbox('skip_access_check')
+            ->setLabel(___("Do not check Access Permissions\nfor this field on this form (show it without any conditions)"));
     }
 
     public function setConfigArray(array $config)
@@ -1724,7 +1849,7 @@ class Am_Form_Brick_Agreement extends Am_Form_Brick
 
     protected $labels = array(
         'User Agreement',
-        'I Agree',
+        'I have read and agree to the Terms & Conditions',
         'Please agree to User Agreement',
     );
     protected $text = "";
@@ -1750,7 +1875,14 @@ class Am_Form_Brick_Agreement extends Am_Form_Brick
             $agreement = $conteiner->addStatic('_agreement', array('class' => 'no-label'));
             $agreement->setContent('<div class="agreement">' . $this->getText() . '</div>');
         }
-        $checkbox = $conteiner->addCheckbox('i_agree')->setLabel($this->___('I Agree'));
+        $data = array();
+        if ($this->getConfig('no_label')) {
+            $data['content'] = $this->___('I have read and agree to the Terms & Conditions');
+        }
+        $checkbox = $conteiner->addAdvCheckbox('i_agree', array(), $data);
+        if (!$this->getConfig('no_label')) {
+            $checkbox->setLabel($this->___('I have read and agree to the Terms & Conditions'));
+        }
         $checkbox->addRule('required', $this->___('Please agree to User Agreement'));
     }
 
@@ -1786,6 +1918,8 @@ $('#do-not-show-agreement-text').change(function(){
 }).change();
 CUT
         );
+        $form->addAdvCheckbox('no_label')
+            ->setLabel(___("Hide Label"));
     }
 
 }
@@ -1886,7 +2020,8 @@ class Am_Form_Brick_ManualAccess extends Am_Form_Brick
         $product_ids = $this->getConfig('product_ids');
         if (!$product_ids) return;
         foreach ($product_ids as $id) {
-            $product = Am_Di::getInstance()->productTable->load($id);
+            $product = Am_Di::getInstance()->productTable->load($id, false);
+            if (!$product) continue;
 
             //calucalet access dates
             $invoice = Am_Di::getInstance()->invoiceRecord;
@@ -2057,5 +2192,79 @@ class Am_Form_Brick_Unsubscribe extends Am_Form_Brick {
             Am_Di::getInstance()->hook->call(Am_Event::USER_UNSUBSCRIBED_CHANGED,
                 array('user'=>$user, 'unsubscribed' => $user->unsubscribed));
         }
+    }
+}
+
+class Am_Form_Brick_VatId extends Am_Form_Brick
+{
+    protected $labels = array(
+        'VAT Settings are incorrect - no Vat Id configured',
+        'Invalid VAT Id, please try again',
+        'Cannot validate VAT Id, please try again',
+        'Invalid EU VAT Id format',
+        'EU VAT Id (optional)',
+        'Please enter EU VAT Id'
+    );
+
+    public function initConfigForm(Am_Form $form)
+    {
+        $form->addAdvCheckbox('dont_validate')->setLabel(___('Disable online VAT Id Validation'));
+        $form->addAdvCheckbox('required')->setLabel(___('Required'));
+    }
+    public function insertBrick(HTML_QuickForm2_Container $form)
+    {
+        $el = $form->addText('tax_id')->setLabel($this->___("EU VAT Id (optional)"))
+            ->addRule('regex', $this->___('Invalid EU VAT Id format'), '/^[A-Za-z]{2}[a-zA-Z0-9\s]+$/');
+        if (!$this->getConfig('dont_validate'))
+            $el->addRule('callback2', '-error-', array($this, 'validate'));
+        if ($this->getConfig('required'))
+            $el->addRule('required', $this->___("Please enter EU VAT Id"));
+
+    }
+    public function validate($id)
+    {
+
+        if (!$id) return; //skip validation in case of VAT was not supplied
+
+        $plugins = Am_Di::getInstance()->plugins_tax->getAllEnabled();
+        $me = is_array($plugins) ? $plugins[0]->getConfig('my_id') : "";
+        if (!$me) return $this->___('VAT Settings are incorrect - no Vat Id configured');
+
+        // check if response is cached
+        $cacheKey = 'vat_check_'
+            . preg_replace('/[^A-Z0-9a-z_]/', '_', $me)
+            . '_' . preg_replace('/[^A-Z0-9a-z_]/', '_', $id);
+        if (($ret = Am_Di::getInstance()->cache->load($cacheKey)) !== false)
+            return $ret === 1 ? null : $this->___('Invalid VAT Id, please try again');
+
+        if (!strlen($id))
+                return $this->___('Invalid VAT Id, please try again');
+        $req = new Am_HttpRequest('http://ec.europa.eu/taxation_customs/vies/vatResponse.html', Am_HttpRequest::METHOD_POST);
+        $req->addPostParameter('action', 'check')
+            ->addPostParameter('check', 'Verify')
+            ->addPostParameter('memberStateCode', strtoupper(substr($id, 0, 2)))
+            ->addPostParameter('number', substr($id, 2))
+            ->addPostParameter('requesterMemberStateCode', '')
+            ->addPostParameter('traderName', '')
+            ->addPostParameter('traderCompanyType', '')
+            ->addPostParameter('traderStreet', '')
+            ->addPostParameter('traderPostalCode', '')
+            ->addPostParameter('traderCity', '')
+            ->addPostParameter('requesterNumber', '');
+        try {
+            $resp = $req->send();
+            $ok = preg_match('/Yes[,\s]+valid\s+VAT\s+number/i', $resp->getBody());
+            Am_Di::getInstance()->cache->save($ok ? 1 : 0, $cacheKey);
+            if (!$ok)
+                return $this->___('Invalid VAT Id, please try again');
+        } catch (Exception $e) {
+            Am_Di::getInstance()->errorLogTable->log($e);
+            return $this->___("Cannot validate VAT Id, please try again");
+        }
+
+    }
+    public function isAcceptableForForm(Am_Form_Bricked $form)
+    {
+        return $form instanceof Am_Form_Signup || $form instanceof Am_Form_Profile;
     }
 }

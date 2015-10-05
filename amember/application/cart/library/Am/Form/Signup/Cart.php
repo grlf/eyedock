@@ -21,4 +21,8 @@ class Am_Form_Signup_Cart extends Am_Form_Signup
         }
         return $ret;
     }
+    public function isHideBricks()
+    {
+        return false;
+    }
 }

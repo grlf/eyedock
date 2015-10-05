@@ -7,6 +7,8 @@
  */
 class Am_HttpRequest extends HTTP_Request2 
 {
+    protected $nvpRequest = false;
+    
     function  __construct($url = null, $method = self::METHOD_GET, array $config = array()) {
         if (extension_loaded('curl') && (strpos(@ini_get('disable_functions'), 'curl_exec')===false))
             $this->setConfig('adapter', 'HTTP_Request2_Adapter_Curl');
@@ -19,6 +21,7 @@ class Am_HttpRequest extends HTTP_Request2
         $this->setConfig('ssl_cafile', Am_Di::getInstance()->config->get('http.ssl_cafile', null));
         $this->setConfig('ssl_cafile', Am_Di::getInstance()->config->get('http.ssl_cafile', null));
         parent::__construct($url, $method, $config);
+        $this->setHeader('user-agent', 'aMember PRO/' . AM_VERSION . ' (http://www.amember.com)');
     }
     
     function getPostParams()
@@ -67,5 +70,31 @@ class Am_HttpRequest extends HTTP_Request2
     function _getAdapter()
     {
         return $this->adapter;
+    }
+    
+    /**
+     * Create an NVP request for PayPal/Payflow
+     * @param type $flag
+     */
+    function setNvpRequest($flag)
+    {
+        $this->nvpRequest = (bool)$flag;
+    }
+    
+    public function getBody()
+    {
+        if ($this->nvpRequest)
+        {
+            $ret = "";
+            foreach ($this->postParams as $k => $v)
+            {
+                if ($ret) $ret .= '&';
+                $ret .= sprintf("%s[%d]=%s",
+                    $k, strlen($v), $v);
+            }
+            return $ret;
+        } else {
+            return parent::getBody();
+        }
     }
 }

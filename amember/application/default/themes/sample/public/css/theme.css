@@ -10,4 +10,4 @@
 
     @link Am_View->printLayoutHead()
 */
-body { font-size: 16pt; background-color: %bgcolor%; }
+body {background-color: %bgcolor%;}

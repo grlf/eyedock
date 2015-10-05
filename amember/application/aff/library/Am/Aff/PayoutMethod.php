@@ -148,23 +148,23 @@ class Am_Aff_PayoutMethod_Check extends Am_Aff_PayoutMethod
 
     public function getTitle()
     {
-        return "Offline Check";
+        return ___("Offline Check");
     }
 
     public function export(AffPayout $payout, Am_Query $details, Zend_Controller_Response_Http $response)
     {
         $q = $details->query();
         $rows = array(array(
-                "Check Payable To",
-                "Street",
-                "City",
-                "State",
-                "Country",
-                "ZIP",
-                "Amount",
-                "Currency",
-                "Comment",
-                "Username",
+                ___("Check Payable To"),
+                ___("Street"),
+                ___("City"),
+                ___("State"),
+                ___("Country"),
+                ___("ZIP"),
+                ___("Amount"),
+                ___("Currency"),
+                ___("Comment"),
+                ___("Username"),
             ));
         while ($d = $payout->getDi()->db->fetchRow($q)) {
             $d = $payout->getDi()->affPayoutDetailTable->createRecord($d);
@@ -180,7 +180,7 @@ class Am_Aff_PayoutMethod_Check extends Am_Aff_PayoutMethod
                 $aff->data()->get('aff_check_zip'),
                 moneyRound($d->amount),
                 Am_Currency::getDefault(),
-                "Affiliate commission to " . amDate($payout->thresehold_date),
+                ___("Affiliate commission to %s", amDate($payout->thresehold_date)),
                 $aff->login,
             );
         }
@@ -206,11 +206,11 @@ class Am_Aff_PayoutMethod_Moneybookers extends Am_Aff_PayoutMethod
     {
         $q = $details->query();
         $rows = array(array(
-                "Moneybookers E-Mail",
-                "Amount",
-                "Currency",
-                "Comment",
-                "Username",
+                ___("Moneybookers E-Mail"),
+                ___("Amount"),
+                ___("Currency"),
+                ___("Comment"),
+                ___("Username"),
             ));
         while ($d = $payout->getDi()->db->fetchRow($q)) {
             $d = $payout->getDi()->affPayoutDetailTable->createRecord($d);
@@ -221,7 +221,7 @@ class Am_Aff_PayoutMethod_Moneybookers extends Am_Aff_PayoutMethod
                 $aff->data()->get('aff_moneybookers_email'),
                 moneyRound($d->amount),
                 Am_Currency::getDefault(),
-                "Affiliate commission to " . amDate($payout->thresehold_date),
+                ___("Affiliate commission to %s", amDate($payout->thresehold_date)),
                 $aff->login,
             );
         }
@@ -250,7 +250,7 @@ class Am_Aff_PayoutMethod_Propay extends Am_Aff_PayoutMethod
                 moneyRound($d->amount),
                 Am_Currency::getDefault(),
                 $aff->user_id,
-                "Affiliate commission to " . amDate($payout->thresehold_date),
+                ___("Affiliate commission to %s", amDate($payout->thresehold_date)),
             );
         }
         $this->sendCsv("propay-commission-" . $payout->payout_id . ".txt", $rows, $response);
@@ -278,7 +278,7 @@ class Am_Aff_PayoutMethod_Okpay extends Am_Aff_PayoutMethod
                 moneyRound($d->amount),
                 Am_Currency::getDefault(),
                 $aff->user_id,
-                "Affiliate commission to " . amDate($payout->thresehold_date),
+                ___("Affiliate commission to %s", amDate($payout->thresehold_date)),
             );
         }
         $this->sendCsv("okpay-commission-" . $payout->payout_id . ".txt", $rows, $response);
@@ -306,7 +306,7 @@ class Am_Aff_PayoutMethod_Pagseguro extends Am_Aff_PayoutMethod
                 moneyRound($d->amount),
                 Am_Currency::getDefault(),
                 $aff->user_id,
-                "Affiliate commission to " . amDate($payout->thresehold_date),
+                ___("Affiliate commission to %s", amDate($payout->thresehold_date)),
             );
         }
         $this->sendCsv("pagseguro-commission-" . $payout->payout_id . ".txt", $rows, $response);
@@ -315,6 +315,34 @@ class Am_Aff_PayoutMethod_Pagseguro extends Am_Aff_PayoutMethod
     public function addFields(Am_CustomFieldsManager $m)
     {
         $m->add(new Am_CustomFieldText('aff_pagseguro_email', ___('Affiliate Payout - Pagseguro E-Mail address'), ___('for affiliate commission payouts')))->size = 40;
+    }
+
+}
+
+class Am_Aff_PayoutMethod_Bitcoin extends Am_Aff_PayoutMethod
+{
+
+    public function export(AffPayout $payout, Am_Query $details, Zend_Controller_Response_Http $response)
+    {
+        $q = $details->query();
+        while ($d = $payout->getDi()->db->fetchRow($q)) {
+            $d = $payout->getDi()->affPayoutDetailTable->createRecord($d);
+            /* @var $d AffPayoutDetail */
+            $aff = $d->getAff();
+            $rows[] = array(
+                $aff->data()->get('aff_bitcoin_wallet'),
+                moneyRound($d->amount),
+                Am_Currency::getDefault(),
+                $aff->user_id,
+                "Affiliate commission to " . amDate($payout->thresehold_date),
+            );
+        }
+        $this->sendCsv("bitcoint-commission-" . $payout->payout_id . ".txt", $rows, $response);
+    }
+
+    public function addFields(Am_CustomFieldsManager $m)
+    {
+        $m->add(new Am_CustomFieldText('aff_bitcoin_wallet', ___('Affiliate Payout - Bitcoin Wallet'), ___('for affiliate commission payouts')))->size = 40;
     }
 
 }

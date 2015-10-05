@@ -257,7 +257,7 @@ class Am_Pluggable_Base
      * anyway be enabled
      * @var array of hook names
      */
-    protected $hooksToAlwaysEnable = array('setupForms', 'adminWarnings');
+    protected $hooksToAlwaysEnable = array('setupForms', 'adminWarnings', 'setupEmailTemplateTypes');
 
     function __construct(Am_Di $di, array $config)
     {
@@ -269,12 +269,12 @@ class Am_Pluggable_Base
 
     function init()
     {
-        
+
     }
 
     /**
      * get dependency injector
-     * @return Am_Di 
+     * @return Am_Di
      */
     function getDi()
     {
@@ -353,7 +353,7 @@ class Am_Pluggable_Base
 
     /**
      * mostly for unit testing
-     * @param array $config 
+     * @param array $config
      * @access private
      */
     public function _setConfig(array $config)
@@ -364,13 +364,13 @@ class Am_Pluggable_Base
     /** Function will be executed after plugin deactivation */
     public function deactivate()
     {
-        
+
     }
 
     /** Function will be executed after plugin activation */
     static function activate($id, $pluginType)
     {
-        
+
     }
 
     public function getVersion()
@@ -441,7 +441,7 @@ class Am_Pluggable_Base
 
     protected function _initSetupForm(Am_Form_Setup $form)
     {
-        
+
     }
 
 }
@@ -517,7 +517,7 @@ class Am_Theme extends Am_Pluggable_Base
     /** You can override it and add elements to create setup form */
     public function initSetupForm(Am_Form_Setup_Theme $form)
     {
-        
+
     }
 
     public function getRootDir()
@@ -704,7 +704,7 @@ class Am_Block
      * @param array|string $targets where to put the block, like cart/right
      * @param string $id unique id of the block
      * @param Am_Plugin $plugin
-     * @param string|callback $pathOrCallback 
+     * @param string|callback $pathOrCallback
      */
     function __construct($targets, $title, $id, Am_Pluggable_Base $plugin = null, $pathOrCallback = null, $order = self::MIDDLE)
     {
@@ -806,7 +806,7 @@ class Am_Blocks
 
     /**
      * Get single block by ID.
-     * @param String $id 
+     * @param String $id
      * @return Am_Block|null
      */
     function getBlock($id)
@@ -893,10 +893,6 @@ class Am_Cron
     /** @return int */
     static function needRun()
     {
-        // check if another thread is updating time right now
-        if (!Am_Di::getInstance()->db->selectCell("SELECT IS_FREE_LOCK(?)", self::getLockId()))
-            return false;
-        // ok, lets check
         $last_runned = self::getLastRun();
         if (!$last_runned)
             $last_runned = strtotime('-2 days');
@@ -934,21 +930,29 @@ class Am_Cron
 
     static function checkCron()
     {
+
         if (defined('AM_TEST') && AM_TEST)
             return; // do not run during unit-testing
-
-            $needRun = self::needRun();
-        if (!$needRun)
+        // get lock
+        if (!Am_Di::getInstance()->db->selectCell("SELECT GET_LOCK(?, 0)", self::getLockId())) {
+            Am_Di::getInstance()->errorLogTable->log("Could not obtain MySQL's GET_LOCK() to update cron run time. Probably attempted to execute two cron processes simultaneously. ");
             return;
+        }
+
+        $needRun = self::needRun();
+        if ($needRun) {
+           Am_Di::getInstance()->db->query("REPLACE INTO ?_store (name, `value`) VALUES (?, ?)",
+               self::KEY, time());
+        }
+
+        Am_Di::getInstance()->db->query("SELECT RELEASE_LOCK(?)", self::getLockId());
+
+        if(!$needRun){
+            return;
+        }
 
         // Load all payment plugins here. ccBill plugin require hourly cron to be executed;
         Am_Di::getInstance()->plugins_payment->loadEnabled()->getAllEnabled();
-
-        // get lock
-        if (!Am_Di::getInstance()->db->selectCell("SELECT GET_LOCK(?, 1)", self::getLockId())) {
-            Am_Di::getInstance()->errorLogTable->log("Could not obtain MySQL's GET_LOCK() to update cron run time. Not runned cron");
-            return;
-        }
 
         @ignore_user_abort(true);
         @set_time_limit(0);
@@ -957,10 +961,6 @@ class Am_Cron
         if (!empty($_GET['log']))
             Am_Di::getInstance()->errorLogTable->log("cron.php started");
 
-        Am_Di::getInstance()->db->query("REPLACE INTO ?_store (name, `value`) VALUES (?, ?)",
-            self::KEY, time());
-
-        Am_Di::getInstance()->db->query("SELECT RELEASE_LOCK(?)", self::getLockId());
         $out = "";
         if ($needRun & self::HOURLY) {
             Am_Di::getInstance()->hook->call(Am_Event::HOURLY, array(
@@ -1194,6 +1194,15 @@ function amTime($string)
     return date(Zend_Registry::get('Am_Locale')->getTimeFormat(), amstrtotime($string));
 }
 
+//https://tools.ietf.org/html/rfc4180
+function amEscapeCsv($value, $delim)
+{
+    if(strpos($value, $delim) !== false || strpos($value, '"') !== false || strpos($value, "\r\n") !== false) {
+        $value= '"' . str_replace('"', '""', $value) . '"';
+    }
+    return $value;
+}
+
 function check_demo($msg="Sorry, this function disabled in the demo")
 {
     if (APPLICATION_ENV == 'demo')
@@ -1213,7 +1222,8 @@ function print_rr($vars, $title="==DEBUG==")
         $title = '==DEBUG==';
     echo $html ? "\n<table><tr><td><pre><b>$title</b>\n" : "\n$title\n";
     foreach ($args as $vars) {
-        print_r($vars);
+        $out = print_r($vars, true);
+        echo $html ? print_rrs($out) : $out;
         print $html ? "<br />\n" : "\n\n";
     }
     if ($html)
@@ -1226,6 +1236,20 @@ function print_rre($vars, $title="==DEBUG==")
     print("\n==<i>exit() called from print_rre</i>==\n");
     print_rr(get_backtrace_callers(0), 'print_rre called from ');
     exit();
+}
+
+function print_rrs($origstr) {
+     $str = preg_replace('/^(\s*\(\s*)$/m', '<span style="display:none">$1', $origstr);
+     $str = preg_replace('/^(\s*\)\s*)$/m', '$1</span>', $str);
+
+     $a = explode("\n", $str);
+     if (count($a)<40) return $origstr;
+     foreach($a as $k => $line) {
+         if (strpos($line, '<span') === 0) {
+             $a[$k-1] = sprintf('<a style="font-weight:bold; text-decoration:none; color:#3f7fb0" href="javascript:;" onclick="var e = this; while(e.nodeName.toLowerCase()!= \'span\') {e = e.nextSibling;} e.style.display = (e.style.display == \'block\') ? \'none\' :  \'block\'; this.style.fontWeight = (this.style.fontWeight == \'bold\') ? \'\' : \'bold\';">%s</a>', $a[$k-1]);
+         }
+     }
+     return implode("\n", $a);
 }
 
 function formatSimpleXml(SimpleXMLElement $xml)
@@ -1256,7 +1280,7 @@ function print_xmle($xml)
 
 function moneyRound($v)
 {
-    // round() return comma as decimal separator in some locales. 
+    // round() return comma as decimal separator in some locales.
     return floatval(number_format($v, 2, '.', ''));
 }
 
@@ -1414,81 +1438,47 @@ function check_trial($errmsg="Sorry, this function is available in aMember Pro n
     }
 }
 
-if (PHP_VERSION < '5.1.3')
-    die("This version of aMember Pro requires PHP version 5.1.3 or higher, " . PHP_VERSION . " is not supported");
-
 /**
  * Re-Captcha display and validation class
  * @package Am_Utils
  */
 class Am_Recaptcha
 {
-
-    /** @var string error code returned from previous recaptcha */
-    protected $error;
-
     public function render($theme)
     {
         if (!$this->isConfigured())
             throw new Am_Exception_Configuration("ReCaptcha error - recaptcha is not configured. Please go to aMember Cp -> Setup -> ReCaptcha and enter keys");
         if (empty($theme))
-            $theme = Am_Di::getInstance()->config->get('recaptcha-theme', 'clean');
-        $public = Am_Controller::escape(Am_Di::getInstance()->config->get('recaptcha-public-key'));
-        $scheme = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off') || ($_SERVER['SERVER_PORT'] == '443') ? 'https' : 'http';
-        $error = null;
-        if ($this->error)
-            $error = '&error=' . Am_Controller::escape($this->error);
+            $theme = Am_Di::getInstance()->config->get('recaptcha-theme', 'light');
+        $public = Am_Controller::escape($this->getPublicKey());
 
         return <<<CUT
-<script type="text/javascript">
-var RecaptchaOptions = {
-    theme : '$theme'
- };        
-        </script>
-        <script type="text/javascript"
-     src="$scheme://www.google.com/recaptcha/api/challenge?k=$public$error">
-  </script>
-  <noscript>
-     <iframe src="$scheme://www.google.com/recaptcha/api/noscript?&hl=en&k=$public$error"
-         height="300" width="500" frameborder="0"></iframe><br>
-     <textarea name="recaptcha_challenge_field" rows="3" cols="40">
-     </textarea>
-     <input type="hidden" name="recaptcha_response_field"
-         value="manual_challenge">
-  </noscript>   
+        <script type="text/javascript" src="//www.google.com/recaptcha/api.js" async defer></script>
+        <div class="g-recaptcha" data-sitekey="$public" data-theme="$theme"></div>
 CUT;
     }
 
     /** @return bool true on success, false and set internal error code on failure */
-    public function validate($challenge, $response)
+    public function validate($response)
     {
         if (!$this->isConfigured())
             throw new Am_Exception_Configuration("Brick: ReCaptcha error - recaptcha is not configured. Please go to aMember Cp -> Setup -> ReCaptcha and enter keys");
 
-        $req = new Am_HttpRequest('http://www.google.com/recaptcha/api/verify', Am_HttpRequest::METHOD_POST);
-        $req->addPostParameter('privatekey', Am_Di::getInstance()->config->get('recaptcha-private-key'));
+        $req = new Am_HttpRequest('https://www.google.com/recaptcha/api/siteverify', Am_HttpRequest::METHOD_POST);
+        $req->addPostParameter('secret', Am_Di::getInstance()->config->get('recaptcha-private-key'));
         $req->addPostParameter('remoteip', $_SERVER['REMOTE_ADDR']);
-        $req->addPostParameter('challenge', $challenge);
         $req->addPostParameter('response', $response);
 
         $response = $req->send();
-        if ($response->getStatus() != '200') {
-            $this->error = 'recaptcha-not-reachable';
-        } else {
-            @list($status, $this->error) = explode("\n", $response->getBody());
-            $status = trim($status) == 'true';
+        if ($response->getStatus() == '200') {
+            $r = Am_Controller::decodeJson($response->getBody());
+            return $r['success'];
         }
-        return $status;
     }
 
     function getPublicKey()
     {
         return Am_Di::getInstance()->config->get('recaptcha-public-key');
-    }
-
-    function getError()
-    {
-        return $this->error;
     }
 
     public static function isConfigured()
@@ -1520,7 +1510,7 @@ function get_backtrace_callers($skipLevels = 1, $bt=null)
 
 /**
  * Application bootstrap and common functions
- * @package Am_Utils 
+ * @package Am_Utils
  */
 class Am_App
 {
@@ -1576,10 +1566,10 @@ class Am_App
                 amDie($e->getPublicError());
         }
         $this->di->config;
-        
+
         // this will reset timezone to UTC if nothing configured in PHP
         date_default_timezone_set(@date_default_timezone_get());
-        
+
         $this->initConstants();
 
         // set memory limit
@@ -1594,17 +1584,26 @@ class Am_App
         $this->initFront();
         require_once 'Am/License.php';
 
-        // Load user in order to check may be we need to refresh user's session; 
+        // Load user in order to check may be we need to refresh user's session;
         $this->di->auth->getUser();
 
         $this->di->hook->call(Am_Event::INIT_FINISHED);
+        $this->bindUploadsIfNecessary();
         $this->initFinished = true;
 
         if (file_exists(APPLICATION_PATH . "/configs/site.php"))
-            require_once(APPLICATION_PATH . "/configs/site.php");
+            require_once APPLICATION_PATH . "/configs/site.php";
     }
 
-    /*     * *
+    function bindUploadsIfNecessary()
+    {
+        if (isset($this->di->session->uploadNeedBind) && ($user_id = $this->di->auth->getUserId())) {
+            $this->di->db->query('UPDATE ?_upload SET user_id=?, session_id=NULL WHERE upload_id IN (?a) AND session_id=?',
+                $user_id, $this->di->session->uploadNeedBind, Zend_Session::getId());
+            unset($this->di->session->uploadNeedBind);
+        }
+    }
+    /**
      * Fetch updated license from aMember Pro website
      */
 
@@ -1659,6 +1658,12 @@ class Am_App
                 'locale' => $locale,
             ));
 
+	if (file_exists(APPLICATION_PATH . '/default/language/user/site/' . $lang . '.php'))
+                $tr->addTranslation(array(
+                    'content' => APPLICATION_PATH . '/default/language/user/site/' . $lang . '.php',
+                    'locale' => $locale,
+                ));
+
         if (preg_match('/\badmin\b/', @$_SERVER['REQUEST_URI'])) {
             $tr->addTranslation(array(
                 'content' => APPLICATION_PATH . '/default/language/admin/en.php',
@@ -1667,6 +1672,11 @@ class Am_App
             if (file_exists(APPLICATION_PATH . '/default/language/admin/' . $lang . '.php'))
                 $tr->addTranslation(array(
                     'content' => APPLICATION_PATH . '/default/language/admin/' . $lang . '.php',
+                    'locale' => $locale,
+                ));
+            if (file_exists(APPLICATION_PATH . '/default/language/admin/site/' . $lang . '.php'))
+                $tr->addTranslation(array(
+                    'content' => APPLICATION_PATH . '/default/language/admin/site/' . $lang . '.php',
                     'locale' => $locale,
                 ));
         }
@@ -1698,6 +1708,8 @@ class Am_App
         $router->addRoute('inside-pages', new Zend_Controller_Router_Route(
                 ':module/:controller/p/:page_id/:action/*',
                 array(
+                    'page_id' => 'index',
+                    'action' => 'index'
                 )
         ));
 
@@ -1719,10 +1731,10 @@ class Am_App
                 )
         ));
         /**
-         *  Add separate route for clickbank plugin. 
-         *  Clickbank doesn't allow to use word "clickbank" in URL. 
+         *  Add separate route for clickbank plugin.
+         *  Clickbank doesn't allow to use word "clickbank" in URL.
          */
-        
+
         $router->addRoute('c-b', new Zend_Controller_Router_Route(
                 'payment/c-b/:action',
                 array(
@@ -1733,7 +1745,7 @@ class Am_App
                     'plugin_id'=>'clickbank'
                 )
         ));
-        
+
         $router->addRoute('protect', new Zend_Controller_Router_Route(
                 'protect/:plugin_id/:action',
                 array(
@@ -1779,12 +1791,23 @@ class Am_App
                 )
         ));
 
+        $router->addRoute('profile', new Zend_Controller_Router_Route(
+                'profile/:c',
+                array(
+                    'module' => 'default',
+                    'controller' => 'profile',
+                    'action' => 'index',
+                    'c' => ''
+                )
+        ));
+
         $router->addRoute('signup', new Zend_Controller_Router_Route(
                 'signup/:c',
                 array(
                     'module' => 'default',
                     'controller' => 'signup',
-                    'action' => 'index'
+                    'action' => 'index',
+                    'c' => ''
                 )
         ));
 
@@ -1833,7 +1856,7 @@ class Am_App
     {
 
         $router->addRoute('v3_urls', new Zend_Controller_Router_Route_Regex(
-                '(signup|member|login|logout|profile).php',
+                '(signup|member|login|logout|profile|thanks).php',
                 array('module' => 'default',
                     'action' => 'index'
                 ),
@@ -1860,6 +1883,33 @@ class Am_App
                 array(
                     'plugin_id' => 1,
                     'action' => 2
+            )));
+
+        $router->addRoute('v3_ipn_paypal_pro', new Zend_Controller_Router_Route_Regex(
+                'plugins/payment/paypal_pro/(ipn).php',
+                array(
+                    'module' => 'default',
+                    'controller' => 'direct',
+                    'action' => 'index',
+                    'type' => 'payment',
+                    'plugin_id' => 'paypal-pro',
+                ),
+                array(
+                    'action'    =>  1
+                )
+            ));
+
+        $router->addRoute('v3_thanks_scripts', new Zend_Controller_Router_Route_Regex(
+                'plugins/payment/([0-9a-z]+)_?r?/(thanks)?.php',
+                array(
+                    'module' => 'default',
+                    'controller' => 'direct',
+                    'action' => 'index',
+                    'type' => 'payment',
+                ),
+                array(
+                    'plugin_id' => 1,
+                    'action' => 'thanks'
             )));
 
         $router->addRoute('v3_affgo', new Zend_Controller_Router_Route(
@@ -1975,6 +2025,9 @@ class Am_App
         $this->di->plugins_storage
             ->addEnabled('upload')->addEnabled('disk');
 
+        $this->di->plugins_tax->getAllEnabled();
+
+
         $this->di->hook
             ->add(Am_Event::HOURLY, array($this->di->app, 'onHourly'))
             ->add(Am_Event::DAILY, array($this->di->app, 'onDaily'))
@@ -1992,6 +2045,13 @@ class Am_App
 
     static function __autoload($className)
     {
+        if ($className == 'Composer\\Autoload\\ClassLoader')
+            return false;
+        if (strpos($className, 'PHPUnit_') === 0)
+            return false;
+        if (strpos($className, 'PHP_') === 0)
+            return false;
+
         $regexes = array(
             'Am_Mail_Template' => '$0',
             'Am_Mail_TemplateTypes' => '$0',
@@ -2014,7 +2074,7 @@ class Am_App
         $className = str_replace('_', DIRECTORY_SEPARATOR, $className);
         if (preg_match('/^pear/i', $className))
             return; // do not autoload pear classes
- if (preg_match('/^([a-zA-Z][A-Za-z0-9]+)Table$/', $className, $regs))
+        if (preg_match('/^([a-zA-Z][A-Za-z0-9]+)Table$/', $className, $regs))
             $className = $regs[1];
         //memUsage('before-'.$className );
         include_once $className . '.php';
@@ -2155,6 +2215,15 @@ class Am_App
             } else
                 throw $e;
         }
+
+        // Workaround to fix bug: https://bugs.php.net/bug.php?id=68063
+        // Sometimes php starts session with empty session_id()
+        if(!defined('AM_TEST') && !Zend_Session::getId())
+        {
+            Zend_Session::destroy();
+            header("Location: " . $_SERVER['REQUEST_URI']);
+            exit();
+        }
         //disabled as it brokes flash uploads !
         //Zend_Session::registerValidator(new Zend_Session_Validator_HttpUserAgent);
         $this->di->session = new Zend_Session_Namespace('amember');
@@ -2190,7 +2259,7 @@ class Am_App
         @ini_set('magic_quotes_sybase', false);
 
         mb_internal_encoding("UTF-8");
-
+        ini_set('iconv.internal_encoding', 'UTF-8');
         if (!defined('ROOT_URL'))
             define('ROOT_URL', $this->di->config->get('root_url'));
         if (!defined('ROOT_SURL'))
@@ -2202,7 +2271,7 @@ class Am_App
         if (!defined('DATA_DIR'))
             define('DATA_DIR', ROOT_DIR . '/data');
         if (!defined('AM_VERSION'))
-            define('AM_VERSION', '4.4.4');
+            define('AM_VERSION', '4.7.0');
         if (!defined('AM_BETA'))
             define('AM_BETA', '0' == 1);
     }
@@ -2378,7 +2447,7 @@ class Am_App
      * Return hash of @link getSiteKey() + $hashString
      * You may use it to not disclose site key to public
      * @example Am_App->getSiteHash('backup-cron')
-     * @param type $hashString 
+     * @param type $hashString
      * @return string [a-zA-Z0-9]{$len}
      */
     function getSiteHash($hashString, $len = 20)
@@ -2547,7 +2616,7 @@ class Am_BatchProcessor
      * @param type $max_tm max execution time in seconds
      * @param type $max_mem memory limit in megabytes
      */
-    public function __construct($callback, $max_tm = 20, $max_mem = 128)
+    public function __construct($callback, $max_tm = 20, $max_mem = 256)
     {
         if (!is_callable($callback))
             throw new Am_Exception_InternalError("Not callable callback passed");
@@ -2603,7 +2672,7 @@ class Am_BatchProcessor
     }
 
     /**
-     * @return bool false if limits are over 
+     * @return bool false if limits are over
      */
     function checkLimits()
     {

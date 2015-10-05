@@ -10,11 +10,11 @@
 class Am_Paysystem_Dibs extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.0';
 
     protected $defaultTitle = 'Dibs';
     protected $defaultDescription = 'Credit Card Payment';
-    
+
     protected $_canResendPostback = true;
 
     const URL = "https://payment.architrade.com/paymentweb/start.action";
@@ -102,9 +102,9 @@ CUT;
         $a->continueurl = $this->getReturnUrl();
         $a->callbackurl = $this->getPluginUrl('ipn');
         $a->capturenow = 1;
-        
+
         if($this->getConfig('testing')) $a->test = 'yes';
-        
+
         $result->setAction($a);
     }
 

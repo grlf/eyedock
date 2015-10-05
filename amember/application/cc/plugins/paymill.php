@@ -4,7 +4,7 @@ class Am_Paysystem_Paymill extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.0';
 
     const TOKEN = 'paymill_token';
     const CLIENT_ID = 'paymill_clientId';
@@ -164,7 +164,7 @@ class Am_Controller_CreditCard_Paymill extends Am_Controller
         //$key = json_encode($this->plugin->getConfig('public_key'));
         $key = $this->plugin->getConfig('public_key');
         $amount = $this->invoice->isFirstPayment() ? $this->invoice->first_total : $this->invoice->second_total;
-        $amount = (int)(sprintf('%.02f', $amount)*100);
+        $amount = sprintf('%.02f', $amount)*100;
         
         $form->addProlog('<script type="text/javascript" src="https://bridge.paymill.com/"></script>');
         $form->addScript()->setScript("var PAYMILL_PUBLIC_KEY = '".$key."';");
@@ -421,7 +421,7 @@ class Am_Paysystem_Transaction_Paymill extends Am_Paysystem_Transaction_CreditCa
         $request = new Am_HttpRequest(Am_Paysystem_Paymill::API_ENDPOINT . 'transactions/', 'POST');
         $amount = $doFirst ? $invoice->first_total : $invoice->second_total;
         $request->setAuth($plugin->getConfig('private_key'), '')
-            ->addPostParameter('amount', (int)(sprintf('%.02f', $amount)*100))
+            ->addPostParameter('amount', sprintf('%.02f', $amount)*100)
             ->addPostParameter('currency', $invoice->currency)
             ->addPostParameter('token', $invoice->getUser()->data()->get(Am_Paysystem_Paymill::TOKEN))
             ->addPostParameter('description', 'Invoice #'.$invoice->public_id.': '.$invoice->getLineDescription());
@@ -614,7 +614,7 @@ class Am_Paysystem_Transaction_Paymill_Refund extends Am_Paysystem_Transaction_C
         $request = new Am_HttpRequest(Am_Paysystem_Paymill::API_ENDPOINT . 'refunds/' . $transactionId, 'POST');
         $request->setAuth($plugin->getConfig('private_key'), '');
         if ($this->amount > 0)
-            $request->addPostParameter('amount', (int)(sprintf('%.02f', $amount)*100))
+            $request->addPostParameter('amount', sprintf('%.02f', $amount)*100)
                     ->addPostParameter('description', 'Refund from aMember script. Username: ' . $invoice->getUser()->login . ', invoice: ' . $invoice->public_id);
         parent::__construct($plugin, $invoice, $request, true);
     }

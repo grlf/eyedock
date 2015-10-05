@@ -5,6 +5,8 @@ class Am_Grid_Field_Expandable extends Am_Grid_Field
     protected $maxLength = 15;
     protected $placeholder = "Click to Expand";
     protected $isHtml = false;
+    protected $isAjax = false;
+    protected $url = null;
     
     const PLACEHOLDER_SELF_TRUNCATE_BEGIN = 'placeholder-self-truncate-begin';
     const PLACEHOLDER_SELF_TRUNCATE_END = 'placeholder-self-truncate-end';
@@ -27,6 +29,17 @@ class Am_Grid_Field_Expandable extends Am_Grid_Field
     }
 
     /**
+     * You can use variables like
+     * {user_id} and {getInvoiceId()} in the template
+     * it will be automatically fetched from record, escaped and substituted
+     */
+    public function setAjax($url)
+    {
+        $this->isAjax = true;
+        $this->url = $url;
+    }
+
+    /**
      *
      * @param string $placeholder
      * @return Am_Grid_Field_Expandable
@@ -41,8 +54,9 @@ class Am_Grid_Field_Expandable extends Am_Grid_Field
     {
         $val = $this->get($obj, $controller, $this->field);
         $isHtml = $this->isHtml;
+        $isAjax = $this->isAjax;
         $out = '';
-        if (mb_strlen($val) <= $this->maxLength) {
+        if (!$this->isAjax && mb_strlen($val) <= $this->maxLength) {
             return parent::render($obj, $controller);
         } else {
             $align_class = $this->align ? ' align_' . $this->align : null;
@@ -57,10 +71,33 @@ class Am_Grid_Field_Expandable extends Am_Grid_Field
             $out .= '</div>'.PHP_EOL;
             $out .= '<input type="hidden" class="data';
             $out .= ( $isHtml ? ' isHtml' : '');
-            $out .= '" value="' . $controller->escape($val) . '">'.PHP_EOL;
+            $out .= ( $isAjax ? ' isAjax' : '');
+            $out .= '" value="' . $controller->escape($isAjax ? $this->parseUrl($this->url, $obj) : $val) . '">'.PHP_EOL;
             $out .= '</td>';
         }
         return $out;
+    }
+
+    protected function parseUrl($url, $record)
+    {
+        $that = $this;
+        $ret = preg_replace_callback('|{(.+?)}|', function($matches) use ($that, $record) {
+            return $that->_pregReplace($matches, $record);
+        }, $url);
+        if ((strpos($ret, 'http')!==0) && ($ret[0] != '/'))
+            $ret = REL_ROOT_URL . '/' . $ret;
+        return $ret;
+    }
+    public function _pregReplace($matches, $record)
+    {
+        $var = $matches[1];
+        if ($var == 'THIS_URL')
+            $ret = Zend_Controller_Front::getInstance()->getRequest()->getRequestUri();
+        elseif (preg_match('|^(.+)\(\)$|', $var, $regs))
+            $ret = call_user_func(array($record, $regs[1]));
+        else
+            $ret = $record->{$var};
+        return $ret;
     }
 
     /**

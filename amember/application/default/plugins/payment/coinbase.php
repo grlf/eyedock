@@ -4,12 +4,12 @@
  * @id coinbase
  * @title CoinBase
  * @visible_link https://coinbase.com/
- * @recurring no
+ * @recurring none
  */
 class Am_Paysystem_Coinbase extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.0';
 
     protected $defaultTitle = 'Coinbase';
     protected $defaultDescription = 'paid by bitcoins';
@@ -18,7 +18,7 @@ class Am_Paysystem_Coinbase extends Am_Paysystem_Abstract
     const API_SECRET = 'api_secret';
     const CHECKOUT_URL = 'https://coinbase.com/checkouts';
     
-    public function _initSetupForm(\Am_Form_Setup $form) {
+    public function _initSetupForm(Am_Form_Setup $form) {
         
         $form->addText(self::API_KEY, array('size' => 40))
             ->setLabel(array('API KEY', 'Get it from your coinbase account'));
@@ -113,7 +113,7 @@ class Am_Paysystem_Transaction_Coinbase extends Am_Paysystem_Transaction_Incomin
     }
 
     public function validateTerms() {
-        return doubleval(@$this->order->total_native->cents/100000000) == doubleval($this->invoice->first_total);
+        return doubleval(@$this->order->total_native->cents/(@$this->order->total_native->currency_iso == 'USD' ? 100 : 100000000)) == doubleval($this->invoice->first_total);
     }    
     public function findInvoiceId()
     {

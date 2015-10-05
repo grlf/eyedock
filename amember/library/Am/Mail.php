@@ -15,7 +15,7 @@ class Am_Mail extends Zend_Mail {
     const PRIORITY_MEDIUM = 5;
     const PRIORITY_LOW = 0;
     protected $priority = null;
-    
+
     const LINK_USER = 1;
     protected $addUnsubscribeLink = false;
 
@@ -40,7 +40,7 @@ following link:
         parent::__construct($charset);
         $this->setHeaderEncoding(Zend_Mime::ENCODING_BASE64);
     }
-    
+
     public function setPeriodic($periodic){ $this->periodic = $periodic ; return $this; }
     public function getPeriodic($periodic){ return $this->periodic; }
     /** Should the e-mail be sent immediately, or it can be put to queue ? */
@@ -91,7 +91,7 @@ following link:
                 $content .= $out;
         }
     }
-    
+
     static function getUnsubscribeLink($email, $type = self::LINK_USER)
     {
         $link = ROOT_SURL;
@@ -104,7 +104,7 @@ following link:
     {
         return $sign === Am_Di::getInstance()->app->hash(Am_Di::getInstance()->app->getSiteKey() . $email . 'MAIL-USER', 10);
     }
-    
+
     public function setBodyHtml($html, $charset = null, $encoding = Zend_Mime::ENCODING_QUOTEDPRINTABLE) {
         $this->_addUnsubscribeLink($html, true);
         parent::setBodyHtml($html, $charset, $encoding);
@@ -196,9 +196,9 @@ class Am_Mail_Saved {
 }
 
 
-/** 
+/**
  * @package Am_Mail
- * @todo put into a separate file for lazy-loading 
+ * @todo put into a separate file for lazy-loading
  */
 class Am_Mail_Transport_Smtp extends Zend_Mail_Transport_Smtp {
     function sendFromSaved($from, $recipients, $body, array $headers, $subject){
@@ -212,9 +212,9 @@ class Am_Mail_Transport_Smtp extends Zend_Mail_Transport_Smtp {
         $this->_sendMail();
     }
 }
-/** 
+/**
  * @package Am_Mail
- * @todo put into a separate file for lazy-loading 
+ * @todo put into a separate file for lazy-loading
  */
 class Am_Mail_Transport_Sendmail extends Zend_Mail_Transport_Sendmail {
     function sendFromSaved($from, $recipients, $body, array $headers, $subject){
@@ -228,7 +228,7 @@ class Am_Mail_Transport_Sendmail extends Zend_Mail_Transport_Sendmail {
     }
 }
 
-/** 
+/**
  * Do not send any e-mails
  * @package Am_Mail
  */
@@ -319,6 +319,18 @@ class Am_Mail_Queue extends Zend_Mail_Transport_Abstract
                 'region'    => $di->config->get('ses_region')
             );
             $this->setTransport(new Am_Mail_Transport_Ses($config));
+        } elseif ($di->config->get('email_method') == 'sendgrid') {
+            $config = array(
+                'api_user' => $di->config->get('sendgrid_user'),
+                'api_key'  => $di->config->get('sendgrid_key')
+            );
+            $this->setTransport(new Am_Mail_Transport_SendGrid($config));
+        } elseif ($di->config->get('email_method') == 'campaignmonitor') {
+            $config = array(
+                'api_key'  => $di->config->get('campaignmonitor_apikey'),
+                'client_id'  => $di->config->get('campaignmonitor_clientid')
+            );
+            $this->setTransport(new Am_Mail_Transport_CampaignMonitor($config));
         } else {
             $this->setTransport(new Am_Mail_Transport_Sendmail);
         }
@@ -345,7 +357,7 @@ class Am_Mail_Queue extends Zend_Mail_Transport_Abstract
             $this->queueLimit = Am_Di::getInstance()->config->get('email_queue_limit', 100);
             $this->queuePeriodicLimit = (int)$this->queueLimit * 80 / 100;
         }
-        if (Am_Di::getInstance()->config->get('email_log_days') > 0) 
+        if (Am_Di::getInstance()->config->get('email_log_days') > 0)
             $this->setLogDays(Am_Di::getInstance()->config->get('email_log_days', 7));
     }
     public function logEnabled(){
@@ -357,7 +369,7 @@ class Am_Mail_Queue extends Zend_Mail_Transport_Abstract
     /**
      * Send message or put it queue if necessary
      */
-    public function send(Zend_Mail $mail) 
+    public function send(Zend_Mail $mail)
     {
         if (!$mail instanceof Am_Mail) {
             trigger_error(__METHOD__ . ' should get Am_Mail, not Zend_Mail', E_USER_NOTICE);
@@ -441,13 +453,13 @@ class Am_Mail_Queue extends Zend_Mail_Transport_Abstract
             Am_Di::getInstance()->errorLogTable->logException($e);
             $row['failures']++;
             if ($row['failures'] >= 3)
-            { 
+            {
                 //// deleting message on 3-rd failure
-                Am_Di::getInstance()->db->query("DELETE FROM ?_mail_queue 
+                Am_Di::getInstance()->db->query("DELETE FROM ?_mail_queue
                     WHERE queue_id=?d", $row['queue_id']);
             } else {
                 // save failure
-                Am_Di::getInstance()->db->query("UPDATE ?_mail_queue 
+                Am_Di::getInstance()->db->query("UPDATE ?_mail_queue
                     SET failures=failures+1, last_error=?
                     WHERE queue_id=?d", $e->getMessage(), $row['queue_id']);
             }
@@ -470,16 +482,16 @@ class Am_Mail_Queue extends Zend_Mail_Transport_Abstract
             );
             while ($row = Am_Di::getInstance()->db->fetchRow($q))
             {
-                if (!in_array($this->getQueueStatus(), array(self::QUEUE_OK, self::QUEUE_DISABLED))) 
+                if (!in_array($this->getQueueStatus(), array(self::QUEUE_OK, self::QUEUE_DISABLED)))
                     return;
                 $this->_sendSavedMessage($row);
                 $sent++;
             }
         } while ($sent);
     }
-    
+
     public function getQueueStatus(){
-        if (!$this->queueEnabled) 
+        if (!$this->queueEnabled)
             return self::QUEUE_DISABLED;
         $sentLastPeriod = Am_Di::getInstance()->db->selectCell("SELECT SUM(count_recipients)
             FROM ?_mail_queue WHERE sent >= ?d",
@@ -498,13 +510,12 @@ class Am_Mail_Queue extends Zend_Mail_Transport_Abstract
     function cleanUp()
     {
         $days = (int)Am_Di::getInstance()->config->get('email_log_days', 0);
-        if (!$days) return; 
-        Am_Di::getInstance()->db->query("DELETE FROM ?_mail_queue 
-            WHERE added <= ?d", Am_Di::getInstance()->time - 3600*24*$days);
+        Am_Di::getInstance()->db->query("DELETE FROM ?_mail_queue
+                WHERE added <= ?d AND sent IS NOT NULL", Am_Di::getInstance()->time - 3600*24*$days);
     }
 }
 
-/** 
+/**
  * @package Am_Mail
  * @internal
  */
@@ -524,7 +535,7 @@ class Am_Mime_Part extends Zend_Mime_Part {
 * @package Am_Mail
 * @license http://framework.zend.com/license/new-bsd New BSD License
 * @author Alex Scott <alex@cgi-central.net>
-* 
+*
 * Class is based on Chistopher Valles work Christopher Valles <info@christophervalles.com>
 * https://github.com/christophervalles/Amazon-SES-Zend-Mail-Transport
 * main change is usage of Am_HttpClient instead of Zend_Http_Client
@@ -535,7 +546,7 @@ class Am_Mail_Transport_Ses extends Zend_Mail_Transport_Abstract
     const REGION_US_EAST_1 = 'us-east-1';
     const REGION_US_WEST_2 = 'us-west-2';
     const REGION_EU_WEST_1 = 'eu-west-1';
-    
+
     /**
      * Template of the webservice body request
      *
@@ -593,13 +604,13 @@ class Am_Mail_Transport_Ses extends Zend_Mail_Transport_Abstract
     function getEndpoint($region, $default){
         switch($region)
         {
-            case self::REGION_EU_WEST_1 : 
+            case self::REGION_EU_WEST_1 :
                 return "https://email.eu-west-1.amazonaws.com";
-            case self::REGION_US_EAST_1 : 
+            case self::REGION_US_EAST_1 :
                 return "https://email.us-east-1.amazonaws.com";
-            case self::REGION_US_WEST_2 : 
+            case self::REGION_US_WEST_2 :
                 return "https://email.us-west-2.amazonaws.com";
-                
+
             default: return $default;
         }
     }
@@ -685,6 +696,311 @@ class Am_Mail_Transport_Ses extends Zend_Mail_Transport_Abstract
     }
 }
 
+
+class Am_Mail_Transport_SendGrid extends Zend_Mail_Transport_Abstract
+{
+    const API_ENDPOINT = 'https://api.sendgrid.com/api/mail.send.json';
+
+    protected $_api_user = null,
+        $_api_key = null;
+
+    public function __construct($config)
+    {
+       $this->_api_user = $config['api_user'];
+       $this->_api_key = $config['api_key'];
+    }
+
+    protected function _extractHeaderToParams(Zend_Mail_Part $part, $header_name, &$params, $is_array = true)
+    {
+        try {
+            $header_content = $part->getHeader($header_name, 'string');
+            $param_name = str_replace('-', '', $header_name);
+            foreach (array_filter(array_map('trim', explode(',', $header_content))) as $header_content_line) {
+                if (preg_match('/(.*)<(.*)>/', $header_content_line, $m)) {
+                    $email = trim($m[2]);
+                    $name = trim($m[1]);
+                } else {
+                    $email = trim($header_content_line);
+                    $name = '';
+                }
+
+                if ($is_array) {
+                    $params[$param_name][] = $email;
+                    $params[$param_name . 'name'][] = $name;
+                } else {
+                    $params[$param_name] = $email;
+                    $params[$param_name . 'name'] = $name;
+                }
+            }
+        } catch (Exception $e) {}
+    }
+
+    protected function _sendMail()
+    {
+        $request = new Am_HttpRequest(self::API_ENDPOINT, Am_HttpRequest::METHOD_POST);
+
+        $params = array();
+        $params['api_user'] = $this->_api_user;
+        $params['api_key'] = $this->_api_key;
+
+        $part = new Zend_Mail_Part(array(
+            'raw' => $this->header . Zend_Mime::LINEEND . $this->body
+        ));
+
+        $this->_extractHeaderToParams($part, 'to', $params);
+        $this->_extractHeaderToParams($part, 'cc', $params);
+        $this->_extractHeaderToParams($part, 'bcc', $params);
+        $this->_extractHeaderToParams($part, 'from', $params, false);
+        $this->_extractHeaderToParams($part, 'reply-to', $params, false);
+
+        $subject = $part->getHeader('subject');
+        if (strpos($subject, '=?') === 0) {
+                $subject = mb_decode_mimeheader($subject);
+        }
+
+        $params['subject'] = $subject;
+
+        $canHasAttacments = false;
+
+        //message
+        list($type) = explode(";", $part->getHeader('content-type'));
+        if ($type == 'multipart/alternative') {
+            $msgPart = $part->getPart(2);
+        } else {
+            $msgPart = $part->isMultipart() ? $part->getPart(1) : $part;
+            if ($msgPart->isMultipart()) {
+                $msgPart = $msgPart->getPart(2); //html part
+            }
+            $canHasAttacments = true;
+        }
+
+        list($type) = explode(";", $msgPart->getHeader('content-type'));
+        $encoding = $msgPart->getHeader('content-transfer-encoding');
+
+        $content = $msgPart->getContent();
+        if ($encoding && $encoding == 'quoted-printable') {
+            $content = quoted_printable_decode($content);
+        } else {
+            $content = base64_decode($content);
+        }
+
+        switch ($type) {
+            case 'text/plain':
+                $params['text'] = $content;
+                break;
+            case 'text/html':
+                $params['html'] = $content;
+                break;
+            default:
+                throw new Zend_Mail_Transport_Exception("SendGrid API: unknown content-type: " . $type);
+        }
+
+        //attachments
+        $handlers = array();
+        if ($canHasAttacments) {
+            if ($part->isMultipart()) {
+                $params['files'] = array();
+                for ($i=2; $i<=$part->countParts(); $i++) {
+                    $attPart = $part->getPart($i);
+
+                    $encoding = $attPart->getHeader('content-transfer-encoding');
+                    $disposition = $attPart->getHeader('content-disposition');
+                    preg_match('/filename="(.*)"/', $disposition, $m);
+                    $filename = $m[1];
+
+                    $content = $attPart->getContent();
+                    if ($encoding && $encoding == 'quoted-printable') {
+                        $content = quoted_printable_decode($content);
+                    } else {
+                        $content = base64_decode($content);
+                    }
+
+                    $f = tmpfile();
+                    array_push($handlers, $f);
+                    fwrite($f, $content);
+
+                    $request->addUpload("files[$filename]", $f, $filename);
+                }
+            }
+        }
+
+        $request->addPostParameter($params);
+        $response = $request->send();
+
+        foreach ($handlers as $f) {
+            fclose($f);
+        }
+
+        if ($response->getStatus() != 200)
+        {
+            throw new Zend_Mail_Transport_Exception("SendGrid API: unexpected response: " . $response->getBody());
+        }
+    }
+
+    function sendFromSaved($from, $recipients, $body, array $headers, $subject){
+        $this->_mail = new Am_Mail_Saved;
+        $this->_mail->from = $from;
+        $this->_mail->subject = $subject;
+        $this->recipients = $recipients;
+        $this->body = $body;
+        $this->_prepareHeaders($headers);
+        $this->_sendMail();
+    }
+}
+
+class Am_Mail_Transport_CampaignMonitor extends Zend_Mail_Transport_Abstract
+{
+    const API_ENDPOINT = 'https://api.createsend.com/api/v3.1/transactional/classicemail/send?clientID=';
+
+    protected $_api_key = null,
+        $_client_id = null;
+
+    public function __construct($config)
+    {
+       $this->_api_key = $config['api_key'];
+       $this->_client_id = $config['client_id'];
+    }
+
+    protected function _extractHeaderToParams(Zend_Mail_Part $part, $header_name, &$params, $is_array = true)
+    {
+        try {
+            $header_content = $part->getHeader($header_name, 'string');
+            $param_name = str_replace('-', '', $header_name);
+            foreach (array_filter(array_map('trim', explode(',', $header_content))) as $header_content_line) {
+                if (preg_match('/(.*)<(.*)>/', $header_content_line, $m)) {
+                    $email = trim($m[2]);
+                    $name = trim($m[1]);
+                } else {
+                    $email = trim($header_content_line);
+                    $name = '';
+                }
+
+                if ($is_array) {
+                    $params[$param_name][] = $email;
+                    $params[$param_name . 'name'][] = $name;
+                } else {
+                    $params[$param_name] = $email;
+                    $params[$param_name . 'name'] = $name;
+                }
+            }
+        } catch (Exception $e) {}
+    }
+
+    protected function _sendMail()
+    {
+        $request = new Am_HttpRequest(self::API_ENDPOINT . $this->_client_id, Am_HttpRequest::METHOD_POST);
+        $request->setAuth($this->_api_key, 'none');
+        $request->setHeader('Content-type: application/json; charset=utf-8');
+
+        $params = array(
+            'TrackOpens' => true,
+            'TrackClicks' => true,
+            'InlineCSS' => true,
+        );
+
+        $part = new Zend_Mail_Part(array(
+            'raw' => $this->header . Zend_Mime::LINEEND . $this->body
+        ));
+
+        $this->_extractHeaderToParams($part, 'to', $params);
+        $this->_extractHeaderToParams($part, 'cc', $params);
+        $this->_extractHeaderToParams($part, 'bcc', $params);
+        $this->_extractHeaderToParams($part, 'from', $params, false);
+        $this->_extractHeaderToParams($part, 'reply-to', $params, false);
+
+        $subject = $part->getHeader('subject');
+        if (strpos($subject, '=?') === 0) {
+                $subject = mb_decode_mimeheader($subject);
+        }
+
+        $params['subject'] = $subject;
+        $params['Group'] = $subject;
+
+        $canHasAttacments = false;
+
+        //message
+        list($type) = explode(";", $part->getHeader('content-type'));
+        if ($type == 'multipart/alternative') {
+            $msgPart = $part->getPart(2);
+        } else {
+            $msgPart = $part->isMultipart() ? $part->getPart(1) : $part;
+            if ($msgPart->isMultipart()) {
+                $msgPart = $msgPart->getPart(2); //html part
+            }
+            $canHasAttacments = true;
+        }
+
+        list($type) = explode(";", $msgPart->getHeader('content-type'));
+        $encoding = $msgPart->getHeader('content-transfer-encoding');
+
+        $content = $msgPart->getContent();
+        if ($encoding && $encoding == 'quoted-printable') {
+            $content = quoted_printable_decode($content);
+        } else {
+            $content = base64_decode($content);
+        }
+
+        switch ($type) {
+            case 'text/plain':
+                $params['text'] = $content;
+                break;
+            case 'text/html':
+                $params['html'] = $content;
+                break;
+            default:
+                throw new Zend_Mail_Transport_Exception("SendGrid API: unknown content-type: " . $type);
+        }
+
+        //attachments
+        $handlers = array();
+        if ($canHasAttacments) {
+            if ($part->isMultipart()) {
+                $params['Attachments'] = array();
+                for ($i=2; $i<=$part->countParts(); $i++) {
+                    $attPart = $part->getPart($i);
+
+                    $encoding = $attPart->getHeader('content-transfer-encoding');
+                    $disposition = $attPart->getHeader('content-disposition');
+                    preg_match('/filename="(.*)"/', $disposition, $m);
+                    $filename = $m[1];
+
+                    $content = $attPart->getContent();
+                    if ($encoding && $encoding == 'quoted-printable') {
+                        $content = quoted_printable_decode($content);
+                        $content = base64_encode($content);
+                    }
+                    
+                    $params['Attachments'][] = array(
+                        'Name' => $filename,
+                        'Type' => $attPart->{'content-type'},
+                        'Content' => $content
+                    );
+
+                }
+            }
+        }
+
+        $request->setBody(json_encode($params));
+        $response = $request->send();
+
+        if (!($body = json_decode($response->getBody(), true)) || !isset($body[0]['Status']) || ($body[0]['Status'] != 'Accepted'))
+        {
+            throw new Zend_Mail_Transport_Exception("CampaignMonitor API: unexpected response: " . $response->getBody());
+        }
+    }
+
+    function sendFromSaved($from, $recipients, $body, array $headers, $subject)
+    {
+        $this->_mail = new Am_Mail_Saved;
+        $this->_mail->from = $from;
+        $this->_mail->subject = $subject;
+        $this->recipients = $recipients;
+        $this->body = $body;
+        $this->_prepareHeaders($headers);
+        $this->_sendMail();
+    }
+}
+
 Am_Mail::initDefaults();
 
 /**
@@ -693,7 +1009,7 @@ Am_Mail::initDefaults();
  * @internal
  * @package Am_Mail
  */
-class Am_Util_Dummy_Zend_Validate 
+class Am_Util_Dummy_Zend_Validate
 {
     function addValidator(){}
     function isValid(){ return 1;}

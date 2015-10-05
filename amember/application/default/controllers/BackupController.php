@@ -6,7 +6,7 @@
 *        Web: http://www.cgi-central.net
 *    Details: Admin Info /
 *    FileName $RCSfile$
-*    Release: 4.4.2 ($Revision$)
+*    Release: 4.7.0 ($Revision$)
 *
 * Please direct bug reports,suggestions or feedback to the cgi-central forums.
 * http://www.cgi-central.net/forum/
@@ -49,7 +49,7 @@ class BackupController extends Am_Controller
         $filename = $bp->isGzip() ? "amember-$dat.sql.gz" : "amember-$dat.sql";
         $mimeType = $bp->isGzip() ? 'application/x-gzip' : 'text/sql';
         
-        $m = new Am_Mail();
+        $m = $this->getDi()->mail;
         $m->addTo($this->getDi()->config->get('email_backup_address'))
                 ->setSubject('Email Backup ' . $dat)
                 ->setFrom($this->getDi()->config->get('admin_email'));

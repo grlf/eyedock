@@ -76,7 +76,7 @@ $.fn.magicSelect = function(inParam) {
             deleteTitle : 'x',
             onChange : function(val){},
             callbackTitle : function(/* Option */ option) {
-                return $(option).data('label') ? $(option).data('label') : option.text;
+                return $(option).data('label') ? $(option).data('label') : $('<div></div>').text(option.text).html();
             }
         }, inParam)
 
@@ -105,6 +105,7 @@ $.fn.magicSelect = function(inParam) {
                     addSelected($option.get(0), true);
                 }
             })
+            $(magicSelect).trigger('chosen:updated');
         }
 
         $(magicSelect).data('name', $(magicSelect).attr('name'));
@@ -149,6 +150,9 @@ $.fn.magicSelect = function(inParam) {
         param.onChange.call($(magicSelect), selectedOptions);
 
         $(magicSelect).removeAttr('multiple');
+        magicSelect.selectedIndex = null;
+        $(magicSelect).attr('name', '');
+        $(magicSelect).trigger('chosen:updated');
 
         if (param.allowSelectAll) {
             var $a = $('<a href="javascript:;" class="local">' + param.selectAllOffer + '</a>');
@@ -160,9 +164,6 @@ $.fn.magicSelect = function(inParam) {
                 })
             })
         }
-        magicSelect.selectedIndex = null;
-
-        $(magicSelect).attr('name', '');
 
         $(magicSelect).change(function(){
             selectedOption = this.options[this.selectedIndex];
@@ -174,6 +175,7 @@ $.fn.magicSelect = function(inParam) {
             addSelected(selectedOption);
             magicSelect.selectedIndex = null;
             $(this).blur();
+            $(magicSelect).trigger('chosen:updated');
         })
 
         function addSelected(option, fromStored) {
@@ -192,8 +194,8 @@ $.fn.magicSelect = function(inParam) {
                    $optionCurrent.prop('disabled', '');
                    delete selectedOptions[$optionCurrent.val()];
                    param.onChange.call($(magicSelect), selectedOptions);
+                   $(magicSelect).trigger('chosen:updated');
                    $(this).parent().remove();
-                   $(magicSelect).trigger("change");
                })
 
                var input = $('<input></input>');

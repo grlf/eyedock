@@ -36,6 +36,12 @@ CUT
                 'Record debug information in the log.'));
     }
 
+    function isConfigured()
+    {
+        return ($this->getConfig('api_type')  == 0 && $this->getConfig('api_user') && $this->getConfig('api_password')) ||
+            ($this->getConfig('api_type')  == 1 && $this->getConfig('api_key'));
+    }
+
     /** @return Am_Activecampaign_Api */
     function getApi()
     {

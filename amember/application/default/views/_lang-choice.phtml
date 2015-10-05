@@ -15,7 +15,7 @@ if ($_list):
 <div class="am-lang-choice">
     <form method="get" action="<?php echo Am_Controller::escape(preg_replace('/\?.*/', '', $_SERVER['REQUEST_URI'])) ?>">
         <?php __e('Language') ?> :
-        <?php echo Am_Controller::renderArrayAsInputHiddens(array_diff_key($_GET, array('lang'=>null))); ?>
+        <?php echo Am_Controller::renderArrayAsInputHiddens(array_diff_key($_GET, array('_lang'=>null))); ?>
         <select name="_lang" size="1" onchange="this.form.submit()">
             <?php echo Am_Controller::renderOptions($_list, $_locale); ?>
         </select>

@@ -10,7 +10,7 @@ class Aff_GoController extends Am_Controller
     /** @return User|null */
     function findAff()
     {
-        $id = preg_replace('/[^ a-zA-Z0-9_-]/', '', $this->getParam('r'));
+        $id = preg_replace('/[^. @a-zA-Z0-9_-]/', '', $this->getParam('r'));
         if (is_numeric($id)) {
             $aff = $this->getDi()->userTable->load($id, false);
             if ($aff) return $aff;
@@ -18,6 +18,15 @@ class Aff_GoController extends Am_Controller
         if (strlen($id)) {
             $aff = $this->getDi()->userTable->findFirstByLogin($id);
             if ($aff) return $aff;
+        }
+        return null;
+    }
+    
+    function findKeyword()
+    {
+        if($keyword = $this->getParam('keyword'))
+        {
+            return substr($keyword,  0, Bootstrap_Aff::KEYWORD_MAX_LEN);
         }
         return null;
     }
@@ -74,8 +83,10 @@ class Aff_GoController extends Am_Controller
         /// log click
         if ($this->aff)
         {
-            $aff_click_id = $this->getDi()->affClickTable->log($this->aff, $this->banner);
+            $keyword = $this->findKeyword();
+            $aff_click_id = $this->getDi()->affClickTable->log($this->aff, $this->banner,null, $this->getModule()->findKeywordId($this->aff->pk(), $keyword));
             $this->getModule()->setCookie($this->aff, $this->banner ? $this->banner : null, $aff_click_id);
+            $this->getModule()->setKeywordCookie($this->aff, $keyword);
         }
         $this->_redirect($this->link ? $this->link : '/', array('prependBase'=>false));
     }
@@ -102,7 +113,7 @@ class Aff_GoController extends Am_Controller
         /// log click
         if ($this->aff)
         {
-            $aff_click_id = $this->getDi()->affClickTable->log($this->aff, $this->banner);
+            $aff_click_id = $this->getDi()->affClickTable->log($this->aff, $this->banner,null, $this->getModule()->findKeywordId($this->aff->pk()));
             $this->getModule()->setCookie($this->aff, $this->banner ? $this->banner : null, $aff_click_id);
         }
         $this->_redirect($this->link ? $this->link : '/', array('prependBase'=>false));

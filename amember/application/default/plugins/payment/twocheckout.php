@@ -7,12 +7,12 @@
  * @hidden_link https://www.2checkout.com/referral?r=amemberfree
  * @recurring paysystem
  * @logo_url 2checkout.png
- * @fixed_products 1
+ * @fixed_products 0
  */
 class Am_Paysystem_Twocheckout extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.0';
 
     const URL = "https://www.2checkout.com/checkout/spurchase";
     const mURL = "https://www.2checkout.com/checkout/purchase";
@@ -248,7 +248,7 @@ CUT;
             $result->setFailed($e->getMessage());
         }
     }    
-    
+
     public function cancelInvoice(InvoicePayment $payment, Am_Paysystem_Result $result)
     {
         try {
@@ -304,8 +304,7 @@ CUT;
             }
 //        }
     }
-    
-    
+
     public function processRefund(InvoicePayment $payment, Am_Paysystem_Result $result, $amount)
     {
         if (!$this->getApi())
@@ -317,10 +316,7 @@ CUT;
         $log->add($return);
         if ($return['response_code'] == 'OK')
         {
-            $trans = new Am_Paysystem_Transaction_Manual($this);
-            $trans->setAmount($amount);
-            $trans->setReceiptId($payment->receipt_id.'-2co-refund');
-            $result->setSuccess($trans);
+            $result->setSuccess();
         } else {
             $result->setFailed($return['response_message']);
         }
@@ -468,6 +464,7 @@ class Am_Paysystem_Transaction_Twocheckout_Refund extends Am_Paysystem_Transacti
 
     public function processValidated()
     {
+        if (!$this->getAmount()) return; //refund notification for free record
         $this->invoice->addRefund($this, 
             Am_Di::getInstance()->invoicePaymentTable->getLastReceiptId($this->invoice->pk()));
     }

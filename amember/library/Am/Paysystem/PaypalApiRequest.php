@@ -49,6 +49,7 @@ class Am_Paysystem_PaypalApiRequest extends Am_HttpRequest
             $this->addPostParameter('SIGNATURE', $this->plugin->getConfig('api_signature'));
 
         $this->addPostParameter('VERSION', '63.0')
+             ->addPostParameter('BUTTONSOURCE', 'CgiCentral.aMemberPro')
              ->addPostParameter('USER', $this->plugin->getConfig('api_username'))
              ->addPostParameter('PWD', $this->plugin->getConfig('api_password'));
     }
@@ -274,6 +275,8 @@ class Am_Paysystem_PaypalApiRequest extends Am_HttpRequest
         $form->addPassword("api_password")->setLabel("API Password");
         $form->addText("api_signature", array('size'=>60))->setLabel("API Signature");
         $form->addAdvCheckbox("testing")->setLabel("Sandbox", "is test or live transaction");
+        $form->addText("brandname", array('class'=>'el-wide'))->setLabel("Brand Name\nshown on Paypal checkout page as 'Return to {NAME}'.\nDefault is Paypal account name.");
+        $form->addAdvCheckbox("landingpage_login")->setLabel("Expand 'Login to Paypal' first on Paypal\nby default Paypal expands the long non-account (guest) form");
     }
     /**
      * Send response handle failure, return parsed array

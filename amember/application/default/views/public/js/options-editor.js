@@ -43,12 +43,24 @@
 
             function getNextId(key)
             {
-              return key.replace(/ |\./g, '-');
+                return getId(key);
+            }
+
+            function getId(key)
+            {
+                var hash = 0, i, chr, len;
+                if (key.length == 0) return hash;
+                for (i = 0, len = key.length; i < len; i++) {
+                    chr   = key.charCodeAt(i);
+                    hash  = ((hash << 5) - hash) + chr;
+                    hash |= 0; // Convert to 32bit integer
+                }
+                return hash;
             }
 
             function removeOption(key)
             {
-                var $tr = $('#option-editor-item-' + key);
+                var $tr = $('#option-editor-item-' + getId(key));
                 delete Options.options[key];
                 var index = $.inArray(key, Options['default']);
                 if (index != -1) {

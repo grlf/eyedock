@@ -50,7 +50,7 @@ class Am_Paysystem_Result
     /**
      * @return Am_Paysystem_Result provides fluent interface
      */
-    function setSuccess(Am_Paysystem_Transaction_Abstract $transaction = null)
+    function setSuccess(Am_Paysystem_Transaction_Interface $transaction = null)
     {
         if ($this->errorMessages)
             throw new Am_Exception_InternalError("Could not set SUCCESS status on transaction with errors. Remove errors first. Errors: " . 

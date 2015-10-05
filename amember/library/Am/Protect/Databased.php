@@ -157,7 +157,7 @@ abstract class Am_Protect_Databased extends Am_Protect_Abstract implements Am_Pr
             $db = $np->getDb();
         } catch (Am_Exception_PluginDb $e)
         {
-            return ___('Cannot connect to database, check hostname,username and password settings') . ' ' . $e->getMessage();
+            return ___('Cannot connect to database. Check hostname, username and password settings') . ' ' . $e->getMessage();
         }
         try
         {
@@ -257,6 +257,36 @@ abstract class Am_Protect_Databased extends Am_Protect_Abstract implements Am_Pr
     }
 
     /**
+     * 
+     * @param type $groups
+     * @param User|Am_record  $user
+     * @return type
+     */
+    function addSuperGroups($groups, $user=null){
+        $super = $this->getConfig('super_groups');
+        if(!$super||!$user) 
+            return $groups;
+        
+        if($user instanceof User)
+            $record = $this->getTable()->findByAmember($user);
+        else
+            $record = $user; 
+        
+        if(!$record) 
+            return $groups;
+
+        $old_groups = (array) $this->getTable()->getGroups($record);
+        
+        if(!$old_groups) 
+            return $groups;
+        
+        $intact = array_intersect($super, $old_groups);
+        if(!$intact) 
+            return $groups; 
+        
+        return array_unique(array_filter(array_merge((array)$groups, $intact)));
+    }
+    /**
      *
      * @param type $groups array of configs from ?_integration table
      * @return array of int|int return sorted array or most suitable single int 
@@ -266,8 +296,12 @@ abstract class Am_Protect_Databased extends Am_Protect_Abstract implements Am_Pr
         $ret = array();
         foreach ($groups as $config)
             $ret[] = $config['gr'];
+        
+        $ret = $this->addSuperGroups($ret, $user);
+        
         if ($this->_priority === null)
             $this->_initPriority();
+        
         usort($ret, array($this, '_compareGroups'));
         if ($this->groupMode == self::GROUP_SINGLE)
             return $ret ? max($ret) : null;

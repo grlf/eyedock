@@ -22,8 +22,6 @@ class HelpdeskTicket extends Am_Record
     const STATUS_AWAITING_ADMIN_RESPONSE = 'awaiting_admin_response';
     const STATUS_CLOSED = 'closed';
 
-    private $state = null;
-
     public static function getStatusOptions()
     {
         return array(
@@ -54,7 +52,7 @@ class HelpdeskTicket extends Am_Record
      */
     public function getOwner()
     {
-        return $this->owner_id ? $this->getDi()->adminTable->load($this->owner_id) : null;
+        return $this->owner_id ? $this->getDi()->adminTable->load($this->owner_id, false) : null;
     }
 
     /**

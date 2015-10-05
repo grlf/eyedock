@@ -9,7 +9,7 @@
  */
 class Am_Paysystem_Epoch extends Am_Paysystem_Abstract{
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.0';
 
     protected $defaultTitle = 'Epoch';
     protected $defaultDescription = 'Pay by credit card/debit card';
@@ -19,6 +19,7 @@ class Am_Paysystem_Epoch extends Am_Paysystem_Abstract{
     const NO = 0; 
     const YES = 1; 
     
+    //invoice id
     const EPOCH_MEMBER_ID = 'epoch_member_id';
     protected $_canResendPostback = true;
    
@@ -43,6 +44,9 @@ class Am_Paysystem_Epoch extends Am_Paysystem_Abstract{
         $this->getDi()->billingPlanTable->customFields()
             ->add(new Am_CustomFieldText('epoch_product_id', "Epoch Product ID",
                     "you must create the same product<br />in Epoch and enter its number here"));
+        $this->getDi()->billingPlanTable->customFields()
+            ->add(new Am_CustomFieldText('epoch_site_subcat', "Epoch Site Subcat",
+                    "leave empty if you are not sure"));
         
     }
     
@@ -51,6 +55,8 @@ class Am_Paysystem_Epoch extends Am_Paysystem_Abstract{
         $a = new Am_Paysystem_Action_Form(self::URL);
         $a->co_code =   $this->getConfig('co_code');
 		$a->pi_code  =   $invoice->getItem(0)->getBillingPlanData('epoch_product_id');
+        if($site_subcat = $invoice->getItem(0)->getBillingPlanData('epoch_site_subcat'))
+            $a->site_subcat    =   $site_subcat;
         $a->reseller    =   'a';
         $a->zip =   $invoice->getZip();
         $a->email   =   $invoice->getEmail();
@@ -119,8 +125,16 @@ CUT;
 }
 
 class Am_Paysystem_Transaction_Epoch_IPN extends Am_Paysystem_Transaction_Incoming{
-    protected $ip = array(array('208.236.105.0', '208.236.105.255'),
-			    array('65.17.248.0', '65.17.248.255'));
+    protected $ip = array(
+        '174.129.249.162', 
+        array('208.236.105.0', '208.236.105.255'),
+        array('65.17.248.0', '65.17.248.255'),
+        array('68.71.103.0', '68.71.103.255'),
+        '184.73.155.222',
+        '184.72.56.152',
+        '184.72.56.199',
+        '184.73.192.230'
+        );
 
     protected $_autoCreateMap = array(
         'email' => 'email',
@@ -156,6 +170,11 @@ class Am_Paysystem_Transaction_Epoch_IPN extends Am_Paysystem_Transaction_Incomi
                     return $invoice->public_id;
             }
         }
+        elseif($member_id = $this->request->get('mcs_or_idx'))
+        {
+                if($invoice = $this->getPlugin()->getDi()->invoiceTable->findFirstByData(Am_Paysystem_Epoch::EPOCH_MEMBER_ID, $member_id))
+                    return $invoice->public_id;            
+        }
     }
     public function validateSource()
     {
@@ -164,7 +183,7 @@ class Am_Paysystem_Transaction_Epoch_IPN extends Am_Paysystem_Transaction_Incomi
     }
     public function validateStatus()
     {
-        if($this->request->get("ets_transaction_id"))
+        if($this->request->get("ets_transaction_id") || $this->request->get('mcs_or_idx'))
             return true;
         if(substr($this->request->get('ans'),0,1) != 'Y')
             throw new Am_Exception_Paysystem_TransactionInvalid('Transaction declined!');
@@ -181,6 +200,10 @@ class Am_Paysystem_Transaction_Epoch_IPN extends Am_Paysystem_Transaction_Incomi
     
     function processValidated()
     {
+        if($member_id = $this->request->get('member_id'))
+        {
+            $this->invoice->data()->set(Am_Paysystem_Epoch::EPOCH_MEMBER_ID, $member_id)->update();
+        }
         /*
          C = Credit to Customers Account
          D = Chargeback Transaction
@@ -194,10 +217,6 @@ class Am_Paysystem_Transaction_Epoch_IPN extends Am_Paysystem_Transaction_Incomi
          U = Initial Trial Conversion
          X = Returned Check Transaction
          */
-        if($member_id = $this->request->get('member_id'))
-        {
-            $this->invoice->data()->set(Am_Paysystem_Epoch::EPOCH_MEMBER_ID, $member_id)->update();
-        }
         if($ets_transaction_type = $this->request->get("ets_transaction_type"))
         {
             if(in_array($this->request->get("ets_transaction_type"), array('U','N')))
@@ -205,10 +224,14 @@ class Am_Paysystem_Transaction_Epoch_IPN extends Am_Paysystem_Transaction_Incomi
             if(in_array($this->request->get("ets_transaction_type"), array('K')))
                 $this->invoice->setCancelled();
             if(in_array($this->request->get("ets_transaction_type"), array('D')))
-                $this->invoice->addRefund ($this, $this->request->get("ets_transaction_id"), $this->request->get("ets_transaction_amount"));
+                $this->invoice->addRefund ($this, $this->request->get("ets_transaction_id"), $this->request->get("ets_amountlocal"));
+        }
+        elseif($mcs_mcs_memberstype = $this->request->get("mcs_memberstype"))         
+        {
+            $this->invoice->setCancelled();
         }
         else
-                $this->invoice->addPayment($this);
+            $this->invoice->addPayment($this);
         print "OK";
     }
     

@@ -8,13 +8,29 @@ class Am_Grid_Editable_Newsletter extends Am_Grid_Editable_Content
         $a = new Am_Grid_Action_Callback('_refresh', ___('Refresh 3-rd party lists'), array($this, 'doRefreshLists'), Am_Grid_Action_Abstract::NORECORD);
         $this->actionAdd($a);
         $this->actionAdd(new Am_Grid_Action_NewsletterSubscribeAll());
+        $this->actionGet('delete')->setIsAvailableCallback(array($this, 'isImported'));
         $this->refreshLists(false); // refresh if expired
         foreach ($this->getActions() as $action) {
             $action->setTarget('_top');
         }
-        $this->setFilter(new Am_Grid_Filter_Text(___('Filter by Title'), array('title'=>'LIKE')));
+        $this->setFilter(new Am_Grid_Filter_Content_Common);
     }
     
+    function isImported(NewsletterList $record)
+    {
+        try{
+            $pl = $this->getDi()->plugins_newsletter->loadGet($record->plugin_id);
+            if (!$pl->canGetLists() && $pl->getId() != 'standard')
+                return true;
+            return false;
+        }
+        catch (Exception $e)
+        {
+            return true;
+        }
+    }
+
+
     public function init()
     {
         parent::init();

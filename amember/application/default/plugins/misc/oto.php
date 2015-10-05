@@ -3,7 +3,7 @@
 class Am_Plugin_Oto extends Am_Plugin
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION; //dev status
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.0';
 
     const NEED_SHOW_OTO = 'need_show_oto';
     const LAST_OTO_SHOWN = 'last_oto_shown';
@@ -14,6 +14,7 @@ class Am_Plugin_Oto extends Am_Plugin
     {
         return ___('One Time Offer');
     }
+
     public function onAdminMenu(Am_Event $event)
     {
         $event->getMenu()->addPage(array(
@@ -25,15 +26,14 @@ class Am_Plugin_Oto extends Am_Plugin
             'resource' => self::ADMIN_PERM_ID
         ));
     }
+
     public function init()
     {
         parent::init();
-        try {
-            $this->getDi()->db->query("ALTER TABLE ?_oto ADD is_disabled TINYINT NOT NULL");
-        } catch (Am_Exception_Db $e) {}
 
         $front = Zend_Controller_Front::getInstance();
         $front->registerPlugin(new Am_Controller_Plugin_Oto());
+        $this->getDi()->hook->prepend(Am_Event::THANKS_PAGE, array($this, '_onThanksPage'));
     }
 
     public static function activate($id, $pluginType)
@@ -45,9 +45,14 @@ class Am_Plugin_Oto extends Am_Plugin
                 conditions text,
                 view mediumtext,
                 product_id INT NOT NULL,
-                coupon_id INT NULL
+                coupon_id INT NULL,
+                is_disabled TINYINT NOT NULL,
+                bp_id INT
                 ) CHARACTER SET utf8 COLLATE utf8_general_ci");
-        } catch (Am_Exception_Db $e) {}
+        }
+        catch (Am_Exception_Db $e) {
+
+        }
 
         return parent::activate($id, $pluginType);
     }
@@ -71,18 +76,18 @@ class Am_Plugin_Oto extends Am_Plugin
                 $user->data()->set(self::NEED_SHOW_OTO, $invoice->pk())->update();
             }
         }
-
     }
 
-    function onThanksPage(Am_Event $event)
+    function _onThanksPage(Am_Event $event)
     {
         /* @var $invoice Invoice */
         $invoice = $event->getInvoice();
         /* @var $controller ThanksController */
         $controller = $event->getController();
-        if (!$invoice || !$invoice->tm_started) return; // invoice is not yet paid
+        if (!$invoice || !$invoice->tm_started)
+            return; // invoice is not yet paid
 
-        $this->getDi()->blocks->add(new Am_Block('thanks/success', 'Parent Invoices', 'oto-parents' , $this, array($this, 'renderParentInvoices')));
+        $this->getDi()->blocks->add(new Am_Block('thanks/success', 'Parent Invoices', 'oto-parents', $this, array($this, 'renderParentInvoices')));
 
         // find first matching upsell
         $oto = $this->getDi()->otoTable->findUpsell($invoice->getProducts());
@@ -91,8 +96,10 @@ class Am_Plugin_Oto extends Am_Plugin
             $oto = $this->getDi()->otoTable->findDownsell($invoice->data()->get(self::LAST_OTO_SHOWN));
         }
 
-        if (!$oto) return;
+        if (!$oto)
+            return;
 
+        $event->stop();
         if ($controller->getRequest()->get('oto') == 'yes')
             return $this->yesOto($controller, $invoice, $this->getDi()->otoTable->load($invoice->data()->get(self::LAST_OTO_SHOWN)));
 
@@ -109,7 +116,7 @@ class Am_Plugin_Oto extends Am_Plugin
 
         if (!$this->getDi()->auth->getUserId() ||
             !($invoice_id = $this->getDi()->auth->getUser()->data()->get(self::NEED_SHOW_OTO)))
-                throw new Am_Exception_InternalError();
+            throw new Am_Exception_InternalError();
 
         $user = $this->getDi()->auth->getUser();
         $invoice = $this->getDi()->invoiceTable->load($invoice_id);
@@ -155,13 +162,16 @@ class Am_Plugin_Oto extends Am_Plugin
             $inv->setCoupon($coupon);
         $inv->calculate();
 
-        if ($inv->isZero() ) {// free invoice
+        if ($inv->isZero()) {// free invoice
             $inv->paysys_id = 'free';
-        } elseif ($oto->getPaysysId()) { // configured
+        }
+        elseif ($oto->getPaysysId()) { // configured
             $inv->paysys_id = $oto->getPaysysId();
-        } elseif ($invoice->paysys_id != 'free') {// not free? take from invoice
+        }
+        elseif ($invoice->paysys_id != 'free') {// not free? take from invoice
             $inv->paysys_id = $invoice->paysys_id;
-        } else { // was free, now paid, take first public
+        }
+        else { // was free, now paid, take first public
             $paysystems = Am_Di::getInstance()->paysystemList->getAllPublic();
             $inv->paysys_id = $paysystems[0]->paysys_id;
         }
@@ -176,8 +186,7 @@ class Am_Plugin_Oto extends Am_Plugin
     {
         $invoice = $view->invoice;
         $out = null;
-        while ($parent_invoice_id = $invoice->data()->get('oto_parent'))
-        {
+        while ($parent_invoice_id = $invoice->data()->get('oto_parent')) {
             $invoice = $this->getDi()->invoiceTable->load($parent_invoice_id);
             $v = $view->di->view;
             $v->invoice = $invoice;
@@ -191,11 +200,13 @@ class Am_Plugin_Oto extends Am_Plugin
     {
         $event->addReturn(___('Can Operate with OTO'), self::ADMIN_PERM_ID);
     }
+
 }
 
 class AdminOneTimeOfferController extends Am_Controller_Grid
 {
-    protected $_defaultHtml ='
+
+    protected $_defaultHtml = '
         <p>This text will be displayed before the buttons. Describe
           your offer here. The following tags "yes" and "no" will be
           automatically replaced to buttons. Please do not touch or remove them.</p>
@@ -234,6 +245,7 @@ class AdminOneTimeOfferController extends Am_Controller_Grid
         $grid->actionGet('edit')->setTarget('_top');
 
         $grid->addCallback(Am_Grid_Editable::CB_VALUES_TO_FORM, array($this, 'valuesToForm'));
+        $grid->addCallback(Am_Grid_Editable::CB_VALUES_FROM_FORM, array($this, 'valuesFromForm'));
 
         $grid->actionAdd(new Am_Grid_Action_Url('preview', ___('Preview'), REL_ROOT_URL . '/admin-one-time-offer/preview?id=__ID__'))->setTarget('_blank');
         $grid->actionAdd(new Am_Grid_Action_CopyOto())->setTarget('_top');
@@ -251,15 +263,33 @@ class AdminOneTimeOfferController extends Am_Controller_Grid
     {
         $oto->updateQuick('is_disabled', 1);
     }
+
     public function enableOto($id, Oto $oto)
     {
         $oto->updateQuick('is_disabled', 0);
     }
 
+    public function valuesFromForm(& $values)
+    {
+        list($product_id, $bp_id) = explode('-', $values['product_id']);
+        $values['product_id'] = $product_id;
+        $values['bp_id'] = $bp_id;
+    }
+
     public function valuesToForm(array & $values, Oto $record)
     {
-        if (empty($values['view']))
-        {
+        if ($record->isLoaded()) {
+            //backward workaround
+            if (!$record->bp_id) {
+                /* @var $product Product */
+                $product = $this->getDi()->productTable->load($record->product_id);
+                $plan = $product->getBillingPlan();
+                $record->bp_id = $plan->pk();
+            }
+            $values['product_id'] = "{$record->product_id}-{$record->bp_id}";
+        }
+
+        if (empty($values['view'])) {
             $values['view'] = array(
                 'title' => 'One Time Offer',
                 'html' => $this->_defaultHtml,
@@ -276,7 +306,7 @@ class AdminOneTimeOfferController extends Am_Controller_Grid
 
         $form->addText('comment', array('class' => 'el-wide'))
             ->setLabel(___("Comment\n" .
-                'for your reference'))
+                    'for your reference'))
             ->addRule('required');
 
         $sel = $form->addMagicSelect('conditions[product]')
@@ -289,35 +319,43 @@ class AdminOneTimeOfferController extends Am_Controller_Grid
                 'offer and this OTO will be shown for user'));
         $cats = $pr = $oto = array();
         foreach ($this->getDi()->productCategoryTable->getAdminSelectOptions() as $k => $v)
-            $cats['category-'.$k] = ___('Category') . ':'. $v;
+            $cats['category-' . $k] = ___('Category') . ':' . $v;
         foreach ($this->getDi()->productTable->getOptions() as $k => $v)
-            $pr['product-'.$k] = ___('Product') . ':' . $v;
+            $pr['product-' . $k] = ___('Product') . ':' . $v;
         foreach ($this->getDi()->otoTable->getOptions() as $k => $v)
-            $oto['oto-'.$k] = ___('OTO') . ':' . $v;
+            $oto['oto-' . $k] = ___('OTO') . ':' . $v;
 
         $options =
-            array (___('Categories') => $cats)
+            array(___('Categories') => $cats)
             + ($pr ? array(___('Products') => $pr) : array())
             + ($oto ? array(___('OTO (Downsell)') => $oto) : array());
 
         $sel->loadOptions($options);
         $sel->addRule('required');
 
+        $bpOptions = array();
+        foreach ($this->getDi()->productTable->findBy(array('is_archived' => 0)) as $product) {
+            /* @var $product Product */
+            foreach ($product->getBillingOptions() as $bp_id => $title) {
+                $bpOptions[$product->pk() . '-' . $bp_id] = sprintf('(%d) %s (%s)', $product->pk(), $product->title, $title);
+            }
+        }
+
         $form->addSelect('product_id')->setLabel('Product to Offer')
-                ->loadOptions($this->getDi()->productTable->getOptions())
-                ->addRule('required');
+            ->loadOptions($bpOptions)
+            ->addRule('required');
 
         $coupons = array('' => '');
-	    foreach ($this->getDi()->db->selectCol("
+        foreach ($this->getDi()->db->selectCol("
 		SELECT c.coupon_id as ARRAY_KEY,
 		CONCAT(c.code, ' - ' , b.comment)
 		FROM ?_coupon c LEFT JOIN ?_coupon_batch b USING (batch_id)
 		ORDER BY c.code
         ") as $k => $v)
-			$coupons[$k] = $v;
+            $coupons[$k] = $v;
 
         $form->addSelect('coupon_id')->setLabel(___('Apply Coupon (optional)'))
-                ->loadOptions($coupons);
+            ->loadOptions($coupons);
 
 
         $psList = array('' => '') + $this->getDi()->paysystemList->getOptionsPublic();
@@ -336,10 +374,12 @@ class AdminOneTimeOfferController extends Am_Controller_Grid
 
         return $form;
     }
+
 }
 
 class OtoTable extends Am_Table
 {
+
     protected $_table = '?_oto';
     protected $_recordClass = 'Oto';
     protected $_key = 'oto_id';
@@ -351,18 +391,17 @@ class OtoTable extends Am_Table
      */
     function findUpsell(array $products)
     {
-        if ($products && current($products) instanceof Product)
-        {
+        if ($products && current($products) instanceof Product) {
             foreach ($products as $k => $p)
                 $products[$k] = $p->product_id;
         }
-        foreach ($this->findBy(array('is_disabled'=>0)) as $oto)
-        {
+        foreach ($this->findBy(array('is_disabled' => 0)) as $oto) {
             /* @var $oto Oto */
             if ($oto->matchProducts($products))
                 return $oto;
         }
     }
+
     /**
      *
      * @param int $oto_id
@@ -370,20 +409,19 @@ class OtoTable extends Am_Table
      */
     function findDownsell($oto_id)
     {
-        foreach ($this->findBy(array('is_disabled'=>0)) as $oto)
-        {
+        foreach ($this->findBy(array('is_disabled' => 0)) as $oto) {
             /* @var $oto Oto */
             if ($oto->matchOto($oto_id))
                 return $oto;
         }
     }
 
-
     function getOptions()
     {
         return array_map(array("Am_Controller", "escape"), $this->_db->selectCol("SELECT oto_id as ARRAY_KEY, comment
             FROM ?_oto ORDER BY comment"));
     }
+
 }
 
 /**
@@ -396,28 +434,29 @@ class OtoTable extends Am_Table
  */
 class Oto extends Am_Record
 {
+
     function matchProducts(array $product_ids)
     {
         $cats = $this->getDi()->productCategoryTable->getCategoryProducts();
         // $cats set to category_id => array(product_ids)
         $cond = $this->getConditions();
-        foreach ($cond['product'] as $s)
-        {
-            if (preg_match('/product-(\d+)/', $s, $regs))
-            {
-                if (in_array($regs[1], $product_ids)) return true;
+        foreach ($cond['product'] as $s) {
+            if (preg_match('/product-(\d+)/', $s, $regs)) {
+                if (in_array($regs[1], $product_ids))
+                    return true;
             } elseif (preg_match('/category-(\d+)/', $s, $regs)) {
-                if (array_intersect(@$cats[$regs[1]], $product_ids)) return true;
+                if (array_intersect(@$cats[$regs[1]], $product_ids))
+                    return true;
             }
         }
         return false;
     }
+
     function matchOto($oto_id)
     {
         $cond = $this->getConditions();
-        foreach ($cond['product'] as $s)
-        {
-            if (preg_match('/oto-(\d+)/', $s, $regs) && ($regs[1]==$oto_id))
+        foreach ($cond['product'] as $s) {
+            if (preg_match('/oto-(\d+)/', $s, $regs) && ($regs[1] == $oto_id))
                 return true;
         }
         return false;
@@ -426,41 +465,55 @@ class Oto extends Am_Record
     protected function _getJson($fn)
     {
         $v = $this->get($fn);
-        if (empty($v)) return array();
+        if (empty($v))
+            return array();
         return json_decode($v, true);
     }
+
     protected function _setJson($fn, array $v)
     {
         $this->{$fn} = json_encode($v);
         return $this->{$fn};
     }
+
     function getConditions()
     {
         return $this->_getJson('conditions');
     }
+
     function setConditions(array $conditions)
     {
         return $this->_setJson('conditions', $conditions);
     }
+
     function getView()
     {
         return $this->_getJson('view');
     }
+
     function setView(array $view)
     {
         return $this->_setJson('view', $view);
     }
+
     /** @return Coupon|null */
     function getCoupon()
     {
         if ($this->coupon_id)
             return $this->getDi()->couponTable->load($this->coupon_id);
     }
+
     /** @return Product */
     function getProduct()
     {
-        return $this->getDi()->productTable->load($this->product_id);
+        /* @var $product Product */
+        $product = $this->getDi()->productTable->load($this->product_id);
+        if ($this->bp_id) {
+            $product->setBillingPlan($this->bp_id);
+        }
+        return $product;
     }
+
     /** @return PaysysId */
     function getPaysysId()
     {
@@ -474,16 +527,16 @@ class Oto extends Am_Record
         $view = $this->getView();
         $html = $view['html'];
 
-        $html = str_replace('%yes%', '<button name="yes" onclick="window.location.href=window.location.href + (window.location.href.indexOf(\'?\') == -1 ? \'?\' : \'&\') + \'oto=yes\'">'.$view['yes']['label'].'</button>', $html);
-        $html = str_replace('%no%', '<a href="javascript:" onclick="window.location.href=window.location.href + (window.location.href.indexOf(\'?\') == -1 ? \'?\' : \'&\') + \'oto=no\'">'.$view['no']['label'].'</a>', $html);
+        $html = str_replace('%yes%', '<button name="yes" onclick="window.location.href=window.location.href + (window.location.href.indexOf(\'?\') == -1 ? \'?\' : \'&\') + \'oto=yes\'">' . $view['yes']['label'] . '</button>', $html);
+        $html = str_replace('%no%', '<a href="javascript:" onclick="window.location.href=window.location.href + (window.location.href.indexOf(\'?\') == -1 ? \'?\' : \'&\') + \'oto=no\'">' . $view['no']['label'] . '</a>', $html);
 
-        if ($view['no_layout'])
-        {
+        if ($view['no_layout']) {
             $title = Am_Controller::escape($view['title']);
             $html = strpos($html, 'html') === false ?
                 "<!DOCTYPE html>\n<html><head><title>$title</title></head><body>" . $html . "</body></html>" :
                 $html;
-        } else {
+        }
+        else {
             $v = $this->getDi()->view;
             $v->title = $view['title'];
             $v->content = $html;
@@ -493,18 +546,19 @@ class Oto extends Am_Record
 
         return $html;
     }
+
 }
 
 class Am_Controller_Plugin_Oto extends Zend_Controller_Plugin_Abstract
 {
+
     public function preDispatch(Zend_Controller_Request_Abstract $request)
     {
         if (stripos($this->getRequest()->getControllerName(), 'admin') === 0)
             return; //exception for admin
 
         $di = Am_Di::getInstance();
-        if ($di->auth->getUserId() && $di->auth->getUser()->data()->get(Am_Plugin_Oto::NEED_SHOW_OTO))
-        {
+        if ($di->auth->getUserId() && $di->auth->getUser()->data()->get(Am_Plugin_Oto::NEED_SHOW_OTO)) {
             $request->setControllerName('direct')
                 ->setActionName('index')
                 ->setModuleName('default')
@@ -512,12 +566,15 @@ class Am_Controller_Plugin_Oto extends Zend_Controller_Plugin_Abstract
                 ->setParam('plugin_id', 'oto');
         }
     }
+
 }
 
 class Am_Grid_Action_CopyOto extends Am_Grid_Action_Abstract
 {
+
     protected $id = 'copy';
     protected $privilege = 'insert';
+
     public function run()
     {
         $record = $this->grid->getRecord();
@@ -532,7 +589,7 @@ class Am_Grid_Action_CopyOto extends Am_Grid_Action_Abstract
         $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
 
         $request = new Am_Request($vars + array($this->grid->getId() . '_a' => 'insert',
-            $this->grid->getId() . '_b' => $this->grid->getBackUrl()), Am_Request::METHOD_POST);
+                $this->grid->getId() . '_b' => $this->grid->getBackUrl()), Am_Request::METHOD_POST);
 
         $request->setModuleName('default')
             ->setControllerName('admin-one-time-offfer')
@@ -540,15 +597,22 @@ class Am_Grid_Action_CopyOto extends Am_Grid_Action_Abstract
             ->setDispatched(true);
 
         $controller = new AdminOneTimeOfferController_Copy($request, new Zend_Controller_Response_Http(),
-            array('di' => Am_Di::getInstance()));
+                array('di' => Am_Di::getInstance()));
 
         $controller->dispatch('indexAction');
         $response = $controller->getResponse();
         $response->sendResponse();
         $_SERVER['HTTP_X_REQUESTED_WITH'] = $back;
     }
+
 }
 
-class AdminOneTimeOfferController_Copy extends AdminOneTimeOfferController {
-    public function valuesToForm(array & $values, Oto $record){}
+class AdminOneTimeOfferController_Copy extends AdminOneTimeOfferController
+{
+
+    public function valuesToForm(array & $values, Oto $record)
+    {
+
+    }
+
 }

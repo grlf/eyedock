@@ -5,10 +5,11 @@
  * @title ePayment
  * @visible_link http://www.payu.ro/
  * @recurring none
+ * @logo_url payu.png
  */
 class Am_Paysystem_Epayment extends Am_Paysystem_Abstract{
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.0';
 
     protected $defaultTitle = 'ePayment';
     protected $defaultDescription = 'Pay by credit card card/wire transfer';

@@ -6,6 +6,7 @@ defined('_JEXEC') or die('Restricted access');
 //$theRoot = "http://www.eyeodock.com/";
 
 $document = JFactory::getDocument();
+JHtml::_('bootstrap.framework');
 $document->addStyleSheet('components/com_pnlenses/css/lenses.css');
 $document->addStyleSheet('components/com_pnlenses/css/lenslists.css');
 $document->addStyleSheet('components/com_pnlenses/css/advSearch.css');

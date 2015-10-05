@@ -1,3 +1,4 @@
+<?php if (count($this->plugins) > 1) : ?>
 <div class="am-tabs-wrapper">
     <ul class="am-tabs">
     <?php foreach ($this->plugins as $id => $pl):?>
@@ -7,7 +8,7 @@
     <?php endforeach?>
     </ul>
 </div>
-
+<?php endif; ?>
 <div class="warning_box">
     <?php p($description)?>
     <?php if (!empty($refresh)):?>

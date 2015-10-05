@@ -68,6 +68,7 @@ class ProductUpgrade extends Am_Record
 
         $unusedAmount = $this->getUnusedAmount($exInvoice, $item);
 
+        $newItem->data()->set('orig_first_price', null);
         if($this->type == self::TYPE_FLAT)
         {
             $newItem->first_price = $this->surcharge;

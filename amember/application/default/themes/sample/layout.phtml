@@ -1,40 +1,54 @@
-<?php
-    echo $this->doctype('XHTML1_TRANSITIONAL');
-?>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title><?php p($title) ?></title>
-    <?php $this->printLayoutHead(); ?>
-</head>
-<body bgcolor='<?php echo $theme->getConfig('bgcolor', '#ppp')?>'>
-<?php echo $this->placeholder('body-start'); ?>
-<div class="am-body">
-    
-<h4>Hello From Red Template</h4>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title><?php p(isset($meta_title) ? $meta_title : $title) ?></title>
+        <?php $this->printLayoutHead(); ?>
+    </head>
+    <body>
+        <?php echo $this->placeholder('body-start'); ?>
+        <div class="am-layout">
+            <a name="top"></a>
+            <div class="am-header">
+                <div class="am-header-content-wrapper am-main">
+                    <div class="am-header-content">
+                        <?php include $this->_script('_logo.phtml'); ?>
+                        <div class="am-header-content-content">
+                            <?php echo $theme->getConfig('header'); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="am-header-line">
 
-Here is a sample of theme-based image
-<img src="<?php echo $this->_scriptImg('large-alert.png'); ?>">
-and you can "override" base images.
-    
-
-<?php include $this->_script('_top.phtml'); ?>
-
-<br /><br />
-<div class="centered">
-
-<?php if (empty($this->layoutNoTitle)): ?>
-    <h1><?php echo $title ?></h1>
-<?php endif; ?>
-<hr />
-<br />
-<!-- content starts here -->
-<?php echo $content ?>
-</div>
-
-<hr />
-<p class="powered">&copy; <a href="http://www.cgi-central.net">CGI-Central.NET</a>, 2002-<?php echo date('Y')?></p>
-</div><!-- end of div.am-body -->
-<?php echo $this->render('_popup.phtml'); ?>
-<?php echo $this->placeholder('body-finish'); ?>
-</body></html>
+            </div>
+            <div class="am-body">
+                <div class="am-body-content-wrapper am-main">
+                    <div style="padding: 0.5em; color: white; background-color:<?php echo $theme->getConfig('bgcolor', '#900')?>">
+                        <h2>Hello From Sample Template</h2>
+                        <p>Here is a sample of theme-based image
+                        <img src="<?php echo $this->_scriptImg('large-alert.png'); ?>" />
+                        and you can "override" base images.</p>
+                        <p>You can change color of this panel
+                        <a href="<?php p(REL_ROOT_URL) ?>/admin-setup/themes-sample">here</a>.</p>
+                        <p>You can find some info about some customizations <a href="http://www.amember.com/docs/Themes_and_Templates">here</a>.</p>
+                    </p>
+                    </div>
+                    <?php include $this->_script('_content.phtml'); ?>
+                </div>
+            </div>
+        </div>
+        <div class="am-footer">
+            <div class="am-footer-content-wrapper am-main">
+                <div class="am-footer-content">
+                    <div class="am-footer-actions">
+                        <a href="#top"><img src="<?php echo $this->_scriptImg('/top.png') ?>" /></a>
+                    </div>
+                    Built on <a href="http://www.amember.com/" style="text-decoration: none;" title="flexible, user-friendly membership software (subscription script)">aMember Pro&trade; membership software</a>
+                </div>
+            </div>
+        </div>
+        <?php echo $this->placeholder('body-finish'); ?>
+    </body>
+</html>

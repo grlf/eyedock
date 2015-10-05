@@ -6,7 +6,7 @@
 *        Web: http://www.cgi-central.net
 *    Details: Cron run file
 *    FileName $RCSfile$
-*    Release: 4.4.2 ($Revision$)
+*    Release: 4.7.0 ($Revision$)
 *
 * Please direct bug reports,suggestions or feedback to the cgi-central forums.
 * http://www.cgi-central.net/forum/
@@ -26,6 +26,7 @@ class CronController extends Am_Controller
     }
     function indexAction()
     {
+        Zend_Session::writeClose();
         Am_Cron::checkCron();
     }
 }

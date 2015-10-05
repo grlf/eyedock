@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /*
 *
@@ -8,11 +8,11 @@
 *    Web: http://www.cgi-central.net
 *    Details: Coupons management
 *    FileName $RCSfile$
-*    Release: 4.4.4 ($Revision$)
+*    Release: 4.7.0 ($Revision$)
 *
 * Please direct bug reports,suggestions or feedback to the cgi-central forums.
 * http://www.cgi-central.net/forum/
-*                                                                          
+*
 * aMember PRO is a commercial software. Any distribution is strictly prohibited.
 *
 */
@@ -41,15 +41,14 @@ class Am_Form_Admin_CouponBatch extends Am_Form_Admin {
             '_code_len' => 8,
             '_source' => 1
         )));
-        
+
         $this->addText('use_count', array('size' => 5))
             ->setLabel(___("Coupons Usage Count\n".
                 'how many times coupon can be used'));
         $discountGroup = $this->addGroup()
             ->setLabel(___('Discount'));
         $discountGroup->setSeparator(' ');
-        $discountGroup->addText('discount', array('size' => 5))
-                ->addRule('gt', ___('must be greater than 0'), 0);
+        $discountGroup->addText('discount', array('size' => 5));
         $discountGroup->addSelect('discount_type')
             ->loadOptions(array(
                 Coupon::DISCOUNT_PERCENT => '%',
@@ -94,13 +93,13 @@ $('[name=_source]').change(function(){
 CUT
                 );
         }
-        
+
         $fs = $this->addAdvFieldset(null, array('id'=>'coupon-batch'))
             ->setLabel(___('Advanced Settings'));
 
         $fs->addText('user_use_count', array('size' => 20))
             ->setLabel(___("User Coupon Usage Count\nhow many times a coupon code can be used by customer"));
-            
+
         $dateGroup = $fs->addGroup()
             ->setLabel(___("Dates\ndate range when coupon can be used"));
         $dateGroup->setSeparator(' ');
@@ -132,17 +131,17 @@ CUT
             ->setLabel(___("Products\n".
                "coupons can be used with selected products only.\n".
                "if nothing selected, coupon can be used with any product"));
-        
-        
+
+
         $jsCode = <<<CUT
-$(".enable_date").prop("checked", $("input[name=expire_date]").val() ? "checked" : "");   
+$(".enable_date").prop("checked", $("input[name=expire_date]").val() ? "checked" : "");
 $(document).on("change",".enable_date", function(){
     var dates = $(this).parent().find("input[type=text]");
     dates.prop('disabled', $(this).prop("checked") ? '' : 'disabled');
 })
 $(".enable_date").change();
 CUT;
-        
+
         $fs->addScript('script')->setScript($jsCode);
 
         $require_options = $prevent_options = array();
@@ -233,7 +232,7 @@ class AdminCouponsController extends Am_Controller_Grid
         $ds->addField('COUNT(c.coupon_id) AS coupons_count');
         $ds->addField('SUM(c.used_count) AS used_count');
         $ds->leftJoin('?_coupon', 'c', 't.batch_id = c.batch_id');
-        
+
         $ds->setOrder('batch_id', 'desc');
         $grid = new Am_Grid_Editable('_coupon', ___('Coupons Batches'), $ds, $this->_request, $this->view);
         $grid->setRecordTitle(array($this, 'getRecordTitle'));
@@ -264,7 +263,7 @@ class AdminCouponsController extends Am_Controller_Grid
         $grid->setFilter(new Am_Grid_Filter_Coupon);
         return $grid;
     }
-    
+
     public function getRecordTitle(CouponBatch $batch = null)
     {
         return $batch ?
@@ -285,10 +284,10 @@ class AdminCouponsController extends Am_Controller_Grid
         $this->view->headScript()->appendScript(<<<CUT
 function amOpenCoupons(id)
 {
-    var url = window.rootUrl + '/admin-coupons/detail/id/'+id 
+    var url = window.rootUrl + '/admin-coupons/detail/id/'+id
                 + '?_detail_filter='
                 + escape($("input[name='_coupon_filter']").val());
-    $("#coupons").load(url, 
+    $("#coupons").load(url,
         function(){
             $("#coupons .grid-wrap").ngrid();
             $("#coupons").dialog({
@@ -356,8 +355,8 @@ CUT
             implode('; ', $res)
         );
     }
-    
-    function createForm() 
+
+    function createForm()
     {
         return new Am_Form_Admin_CouponBatch(get_class($this), $this->grid->getRecord());
     }
@@ -397,17 +396,42 @@ CUT
                 throw new Am_Exception_InternalError(sprintf('Unknown Coupon Code Source [%s]', $values['_source']));
         }
     }
-    
+
+    public function autocompleteAction()
+    {
+        $term = '%' . $this->getParam('term') . '%';
+        if (!$term) return null;
+        $q = new Am_Query($this->getDi()->couponTable);
+        $q->addWhere('code LIKE ?', $term);
+        $qq = $q->query(0, 10);
+        $ret = array();
+        $options = $this->getDi()->couponBatchTable->getOptions();
+        while ($r = $this->getDi()->db->fetchRow($qq))
+        {
+            $ret[] = array
+            (
+                'label' => $r['code'] . ' - ' . $options[$r['batch_id']],
+                'value' => $r['code']
+            );
+        }
+        if ($q->getFoundRows() > 10)
+            $ret[] = array(
+                'label' => sprintf("... %d more rows found ...", $q->getFoundRows() - 10),
+                'value' => null,
+            );
+        $this->ajaxResponse($ret);
+    }
+
     public function detailAction()
     {
         $id = (int)$this->getParam('id');
         if (!$id) throw new Am_Exception_InputError('Empty id passed to ' . __METHOD__);
-        
+
         $ds = new Am_Query($this->getDi()->couponTable);
         $ds->leftJoin('?_user', 'u', 't.user_id=u.user_id');
         $ds->addField('u.login', 'u_login');
         $ds->addWhere('batch_id=?d', $id);
-        
+
         $grid = new Am_Grid_Editable('_detail', ___('Coupons'), $ds, $this->_request, $this->view);
         $grid->setPermissionId('grid_coupon');
         $grid->setEventId('gridCoupon');
@@ -519,7 +543,7 @@ CUT
     {
         if (!($id = $this->getInt('id')))
             throw new Am_Exception_InputError("Empty id passed to " . __METHOD__);
-        
+
         $out = '';
         foreach($this->getDi()->couponTable->findBy(array('batch_id' => $id)) as $c)
             $out .= $c->code."\r\n";

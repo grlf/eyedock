@@ -3,7 +3,6 @@
   '%d days after expiration' => '%d zile după expirare',
   '%d days before expiration' => '%d zile înainte de expirare',
   '%d user(s) matches your search' => '%d utilizatori se potrivesc cu criteriile căutării',
-  '%d-th day' => 'a %d-a zi',
   '%d-th subscription day' => 'a %d-a zi de abonament',
   '%s Plugins' => 'Module %s',
   '-- Please Select --' => '- Vă rugăm selectaţi -',
@@ -22,10 +21,7 @@
   'Add Report to My Dashboard' => 'Adaugă raportul la Tabloul de Bord',
   'Add Subscription' => 'Adăugați abonament',
   'Add User Fields' => 'Adăugare câmpuri',
-  'Added' => 'Adăugat',
   'Additional' => 'Suplimentar',
-  'Additional Fields' => 'Câmpuri suplimentare',
-  'Additionally to "Access", add "Invoice" and "Payment" record with given %s amount, like they have really made a payment' => 'În plus, pentru a "Accesa", adaugă "Factură" și înregistrare "Plată", cu valoarea %s dată, ca și cum s-ar fi făcut cu adevărat o plată',
   'Admin Accounts' => 'Conturi administratori',
   'Admin E-Mail Address
 used to send email notifications to admin
@@ -41,7 +37,6 @@ odată ce înscrierea gratuită este finalizată',
 to admin once payment is received' => 'Notificări de plată pentru administrator
 către admin o dată ce plata este primită',
   'Admin Settings' => 'Setări administrator',
-  'Admin Username' => 'Numele de utilizator al administratorului',
   'Admin notification' => 'Notificare administrator',
   'Admin username must be alphanumeric in small caps' => 'Numele de utilizator pentru adminstrator trebuie să fie alfanumeric, cu litere mici',
   'Administrator Login' => 'Autentificare administrator',
@@ -129,6 +124,7 @@ lungime între 5 și 32',
   'Commission
 % of commission received by referred affiliate' => 'Comision
 % comisionului primit de afiliați',
+  'Commission earned' => 'Comision câștigat',
   'Commission for First Payment
 calculated for first payment in each invoice' => 'Comision pentru prima plată 
 calculată pentru prima plată în fiecare factură',
@@ -136,9 +132,6 @@ calculată pentru prima plată în fiecare factură',
 calculated for first customer invoice only' => 'Comision pentru înscriere gratuită 
 calculată doar pentru prima factură a clientului',
   'Commission for Rebills' => 'Comision pentru refacturare',
-  'Company Logo for Invoice
-it must be png/jpeg/tiff file (%s)' => 'Logo-ul companiei pentru factură
-Trebuie să fie fisier PNG / JPEG / TIFF (%s)',
   'Conditions' => 'Condiţii',
   'Configuration' => 'Configurație',
   'Configured License Keys' => 'Chei de licenţă configurate',
@@ -161,7 +154,6 @@ de câte ori poate fi utilizat un cupon',
   'Create Folder' => 'Creare director',
   'Create Session Key' => 'Crează cheia de sesiune',
   'Create ticket as' => 'Creare tichet ca',
-  'Currency' => 'Monedă',
   'Currency Exchange Rates' => 'Rata de schimb valutar',
   'Custom Commission Rules added' => 'Reguli adăugate pentru comision personalizat',
   'Custom HTML' => 'HTML personalizat ',
@@ -171,7 +163,6 @@ Menține gol pentru a folosi titlul implicit',
   'Customer' => 'Client',
   'Customize Dashboard' => 'Personalizează Tabloul de Bord',
   'Daily' => 'Zilnic',
-  'Dashboard' => 'Tabloul de Bord',
   'Date Time' => 'Dată Oră',
   'Date to Purge
 all records prior to this date will be removed from selected tables' => 'Data pentru a curăța 
@@ -242,17 +233,14 @@ folosit pentru a afișa numele expeditorului in e-mail-uri expediate',
   'Edit Custom Commission Rules' => 'Editare reguli pentru comision personalizat',
   'Edit Groups' => 'Editare grupuri',
   'Edit Messages' => 'Editare mesaje',
-  'Email' => 'E-mail',
   'Email Backup Frequency' => 'Frecvența de trimitere a mesajelor de rezervă',
   'Email Sending method
 PLEASE DO NOT CHANGE if emailing from aMember works' => 'Metodă trimitere e-mail 
 VĂ RUGĂM SĂ NU SCHIMBAțI, Dacă e-mail-urile de la
 aMember funcționează corect ',
   'Email Sent' => 'Mesajele au fost trimise',
-  'Email Subject' => 'Subiect mesaj',
   'Email address is required field.' => 'Câmpul cu adresa de e-mail este obligatoriu.',
   'Enable plugins if necessary' => 'Activează module dacă este necesar',
-  'End Date' => 'Dată de sfârșit',
   'Enter Maintenance Mode' => 'Intră în modul de Întreţinere',
   'Enter admin password for confirmation' => 'Introduceți parola de administrator pentru confirmare',
   'Error Log' => 'Eroare autentificare',
@@ -266,10 +254,8 @@ aMember funcționează corect ',
   'Exchange Rate
 enter cost of 1 (one) %s' => 'Rata de schimb valutar
 introdu costul pentru 1 (unu) %s',
-  'Field' => 'Câmp',
   'Field Name' => 'Nume câmp',
   'Field Title' => 'Titlul câmpului',
-  'Field Type' => 'Tipul câmpului',
   'Field Values' => 'Valorile câmpului',
   'File
 (max filesize %s)' => 'Fișier 
@@ -303,7 +289,6 @@ Puteți obține cheia în %szona abonaților%s',
   'Folder URL' => 'URL director',
   'Form Type' => 'Tip formular',
   'Forms Editor' => 'Editor pentru formulare',
-  'From' => 'De la',
   'Future' => 'Viitor',
   'General' => 'General',
   'General Link' => 'Link general',
@@ -357,7 +342,6 @@ Facturile existente nu sunt afectate.
   'Is Disabled?
 disable product ordering, hide it from signup and renewal forms' => 'Este dezactivat?
 Dezactivați comenzile pentru produs, ascunde-l în formularele de înregistrare și reînnoire',
-  'Is Paid?' => 'Este plătit?',
   'It is required to setup a cron job to trigger backup generation' => 'Este necesar a seta un cron pentru a declanșa generarea copiei de rezervă',
   'Items' => 'Elemente',
   'JavaScript Code' => 'Cod JavaScript',
@@ -371,7 +355,6 @@ Dezactivați comenzile pentru produs, ascunde-l în formularele de înregistrare
   'Last existing subscription date of this product' => 'Ultima dată de abonament existentă pentru acest produs',
   'Last expiration date in the renewal group' => 'Ultima dată de expirare în grupul de reînnoire',
   'Last login' => 'Ultima autentificare',
-  'Leads' => 'Oportunități',
   'Length of admin password must be from %d to %d' => 'Lungimea parolei de administrator trebuie să fie de la %d la %d',
   'Length of username must be from %d to %d' => 'Lungimea numelui de utilizator trebuie să fie de la %d la %d',
   'Light Boxes' => 'Lightbox-uri',
@@ -388,8 +371,8 @@ Dezactivați comenzile pentru produs, ascunde-l în formularele de înregistrare
   'Log In' => 'Autentificare',
   'Log Outgoing E-Mail Messages for ... days' => 'Jurnalizați mesajele e-mail trimise pentru ... zile',
   'Log in' => 'Autentificare',
+  'Logged in as %s' => 'Conectat ca %s',
   'Login Page' => 'Pagină de autentificare',
-  'Login as User' => 'Autentificare ca utilizator',
   'Logs' => 'Jurnale',
   'Lookup' => 'Căutare',
   'Lost your password?' => 'Ați pierdut parola?',
@@ -450,6 +433,7 @@ to customers. If empty, [Admin E-Mail Address] is used' => 'Adresa e-mail a expe
 Este utilizat ca adresă pentru trimiterea de mesaje e-mail clienților
 Dacă este gol este folosită [adresa e-mail a administratorului] ',
   'Overwrite User if Exist User with Same Login' => 'Suprascriere utilizator daca există utilizator cu aceleaşi date de conectare',
+  'PDF Invoice' => 'Facturi PDF',
   'Paid' => 'Plătit',
   'Password Length' => 'Lungimea parolei',
   'Password changed' => 'Parolă schimbată',
@@ -463,7 +447,6 @@ Dacă este gol este folosită [adresa e-mail a administratorului] ',
   'Payment#/Receipt#' => 'Număr plată / Număr chitanță',
   'Payout %d Details' => 'Detalii plată %d',
   'Payout Details' => 'Detalii plată',
-  'Payout Method' => 'Metoda de plată',
   'Paysystem' => 'Sistem plată',
   'Pending Invoice Notification Rules' => 'Reguli de notificare pentru facturi în așteptare',
   'Permissions' => 'Permisiuni',
@@ -499,7 +482,6 @@ Implicit - 1, în mod normal nu trebuie să o modificați
 Primul și al doilea preț repreintă totalul pentru cantitatea specificată',
   'Quit Maintenance Mode' => 'Ieșiți din modulul de întreținere',
   'RadioButtons' => 'Butoane radio',
-  'ReCaptcha' => 'ReCaptcha',
   'Rebill' => 'Refacturare ',
   'Rebill Second Price until cancelled' => 'Refacturați al doilea preț până la anularea abonamentului',
   'Rebill Times
@@ -513,7 +495,6 @@ va avea loc la al doilea preț',
   'Recipients' => 'Destinatari',
   'Record Type' => 'Tip înregistrare',
   'Records Deleted Sucessfully' => 'Înregistrările au fost şterse cu succes',
-  'Recurring' => 'Recurent',
   'Redirect URL' => 'URL redirecționare',
   'Referrer' => 'Referent',
   'Refund Amount' => 'Suma de rambursare',
@@ -578,7 +559,6 @@ URL securizat, de obicei %s',
   'Select option' => 'Selectaţi opţiunea',
   'Selected for E-Mailing' => 'Selectat pentru e-mail',
   'Semicolon' => 'Punct și virgulă (;)',
-  'Send' => 'Trimiteți',
   'Send Cancel Notifications to Admin
 send email to admin when recurring subscription cancelled by member' => 'Trimiteți notificări de anulare către administrator',
   'Send E-Mail Message' => 'Trimiteți mesaj prin e-mail ',
@@ -614,8 +594,6 @@ odată ce PRIMUL abonament este activat',
   'Signup Form Configuration' => 'Configurarea formularului de înregistrare ',
   'Signup Info' => 'Info înregistrări',
   'Signup Messages' => 'Mesaje la înregistrare',
-  'Signups' => 'Înregistrări',
-  'Site Title' => 'Titlu site',
   'Site is temporarily disabled for maintenance' => 'Site-ul este dezactivat temporar pentru întreţinere',
   'Size' => 'Mărime',
   'Size of input field' => 'Dimensiunea câmpului de intrare',
@@ -627,7 +605,6 @@ odată ce PRIMUL abonament este activat',
   'Source' => 'Sursă',
   'Space' => 'Spaţiu',
   'Standard PHP Sessions' => 'Sesiunile standard PHP',
-  'Start Date' => 'Data de începere',
   'Start Date Calculation
 rules for subscription start date calculation.
 MAX date from alternatives will be chosen.
@@ -646,7 +623,6 @@ Aceste setări nu au niciun efect pentru abonamentele recurente',
   'Surcharge' => 'Suprataxă',
   'Table' => 'Tabel',
   'Tabulation' => 'Întabulare',
-  'Tax Id' => 'Cod fiscal',
   'Template' => 'Şablon',
   'Template
 alternative template for signup page' => 'șablon 
@@ -666,13 +642,11 @@ Press [Skip] to type it manually from scratch.' => 'Acest șablon de e-mail este
 Apăsați [Copiere] pentru a copia șablonul din limba implicită [engleză] 
 Apăsați [Salt] pentru a-l introduce manual de la zero.',
   'This field is requred' => 'Acest câmp este obligatoriu',
-  'Thresehold Date' => 'Dată limită',
   'Ticket#' => 'Nr. ticket',
   'Tier' => 'Nivel',
   'Title
 displayed to customers' => 'Titlul afişat clienţilor',
   'Title of Report for your Reference' => 'Titlul raportului, pentru referința dumneavoastră',
-  'To' => 'Către',
   'To order this product user must have an
 when user orders this subscription, it will be checked
 that user has one from the following subscriptions' => 'Pentru a comanda acest produs, utilizatorul trebuie să aibă un
@@ -707,7 +681,6 @@ dacă utilizatorul are activ unul dintre următoarele abonamente',
   'Use E-Mail Throttle Queue' => 'Utilizare coadă de e-mail temporizată',
   'Use External Cron' => 'Utilizare cron extern',
   'Use Global Settings' => 'Utilizare setări globale',
-  'User' => 'Utilizator',
   'User Coupon Usage Count
 how many times a coupon code can be used by customer' => 'Numărarea cupoanelor utilizate
 de câte ori un cod de cupon poate fi utilizat de către client',
@@ -718,6 +691,7 @@ de câte ori un cod de cupon poate fi utilizat de către client',
   'User had access to the following products' => 'Utilizatorul a avut acces la următoarele produse',
   'User is locked' => 'Utilizatorul este blocat',
   'User is not approved' => 'Utilizatorul nu este aprobat',
+  'User is not found in database' => 'Utilizatorul nu este în baza de date',
   'User notification' => 'Notificare utilizator ',
   'User-Affiliate Relation Lifetime
 how long (in days) calculate commission for referred affiliate (default: 0 - forever)' => 'Durata de viață a relației dintre utilizatori și afiliați
@@ -728,7 +702,6 @@ cât timp (în zile) se va calcula comision pentru afiliați (implicit: 0 - perm
   'Users Report' => 'Raport utilizatori',
   'Utilities' => 'Unelte',
   'Valid license key are one-line string,starts with L and ends with X' => 'Cheia de licență validă este un șir de caractere scrise pe o singură linie, începe cu L și se termină cu X',
-  'Validation' => 'Validare',
   'Value
 use % as wildcard mask' => 'Valoarea folosește % ca mască tip jocker',
   'Value must be alpha-numeric' => 'Valoarea trebuie să fie alfanumerică',

@@ -1,18 +1,5 @@
 (function(){
 tinymce.create('tinymce.plugins.am4plugin', {
-    createControl: function(n, cm) {
-        switch(n){
-           case    "am4button" :
-               var b = cm.createButton('am4button', {
-                   title    :   'aMember shortcodes',
-                   image    :   '../wp-content/plugins/amember4/img/lock.png',
-                   cmd      :   "amInsertaMemberShortcodeWindow"
-               })
-               return b;
-        }
-
-        return null;
-    },
     
     init : function(ed, url){
         ed.addCommand('amInsertaMemberShortcodeWindow', function(){
@@ -25,10 +12,14 @@ tinymce.create('tinymce.plugins.am4plugin', {
                                 height  :   500,
                                 inline  :   1
                             });
-                            
-                            
 
-        })
+        });
+        ed.addButton('am4button', {
+            title    :   'aMember shortcodes',
+            image    :   '../wp-content/plugins/amember4/img/lock.png',
+            cmd      :   "amInsertaMemberShortcodeWindow"
+        });
+        
     }
 });
 

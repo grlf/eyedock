@@ -13,7 +13,7 @@ class Am_Paysystem_AuthorizeCim extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.0';
 
     const LIVE_URL = 'https://api.authorize.net/xml/v1/request.api';
     const SANDBOX_URL = 'https://apitest.authorize.net/xml/v1/request.api';
@@ -34,6 +34,11 @@ class Am_Paysystem_AuthorizeCim extends Am_Paysystem_CreditCard
         else
           return true;
     }   
+
+    function allowPartialRefunds()
+    {
+        return true;
+    }
     
     public function getRecurringType()
     {
@@ -184,13 +189,19 @@ is submitted, no additional validation is performed.
             $storedCc = $this->getDi()->ccRecordTable->findFirstByUserId($user->pk());
             if ($storedCc && (($storedCc->cc != $cc->maskCc($cc->cc_number)) || ($storedCc->cc_expire != $cc->cc_expire)))
             {
-                $user->data()
-                    ->set(self::USER_PROFILE_KEY, null)
-                    ->set(self::PAYMENT_PROFILE_KEY, null)
-                    ->update();
-                $deleteTr = new Am_Paysystem_Transaction_AuthorizeCim_DeleteCustomerProfile($this, $invoice, $profileId);
-                $deleteTr->run($res = new Am_Paysystem_Result);
-                $profileId = null;
+                $tr = new Am_Paysystem_Transaction_AuthorizeCim_UpdateCustomerPaymentProfile($this, $invoice, $cc);
+                $tr->run($result);
+                if($result->isFailure()){
+                    // Try to delete all profiles and create new one. 
+                    $result->reset();
+                    $user->data()
+                        ->set(self::USER_PROFILE_KEY, null)
+                        ->set(self::PAYMENT_PROFILE_KEY, null)
+                        ->update();
+                    $deleteTr = new Am_Paysystem_Transaction_AuthorizeCim_DeleteCustomerProfile($this, $invoice, $profileId);
+                    $deleteTr->run($res = new Am_Paysystem_Result);
+                    $profileId = null;
+                }
             }
         }
         
@@ -200,9 +211,28 @@ is submitted, no additional validation is performed.
                 $tr = new Am_Paysystem_Transaction_AuthorizeCim_CreateCustomerProfile($this, $invoice, $cc);
                 $tr->run($result);
                 if (!$result->isSuccess())
-                    return;
-                $user->data()->set(Am_Paysystem_AuthorizeCim::USER_PROFILE_KEY, $tr->getProfileId())->update();
-                $user->data()->set(Am_Paysystem_AuthorizeCim::PAYMENT_PROFILE_KEY, $tr->getPaymentId())->update();
+                {
+                    if($tr->getErrorCode() == 'E00039')
+                    {
+                        $error = $result->getLastError();
+                        if(preg_match('/A duplicate record with ID (\d+) already exists/', $error, $regs) && $regs[1])
+                        {
+                            $user->data()->set(Am_Paysystem_AuthorizeCim::USER_PROFILE_KEY, $regs[1])->update();
+                            $result->reset(); $result->setSuccess();
+                        }
+                        else
+                        {
+                            return; 
+                        }
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }else{
+                    $user->data()->set(Am_Paysystem_AuthorizeCim::USER_PROFILE_KEY, $tr->getProfileId())->update();
+                    $user->data()->set(Am_Paysystem_AuthorizeCim::PAYMENT_PROFILE_KEY, $tr->getPaymentId())->update();
+                }
             } catch (Am_Exception_Paysystem $e) {
                 $result->setFailed($e->getPublicError());
                 return false;
@@ -501,6 +531,10 @@ class Am_Paysystem_Transaction_AuthorizeCim_CreateCustomerProfile extends Am_Pay
     public function processValidated()
     {
     }
+    
+    public function getErrorCode(){
+        return (string)$this->xml->messages->message->code;
+    }
 }
 class Am_Paysystem_Transaction_AuthorizeCim_CreateCustomerPaymentProfile extends Am_Paysystem_Transaction_AuthorizeCim
 {
@@ -565,6 +599,72 @@ class Am_Paysystem_Transaction_AuthorizeCim_CreateCustomerPaymentProfile extends
     {
     }
 }
+
+
+class Am_Paysystem_Transaction_AuthorizeCim_UpdateCustomerPaymentProfile extends Am_Paysystem_Transaction_AuthorizeCim
+{
+    protected $apiName = 'updateCustomerPaymentProfileRequest';
+    /** @var CcRecord */
+    protected $cc;
+    protected $profileId;
+    
+    public function __construct(Am_Paysystem_Abstract $plugin, Invoice $invoice, CcRecord $cc = null)
+    {
+        $this->cc = $cc;
+        parent::__construct($plugin, $invoice);
+    }
+    
+    protected function createXml($name)
+    {
+        $xml = parent::createXml($name);
+        $user = $this->invoice->getUser();
+        $xml->customerProfileId = $user->data()->get(Am_Paysystem_AuthorizeCim::USER_PROFILE_KEY);
+        if ($this->cc)
+        {
+            $xml->paymentProfile->billTo->firstName = $this->cc->cc_name_f;
+            $xml->paymentProfile->billTo->lastName = $this->cc->cc_name_l;
+            $xml->paymentProfile->billTo->address = $this->cc->cc_street;
+            $xml->paymentProfile->billTo->city = $this->cc->cc_city;
+            $xml->paymentProfile->billTo->state = $this->cc->cc_state;
+            $xml->paymentProfile->billTo->zip = $this->cc->cc_zip;
+            $xml->paymentProfile->billTo->country = $this->cc->cc_country;
+            $xml->paymentProfile->billTo->phoneNumber = $this->cc->cc_phone;
+            $xml->paymentProfile->payment->creditCard->cardNumber = $this->cc->cc_number;
+            $xml->paymentProfile->payment->creditCard->expirationDate = $this->cc->getExpire('20%2$02d-%1$02d');
+            if (strlen($this->cc->getCvv()))
+                $xml->paymentProfile->payment->creditCard->cardCode = $this->cc->getCvv();
+            $xml->validationMode = $this->getPlugin()->getConfig('validationMode', 'liveMode');
+            $xml->paymentProfile->customerPaymentProfileId = $user->data()->get(Am_Paysystem_AuthorizeCim::PAYMENT_PROFILE_KEY);
+        }
+        return $xml;
+    }
+    
+    public function validate()
+    {
+        if ($this->xml->getName() != 'updateCustomerPaymentProfileResponse')
+        {
+            $this->result->setFailed(___('Payment failed'));
+            return;
+        }
+        if ((string)$this->xml->messages->message->code != 'I00001')
+        {
+            $this->result->setFailed((string)$this->xml->messages->message->text);
+            return;
+        }
+        $this->result->setSuccess();
+        return true;
+    }
+    public function getUniqId()
+    {
+        return uniqid();    
+
+    }
+    public function processValidated()
+    {
+    }
+}
+
+
   
 class Am_Paysystem_Transaction_AuthorizeCim_DeleteCustomerProfile extends Am_Paysystem_Transaction_AuthorizeCim
 {
@@ -736,7 +836,7 @@ class Am_Paysystem_Transaction_AuthorizeCim_CreateCustomerProfileTransactionRefu
             $this->result->setFailed(___('Payment failed'));
             return;
         }
-        $this->result->setSuccess($this);
+        $this->result->setSuccess();
         return true;
     }
     public function getUniqId()
@@ -784,6 +884,8 @@ class Am_Paysystem_Transaction_AuthorizeCim_GetHostedProfilePageRequest extends 
 
         $xml->hostedProfileSettings->setting[1]->settingName = 'hostedProfileIFrameCommunicatorUrl';
         $xml->hostedProfileSettings->setting[1]->settingValue = $this->getPlugin()->getPluginUrl('iframe');
+        $xml->hostedProfileSettings->setting[2]->settingName = 'hostedProfileValidationMode';
+        $xml->hostedProfileSettings->setting[2]->settingValue = $this->getPlugin()->getConfig('validationMode', 'liveMode');
 
         return $xml;
     }
@@ -950,6 +1052,9 @@ class Am_Controller_CreditCard_AuthorizeNet extends Am_Controller
                     case 'confirm':
                         $s->ccConfirmed = true;
                         break;
+                    case 'new' : 
+                        break;
+                      
                     default:
                         if (!$s->ccConfirmed)
                             return $this->displayReuse();
@@ -996,17 +1101,19 @@ class Am_Controller_CreditCard_AuthorizeNet extends Am_Controller
         
         $text = ___('Click "Continue" to pay this order using stored credit card %s', $card);
         $continue = ___('Continue');
-
+        $use_new_card = ___("Use another card");
+        $url = $this->makeUrl();
         $action = $this->plugin->getPluginUrl('cc');
         $id = Am_Controller::escape($this->_request->get('id'));
-        $action = Am_Controller::escape($action);;
+        $action = Am_Controller::escape($action);
         $this->view->content .= <<<CUT
 <div class='am-reuse-card-confirmation'>
 $text
 <form method='get' action='$action'>
     <input type='hidden' name='id' value='$id' />
     <input type='hidden' name='result' value='confirm' />
-    <input type='submit' class='tb-btn tb-btn-primary' value='$continue' />
+    <input type='submit' class='tb-btn tb-btn-primary' value='$continue' />&nbsp;&nbsp;
+    <a href="$action?id=$id&result=new">$use_new_card</a>
 </form>
 </div>
    

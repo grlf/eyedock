@@ -3,7 +3,6 @@
   '%d days after expiration' => '%d  giorni dopo la scadenza',
   '%d days before expiration' => '%d giorni prima della scadenza',
   '%d user(s) matches your search' => '%d utente(i) che corrispondono alla tua ricerca',
-  '%d-th day' => '%d° giorno',
   '%d-th subscription day' => '%d° giorno di iscrizione',
   '%s Plugins' => '%s Plugin',
   '-- Please Select --' => '-- Per favore Seleziona --',
@@ -19,10 +18,7 @@
   'Add Report to My Dashboard' => 'Aggiungi Report alla mia Bacheca',
   'Add Subscription' => 'Aggiungi un Servizio/Prodotto',
   'Add User Fields' => 'Aggiungi Campo',
-  'Added' => 'Aggiunta',
   'Additional' => 'Aggiuntivo',
-  'Additional Fields' => 'Campi Aggiuntivi',
-  'Additionally to "Access", add "Invoice" and "Payment" record with given %s amount, like they have really made a payment' => 'In aggiunta ai record "Accesso", aggiungi "Fattura" e "Pagamento" con un dato %s importo, come se il pagamento fosse stato effettuato veramente',
   'Admin Accounts' => 'Account Amministratori',
   'Admin E-Mail Address
 used to send email notifications to admin
@@ -36,7 +32,6 @@ quando un\'iscrizione gratuita è completata',
 to admin once payment is received' => 'Notifica di pagamento all\'Amministratore
 una volta che il pagamento è terminato',
   'Admin Settings' => 'Settaggi Amministratore',
-  'Admin Username' => 'Nome Utente Amministratore',
   'Admin notification' => 'Notifiche all\'Amministratore',
   'Admin username must be alphanumeric in small caps' => 'Lo username dell\'Amministratore deve essere alfanumerico e composto da caratteri minuscoli',
   'Administrator Login' => 'Login Amministratore',
@@ -110,6 +105,7 @@ between 5 and 32' => 'Lunghezza del Buono Sconto
 tra 5 e 32',
   'Collapse Menu' => 'Chiudi Menu',
   'Comma' => 'Virgola',
+  'Commission earned' => 'Commissione Guadagnata',
   'Commission for First Payment
 calculated for first payment in each invoice' => 'Commissione per il Primo Pagamento
 calcolata per il primo pagamento in ogni ricevuta',
@@ -117,9 +113,6 @@ calcolata per il primo pagamento in ogni ricevuta',
 calculated for first customer invoice only' => 'Commissione per la Registrazione Gratuita
 calcolata solo quando l\'utente si iscrive',
   'Commission for Rebills' => 'Commissione per i Pagamenti Ricorrenti',
-  'Company Logo for Invoice
-it must be png/jpeg/tiff file (%s)' => 'Logo Aziendale per la Ricevuta
-deve essere un file png/jpeg/tiff (%s)',
   'Conditions' => 'Condizioni',
   'Configured License Keys' => 'Configurazione Codice Licenza',
   'Copy' => 'Copia',
@@ -138,7 +131,6 @@ how many times coupon can be used' => 'Numero Utilizzo Buoni Sconto
 Quante volte il buono sconto può essere utilizzato?',
   'Create Folder' => 'Crea cartella',
   'Create Session Key' => 'Crea una Chiave di Sessione',
-  'Currency' => 'Valuta',
   'Currency Exchange Rates' => 'Cambio valuta',
   'Custom Commission Rules added' => 'Regole delle Commissioni Personalizzate aggiunte',
   'Custom HTML' => 'HTML Personalizzato',
@@ -148,7 +140,6 @@ lascia il campo vuoto per usare il titolo di default',
   'Customer' => 'Cliente',
   'Customize Dashboard' => 'Personalizza la Bacheca',
   'Daily' => 'Ogni giorno',
-  'Dashboard' => 'Bacheca',
   'Date Time' => 'Data Ora',
   'Date to Purge
 all records prior to this date will be removed from selected tables' => 'Data da cui Cancellare
@@ -208,15 +199,12 @@ nome del mittente che sarà visualizzato nelle email in uscita',
   'EXPIRED subscription for group %s' => 'Iscrizione SCADUTA per il Gruppo %s',
   'Edit Custom Commission Rules' => 'Modifica le Regole di Commissione',
   'Edit Groups' => 'Modifica i Gruppi',
-  'Email' => 'E-mail',
   'Email Backup Frequency' => 'Frequenza di backup E-mail',
   'Email Sending method
 PLEASE DO NOT CHANGE if emailing from aMember works' => 'Metodo invio email
 PER FAVORE NON CAMBIARE se l\'invio E-mail da aMember funziona',
   'Email Sent' => 'Email Inviata',
-  'Email Subject' => 'Oggetto Email',
   'Email address is required field.' => 'L\'indirizzo email è obbligatorio',
-  'End Date' => 'Data di Termine',
   'Enter Maintenance Mode' => 'Inserisci la modalità manutenzione',
   'Enter admin password for confirmation' => 'Inserisci la Password di Amministratore per conferma',
   'Error Log' => 'Log Errori',
@@ -228,10 +216,8 @@ PER FAVORE NON CAMBIARE se l\'invio E-mail da aMember funziona',
   'Exchange Rate
 enter cost of 1 (one) %s' => 'Cambio
 inserisci il costo di 1 (uno) %s',
-  'Field' => 'Campo',
   'Field Name' => 'Nome Campo',
   'Field Title' => 'Titolo Campo',
-  'Field Type' => 'Tipo di Campo',
   'Field Values' => 'Valori del Campo',
   'File
 (max filesize %s)' => 'File
@@ -310,7 +296,6 @@ Le ricevute esistenti non verranno intaccate.
   'Is Disabled?
 disable product ordering, hide it from signup and renewal forms' => 'È disabilitato?
 disabilita l\'ordine del prodotto, nascondilo dalla pagina di iscrizione e rinnovo',
-  'Is Paid?' => 'È Pagato?',
   'It is required to setup a cron job to trigger backup generation' => 'È necessario settare un cron job per generare i backup automatici',
   'Last %s Customers' => 'Ultimi %s Clienti',
   'Last %s Helpdesk Messages' => 'Ultimi %s Messaggi nell\'Helpdesk',
@@ -319,7 +304,6 @@ disabilita l\'ordine del prodotto, nascondilo dalla pagina di iscrizione e rinno
   'Last existing subscription date of this product' => 'L\'ultima data di iscrizione di questo prodotto',
   'Last expiration date in the renewal group' => 'Ultima data di scadenza nel gruppo di rinnovo',
   'Last login' => 'Ultimo Accesso',
-  'Leads' => 'Lead',
   'Length of admin password must be from %d to %d' => 'La lunghezza della password dell\'Amministratore deve essere da %d a %d',
   'Length of username must be from %d to %d' => 'La lunghezza del Nome Utente deve essere da %d a %d',
   'Light Boxes' => 'Light Box',
@@ -332,8 +316,8 @@ disabilita l\'ordine del prodotto, nascondilo dalla pagina di iscrizione e rinno
   'Log In' => 'Entra',
   'Log Outgoing E-Mail Messages for ... days' => 'Log dei messaggi in uscita per ... days',
   'Log in' => 'Entra',
+  'Logged in as %s' => 'Loggato come %s',
   'Login Page' => 'Accesso Area Riservata',
-  'Login as User' => 'Accedi come questo Cliente',
   'Logs' => 'Log',
   'Lookup' => 'Ricerca Veloce',
   'Lost your password?' => 'Hai Perso la Password?',
@@ -390,6 +374,7 @@ to customers. If empty, [Admin E-Mail Address] is used' => 'Indirizzo E-mail in 
 indirizzo da cui inviare le email agli utenti. Se rimane vuoto, viene usato l\'email di default dell\'Amministratore',
   'Overwrite User if Exist User with Same Login' => 'Sovrascrivi un Utente se esiste un altro 
 Utente con lo stesso Nome Utente',
+  'PDF Invoice' => 'Ricevuta in PDF',
   'Paid' => 'Pagata',
   'Password Length' => 'Lunghezza Password',
   'Password changed' => 'Password Modificata',
@@ -402,7 +387,6 @@ Utente con lo stesso Nome Utente',
   'Payment has been successfully refunded' => 'Il Pagamento è stato rimborsato con sucesso',
   'Payout %d Details' => 'Dettagli di Pagamento %d ',
   'Payout Details' => 'Dettagli di Pagamento',
-  'Payout Method' => 'Metodo di Pagamento',
   'Paysystem' => 'Sistema di Pagamento',
   'Pending Invoice Notification Rules' => 'Regole di Notifica per i Pagamenti in Attesa',
   'Permissions' => 'Permessi',
@@ -447,7 +431,6 @@ Questo è il numero dei pagamenti con il secondo prezzo da addebitare',
   'Receipt#' => 'Ricevuta#',
   'Recipients' => 'Destinatari',
   'Records Deleted Sucessfully' => 'Record Eliminati con Successo',
-  'Recurring' => 'Ricorsivo',
   'Redirect URL' => 'URL di Reindirizzamento ',
   'Referrer' => 'Sponsor',
   'Refund Amount' => 'Ammontare Rimborsato',
@@ -510,7 +493,6 @@ URL di sicurezza, solitamente %s',
   'Select option' => 'Seleziona un\'opzione',
   'Selected for E-Mailing' => 'Seleziona a chi mandare E-mail',
   'Semicolon' => 'Punto e virgola',
-  'Send' => 'Invia',
   'Send Cancel Notifications to Admin
 send email to admin when recurring subscription cancelled by member' => 'Notifica di Cancellazione all\'Amministratore',
   'Send E-Mail Message' => 'Invia Messaggio E-mail',
@@ -552,7 +534,6 @@ dopo che la prima iscrizione è completata',
   'Skip Line if Exist User with Same Login' => 'Salta la linea se esiste un utente con lo stesso Nome Utente',
   'Sort' => 'Ordina',
   'Space' => 'Spazio',
-  'Start Date' => 'Data di Inizio',
   'Start Date Calculation
 rules for subscription start date calculation.
 MAX date from alternatives will be chosen.
@@ -588,13 +569,12 @@ Press [Skip] to type it manually from scratch.' => 'Questo template email è vuo
 Premi [Copia] per copiare il template dalla lingua originale [Inglese]
 Premi [Salta] per scriverlo manualmente.',
   'This field is requred' => 'Questo campo è obbligatorio',
-  'Thresehold Date' => 'Data Limite',
+  'Ticket#' => 'Ticket#',
   'Tier' => 'Linea',
   'Title
 displayed to customers' => 'Titolo
 visualizzato agli utenti',
   'Title of Report for your Reference' => 'Titolo del Report per tua referenza',
-  'To' => 'A',
   'To order this product user must have an
 when user orders this subscription, it will be checked
 that user has one from the following subscriptions' => 'Per ordinare questo prodotto un utente deve avere
@@ -624,7 +604,6 @@ una di queste iscrizioni altrimenti blocca l\'ordine',
   'Use Custom Settings' => 'Usa Settaggi Personalizzati',
   'Use External Cron' => 'Usa Cron Job esterno',
   'Use Global Settings' => 'Use Settaggi Globali',
-  'User' => 'Utente',
   'User Coupon Usage Count
 how many times a coupon code can be used by customer' => 'Numero Buoni Sconto usati dai Clienti
 quante volte un coupon può essere usato dal cliente',
@@ -635,13 +614,13 @@ quante volte un coupon può essere usato dal cliente',
   'User had access to the following products' => 'Questo Utente ha e aveva accesso ai seguenti prodotti',
   'User is locked' => 'Utente Bloccato',
   'User is not approved' => 'Utente non Approvato',
+  'User is not found in database' => 'Utente non presente nel database',
   'User notification' => 'Notifica all\'Utente',
   'Username or E-mail' => 'Nome Utente o E-mail',
   'Username or e-mail address' => 'Nome Utente o Indirizzo E-mail',
   'Users' => 'Clienti',
   'Users Report' => 'Report Clienti',
   'Valid license key are one-line string,starts with L and ends with X' => 'Una chiave di licenza valida è di una stringa sola, inizia con L e termina con X',
-  'Validation' => 'Validazione',
   'Value
 use % as wildcard mask' => 'Valore
 usa % come wildcard',

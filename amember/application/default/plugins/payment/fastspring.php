@@ -14,7 +14,7 @@
  */
 class Am_Paysystem_Fastspring extends Am_Paysystem_Abstract{
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.0';
 
     protected $defaultTitle = 'FastSpring';
     protected $defaultDescription = 'Pay by credit card';
@@ -82,6 +82,13 @@ class Am_Paysystem_Fastspring extends Am_Paysystem_Abstract{
                 $i++;
             }
         }
+        
+        $a->contact_fname = $invoice->getFirstName();
+        $a->contact_lname = $invoice->getLastName();
+        //$a->contact_company = '';
+        $a->contact_email = $invoice->getEmail();
+        $a->contact_phone = $invoice->getPhone();
+        
         $a->referrer = $invoice->public_id;
         if($this->getConfig('testing')){
             $a->mode = 'test';

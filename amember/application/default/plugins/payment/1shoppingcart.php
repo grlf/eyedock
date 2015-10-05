@@ -13,7 +13,7 @@
 class Am_Paysystem_1shoppingcart extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.0';
 
     const URL = "http://www.marketerschoice.com/app/javanof.asp";
 
@@ -30,7 +30,7 @@ class Am_Paysystem_1shoppingcart extends Am_Paysystem_Abstract
         $form->addInteger('merchant_id', array('size' => 20))
             ->setLabel('Your Merchant ID#');
 
-        $form->addText('password')->setLabel(array('Postback Password', 'Should be the same as in your 1SC account'));
+        $form->addPassword('password')->setLabel(array('Postback Password', 'Should be the same as in your 1SC account'));
 
         $form->addText('key', array('size' => 30))
             ->setLabel(array('API Key', '1SC -> My Account -> API Settings -> Your Current Merchant API Key'));

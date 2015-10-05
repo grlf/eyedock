@@ -82,7 +82,7 @@ $(function(){
             if (!editor) {
                 editor = initCkeditor("$id", { placeholder_items: [
                     $vars
-                ]});
+                ], entities_greek: false});
             }
             $('#insert-tags-wrapper').hide();
         } else {

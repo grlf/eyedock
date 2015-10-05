@@ -10,7 +10,7 @@
 
 class Am_Paysystem_charge2000 extends Am_Paysystem_Abstract{
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.0';
 
     protected $defaultTitle = '2000Charge';
     protected $defaultDescription = 'The Leader in Alternative Payment Solutions';
@@ -56,6 +56,8 @@ class Am_Paysystem_charge2000 extends Am_Paysystem_Abstract{
         parent::init();
         
         $this->getDi()->productTable->customFields()
+            ->add(new Am_CustomFieldText('web_id', '2000Charge.com website ID'));
+        $this->getDi()->productTable->customFields()
             ->add(new Am_CustomFieldText(self::PRICEPOINT, 'Mapping code given by 2000Charge'));
         $this->getDi()->productTable->customFields()
             ->add(new Am_CustomFieldSelect('payment_option', 'Payment Option', 'Display Only Specified Payment Options', null, array('options' =>$this->payment_options)));
@@ -75,7 +77,7 @@ class Am_Paysystem_charge2000 extends Am_Paysystem_Abstract{
         
     }
     
-    function getPaymentOption(\Invoice $invoice){
+    function getPaymentOption(Invoice $invoice){
         $products = $invoice->getProducts();
         return ($po = $products[0]->data()->get('payment_option')) ? $po : $this->getConfig('payment_option', 'COMBO');
     }
@@ -98,8 +100,12 @@ class Am_Paysystem_charge2000 extends Am_Paysystem_Abstract{
         $products = $invoice->getProducts();
         
         $a = new Am_Paysystem_Action_Form(self::LIVE_URL);
+        $web_id = $products[0]->data()->get('web_id');
         
-        $a->id = $this->getConfig('web_id');
+        if(empty($web_id))
+            $this->getConfig('web_id');
+        
+        $a->id = $web_id;
         $a->pricepoint = $products[0]->data()->get(self::PRICEPOINT);
         $a->paymentoption = $this->getPaymentOption($invoice);
         $a->firstname = $invoice->getFirstName();
@@ -189,12 +195,14 @@ class Am_Paysystem_Transaction_charge2000 extends Am_Paysystem_Transaction_Incom
     );
     public function findInvoiceId()
     {
-        return $this->request->get('xfield');          
+        return $_GET['xfield'];          
+        // return $this->request->get('xfield');          
     }
     
     public function getUniqId()
     {
-        return $this->request->get('transnum');
+        return $_GET['transnum'];
+//        return $this->request->get('transnum');
     }
     
     public function validateSource()
@@ -205,7 +213,8 @@ class Am_Paysystem_Transaction_charge2000 extends Am_Paysystem_Transaction_Incom
     
     public function validateStatus()
     {
-        return $this->request->get('status') == 'APPROVED';
+        return $_GET['status'] == 'APPROVED';
+        //return $this->request->get('status') == 'APPROVED';
     }
     
     public function validateTerms()

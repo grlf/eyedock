@@ -15,7 +15,7 @@ class Am_Grid_Action_Group_ContentAssignCategory extends Am_Grid_Action_Group_Ab
         );
     }
 
-    public function renderConfirmationForm($btn = "Yes, assign", $page = null, $addHtml = null)
+    public function renderConfirmationForm($btn = "Yes, assign", $addHtml = null)
     {
         $select = sprintf('<select name="%s__group_id">
             %s
@@ -23,7 +23,7 @@ class Am_Grid_Action_Group_ContentAssignCategory extends Am_Grid_Action_Group_Ab
                 $this->grid->getId(),
                 Am_Controller::renderOptions(Am_Di::getInstance()->resourceCategoryTable->getOptions())
         );
-        return parent::renderConfirmationForm($this->remove ? ___("Yes, remove category") : ___("Yes, assign category"), null, $select);
+        return parent::renderConfirmationForm($this->remove ? ___("Yes, remove category") : ___("Yes, assign category"), $select);
     }
 
     /**
@@ -52,22 +52,44 @@ class Am_Grid_Action_Group_ContentAssignCategory extends Am_Grid_Action_Group_Ab
 
 }
 
-class Am_Grid_Filter_Content_Folder extends Am_Grid_Filter_Abstract
+abstract class Am_Grid_Filter_Content extends Am_Grid_Filter_Abstract
 {
 
-    protected $varList = array('filter_q', 'filter_t');
+    protected $varList = array('filter_q', 'filter_a');
 
     protected function applyFilter()
     {
         $query = $this->grid->getDataSource()->getDataSourceQuery();
-        $type = $this->getParam('filter_t');
 
-        if (!in_array($type, array('url', 'path', 'title'))) {
-            $type = 'title';
-        }
         if ($filter = $this->getParam('filter_q')) {
-            $condition = new Am_Query_Condition_Field($type, 'LIKE', '%' . $filter . '%');
+            $condition = null;
+            foreach($this->getSearchFields() as $f) {
+                $c = new Am_Query_Condition_Field($f, 'LIKE', '%' . $filter . '%');
+                $condition = $condition ? $condition->_or($c) : $c;
+            }
             $query->add($condition);
+        }
+        if ($filter = $this->getParam('filter_a')) {
+            $r = $this->grid->getDataSource()->createRecord();
+            $key_name = $r->getTable()->getKeyField();
+            $resource_type = $r->getAccessType();
+
+            if (preg_match('/^c([0-9]+)$/', $filter, $m)) {
+                $ctp = Am_Di::getInstance()->productCategoryTable->getCategoryProducts();
+                $product = $ctp[$m[1]];
+                $category = array($m[1]);
+            } else {
+                $p = Am_Di::getInstance()->productTable->load($filter);
+                $category = $p->getCategories();
+                $product = array($filter);
+            }
+
+            $product[] = -1;
+            $category[] = -1;
+            $query->leftJoin('?_resource_access', 'ra', "t.$key_name=ra.resource_id AND ra.resource_type='$resource_type'")
+                ->addWhere('(ra.fn = ? AND ra.id IN (?a)) OR (ra.fn = ? AND ra.id IN (?a))',
+                    'product_id', $product,
+                    'product_category_id', $category);
         }
     }
 
@@ -76,19 +98,64 @@ class Am_Grid_Filter_Content_Folder extends Am_Grid_Filter_Abstract
         $filter = '';
         $filter .= $this->renderInputText('filter_q');
         $filter .= ' ';
-        $filter .= $this->renderInputSelect('filter_t', array(
-                'title' => ___('Title'),
-                'url' => ___('URL'),
-                'path' => ___('Path')
-            ));
+
+        $pCatOptions = Am_Di::getInstance()->productCategoryTable->getAdminSelectOptions();
+        $pOptions = Am_Di::getInstance()->productTable->getOptions();
+        $options = array();
+        if ($pCatOptions) {
+            foreach ($pCatOptions as $k => $v)
+            {
+                unset($pCatOptions[$k]);
+                $pCatOptions['c'.$k] = $v;
+            }
+            $options = array(
+                ___('Product Categories') => $pCatOptions,
+                ___('Products') => $pOptions
+            );
+        } else {
+            $options = $pOptions;
+        }
+
+        $filter .= $this->renderInputSelect('filter_a',
+            array('' => ___('-- Filter by Product --')) + $options);
         return $filter;
     }
 
     function getTitle()
     {
-        return ___('Filter by String');
+        return ___('Filter');
     }
 
+    abstract function getSearchFields();
+
+}
+
+class Am_Grid_Filter_Content_Email extends Am_Grid_Filter_Content {
+    function getSearchFields()
+    {
+        return array('subject');
+    }
+}
+
+class Am_Grid_Filter_Content_Folder extends Am_Grid_Filter_Content {
+    function getSearchFields()
+    {
+        return array('title', 'url', 'path');
+    }
+}
+
+class Am_Grid_Filter_Content_Common extends Am_Grid_Filter_Content {
+    function getSearchFields()
+    {
+        return array('title');
+    }
+}
+
+class Am_Grid_Filter_Content_Integration extends Am_Grid_Filter_Content {
+    function getSearchFields()
+    {
+        return array('plugin');
+    }
 }
 
 class Am_Grid_Action_EmailPreview extends Am_Grid_Action_Abstract
@@ -133,8 +200,27 @@ class Am_Grid_Action_EmailPreview extends Am_Grid_Action_Abstract
                 $mail->setProduct_title($product->title);
                 $mail->setExpires($vars['expires']);
                 break;
+            case EmailTemplate::PRODUCTWELCOME:
+                $invoice = Am_Di::getInstance()->invoiceRecord;
+                $invoice->toggleFrozen(true);
+                $invoice->invoice_id = 'ID';
+                $invoice->public_id = 'PUBLIC ID';
+                $invoice->setUser($user);
+                $invoice->add($product);
+                $invoice->calculate();
+
+                /* @var $payment InvoicePayment */
+                $payment = Am_Di::getInstance()->invoicePaymentRecord;
+                $payment->toggleFrozen(true);
+                $payment->amount = $invoice->first_total;
+                $payment->currency = $invoice->currency;
+                $payment->receipt_id = 'RECEIPT_ID';
+                $mail->setInvoice($invoice);
+                $mail->setPayment($payment);
+                $mail->setLast_product_title($product->title);
+                break;
             default:
-                throw new Am_Exception_InternalError('Unknown email template name [%s]', $template->name);
+                throw new Am_Exception_InternalError(sprintf('Unknown email template name [%s]', $template->name));
         }
 
         $mail->setUser($user);
@@ -540,7 +626,7 @@ class Am_Grid_Editable_Files extends Am_Grid_Editable_Content
         $this->addCallback(self::CB_AFTER_SAVE, array($this, 'dropCache'));
         $this->addCallback(self::CB_AFTER_DELETE, array($this, 'dropCache'));
         $this->addCallback(self::CB_VALUES_FROM_FORM, array($this, '_valuesFromForm'));
-        $this->setFilter(new Am_Grid_Filter_Text(___('Filter by Title'), array('title' => 'LIKE')));
+        $this->setFilter(new Am_Grid_Filter_Content_Common);
     }
 
     public function _valuesFromForm(& $values)
@@ -583,6 +669,7 @@ class Am_Grid_Editable_Files extends Am_Grid_Editable_Content
         parent::initActions();
         $this->actionAdd(new Am_Grid_Action_Group_ContentAssignCategory(false));
         $this->actionAdd(new Am_Grid_Action_Group_ContentAssignCategory(true));
+        $this->actionAdd(new Am_Grid_Action_Group_Delete);
     }
 
     protected function initGridFields()
@@ -633,7 +720,7 @@ CUT
         $el->addRule('required', ___('File is required'));
         $form->addText('title', array('class' => 'el-wide'))->setLabel(___('Title'))->addRule('required', 'This field is required');
         $form->addText('desc', array('class' => 'el-wide'))->setLabel(___('Description'));
-        $form->addAdvCheckbox('hide')->setLabel(___("Hide\n" . "do not display this item link in members area"));
+        $form->addAdvCheckbox('hide')->setLabel(___("Hide from Dashboard\n" . "do not display this item link in members dashboard\n This doesn't remove link from category."));
         $form->addElement(new Am_Form_Element_DownloadLimit('download_limit'))->setLabel(___('Limit Downloads Count'));
         $form->addElement(new Am_Form_Element_ResourceAccess)->setName('_access')->setLabel(___('Access Permissions'));
         $form->addText('no_access_url', array('class' => 'el-wide'))
@@ -653,7 +740,7 @@ class Am_Grid_Editable_Pages extends Am_Grid_Editable_Content
     {
         parent::__construct($request, $view);
         $this->addCallback(self::CB_VALUES_FROM_FORM, array($this, '_valuesFromForm'));
-        $this->setFilter(new Am_Grid_Filter_Text(___('Filter by Title'), array('title' => 'LIKE')));
+        $this->setFilter(new Am_Grid_Filter_Content_Common);
     }
 
     public function _valuesToForm(array & $values, Am_Record $record)
@@ -676,6 +763,7 @@ class Am_Grid_Editable_Pages extends Am_Grid_Editable_Content
         $this->actionAdd(new Am_Grid_Action_PagePreview('preview', ___('Preview')));
         $this->actionAdd(new Am_Grid_Action_Group_ContentAssignCategory(false));
         $this->actionAdd(new Am_Grid_Action_Group_ContentAssignCategory(true));
+        $this->actionAdd(new Am_Grid_Action_Group_Delete);
     }
 
     protected function initGridFields()
@@ -705,7 +793,8 @@ class Am_Grid_Editable_Pages extends Am_Grid_Editable_Content
             ->setId('page-path')
             ->setLabel(___("Path\n" .
                 'will be used to construct user-friendly url, in case of you leave ' .
-                'it empty aMember will use id of this page to do it'));
+                'it empty aMember will use id of this page to do it'))
+            ->addRule('callback2', null, array($this, 'checkPath'));
 
         $root_url = Am_Controller::escape(Am_Di::getInstance()->config->get('root_url'));
 
@@ -775,6 +864,14 @@ CUT
         return $form;
     }
 
+    function checkPath($v, $e)
+    {
+        $r = $this->getRecord();
+        $found = $this->getDi()->db->selectCell('SELECT COUNT(*) FROm ?_page WHERE path=?
+            {AND page_id<>?}', $v, $r->isLoaded() ? $r->pk() : DBSIMPLE_SKIP);
+        return $found ? ___('Path should be unique') : null;
+    }
+
     function getUserTagOptions()
     {
         $tagOptions = array(
@@ -817,7 +914,7 @@ class Am_Grid_Editable_Links extends Am_Grid_Editable_Content
     public function __construct(Am_Request $request, Am_View $view)
     {
         parent::__construct($request, $view);
-        $this->setFilter(new Am_Grid_Filter_Text(___('Filter by Title'), array('title' => 'LIKE')));
+        $this->setFilter(new Am_Grid_Filter_Content_Common);
     }
 
     public function initActions()
@@ -825,6 +922,7 @@ class Am_Grid_Editable_Links extends Am_Grid_Editable_Content
         parent::initActions();
         $this->actionAdd(new Am_Grid_Action_Group_ContentAssignCategory(false));
         $this->actionAdd(new Am_Grid_Action_Group_ContentAssignCategory(true));
+        $this->actionAdd(new Am_Grid_Action_Group_Delete);
     }
 
     protected function initGridFields()
@@ -885,13 +983,19 @@ class Am_Grid_Editable_Integrations extends Am_Grid_Editable_Content
     public function __construct(Am_Request $request, Am_View $view)
     {
         parent::__construct($request, $view);
-        $this->setFilter(new Am_Grid_Filter_Text(___('Filter by Plugin'), array('plugin' => 'LIKE')));
+        $this->setFilter(new Am_Grid_Filter_Content_Integration);
     }
 
     public function init()
     {
         parent::init();
         $this->addCallback(self::CB_VALUES_FROM_FORM, array($this, '_valuesFromForm'));
+    }
+
+    public function initActions()
+    {
+        parent::initActions();
+        $this->actionAdd(new Am_Grid_Action_Group_Delete);
     }
 
     public function createAdapter()
@@ -1090,6 +1194,7 @@ class Am_Grid_Editable_Folders extends Am_Grid_Editable_Content
         parent::initActions();
         $this->actionAdd(new Am_Grid_Action_Group_ContentAssignCategory(false));
         $this->actionAdd(new Am_Grid_Action_Group_ContentAssignCategory(true));
+        $this->actionAdd(new Am_Grid_Action_Group_Delete);
     }
 
     protected function initGridFields()
@@ -1267,12 +1372,18 @@ class Am_Grid_Editable_Emails extends Am_Grid_Editable_Content
     public function __construct(Am_Request $request, Am_View $view)
     {
         parent::__construct($request, $view);
-        $this->setFilter(new Am_Grid_Filter_Text(___('Filter by Subject'), array('subject' => 'LIKE')));
+        $this->setFilter(new Am_Grid_Filter_Content_Email);
     }
 
     public function init()
     {
         $this->comment = array(
+            EmailTemplate::PRODUCTWELCOME =>
+            ___('Product welcome email will be automatically sent immediately after payment received.
+Product welcome email will not be sent if:
+<ul>
+    <li>User has unsubscribed from e-mail messages</li>
+</ul>'),
             EmailTemplate::AUTORESPONDER =>
             ___('Autoresponder message will be automatically sent by cron job
 when configured conditions met. If you set message to be sent
@@ -1302,13 +1413,16 @@ Expiration message will not be sent if:
         $a0->addUrlParam('name', EmailTemplate::AUTORESPONDER);
         $this->actionAdd($a1 = new Am_Grid_Action_Insert('insert-' . EmailTemplate::EXPIRE, ___('New Expiration E-Mail')));
         $a1->addUrlParam('name', EmailTemplate::EXPIRE);
+        $this->actionAdd($a2 = new Am_Grid_Action_Insert('insert-' . EmailTemplate::PRODUCTWELCOME, ___('New Product Welcome E-Mail')));
+        $a2->addUrlParam('name', EmailTemplate::PRODUCTWELCOME);
         $this->actionAdd(new Am_Grid_Action_EmailPreview('preview', ___('Preview')));
+        $this->actionAdd(new Am_Grid_Action_Group_Delete);
     }
 
     protected function createAdapter()
     {
         $ds = new Am_Query(Am_Di::getInstance()->emailTemplateTable);
-        $ds->addWhere('name IN (?a)', array(EmailTemplate::AUTORESPONDER, EmailTemplate::EXPIRE));
+        $ds->addWhere('name IN (?a)', array(EmailTemplate::AUTORESPONDER, EmailTemplate::EXPIRE, EmailTemplate::PRODUCTWELCOME));
         return $ds;
     }
 
@@ -1338,6 +1452,9 @@ Expiration message will not be sent if:
                         return ___("on expiration day");
                 }
                 break;
+            case EmailTemplate::PRODUCTWELCOME:
+                return ___("immediately after product is purchased");
+                break;
         }
     }
 
@@ -1347,13 +1464,16 @@ Expiration message will not be sent if:
         if ($record->recipient_user)
             $recipients[] = "<strong>User</strong>";
 
+        if ($record->recipient_aff)
+            $recipients[] = "<strong>Affiliate</strong>";
+
         if ($record->recipient_admin)
             $recipients[] = "<strong>Admin</strong>";
 
         if ($record->recipient_emails)
             $recipients[] = $record->recipient_emails;
 
-        return sprintf('<td>%s</td>', join(', ', $recipients));
+        return sprintf('<td>%s</td>', implode(', ', $recipients));
     }
 
     public function createForm()
@@ -1372,46 +1492,85 @@ Expiration message will not be sent if:
 
         $form->addStatic()->setLabel(___('E-Mail Type'))->setContent($name);
 
-        $recipient = $form->addGroup(null)->setLabel(___('Recipients'));
+        if ($options = $this->getDi()->emailTemplateLayoutTable->getOptions()) {
+            $form->addSelect('email_template_layout_id')
+                ->setLabel(___('Layout'))
+                ->loadOptions(array(''=>___('No Layout')) + $options);
+        }
 
+        $form->addSelect('reply_to')
+            ->loadOptions($this->getReplyToOptions())
+            ->setLabel(___("Reply To\n" .
+                "mailbox for replies to message"));
+
+        $recipient = $form->addGroup(null)->setLabel(___('Recipients'));
+        $recipient->setSeparator('<br />');
         $recipient->addAdvCheckbox('recipient_user')
             ->setContent(___('User Email'));
-        $recipient->addStatic()->setContent('<br>');
+        if ($this->getDi()->modules->isEnabled('aff')) {
+            $recipient->addAdvCheckbox('recipient_aff')
+                ->setContent(___('Affiliate Email'));
+        }
         $recipient->addAdvCheckbox('recipient_admin')
             ->setContent(___('Admin Email'));
-        $recipient->addStatic()->setContent('<br>');
         $recipient->addAdvCheckbox('recipient_other', array('id' => 'checkbox-recipient-other'))
             ->setContent(___('Other'));
+
         $form->addText('recipient_emails', array('class' => 'el-wide', 'id' => 'input-recipient-emails', 'placeholder' => ___('Email Addresses Separated by Comma')))
             ->setLabel(___('Emails'))
             ->addRule('callback2', ___('Please enter valid e-mail addresses'), array($this, 'validateOtherEmails'));
 
         $form->addText('bcc', array('class' => 'el-wide', 'placeholder' => ___('Email Addresses Separated by Comma')))
-            ->setLabel(___('BCC'))
+            ->setLabel(___("BCC\n" .
+                "blind carbon copy allows the sender of a message to conceal the person entered in the Bcc field from the other recipients"))
             ->addRule('callback', ___('Please enter valid e-mail addresses'), array('Am_Validate', 'emails'));
 
+        $form->addScript()->setScript(<<<CUT
+$("#checkbox-recipient-other").change(function(){
+    $("#row-input-recipient-emails").toggle(this.checked);
+}).change();
+CUT
+            );
+
         $form->addElement(new Am_Form_Element_MailEditor($name, array('upload-prefix' => 'email-messages')));
-        $form->addElement(new Am_Form_Element_ResourceAccess('_access'))
+        switch ($name)
+        {
+            case EmailTemplate::AUTORESPONDER:
+                $access_desc = ___('Send E-Mail if customer has subscription (required)');
+                break;
+            case EmailTemplate::EXPIRE:
+                $access_desc = ___('Send E-Mail when subscription expires (required)');
+                break;
+            case EmailTemplate::PRODUCTWELCOME:
+                $access_desc = ___('Send E-Mail when the next subscription is started (required)');
+                break;
+        }
+        $access_el = $form->addElement(new Am_Form_Element_ResourceAccess('_access'))
+            ->setLabel($access_desc)
             ->setAttribute('without_period', true)
-            ->setLabel($name == EmailTemplate::AUTORESPONDER ? ___('Send E-Mail if customer has subscription (required)') : ___('Send E-Mail when subscription expires (required)'));
+            ->setAttribute('without_free', true);
 
         $group = $form->addGroup()
                 ->setLabel(___('Send E-Mail only if customer has no subscription (optional)'));
+        $group->setSeparator('<br />');
 
         $select = $group->addMagicSelect('_not_conditions', array('class'=>'am-combobox'))
                 ->setAttribute('without_period', true)
                 ->setAttribute('without_free', true);
         $this->addCategoriesProductsList($select);
         $group->addAdvCheckbox('not_conditions_expired')->setContent(___('check expired subscriptions too'));
+        $group->addAdvCheckbox('not_conditions_future')->setContent(___('check future subscriptions too'));
 
-        $group = $form->addGroup('day')->setLabel(___('Send E-Mail Message'));
-        $options = ($name == EmailTemplate::AUTORESPONDER) ?
-            array('' => ___('..th subscription day (starts from 2)'), '1' => ___('immediately after subscription is started')) :
-            array('-' => ___('days before expiration'), '0' => ___('on expiration day'), '+' => ___('days after expiration'));
-        ;
-        $group->addInteger('count', array('size' => 3, 'id' => 'days-count'));
-        $group->addSelect('type', array('id' => 'days-type'))->loadOptions($options);
-        $group->addScript()->setScript(<<<CUT
+        if ($name != EmailTemplate::PRODUCTWELCOME)
+        {
+            $group = $form->addGroup('day')->setLabel(___('Send E-Mail Message'));
+            $options = ($name == EmailTemplate::AUTORESPONDER) ?
+                array('' => ___('..th subscription day (starts from 2)'), '1' => ___('immediately after subscription is started')) :
+                array('-' => ___('days before expiration'), '0' => ___('on expiration day'), '+' => ___('days after expiration'));
+            ;
+            $group->addInteger('count', array('size' => 3, 'id' => 'days-count'));
+            $group->addSelect('type', array('id' => 'days-type'))->loadOptions($options);
+            $group->addScript()->setScript(<<<CUT
 $("#days-type").change(function(){
     var sel = $(this);
     if ($("input[name='name']").val() == 'autoresponder')
@@ -1419,12 +1578,22 @@ $("#days-type").change(function(){
     else
         $("#days-count").toggle( sel.val() != '0' );
 }).change();
-$("#checkbox-recipient-other").change(function(){
-    $("#row-input-recipient-emails").toggle(this.checked);
-}).change();
 CUT
-        );
+            );
+        }
         return $form;
+    }
+
+    protected function getReplyToOptions()
+    {
+        $op = array();
+        $op[''] = Am_Controller::escape(sprintf('%s <%s>',
+            $this->getDi()->config->get('admin_email_name', $this->getDi()->config->get('site_title')),
+            $this->getDi()->config->get('admin_email_from', $this->getDi()->config->get('admin_email'))));
+        foreach (Am_Di::getInstance()->adminTable->findBy() as $admin) {
+           $op[$admin->pk()] = Am_Controller::escape(sprintf('%s <%s>', $admin->getName(), $admin->email));
+        }
+        return $op;
     }
 
     function validateOtherEmails($val, $el)
@@ -1487,6 +1656,13 @@ CUT
 
     public function _valuesFromForm(array &$values)
     {
+        if (!$values['reply_to']) {
+            $values['reply_to'] = null;
+        }
+        if (!$vars['email_template_layout_id']) {
+            $vars['email_template_layout_id'] = null;
+        }
+
         switch ($values['day']['type']) {
             case '0': $values['day'] = 0;
                 break;
@@ -1534,7 +1710,7 @@ class Am_Grid_Editable_Video extends Am_Grid_Editable_Content
     {
         parent::__construct($request, $view);
         $this->addCallback(self::CB_VALUES_FROM_FORM, array($this, '_valuesFromForm'));
-        $this->setFilter(new Am_Grid_Filter_Text(___('Filter by Title'), array('title' => 'LIKE')));
+        $this->setFilter(new Am_Grid_Filter_Content_Common);
     }
 
     public function initActions()
@@ -1542,6 +1718,7 @@ class Am_Grid_Editable_Video extends Am_Grid_Editable_Content
         parent::initActions();
         $this->actionAdd(new Am_Grid_Action_Group_ContentAssignCategory(false));
         $this->actionAdd(new Am_Grid_Action_Group_ContentAssignCategory(true));
+        $this->actionAdd(new Am_Grid_Action_Group_Delete);
     }
 
     protected function initGridFields()

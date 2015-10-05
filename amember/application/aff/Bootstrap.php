@@ -13,6 +13,15 @@ class Bootstrap_Aff extends Am_Module
      */
     const AFF_COMMISSION_AFTER_INSERT = 'affCommissionAfterInsert';
     /**
+     * Event: called after payouts marked as paid
+     * triggered for each PayoutDetail item separately
+     *
+     * @param User user
+     * @param Payout payout
+     * @param PayoutDetail payoutDetail
+     */
+    const AFF_PAYOUT_PAID = 'affPayoutPaid';
+    /**
      * Event: called after payouts is calculated
      *
      * @param AffPayout[] payouts
@@ -45,8 +54,15 @@ class Bootstrap_Aff extends Am_Module
     const AFF_CUSTOM_REDIRECT_DENY_SOME_ALLOW_OTHERS = 2;
 
     const STORE_PREFIX = 'aff_signup_state-';
+    const KEYWORD_MAX_LEN = 64;
 
     protected $last_aff_id;
+
+    static function activate($id, $pluginType)
+    {
+        parent::activate($id, $pluginType);
+        self::setUpAffFormIfNotExist(Am_Di::getInstance()->db);
+    }
 
     function init()
     {
@@ -66,19 +82,37 @@ class Bootstrap_Aff extends Am_Module
     function renderInvoiceCommissions(Invoice $invoice, Am_View $view)
     {
         $query = new Am_Query($this->getDi()->affCommissionTable);
-        $query->leftJoin('?_invoice', 'i', 'i.invoice_id=t.invoice_id');
-        $query->leftJoin('?_user', 'a', 't.aff_id=a.user_id');
-        $query->leftJoin('?_product', 'p', 't.product_id=p.product_id');
-        $query->addField('CONCAT(a.login, \' (\', a.name_f, \' \', a.name_l,\') [#\', a.user_id, \']\')', 'aff_name')
+        $query->leftJoin('?_invoice', 'i', 'i.invoice_id=t.invoice_id')
+            ->leftJoin('?_user', 'a', 't.aff_id=a.user_id')
+            ->leftJoin('?_product', 'p', 't.product_id=p.product_id')
+            ->addField('CONCAT(a.login, \' (\', a.name_f, \' \', a.name_l,\') #\', a.user_id)', 'aff_name')
             ->addField('p.title', 'product_title')
-            ->addField('IF(payout_detail_id IS NULL, \'no\', \'yes\')', 'is_paid');
-        $query->setOrder('commission_id', 'desc');
-        $query->addWhere('t.invoice_id=?', $invoice->pk());
+            ->addWhere('t.invoice_id=?', $invoice->pk())
+            ->leftJoin('?_aff_payout_detail', 'apd', 't.payout_detail_id=apd.payout_detail_id')
+            ->leftJoin('?_aff_payout', 'ap', 'ap.payout_id=apd.payout_id')
+            ->addField('ap.date', 'payout_date')
+            ->addField('ap.payout_id')
+            ->addField('apd.is_paid')
+            ->setOrder('commission_id', 'desc');
 
         $items = $query->selectAllRecords();
         $view->comm_items = $items;
         $view->invoice = $invoice;
+        $view->has_tiers = $this->getDi()->affCommissionRuleTable->getMaxTier();
         return $view->render('blocks/admin-user-invoice-details.phtml');
+    }
+
+    function sendNotApprovedEmail(User $user){
+        if($et = Am_Mail_Template::load('aff.manually_approve', $user->lang))
+        {
+            $et->setAffiliate($user);
+            $et->send($user);
+        }
+        if($et = Am_Mail_Template::load('aff.manually_approve_admin'))
+        {
+            $et->setAffiliate($user);
+            $et->send(Am_Mail_Template::TO_ADMIN);
+        }
     }
 
     function renderAlert()
@@ -90,6 +124,11 @@ class Bootstrap_Aff extends Am_Module
                     '<a href="' . REL_ROOT_URL . '/aff/member/payout-info">', '</a>') . '</div>';
             }
         }
+    }
+
+    function onUserSearchConditions(Am_Event $e)
+    {
+        $e->addReturn(new Am_Query_User_Condition_AffWithCommission);
     }
 
     function onGetApiControllers(Am_Event $e)
@@ -109,9 +148,32 @@ class Bootstrap_Aff extends Am_Module
             ), 'aff_click');
     }
 
+    function onValidateCoupon(Am_Event $e)
+    {
+        $batch = $e->getCouponBatch();
+        $coupon = $e->getCoupon();
+        $user = $e->getUser();
+
+        if ($user && $batch->aff_id && $batch->aff_id == $user->pk()) {
+            $e->addReturn(___("You can't use your affiliate coupon code"));
+        }
+
+        if ($user && $coupon->aff_id && $coupon->aff_id == $user->pk()) {
+            $e->addReturn(___("You can't use your affiliate coupon code"));
+        }
+    }
+
     function onInvoiceAfterDelete(Am_Event $e)
     {
         $this->getDi()->affCommissionTable->deleteByInvoiceId($e->getInvoice()->pk());
+    }
+
+    function onInvoiceBeforeInsert(Am_Event $e)
+    {
+        $invoice = $e->getInvoice();
+        $aff_id = !empty($invoice->aff_id) ? $invoice->aff_id : $invoice->getUser()->aff_id;
+        if(!empty($aff_id))
+            $invoice->keyword_id = $this->findKeywordId($aff_id);
     }
 
     function onAdminWarnings(Am_Event $event)
@@ -139,6 +201,7 @@ class Bootstrap_Aff extends Am_Module
             'id' => 'aff.mail_sale_admin',
             'title' => 'Aff Mail Sale Admin',
             'mailPeriodic' => Am_Mail::USER_REQUESTED,
+            'isAdmin' => true,
             'vars' => array(
                 'user',
                 'affiliate',
@@ -251,6 +314,14 @@ class Bootstrap_Aff extends Am_Module
                         'action' => 'payout',
                         'label' => ___('Payouts'),
                     ),
+                    array(
+                        'id' => 'aff-keywords',
+                        'controller' => 'member',
+                        'module' => 'aff',
+                        'action' => 'keywords',
+                        'label' => ___('Keywords'),
+                    ),
+
                 ),
             )
         );
@@ -354,8 +425,14 @@ $("#' . $el->getId() . '").change(function()
 
     public function couponRenderContent(& $out)
     {
-        $out = sprintf('<div class="info">%s</div>', ___('You can assign some coupon codes to specific affiliate. This affiliate will get commission for payment
-in case of coupon is used during payment. This affiliate will be assigned to user as default affiliate in case of user has not default affiliate assigned yet.')) . $out;
+        $out = sprintf('<div class="info">%s</div>',
+            ___('You can assign some coupon codes to specific affiliate. ' .
+                'Whenever coupon is used, commission will always be credited to '.
+                'this affiliate. This is true even when another affiliate is permanently ' .
+                'tagged to the customer. For sales where the coupon is NOT used, the ' .
+                'original (previous) affiliate will continue receiving commissions. If the ' .
+                'customer has no affiliate, this affiliate will permanently be tagged to the ' .
+                'customer, and will receive credit for future sales.')) . $out;
     }
 
     public function onCouponBeforeUpdate(Am_Event $event)
@@ -406,10 +483,12 @@ in case of coupon is used during payment. This affiliate will be assigned to use
         $batch = $event->getGrid()->getRecord();
         $affGroup = $fieldSet->addGroup()
                 ->setLabel(___("Affiliate\n" .
-                        "this affiliate will get commission for payment in case of " .
-                        "coupon from this batch is used during payment. " .
-                        "This affiliate will be assigned to user as default affiliate " .
-                        "in case of user has not default affiliate assigned yet."));
+                        "whenever coupons from this batch is used, commission will always be credited to " .
+                        "this affiliate. This is true even when another affiliate is permanently " .
+                        "tagged to the customer. For sales where the coupon is NOT used, the " .
+                        "original (previous) affiliate will continue receiving commissions. If the " .
+                        "customer has no affiliate, this affiliate will permanently be tagged to the " .
+                        "customer, and will receive credit for future sales."));
 
         $affEl = $affGroup->addText('_aff', array('placeholder' => ___('Type Username or E-Mail')))
                 ->setId('aff-affiliate');
@@ -657,13 +736,9 @@ CUT
 
     /**
      * if $_COOKIE is empty, find matches for user by IP address in aff_clicks table
-     * @param Am_Event_UserBeforeInsert $event 
      */
-    function onUserBeforeInsert(Am_Event_UserBeforeInsert $event)
+    function findAffId(& $aff_source = null)
     {
-        // skip this code if running from aMember CP
-        if (defined('AM_ADMIN') && AM_ADMIN)
-            return;
         $aff_id = !empty($_COOKIE[self::COOKIE_NAME]) ? $_COOKIE[self::COOKIE_NAME] : null;
         $aff_source = null;
         //backwards compatiablity of affiliate cookies
@@ -679,10 +754,66 @@ CUT
                 $aff_id = null;
             }
         }
-        if (empty($aff_id)) {
-            $aff_id = $this->getDi()->affClickTable->findAffIdByIp($_SERVER['REMOTE_ADDR']);
-            $aff_source = 'ip-' . $_SERVER['REMOTE_ADDR'];
+//        if (empty($aff_id)) {
+//            $aff_id = $this->getDi()->affClickTable->findAffIdByIp($_SERVER['REMOTE_ADDR']);
+//            $aff_source = 'ip-' . $_SERVER['REMOTE_ADDR'];
+//        }
+        return $aff_id;
+    }
+
+    function findKeywordId($aff_id, $keyword=null){
+        if(defined('AM_ADMIN') && AM_ADMIN) return null;
+
+        if(isset($this->cached_keyword_id)) return  $this->cached_keyword_id;
+
+        $aff = $this->getDi()->userTable->load($aff_id);
+
+        if(is_null($keyword))
+        {
+            $cookie_name = sprintf("%s-%s", self::COOKIE_NAME, md5($aff->login));
+            $keyword = !empty($_COOKIE[$cookie_name]) ? base64_decode($_COOKIE[$cookie_name]) : null;
         }
+
+        if(!$keyword)
+            return null;
+
+        $id = $this->getDi()->db->selectCell(""
+            . "SELECT * "
+            . "FROM "
+            . "?_aff_keyword "
+            . "WHERE aff_id=? AND `value`=?"
+            . "", $aff_id, $keyword);
+        if(!$id)
+        {
+            try{
+                $this->getDi()->db->query(""
+                    . "INSERT INTO ?_aff_keyword "
+                    . "(aff_id, `value`) "
+                    . "VALUES "
+                    . "(?, ?)"
+                    . "", $aff_id, $keyword);
+                $id = $this->getDi()->db->selectCell("SELECT LAST_INSERT_ID()");
+            }
+            catch(Exception $e)
+            {
+                return null;
+            }
+        }
+        $this->cached_keyword_id = $id;
+        return $this->cached_keyword_id;
+
+    }
+
+    /**
+     * @param Am_Event_UserBeforeInsert $event
+     */
+    function onUserBeforeInsert(Am_Event_UserBeforeInsert $event)
+    {
+        // skip this code if running from aMember CP
+        if (defined('AM_ADMIN') && AM_ADMIN)
+            return;
+
+        $aff_id = $this->findAffId($aff_source);
 
         $e = new Am_Event(self::AFF_BIND_AFFILIATE, array(
             'user' => $event->getUser()
@@ -715,6 +846,12 @@ CUT
     {
         foreach (array('?_aff_click', '?_aff_commission', '?_aff_lead') as $table)
             $this->getDi()->db->query("DELETE FROM $table WHERE aff_id=?", $event->getUser()->user_id);
+    }
+
+    function onUserBeforeUpdate(Am_Event $e)
+    {
+        if (!$e->getUser()->aff_payout_type)
+            $e->getUser()->aff_payout_type = null;
     }
 
     function onUserAfterUpdate(Am_Event_UserAfterUpdate $e)
@@ -843,6 +980,13 @@ CUT
             $val .= '-' . $this->encodeClickId($aff_click_id);
         Am_Controller::setCookie(self::COOKIE_NAME, $val, $tm, '/', $_SERVER['HTTP_HOST']);
     }
+    function setKeywordCookie(User $aff, $keyword=null)
+    {
+        $tm = $this->getDi()->time + $this->getDi()->config->get('aff.cookie_lifetime', 30) * 3600 * 24;
+        if(!is_null($keyword))
+            Am_Controller::setCookie(sprintf("%s-%s", self::COOKIE_NAME, md5($aff->login)), base64_encode($keyword), $tm, '/', $_SERVER['HTTP_HOST']);
+    }
+
 
     function encodeClickId($id)
     {
@@ -874,6 +1018,14 @@ CUT
             case 'w':
                 $w = date('w', amstrtotime($event->getDatetime()));
                 if ($count != $w)
+                    return;
+                break;
+            case 'W' :
+                $w = date('w', amstrtotime($event->getDatetime()));
+                if ($count != $w)
+                    return;
+                $wn = date('W', amstrtotime($event->getDatetime()));
+                if ($wn % 2)
                     return;
                 break;
             default :
@@ -953,10 +1105,16 @@ CUT
         include_once APPLICATION_PATH . '/aff/library/Reports.php';
     }
 
+    function onLoadBricks()
+    {
+        include_once APPLICATION_PATH . '/aff/library/Am/Form/Brick.php';
+    }
+
     function sendAffRegistrationEmail(User $user)
     {
-        if ($et = Am_Mail_Template::load('aff.registration_mail', $user->lang)) {
-            $et->setUser($user);
+        if ($this->getConfig('registration_mail') && ($et = Am_Mail_Template::load('aff.registration_mail', $user->lang))) {
+            $et->setAffiliate($user);
+            $et->setUser($user); //backwards
             $et->password = $user->getPlaintextPass();
             $et->send($user);
         }
@@ -972,6 +1130,7 @@ CUT
             $this->getDi()->db->query("UPDATE ?_aff_commission_rule SET type=?, tier=? WHERE type=?", 'global', 1, 'global-2');
             echo "Done<br>\n";
         }
+
         if (version_compare($e->getVersion(), '4.2.20') < 0) {
             echo "Normalize sort order for aff banners and links...";
             if (ob_get_level ())
@@ -1004,6 +1163,21 @@ CUT
                 $comm->updateQuick('is_voided', 1);
                 $void->updateQuick('commission_id_void', $comm->pk());
             }
+            echo "Done<br>\n";
+        }
+
+        if (version_compare($e->getVersion(), '4.5.4') < 0) {
+            echo "Switch empty payout method with NULL...";
+            if (ob_get_level ())
+                ob_end_flush();
+            $this->getDi()->db->query("UPDATE ?_user SET aff_payout_type=NULL WHERE aff_payout_type=?", '');
+            echo "Done<br>\n";
+        }
+
+        if (version_compare($e->getVersion(), '4.7.0') < 0)
+        {
+            echo "Set Up Affiliate Signup Form...";
+            $this->setUpAffFormIfNotExist($this->getDi()->db);
             echo "Done<br>\n";
         }
     }
@@ -1069,10 +1243,12 @@ CUT
     {
         $this->getDi()->blocks->add(new Am_Block('member/main/top', null, 'aff-member-payout-empty', null, array($this, 'renderAlert')));
         $this->getDi()->blocks->add(new Am_Block('aff/top', null, 'aff-aff-payout-empty', null, array($this, 'renderAlert')));
-        $this->getDi()->blocks->add(new Am_Block('admin/user/invoice/details', null, 'aff-user-invoice-details', null, array($this, '_renderInvoiceCommissions')));
-        $this->getDi()->blocks->add(new Am_Block('admin/user/invoice/top', null, 'aff-user-invoice-top', null, 'admin-void-commission.phtml'));
-        $this->getDi()->blocks->add(new Am_Block('admin/user/invoice/top', null, 'aff-user-invoice-top-comm', null, 'admin-calc-commission.phtml'));
 
+        if (($admin = $this->getDi()->authAdmin->getUser()) && $admin->hasPermission(self::ADMIN_PERM_ID)) {
+            $this->getDi()->blocks->add(new Am_Block('admin/user/invoice/details', null, 'aff-user-invoice-details', null, array($this, '_renderInvoiceCommissions')));
+            $this->getDi()->blocks->add(new Am_Block('admin/user/invoice/top', null, 'aff-user-invoice-top', null, 'admin-void-commission.phtml'));
+            $this->getDi()->blocks->add(new Am_Block('admin/user/invoice/top', null, 'aff-user-invoice-top-comm', null, 'admin-calc-commission.phtml'));
+        }
         $router = Zend_Controller_Front::getInstance()->getRouter();
         $router->addRoute('aff-go', new Zend_Controller_Router_Route(
                 'aff/go/:r', array(
@@ -1101,7 +1277,7 @@ CUT
     var d=document, s=d.createElement('script'), src=d.getElementsByTagName('script')[0];
     var w = window; var lo = w.location; var hr=lo.href; var ho=lo.host;  var se=lo.search;
     var m = RegExp('[?&]ref=([^&]*)').exec(se);
-    var ref = m && decodeURIComponent(m[1].replace(/\+/g, ' '));s.type='text/javascript'; 
+    var ref = m && decodeURIComponent(m[1].replace(/\+/g, ' '));s.type='text/javascript';
     s.async=true; s.src=url+'/aff/click-js/?r='+ref+'&s='+encodeURIComponent(document.referrer);
     if(ref){src.parentNode.insertBefore(s,src); var uri = hr.toString().split(ho)[1];
     w.history.replaceState('Object', 'Title', uri.replace(m[0], ""));}})();
@@ -1116,6 +1292,19 @@ EOT;
         if (!defined('AM_ADMIN') && !$view->jsClickCodeAdded) {
             $view->jsClickCodeAdded = true;
             $view->placeholder('body-finish')->prepend($this->getClickJs());
+        }
+    }
+
+    protected static function setUpAffFormIfNotExist(DbSimple_Interface $db)
+    {
+        if (!$db->selectCell("SELECT COUNT(*) FROM ?_saved_form WHERE type=?", 'aff')) {
+            $db->query("INSERT INTO ?_saved_form (title, comment, type, fields)
+                VALUE (?a)", array(
+                    'Affiliate Signup Form',
+                    '',
+                    'aff',
+                    '[{"id":"name","class":"name","hide":"1"},{"id":"email","class":"email","hide":true},{"id":"login","class":"login","hide":true},{"id":"password","class":"password","hide":true},{"id":"address","class":"address","hide":"1","config":{"fields":{"street":1,"city":1,"country":1,"state":1,"zip":1}}},{"id":"payout","class":"payout"}]'
+                ));
         }
     }
 

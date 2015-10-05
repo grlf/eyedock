@@ -83,6 +83,13 @@ class Am_Form_Admin_Product extends Am_Form_Admin
         $fs->addCheckbox($prefix . 'variable_qty' . $suffix, array('class' => 'variable_qty'))
             ->setContent(___('allow user to change quantity'));
 
+        if (Am_Di::getInstance()->config->get('product_paysystem')) {
+            $fieldSet->addMagicSelect($prefix . 'paysys_id' . $suffix)
+                ->setLabel(___("Payment System\n" .
+                    "Choose payment system to be used with this product"))
+                ->loadOptions(Am_Di::getInstance()->paysystemList->getOptions());
+        }
+
         foreach (Am_Di::getInstance()->billingPlanTable->customFields()->getAll() as $k => $f) {
             $el = $f->addToQf2($fieldSet);
             $el->setName($prefix . $el->getName() . $suffix);
@@ -133,11 +140,12 @@ class Am_Form_Admin_Product extends Am_Form_Admin
             ->setLabel(___('Product Categories'));
 
         /* Billing Settings */
-        $fieldSet = $this->addElement('fieldset', 'billing')
+        $fieldSet = $this->addElement('fieldset', 'billing', array('id' =>'billing'))
                 ->setLabel(___('Billing'));
 
         $fieldSet->addElement('advcheckbox', 'tax_group', array('value' => IProduct::ALL_TAX))
             ->setLabel(___('Apply Tax?'));
+
 
         $fieldSet->addElement('select', 'currency', array('class' => 'am-combobox'))
             ->setLabel(___("Currency\n" .
@@ -362,7 +370,7 @@ class Am_Grid_Action_Group_ProductAssignCategory extends Am_Grid_Action_Group_Ab
                 $this->grid->getId(),
                 Am_Controller::renderOptions(Am_Di::getInstance()->productCategoryTable->getAdminSelectOptions())
         );
-        return parent::renderConfirmationForm($this->remove ? ___("Yes, remove category") : ___("Yes, assign category"), null, $select);
+        return parent::renderConfirmationForm($this->remove ? ___("Yes, remove category") : ___("Yes, assign category"), $select);
     }
 
     /**
@@ -391,6 +399,42 @@ class Am_Grid_Action_Group_ProductAssignCategory extends Am_Grid_Action_Group_Ab
 
 }
 
+class Am_Grid_Action_Group_ChangeOrder extends Am_Grid_Action_Group_Abstract
+{
+    protected $needConfirmation = true;
+
+    public function renderConfirmationForm($btn = "Yes, assign", $addHtml = null)
+    {
+        $select = sprintf('%s <select name="%s__product_id">
+            %s
+            </select><br /><br />'.PHP_EOL,
+            ___('Put Chosen Products After'),
+            $this->grid->getId(),
+            Am_Controller::renderOptions(Am_Di::getInstance()->productTable->getOptions())
+            );
+        return parent::renderConfirmationForm(___("Change Order"), $select);
+    }
+
+    /**
+     * @param int $id
+     * @param User $record
+     */
+    public function handleRecord($id, $record)
+    {
+        $ids = $this->getIds();
+        $after = null;
+        foreach ($ids as $k => $v) {
+            if ($v == $id) {
+                $after = isset($ids[$k-1]) ? $ids[$k-1] : $this->grid->getRequest()->getInt('_product_id');
+                break;
+            }
+        }
+        if (!$after) return;
+        $this->_simpleSort(Am_Di::getInstance()->productTable, array('id' => $id), array('id'=>$after));
+
+    }
+}
+
 class Am_Grid_Action_Group_ProductEnable extends Am_Grid_Action_Group_Abstract
 {
 
@@ -405,7 +449,7 @@ class Am_Grid_Action_Group_ProductEnable extends Am_Grid_Action_Group_Abstract
                 $enable ? ___("Enable") : ___("Disable")
         );
     }
-    
+
 
    /**
      * @param int $id
@@ -414,6 +458,52 @@ class Am_Grid_Action_Group_ProductEnable extends Am_Grid_Action_Group_Abstract
     public function handleRecord($id, $record)
     {
         $record->updateQuick('is_disabled', !$this->enable);
+    }
+
+}
+
+class Am_Grid_Action_Group_Archive extends Am_Grid_Action_Group_Abstract
+{
+
+    protected $needConfirmation = true;
+    protected $archive = true;
+
+    public function __construct($archive = true)
+    {
+        $this->archive = (bool) $archive;
+        parent::__construct(
+                $archive ? "product-archive" : "product-unarchive",
+                $archive ? ___("Delete") : ___("Restore")
+        );
+    }
+
+   /**
+     * @param int $id
+     * @param Product $record
+     */
+    public function handleRecord($id, $record)
+    {
+        $record->updateQuick('is_archived', $this->archive);
+    }
+
+}
+
+class Am_Grid_Action_Archive extends Am_Grid_Action_Abstract
+{
+    protected $privilege = 'delete';
+    protected $title;
+    protected $archive = true;
+    public function __construct($id = null, $archive = true)
+    {
+        $this->archive = (bool) $archive;
+        $this->title = ($archive) ? ___("Delete %s") : ___("Restore %s");
+        $this->attributes['data-confirm'] = ($archive) ? ___("Do you really want to delete product?") : ___("Do you really want to restore product?");
+        parent::__construct($id);
+    }
+    public function run()
+    {
+        $this->grid->getRecord()->updateQuick('is_archived', $this->archive);
+        $this->grid->redirectBack();
     }
 
 }
@@ -491,9 +581,52 @@ class AdminProductsController extends Am_Controller_Grid
         return $admin->hasPermission('grid_product');
     }
 
+    public function archivedAction()
+    {
+        $ds = new Am_Query($this->getDi()->productTable);
+        $ds->addWhere('t.is_archived = ?', 1);
+        $ds->addOrder('sort_order')->addOrder('title');
+        $grid = new Am_Grid_Editable('_product', ___("Archived Products"), $ds, $this->_request, $this->view);
+        $grid->setRecordTitle(___('Product'));
+        $grid->addField(new Am_Grid_Field('product_id', '#', true, '', null, '1%'));
+        $grid->addField(new Am_Grid_Field('title', ___('Title'), true, '', null, '50%'))
+            ->setGetFunction(function($r, $g, $f) {
+                return strip_tags($r->$f);
+            });
+        if ($this->getDi()->db->selectCell("SELECT COUNT(*) FROM ?_product_product_category")) {
+            $grid->addField(new Am_Grid_Field('pgroup', ___('Product Categories'), false))->setRenderFunction(array($this, 'renderPGroup'));
+        }
+        $grid->addField(new Am_Grid_Field('terms', ___('Billing Terms'), false))->setRenderFunction(array($this, 'renderTerms'));
+        $grid->actionsClear();
+        $grid->actionAdd(new Am_Grid_Action_Url('edit', ___('Edit Product'), REL_ROOT_URL . '/admin-products?' . http_build_query(array(
+            '_product_a' => 'edit',
+            '_product_b' => '__ROOT__/admin-products/archived',
+            '_product_id' => '__ID__'
+        ))))->setTarget('_top');
+        $grid->actionAdd(new Am_Grid_Action_Delete('delete','Delete permanently'));
+        $grid->actionAdd(new Am_Grid_Action_Archive('product-restore', 0));
+        $grid->actionAdd(new Am_Grid_Action_Group_Delete('group-delete','Delete permanently'));
+        $grid->actionAdd(new Am_Grid_Action_Group_Archive(false));
+
+        $grid->addCallback(Am_Grid_ReadOnly::CB_TR_ATTRIBS, array($this, 'getTrAttribs'));
+
+        $grid->setFilter(new Am_Grid_Filter_Product);
+
+        $unar_count = $this->getArchivedCount();
+        $grid->actionAdd(new Am_Grid_Action_Url('unarchived',
+                ___("Not Archived products") . " ($unar_count)",
+                REL_ROOT_URL . '/admin-products'))
+            ->setType(Am_Grid_Action_Abstract::NORECORD)
+            ->setCssClass('link')
+            ->setTarget('_top');
+
+        $this->view->content = $grid->runWithLayout('admin/layout.phtml');
+    }
+
     public function createGrid()
     {
         $ds = new Am_Query($this->getDi()->productTable);
+        $ds->addWhere('t.is_archived = ?', 0);
         $ds->addOrder('sort_order')->addOrder('title');
         $grid = new Am_Grid_Editable('_product', ___("Products"), $ds, $this->_request, $this->view);
         $grid->setRecordTitle(___('Product'));
@@ -501,9 +634,14 @@ class AdminProductsController extends Am_Controller_Grid
         $grid->actionAdd(new Am_Grid_Action_Group_ProductEnable(true));
         $grid->actionAdd(new Am_Grid_Action_Group_ProductAssignCategory(false));
         $grid->actionAdd(new Am_Grid_Action_Group_ProductAssignCategory(true));
-        $grid->actionAdd(new Am_Grid_Action_Group_Delete);
+        $grid->actionAdd(new Am_Grid_Action_Group_ChangeOrder)
+            ->setTitle(___('Change Order'));
+        $grid->actionAdd(new Am_Grid_Action_Group_Archive(true));
         $grid->addField(new Am_Grid_Field('product_id', '#', true, '', null, '1%'));
-        $grid->addField(new Am_Grid_Field('title', ___('Title'), true, '', null, '50%'));
+        $grid->addField(new Am_Grid_Field('title', ___('Title'), true, '', null, '50%'))
+            ->setGetFunction(function($r, $g, $f) {
+                return strip_tags($r->$f);
+            });
         if ($this->getDi()->db->selectCell("SELECT COUNT(*) FROM ?_product_product_category")) {
             $grid->addField(new Am_Grid_Field('pgroup', ___('Product Categories'), false))->setRenderFunction(array($this, 'renderPGroup'));
         }
@@ -515,6 +653,8 @@ class AdminProductsController extends Am_Controller_Grid
                 ->setEmptyValue(IProduct::NO_TAX);
         }
         $grid->actionGet('edit')->setTarget('_top');
+        $grid->actionDelete('delete');
+        $grid->actionAdd(new Am_Grid_Action_Archive('delete', 1));
         $grid->actionAdd(new Am_Grid_Action_LiveEdit('title'));
         $grid->actionAdd(new Am_Grid_Action_Sort_Product());
 
@@ -534,17 +674,36 @@ class AdminProductsController extends Am_Controller_Grid
                     REL_ROOT_URL . '/admin-product-categories'))
             ->setType(Am_Grid_Action_Abstract::NORECORD)
             ->setTarget('_top')
+            ->setCssClass('link')
             ->setPrivilegeId('edit');
 
         $grid->actionAdd(new Am_Grid_Action_Url('upgrades', ___('Manage Product Upgrade Paths'),
                     REL_ROOT_URL . '/admin-products/upgrades'))
             ->setType(Am_Grid_Action_Abstract::NORECORD)
             ->setTarget('_top')
+            ->setCssClass('link')
             ->setPrivilegeId('edit');
 
         $grid->actionAdd(new Am_Grid_Action_CopyProduct())->setTarget('_top');
+        $ar_count = $this->getArchivedCount(1);
+        if ($ar_count)
+        {
+            $grid->actionAdd(new Am_Grid_Action_Url('archived',
+                    ___("Archived products") . " ($ar_count)",
+                    REL_ROOT_URL . '/admin-products/archived'))
+                ->setType(Am_Grid_Action_Abstract::NORECORD)
+                ->setTarget('_top')
+                ->setCssClass('link')
+                ->setPrivilegeId('browse');
+        }
 
         return $grid;
+    }
+
+    public function getArchivedCount($is_archived = 0)
+    {
+        return $this->getDi()->db->selectCell("SELECT COUNT(*) FROM ?_product
+            WHERE is_archived = ?", $is_archived);
     }
 
     public function getTrAttribs(& $ret, $record)
@@ -568,11 +727,18 @@ class AdminProductsController extends Am_Controller_Grid
     {
         if (!$record->getBillingPlan(false))
             return;
+
+        $product_paysystem = $this->getDi()->config->get('product_paysystem');
         $plans = $record->getBillingPlans();
         $t = array();
-        foreach ($plans as $plan)
-            $t[] = sprintf(count($plans) > 1 && $plan->pk() == $record->default_billing_plan_id ? '<strong>%s</strong>' : '%s',
+        foreach ($plans as $plan) {
+             $term = sprintf(count($plans) > 1 && $plan->pk() == $record->default_billing_plan_id ? '<strong>%s</strong>' : '%s',
                     $this->escape($plan->getTerms()));
+             if ($product_paysystem && $plan->paysys_id) {
+                 $term .= sprintf(' (%s)', $plan->paysys_id);
+             }
+             $t[] = $term;
+        }
         $t = implode('<br />', $t);
         return $this->renderTd($t, false);
     }
@@ -594,6 +760,7 @@ class AdminProductsController extends Am_Controller_Grid
             $ret['_plan'] = array();
             foreach ($record->getBillingPlans() as $plan) {
                 $arr = $plan->toArray();
+                $arr['paysys_id'] = $arr['paysys_id'] ? explode(',', $arr['paysys_id']) : array();
                 if (!empty($arr['rebill_times'])) {
                     $arr['_rebill_times'] = $arr['rebill_times'];
                     if (!in_array($arr['rebill_times'], array(0, 1, IProduct::RECURRING_REBILLS)))
@@ -638,6 +805,9 @@ class AdminProductsController extends Am_Controller_Grid
         }
 
         foreach ($plans as $k => & $arr) {
+            if (Am_Di::getInstance()->config->get('product_paysystem')) {
+                $arr['paysys_id'] = implode(',', isset($arr['paysys_id']) ? $arr['paysys_id'] : array());
+            }
             if ($arr['_rebill_times'] != 'x')
                 $arr['rebill_times'] = $arr['_rebill_times'];
             try {
@@ -724,14 +894,14 @@ class AdminProductsController extends Am_Controller_Grid
                 "Surcharge\nto be additionally charged when customer moves [From]->[To] plan\naMember will not charge First Price on upgrade, use Surcharge instead"));
         $el  = $form->addAdvRadio('type')->setLabel(___('Upgrade Price Calculation Type'));
         $el->addOption(<<<CUT
-          <b>Default</b> - Unused amount from previous subscription  will be applied as discount to new one  
+          <b>Default</b> - Unused amount from previous subscription  will be applied as discount to new one
 CUT
    , ProductUpgrade::TYPE_DEFAULT);
         $el->addOption(<<<CUT
           <b>Flat</b> - User only pay flat rate on upgrade (Surcharge amount)
 CUT
    , ProductUpgrade::TYPE_FLAT);
-   
+
         return $form;
     }
 

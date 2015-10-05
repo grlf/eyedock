@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
 *   Send lost password
 *
@@ -8,59 +8,34 @@
 *        Web: http://www.cgi-central.net
 *    Details: Send lost password page
 *    FileName $RCSfile$
-*    Release: 4.4.4 ($Revision$)
+*    Release: 4.7.0 ($Revision$)
 *
 * Please direct bug reports,suggestions or feedback to the cgi-central forums.
 * http://www.cgi-central.net/forum/
-*                                                                          
+*
 * aMember PRO is a commercial software. Any distribution is strictly prohibited.
-*    
+*
 */
-
 
 class SendpassController extends Am_Controller {
     const EXPIRATION_PERIOD = 8; //hrs
-    const CODE_STATUS_VALID = 1;
-    const CODE_STATUS_EXPIRED = -1;
-    const CODE_STATUS_INVALID = 0;
     const STORE_PREFIX = 'sendpass-';
     const SECURITY_VAR = '_s';
-    
-    /** @var User */
-    protected $user;
 
-    public function preDispatch()
+    public function indexAction()
     {
-        $s = $this->getFiltered(self::SECURITY_VAR);
-        if ($s) {
-            switch ($this->checkCode($s)) 
-            {
-                case self::CODE_STATUS_VALID :
-                    $this->output = $this->changePassAction();
-                    break;
-                case self::CODE_STATUS_EXPIRED :
-                    $this->output = $this->errorAction(___('Security code is expired'));
-                    break;
-                case self::CODE_STATUS_INVALID :
-                default :
-                    $this->output = $this->errorAction(___('User is not found in database'));
-
+        if ($code = $this->getFiltered(self::SECURITY_VAR)) {
+            if ($this->checkCode($code, $user)) {
+                $this->doChangePass($user, $code);
+            } else {
+                throw new Am_Exception_InputError(___('Security code is either invailed or expired'));
             }
         } else {
-            $this->output = $this->sendAction();
+           $this->doSend();
         }
-
-        $this->setProcessed(true);
     }
 
-    public function errorAction($message=null)
-    {
-        $this->view->assign('message', $message);
-        $this->view->assign('login_page', REL_ROOT_URL . '/member');
-        $this->view->display('changepass_failed.phtml');
-    }
-
-    public function sendAction()
+    public function doSend()
     {
         do {
             $login = trim($this->getParam('login'));
@@ -71,9 +46,8 @@ class SendpassController extends Am_Controller {
 
             if (!$user) {
                 $title = ___('Lost Password Sending Error');
-                $text = ___('The information you have entered is incorrect') . " " .
-                    sprintf(___('Username [%s] does not exist in database', $this->getEscaped('login'))
-                );
+                $text = ___('The information you have entered is incorrect. ' .
+                    'Username [%s] does not exist in database', $this->getEscaped('login'));
                 $ok = false;
                 break;
             }
@@ -87,7 +61,8 @@ class SendpassController extends Am_Controller {
 
             $this->sendSecurityCode($user);
             $title = ___('Lost Password Sent');
-            $text = ___('Your password has been e-mailed to you') . ". " . ___('Please check your mailbox');
+            $text = ___('Your password has been e-mailed to you. ' .
+                'Please check your mailbox');
             $ok = true;
 
         } while (false);
@@ -96,53 +71,34 @@ class SendpassController extends Am_Controller {
         {
             return $this->ajaxResponse(array('ok'=>$ok, 'error'=>array($text)));
         }
-        
+
         $this->view->title = $title;
-        $this->view->text = $text;
-        $this->view->display('sendpass.phtml');
+        $this->view->content = $text;
+        $this->view->display('layout.phtml');
     }
 
-    public function changePassAction()
+    public function doChangePass(User $user, $code)
     {
-        
-        $s = $this->getFiltered(self::SECURITY_VAR);
-        
-        if (!$s || !$this->user) {
-            throw new Am_Exception_FatalError('Trying to change User password without security code');
-        }
-        
         $form = $this->createForm();
+        $form->addDataSource(new HTML_QuickForm2_DataSource_Array(array(
+                        self::SECURITY_VAR => $code,
+                        'login' => $user->login
+                    )));
 
-        if ($form->isSubmitted()) {
-            $form->setDataSources(array(
-                $this->getRequest(),
-                new HTML_QuickForm2_DataSource_Array(array('login'=>$this->user->login))
-            ));
-        } else {
-            $form->setDataSources(array(
-                new HTML_QuickForm2_DataSource_Array(array(
-                        self::SECURITY_VAR=>$this->getParam(self::SECURITY_VAR),
-                        'login'=>$this->user->login
-                    ))
-            ));
-        }
-
-        if ($form->isSubmitted() && $form->validate()) 
+        if ($form->isSubmitted() && $form->validate())
         {
-            //allright let's change pass
-            $this->user->setPass($this->getParam('pass0'));
-            $this->user->update();
-            // Password has been reset. Delete all other sessions instead of current one. (Logout other' users)
-            $this->getDi()->db->query('DELETE FROM ?_session where user_id=? and id<>?', $this->user->pk(), session_id());
-            $this->getDi()->store->delete(self::STORE_PREFIX . 
-                $this->getFiltered(self::SECURITY_VAR));
+            $user->setPass($this->getParam('pass0'));
+            $user->save();
+            // Password has been reset. Delete all other sessions besides of current one. (Logout other' users)
+            $this->getDi()->db->query('DELETE FROM ?_session where user_id=? and id<>?', $user->pk(), session_id());
+            $this->getDi()->store->delete(self::STORE_PREFIX . $code);
 
-            $msg0 = ___('Your password has been changed successfully.');
-            $msg1 = ___('You can %slogin to your account%s with new password.',
-                        sprintf('<a href="%s">', Am_Controller::makeUrl('login')), '</a>');
+            $msg = ___('Your password has been changed successfully. ' .
+                    'You can %slogin to your account%s with new password.',
+                        sprintf('<a href="%s">', $this->escape(REL_ROOT_URL . '/login')), '</a>');
             $this->view->title = ___('Change Password');
             $this->view->content = <<<CUT
-   <div class="am-info">$msg0 $msg1</div>
+   <div class="am-info">$msg</div>
 CUT;
             $this->view->display('layout.phtml');
         } else {
@@ -152,13 +108,15 @@ CUT;
 
     }
 
-    public function createForm()
+    protected function createForm()
     {
-        $form = new Am_Form;
-        $form->addElement('text', 'login', array('disabled'=>'disabled'))
+        $form = new Am_Form();
+
+        $form->addCsrf();
+        $form->addText('login', array('disabled'=>'disabled'))
                 ->setLabel(___('Username'));
 
-        $pass0 = $form->addElement('password', 'pass0')
+        $pass0 = $form->addPassword('pass0')
             ->setLabel(___('New Password'));
         $pass0->addRule('minlength',
                 ___('The password should be at least %d characters long', $this->getDi()->config->get('pass_min_length', 4)),
@@ -172,13 +130,13 @@ CUT;
                 $this->getDi()->userTable->getStrongPasswordRegex());
         }
 
-        $pass1 = $form->addElement('password', 'pass1')
+        $pass1 = $form->addPassword('pass1')
             ->setLabel(___('Confirm Password'));
 
         $pass1->addRule('eq', ___('Passwords do not match'), $pass0);
 
-        $form->addElement('hidden', self::SECURITY_VAR);
-        $form->addElement('submit', '', array('value'=>___('Save')));
+        $form->addHidden(self::SECURITY_VAR);
+        $form->addSaveButton(___('Change Password'));
         return $form;
     }
 
@@ -190,27 +148,26 @@ CUT;
             return ___('The message containing your password has already been sent to your inbox. Please wait 180 minutes for retrying');
         }
         $this->getDi()->store->set('remind-password_' . $user->email, ++$attempt, '+3 hours');
-        
-        // Check limits by IP address. 
 
-        $attempt_ip = $this->getDi()->store->get('remind-password_ip_' . $this->getDi()->request->getClientIp(true));
+        // Check limits by IP address.
+        $attempt_ip = $this->getDi()->store->get('remind-password_ip_' . $this->getRequest()->getClientIp(true));
         if ($attempt_ip>=5) {
-            return ___('Too many Lost Password requests.. Please wait 180 minutes for retrying');
+            return ___('Too many Lost Password requests. Please wait 180 minutes for retrying');
         }
-        $this->getDi()->store->set('remind-password_ip_' . $this->getDi()->request->getClientIp(true), ++$attempt_ip, '+3 hours');
-        
+        $this->getDi()->store->set('remind-password_ip_' . $this->getRequest()->getClientIp(true), ++$attempt_ip, '+3 hours');
     }
 
-    private function checkCode($code)
+    protected function checkCode($code, &$user)
     {
         $user_id = $this->getDi()->store->get(self::STORE_PREFIX . $code);
         if (!$user_id)
-            return self::CODE_STATUS_EXPIRED;
-        $this->user = $this->getDi()->userTable->load($user_id);
-        return self::CODE_STATUS_VALID;
+            return false;
+
+        $user = $this->getDi()->userTable->load($user_id);
+        return true;
     }
 
-    private function sendSecurityCode(User $user)
+    protected function sendSecurityCode(User $user)
     {
         $security_code = $this->getDi()->app->generateRandomString(16);
 
@@ -223,7 +180,7 @@ CUT;
         );
         $et->setHours(self::EXPIRATION_PERIOD);
         $et->send($user);
-        
+
         $this->getDi()->store->set(self::STORE_PREFIX . $security_code,
             $user->pk(), '+'.self::EXPIRATION_PERIOD.' hours');
     }

@@ -61,7 +61,7 @@ abstract class Am_Auth_Abstract {
      * @return Zend_Table_Row|null
      */
     abstract protected function authenticate($login, $pass, & $code = null);
-    
+
     /**
      * Load user based on @link getSesisonVar()
      * @return Am_Record
@@ -76,7 +76,7 @@ abstract class Am_Auth_Abstract {
         if (null == $this->protector)
         {
             $this->protector = new Am_Auth_BruteforceProtector(
-                $this->getDi()->db, 
+                $this->getDi()->db,
                 $this->getDi()->config->get($this->configPrefix.'bruteforce_count', 5),
                 $this->getDi()->config->get($this->configPrefix.'bruteforce_delay', 120),
                 $this->loginType);
@@ -91,14 +91,14 @@ abstract class Am_Auth_Abstract {
     {
         $this->protector = $protector;
     }
-    
+
     public function logout()
     {
         //Zend_Session::regenerateId();
         $this->user = null;
         $this->setSessionVar(null);
     }
-    
+
     /**
      * Logs-in customer by given username and password
      * @param string Username
@@ -110,7 +110,7 @@ abstract class Am_Auth_Abstract {
     {
         //Zend_Session::regenerateId();
         $this->setUser(null, null);
-        
+
         $login = preg_replace('/[^a-zA-Z0-9 _.@+-]/ms', '', $login);
         if (!strlen($login) || !strlen($pass))
         {
@@ -164,16 +164,16 @@ abstract class Am_Auth_Abstract {
             if (!$disableProtector)
                 $bp->reportFailure($ip, $login);
         }
-        return new Am_Auth_Result($code);    
+        return new Am_Auth_Result($code);
     }
-    
+
     /**
      * @return null|Am_Auth_Result returns $result in case of error, null if all OK
      */
     public function checkUser($user, $ip)
     {
     }
-    
+
     /**
      * additional actions to execute once user is authenticated and written to session
      */
@@ -192,7 +192,7 @@ abstract class Am_Auth_Abstract {
         $u = $this->getSessionVar();
         return is_null($u) ? null : $u[$this->loginField];
     }
-    
+
     /**
      * Return id of the logged-in customer
      * @return integer|null
@@ -202,8 +202,8 @@ abstract class Am_Auth_Abstract {
         $u = $this->getSessionVar();
         return is_null($u) ? null : $u[$this->idField];
     }
-    
-    
+
+
     /**
      * Return user object of currently logged-in
      * customer, or null
@@ -216,7 +216,7 @@ abstract class Am_Auth_Abstract {
             return null;
         if (!isset($this->user) || $refresh)
             $this->user = $this->loadUser();
-        return $this->user;            
+        return $this->user;
     }
     public function setUser($user, $ip=null)
     {
@@ -224,5 +224,5 @@ abstract class Am_Auth_Abstract {
         $this->setSessionVar($user ? $user->toArray() : null);
         return $this;
     }
- 
+
 }

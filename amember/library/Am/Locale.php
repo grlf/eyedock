@@ -3,14 +3,14 @@
 /**
  * Provides locale-based information and guess client locale
  * requires <i>locales.dat</i> file to be located in the same folder
- * 
+ *
  * @package Am_Utils
  */
-class Am_Locale 
+class Am_Locale
 {
     protected $locale = '';
     protected static $cache = array();
-    
+
     static protected $localeAliases = array(
         'af' => array(
              'af_NA',
@@ -169,12 +169,12 @@ class Am_Locale
             $locale = 'en_US';
         $this->locale = $locale;
     }
-    
+
     function getId()
     {
         return $this->locale;
     }
-    
+
     public function getTerritoryNames()
     {
         $data = $this->getData();
@@ -198,7 +198,7 @@ class Am_Locale
             '{0}' => $this->getTimeFormat(),
         ));
     }
-    
+
     protected function getData()
     {
         if (isset(self::$cache[$this->locale]))
@@ -206,20 +206,20 @@ class Am_Locale
         $data = Am_Di::getInstance()->cacheFunction->call(array('Am_Locale','_readData'), array($this->locale));
         return self::$cache[$this->locale] = $data;
     }
-    
+
     public function getMonthNames($type = 'wide', $standalone = true)
     {
         $data = $this->getData();
         if ($standalone) $type = 'narrow';
         return $data[$standalone ? 'monthNamesSA' : 'monthNames'][$type];
     }
-    
+
     public function getWeekdayNames($type = 'wide')
     {
         $data = $this->getData();
         return (array)$data['weekDayNames'][$type];
     }
-    
+
     /**
      * @param string $locale
      * @return array data
@@ -235,7 +235,7 @@ class Am_Locale
         $readLocales = array_reverse($readLocales);
         if ($locale != 'selfNames')
             array_unshift($readLocales, 'root');
-        
+
         $f = fopen(dirname(__FILE__).'/locale.dat', 'r');
         if (!$f)
             throw new Am_Exception_InternalError("Could not open locale data file: locales.dat");
@@ -246,7 +246,7 @@ class Am_Locale
             list($line, ) = explode(chr(5), file_get_contents(dirname(__FILE__).'/locale.dat', false, NULL, -1, 32000));
         else
             $line = stream_get_line($f, 64000, chr(5));
-        
+
         $header = unserialize(substr($line, strlen('LOCALES:')));
         // now read
         $data = array();
@@ -260,12 +260,12 @@ class Am_Locale
         }
         return $data;
     }
-    
+
     static function getSelfNames()
     {
         return self::_readData('selfNames');
     }
-    
+
     static function getLocales()
     {
         $f = fopen(dirname(__FILE__).'/locale.dat', 'r');
@@ -328,13 +328,13 @@ class Am_Locale
                     $possibleLang[] = filterId($_REQUEST['_lang']);
                 elseif (!empty($di->session->lang))
                     $possibleLang[] = $di->session->lang;
-                elseif ($user && $user->lang) 
+                elseif ($user && $user->lang)
                     $possibleLang[] = $user->lang;
                 $br = Zend_Locale::getBrowser();
                 arsort($br);
                 $possibleLang = array_merge($possibleLang, array_keys($br));
-            }    
-                
+            }
+
             $possibleLang[] = $di->config->get('lang.default', 'en_US');
             $possibleLang[] = 'en_US'; // last but not least
             // now choose the best candidate
@@ -344,14 +344,16 @@ class Am_Locale
             {
                 list($lang) = explode('_', $lc, 2);
                 if (!in_array($lc, $enabledLangs) && !in_array($lang, $enabledLangs)) continue;
-                if ($lc == $lang) 
+                if ($lc == $lang)
                 { // we have not got entire locale,guess it
                     if ($lc == 'en')
                         $lc = 'en_US';
-                    elseif ($lc == 'sv') 
+                    elseif ($lc == 'sv')
                         $lc = 'sv_SE';
                     elseif ($lc == 'et')
                         $lc = 'et_EE';
+                    elseif ($lc == 'vi')
+                        $lc = 'vi_VN';
                     else
                         $lc = Zend_Locale::getLocaleToTerritory($lang);
                     if (!$lc && $lang == 'ko')
@@ -368,6 +370,10 @@ class Am_Locale
                         $lc = 'he_IL';
                     if (!$lc && $lang == 'da')
                         $lc = 'da_DK';
+                    if (!$lc && $lang == 'cs')
+                        $lc = 'cs_CZ';
+                    if (!$lc && $lang == 'sq')
+                        $lc = 'sq_AL';
                     if (!$lc) continue;
                 }
                 if (isset($checked[$lc])) continue;
@@ -396,7 +402,7 @@ class Am_Locale
             'date_format' => $amLocale->getDateFormat(),
         ));
     }
-    
+
     /**
      * Returns the language part of the locale
      *
@@ -407,15 +413,15 @@ class Am_Locale
         $locale = explode('_', $this->locale);
         return $locale[0];
     }
-    
-    
+
+
     public function formatPeriod(Am_Period $period, $format="%s", $skip_one_c = false)
     {
         switch ($period->getUnit()){
             case 'd': $uu = $period->getCount()==1 ? ___('day'): ___('days'); break;
             case 'm': $uu = $period->getCount()==1 ? ___('month') : ___('months'); break;
             case 'y': $uu = $period->getCount()==1 ? ___('year') : ___('years'); break;
-            case Am_Period::FIXED: 
+            case Am_Period::FIXED:
                 if ($period->getCount() == Am_Period::MAX_SQL_DATE)
                     return " for lifetime";
                 return " up to " . amDate($period->getCount());
@@ -424,11 +430,11 @@ class Am_Locale
         if ($period->getCount() == 1) $cc = $skip_one_c ? '' : 'one';
         return sprintf($format, "$cc $uu");
     }
-    
+
     /**
      * Possible unit values;
      *  day,day-future,day-past,hour,hour-future,hour-past,minute,minute-future,minute-past,month,month-future,month-past,second,second-future,second-past,week,week-future,week-past,year,year-future,year-past
-     * @param string $unit 
+     * @param string $unit
      * @param unit $count number of units to format
      * @return string
      */
@@ -439,7 +445,7 @@ class Am_Locale
         $pl = $this->findPlural($count);
         return str_replace('{0}', $count, $alternatives[$pl]);
     }
-    
+
     public function findPlural($count)
     {
         $data = $this->getData();

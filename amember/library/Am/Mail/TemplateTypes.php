@@ -7,7 +7,7 @@
 class Am_Mail_TemplateTypes extends ArrayObject
 {
     protected $tagSets = array();
-    
+
     static protected $instance;
 
     /** @return Am_Mail_TemplateTypes */
@@ -22,7 +22,7 @@ class Am_Mail_TemplateTypes extends ArrayObject
     {
         return $this->offsetExists($id) ? $this->offsetGet($id) : null;
     }
-    
+
     /** @return Am_Mail_TemplateTypes */
     static function createInstance()
     {
@@ -30,41 +30,49 @@ class Am_Mail_TemplateTypes extends ArrayObject
 
         $o->tagSets = array(
             'admin' => array(
-                '%admin.name_f%' => 'Admin First Name',
-                '%admin.name_l%' => 'Admin Last Name',
-                '%admin.login%' => 'Admin Username',
-                '%admin.email%' => 'Admin E-Mail'
+                '%admin.name_f%' => ___('Admin First Name'),
+                '%admin.name_l%' => ___('Admin Last Name'),
+                '%admin.login%' => ___('Admin Username'),
+                '%admin.email%' => ___('Admin E-Mail')
             ),
             'user' => array(
-                '%user.name_f%' => 'User First Name',
-                '%user.name_l%' => 'User Last Name',
-                '%user.login%' => 'Username',
-                '%user.email%' => 'E-Mail',
-                '%user.user_id%' => 'User Internal ID#',
-                '%user.street%' => 'User Street',
-                '%user.street2%' => 'User Street (Second Line)',
-                '%user.city%' => 'User City',
-                '%user.state%' => 'User State',
-                '%user.zip%' => 'User ZIP',
-                '%user.country%' => 'User Country',
-                '%user.phone%' => 'User Phone',
-                '%user.status%' => 'User Status (0-pending, 1-active, 2-expired)'
+                '%user.name_f%' => ___('User First Name'),
+                '%user.name_l%' => ___('User Last Name'),
+                '%user.login%' => ___('Username'),
+                '%user.email%' => ___('E-Mail'),
+                '%user.user_id%' => ___('User Internal ID#'),
+                '%user.street%' => ___('User Street'),
+                '%user.street2%' => ___('User Street (Second Line)'),
+                '%user.city%' => ___('User City'),
+                '%user.state%' => ___('User State'),
+                '%user.zip%' => ___('User ZIP'),
+                '%user.country%' => ___('User Country'),
+                '%user.phone%' => ___('User Phone'),
+                '%user.status%' => ___('User Status (0-pending, 1-active, 2-expired)')
             ),
             'invoice' => array(
-                '%invoice.invoice_id%' => 'Invoice Internal ID#',
-                '%invoice.public_id%' => 'Invoice Public ID#',
-                '%invoice.first_total%' => 'Invoice First Total',
-                '%invoice.second_total%' => 'Invoice Second Total',
+                '%invoice.invoice_id%' => ___('Invoice Internal ID#'),
+                '%invoice.public_id%' => ___('Invoice Public ID#'),
+                '%invoice.first_total%' => ___('Invoice First Total'),
+                '%invoice.second_total%' => ___('Invoice Second Total'),
+            ),
+            'payment' => array(
+                '%payment.amount%' => ___('Payment Amount'),
+                '%payment.currency%' => ___('Payment Currency'),
+                '%payment.receipt_id%' => ___('Payment Receipt Id'),
             )
         );
 
-        foreach (Am_Di::getInstance()->userTable->customFields()->getAll() as $field) {
+        $table = Am_Di::getInstance()->userTable;
+        $fields = $table->customFields()->getAll();
+        uksort($fields, array($table, 'sortCustomFields'));
+        foreach ($fields as $field) {
             if (@$field->sql && @$field->from_config) {
-                $o->tagSets['user']['%user.' . $field->name . '%'] = 'User ' . $field->title;
+                $o->tagSets['user']['%user.' . $field->name . '%'] = ___('User %s', $field->title);
             }
         }
 
-        $o->tagSets['user']['%user.unsubscribe_link%'] = 'User Unsubscribe Link';
+        $o->tagSets['user']['%user.unsubscribe_link%'] = ___('User Unsubscribe Link');
 
         $event = new Am_Event(Am_Event::EMAIL_TEMPLATE_TAG_SETS);
         $event->setReturn($o->tagSets);
@@ -79,67 +87,71 @@ class Am_Mail_TemplateTypes extends ArrayObject
         $o->exchangeArray(array_merge(array(
             'bruteforce_notify' => array(
                 'id' => 'bruteforce_notify',
-                'title' => 'Bruteforce Notification',
+                'title' => ___('Bruteforce Notification'),
                 'mailPeriodic' => Am_Mail::ADMIN_REQUESTED,
-                'vars' => array('ip' => 'IP Address', 'login' => 'Last Used Login')
+                'isAdmin' => true,
+                'vars' => array('ip' => ___('IP Address'), 'login' => ___('Last Used Login'))
             ),
             'profile_changed' => array(
                 'id' => 'profile_changed',
-                'title' => 'Profile Changed',
+                'title' => ___('Profile Changed'),
                 'mailPeriodic' => Am_Mail::USER_REQUESTED,
-                'vars' => array('user', 'changes' => 'Changes in User Profile')
+                'isAdmin' => true,
+                'vars' => array('user', 'changes' => ___('Changes in User Profile'))
             ),
             'registration_mail' =>  array(
                 'id' => 'registration_mail',
                 'title' => 'Registration E-Mail',
                 'mailPeriodic' => Am_Mail::USER_REQUESTED,
-                'vars' => array('user', 'password' => 'Plain-Text Password'),
+                'vars' => array('user', 'password' => ___('Plain-Text Password')),
             ),
             'changepass_mail' =>  array(
                 'id' => 'changepass_mail',
-                'title' => 'Password Change E-Mail',
+                'title' => ___('Password Change E-Mail'),
                 'mailPeriodic' => Am_Mail::USER_REQUESTED,
                 'vars' => array('user', 'password' => 'Plain-Text Password'),
             ),
             'send_signup_mail' =>  array(
                 'id' => 'send_signup_mail',
-                'title' => 'Send Signup Mail',
+                'title' => ___('Send Signup Mail'),
                 'mailPeriodic' => Am_Mail::USER_REQUESTED,
                 'vars' => array('user'),
             ),
             'mail_payment_admin' => array(
                 'id' => 'mail_payment_admin',
-                'title' => 'Mail Payment Admin',
+                'title' => ___('Mail Payment Admin'),
                 'mailPeriodic' => Am_Mail::USER_REQUESTED,
                 'vars' => array('user'),
             ),
             'send_payment_mail' => array(
                 'id' => 'send_payment_mail',
-                'title' => 'Send Payment Mail',
+                'title' => ___('Send Payment Mail'),
                 'mailPeriodic' => Am_Mail::USER_REQUESTED,
                 'vars' => array('user','invoice'),
             ),
             'send_payment_admin' => array(
                 'id' => 'send_payment_admin',
-                'title' => 'Send Payment Admin',
+                'title' => ___('Send Payment Admin'),
                 'mailPeriodic' => Am_Mail::USER_REQUESTED,
+                'isAdmin' => true,
                 'vars' => array('user','invoice'),
             ),
             'manually_approve' => array(
                 'id' => 'manually_approve',
-                'title' => 'Manually Approve',
+                'title' => ___('Manually Approve'),
                 'mailPeriodic' => Am_Mail::ADMIN_REQUESTED,
                 'vars' => array('user'),
             ),
             'manually_approve_admin' => array(
                 'id' => 'manually_approve_admin',
-                'title' => 'Manually Approve Admin',
+                'title' => ___('Manually Approve Admin'),
                 'mailPeriodic' => Am_Mail::ADMIN_REQUESTED,
+                'isAdmin' => true,
                 'vars' => array('user'),
             ),
             'invoice_approval_wait_user' => array(
                 'id' => 'invoice_approval_wait_user',
-                'title' => 'Manually Approve Invoice',
+                'title' => ___('Manually Approve Invoice'),
                 'mailPeriodic' => Am_Mail::ADMIN_REQUESTED,
                 'vars' => array('user','invoice'),
             ),
@@ -155,101 +167,120 @@ class Am_Mail_TemplateTypes extends ArrayObject
             ),
             'invoice_approval_wait_admin' => array(
                 'id' => 'invoice_approval_wait_admin',
-                'title' => 'Manually Approve Invoice Admin',
+                'title' => ___('Manually Approve Invoice Admin'),
                 'mailPeriodic' => Am_Mail::ADMIN_REQUESTED,
+                'isAdmin' => true,
                 'vars' => array('user', 'invoice'),
             ),
             'invoice_approved_user' => array(
                 'id' => 'invoice_approved_user',
-                'title' => 'Invoice Approved',
+                'title' => ___('Invoice Approved'),
                 'mailPeriodic' => Am_Mail::ADMIN_REQUESTED,
                 'vars' => array('user', 'invoice'),
             ),
             'card_expires' =>
             array(
                 'id' => 'card_expires',
-                'title' => 'Card Expires',
+                'title' => ___('Card Expires'),
                 'mailPeriodic' => Am_Mail::USER_REQUESTED,
                 'vars' => array('user'),
             ),
             'send_security_code' =>
             array(
                 'id' => 'send_security_code',
-                'title' => 'Send Security Code',
+                'title' => ___('Send Security Code'),
                 'mailPeriodic' => Am_Mail::USER_REQUESTED,
-                'vars' =>  array('user', 'code' => 'Security Code', 'url' => 'Click Url'),
+                'vars' =>  array('user', 'code' => ___('Security Code'), 'url' => ___('Click Url')),
             ),
             'verify_email_signup' =>
             array(
                 'id' => 'verify_email_signup',
-                'title' => 'Verify Email Signup',
+                'title' => ___('Verify Email Signup'),
                 'mailPeriodic' => Am_Mail::USER_REQUESTED,
                 'vars' => array('user'),
             ),
             'verify_email_profile' =>
             array(
                 'id' => 'verify_email_profile',
-                'title' => 'Verify Email Profile',
+                'title' => ___('Verify Email Profile'),
                 'mailPeriodic' => Am_Mail::USER_REQUESTED,
                 'vars' => array('user'),
             ),
-            'autoresponder' => 
+            'autoresponder' =>
             array(
                 'id' => 'autoresponder',
-                'title' => 'Auto-Responder',
+                'title' => ___('Auto-Responder'),
                 'mailPeriodic' => Am_Mail::REGULAR,
-                'vars' => array('user', 'last_product_title' => 'Product Title of the Latest Purchased Product'),
+                'vars' => array('user', 'last_product_title' => ___('Product Title of the Latest Purchased Product')),
             ),
-            'expire' => 
+            'productwelcome' =>
+            array(
+                'id' => 'productwelcome',
+                'title' => ___('Product Welcome E-mail'),
+                'mailPeriodic' => Am_Mail::REGULAR,
+                'vars' => array('user', 'invoice', 'payment', 'last_product_title' => ___('Product Title of the Latest Purchased Product')),
+            ),
+            'expire' =>
             array(
                 'id' => 'expire',
-                'title' => 'Expiration E-Mail',
+                'title' => ___('Expiration E-Mail'),
                 'mailPeriodic' => Am_Mail::REGULAR,
-                'vars' => array('user', 'expires' => 'Expiration Date', 'product_title' => 'Expire Product Title'),
+                'vars' => array('user', 'expires' => ___('Expiration Date'), 'product_title' => ___('Expire Product Title')),
             ),
             'pending_to_user' => array(
                 'id' => 'pending_to_user',
-                'title' => 'Pending invoice notifications to user',
+                'title' => ___('Pending Invoice Notifications to User'),
                 'mailPeriodic' => Am_Mail::REGULAR,
-                'vars' => array('user', 'invoice', 'day'=>'Day of Notification Sending', 'product_title'=>'Product(s) Title'),
+                'vars' => array('user', 'invoice', 'day'=> ___('Day of Notification Sending'), 'product_title'=> ___('Product(s) Title'), 'paylink' => ___('Payment Link to Complete Pending Invoice') ),
             ),
             'pending_to_admin' => array(
                 'id' => 'pending_to_admin',
-                'title' => 'Pending invoice notifications to user',
+                'title' => ___('Pending Invoice Notifications to Admin'),
                 'mailPeriodic' => Am_Mail::REGULAR,
-                'vars' => array('user', 'invoice', 'day'=>'Day of Notification Sending', 'product_title'=>'Product(s) Title'),
+                'isAdmin' => true,
+                'vars' => array('user', 'invoice', 'day'=>___('Day of Notification Sending'), 'product_title'=>___('Product(s) Title')),
             ),
-            'max_ip_actions_admin' => 
+            'max_ip_actions_admin' =>
             array(
                 'id' => 'max_ip_actions_admin',
-                'title' => 'Email admin regarding account sharing',
+                'title' => ___('Email admin regarding account sharing'),
                 'mailPeriodic' => Am_Mail::USER_REQUESTED,
+                'isAdmin' => true,
                 'vars' => array('user'),
             ),
-            'max_ip_actions_user' => 
+            'max_ip_actions_user' =>
             array(
                 'id' => 'max_ip_actions_user',
-                'title' => 'Email user regarding account sharing',
+                'title' => ___('Email user regarding account sharing'),
                 'mailPeriodic' => Am_Mail::USER_REQUESTED,
                 'vars' => array('user'),
             ),
             'mail_cancel_member' => array(
                 'id' => 'mail_cancel_member',
-                'title' => 'Send Cancel Notifications to User',
+                'title' => ___('Send Cancel Notifications to User'),
                 'mailPeriodic' => Am_Mail::USER_REQUESTED,
                 'vars' => array('user', 'invoice'),
             ),
             'mail_cancel_admin' => array(
                 'id' => 'mail_cancel_admin',
-                'title' => 'Send Cancel Notifications to Admin',
+                'title' => ___('Send Cancel Notifications to Admin'),
                 'mailPeriodic' => Am_Mail::USER_REQUESTED,
+                'isAdmin' => true,
                 'vars' => array('user', 'invoice'),
             ),
+            'send_free_payment_admin' => array(
+                'id' => 'send_free_payment_admin',
+                'title' => ___('Send Free Payment Admin'),
+                'mailPeriodic' => Am_Mail::USER_REQUESTED,
+                'isAdmin' => true,
+                'vars' => array('user','invoice'),
+            ),
+
         ), $res));
 
         return $o;
     }
-    
+
     /**
      * Return array - key => value of available options for template with given $id
      * @param type $id
@@ -259,9 +290,9 @@ class Am_Mail_TemplateTypes extends ArrayObject
     {
         $record = @$this[$id];
         $ret = array(
-            '%site_title%' => 'Site Title',
-            '%root_url%' => 'aMember Root URL',
-            '%admin_email%' => 'Admin E-Mail Address',
+            '%site_title%' => ___('Site Title'),
+            '%root_url%' => ___('aMember Root URL'),
+            '%admin_email%' => ___('Admin E-Mail Address'),
         );
         if (!$record || empty($record['vars']))
             return $ret;
@@ -272,6 +303,12 @@ class Am_Mail_TemplateTypes extends ArrayObject
             else // single variable
                 $ret['%'.$k.'%'] = $v;
         }
+
+        $event = new Am_Event(Am_Event::EMAIL_TEMPLATE_TAG_OPTIONS, array('templateName' => $id));
+        $event->setReturn($ret);
+        Am_Di::getInstance()->hook->call($event);
+        $ret = $event->getReturn();
+
         return $ret;
     }
 

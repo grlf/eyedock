@@ -8,6 +8,7 @@ class Am_Grid_Action_ExportPdf extends Am_Grid_Action_Abstract
 
     public function run()
     {
+        $this->grid->getDi()->plugins_payment->loadEnabled()->getAllEnabled();
         $ds = $this->grid->getDataSource();
 
         $fn = tempnam(DATA_DIR, 'zip_');
@@ -15,8 +16,11 @@ class Am_Grid_Action_ExportPdf extends Am_Grid_Action_Abstract
         $zip = new ZipArchive();
         $zip->open($fn, ZipArchive::OVERWRITE);
 
-        foreach ($ds->selectAllRecords() as $ip) {
-            $pdf = new Am_Pdf_Invoice($ip);
+        $st = $ds->query();
+        while ($iprec = $this->grid->getDi()->db->fetchRow($st)) {
+            $ip = $ds->getDataSourceQuery()->getTable()->createRecord($iprec);
+
+            $pdf = Am_Pdf_Invoice::create($ip);
             $zip->addFromString($pdf->getFileName(), $pdf->render());
         }
 

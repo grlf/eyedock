@@ -1,11 +1,11 @@
-<?php 
+<?php
 // this will reset timezone to UTC if nothing configured in PHP
 date_default_timezone_set(@date_default_timezone_get());
 
 function check_versions()
 {
-    if( version_compare(phpversion(), '5.2.4') < 0)
-        die("PHP version 5.2.4 or greater is required to run aMember. Your PHP-Version is : ".phpversion().
+    if( version_compare(phpversion(), '5.3') < 0)
+        die("PHP version 5.3 or greater is required to run aMember. Your PHP-Version is : ".phpversion().
         "<br>Please upgrade or ask your hosting to upgrade.");
     if (!extension_loaded('PDO'))
         die("PHP on your webhosting has no [pdo] extension enabled. Please ask the webhosting support
@@ -41,13 +41,13 @@ error_reporting(E_ALL);
 *        Web: http://www.cgi-central.net
 *    Details: The installation file
 *    FileName $RCSfile$
-*    Release: 4.4.2 ($Revision$)
+*    Release: 4.7.0 ($Revision$)
 *
 * Please direct bug reports,suggestions or feedback to the cgi-central forums.
 * http://www.cgi-central.net/forum/
-*                                                                          
+*
 * aMember PRO is a commercial software. Any distribution is strictly prohibited.
-*                                                                                 
+*
 
   Web-based setup. Steps:
    0 - check for installed config.php, check if it writeable
@@ -76,7 +76,7 @@ class SetupController {
     protected $pageTemplate = "<html><head><title><!--TITLE--></title></head><body><!--CONTENT--></body></html>";
     /** @var DbSimple_Mysql */
     protected $db;
-    
+
     protected $setup;
 
     function get($varName, $default = null)
@@ -121,7 +121,7 @@ class SetupController {
     }
 
     function render_errors(){
-        if (!$this->errors) 
+        if (!$this->errors)
             return "";
         $out = '<ul class="errors">';
         foreach ((array)$this->errors as $e)
@@ -152,8 +152,10 @@ class SetupController {
     }
 
     function check_for_extensions(){
-        if (!extension_loaded('mbstring'))
-            $this->addError("aMember require <b>mbstring</b> extension to be installed in php. Please check <a href='http://www.php.net/manual/en/mbstring.installation.php'>installation instructions</a>");
+        $ext = array('pdo', 'pdo_mysql', 'mcrypt', 'mbstring');
+        foreach ($ext as $e)
+            if (!extension_loaded($e))
+                $this->addError("aMember require <b>$e</b> extension to be installed in php. Please check <a href='http://www.php.net/manual/en/$e.installation.php'>installation instructions</a>");
         return !$this->errors;
     }
 
@@ -169,7 +171,7 @@ class SetupController {
         }
         return !$this->errors;
     }
-    
+
     function getRewriteCheckJs()
     {
         return <<<CUT
@@ -185,7 +187,7 @@ $(function(){
     url = url.replace(/\/setup.*/, '/test-rewrite/test-xx');
     $.get(url)
         .error(func);
-});    
+});
 </script>
 <ul id="rewrite-error" style="display:none;" class="error">
     <li>Seems your webhosting does not support mod_rewrite rules required by aMember. There may be several reasons:
@@ -201,7 +203,7 @@ $(function(){
 </ul>
 CUT;
     }
-    
+
     function getLoaderErrors()
     {
         $f = file_get_contents(dirname(__FILE__).'/../application/default/controllers/IndexController.php');
@@ -214,17 +216,17 @@ CUT;
                 $s = "Zend Guard Loader for PHP 5.3";
             $s .= (PHP_INT_SIZE == 4) ? " (32-bit)" : " (64-bit)";
             $url = 'http://www.zend.com/products/guard/downloads';
-            
+
             return <<<CUT
    <ul class="error">
-       <li>You have uploaded aMember Pro version encoded with Zend Guard, 
+       <li>You have uploaded aMember Pro version encoded with Zend Guard,
            but no Zend Loader installed in your system. Please download <b>$s</b> from <a href="$url" target=_blank>$url</a>,
            and ask your system administrator to install it.
         </li>
    </ul>
 CUT;
-        } elseif (strpos($f, '!extension_loaded(\'ionCube Loader\')') 
-                && !function_exists('ioncube_file_info') && !ini_get('enable_dl')) 
+        } elseif (strpos($f, '!extension_loaded(\'ionCube Loader\')')
+                && !function_exists('ioncube_file_info') && !ini_get('enable_dl'))
         {
             $s = sprintf("Loader for %s <i>%s</i>, PHP version <i>%s</i>", php_uname('s'), php_uname('v'),
                     PHP_VERSION);
@@ -232,8 +234,8 @@ CUT;
             $url = "http://www.ioncube.com/loaders.php";
             return <<<CUT
    <ul class="error">
-       <li>You have uploaded aMember Pro version encoded with ionCube Encoder, 
-           but no ionCube Loader installed in your system. 
+       <li>You have uploaded aMember Pro version encoded with ionCube Encoder,
+           but no ionCube Loader installed in your system.
            Please download <b>$s</b> from <a href="$url" target=_blank>$url</a>,
            and ask your system administrator to install it.
         </li>
@@ -241,12 +243,12 @@ CUT;
 CUT;
         }
     }
-    
+
     function checkHtaccess()
     {
         $htaccess = ROOT_DIR . '/.htaccess';
         $cnt = @file_get_contents($htaccess);
-        if (!$cnt) 
+        if (!$cnt)
         {
             $this->fatal("File [$htaccess] is not uploaded");
             exit();
@@ -264,12 +266,12 @@ CUT;
             }
             foreach ($regs[0] as $i => $r)
             {
-                $cnt = preg_replace('|^'.preg_quote($regs[0][$i]).'$|m', 
+                $cnt = preg_replace('|^'.preg_quote($regs[0][$i]).'$|m',
                     $regs[2][$i] . 'RewriteBase ' . $base, $cnt);
                 break; // one line is enough
             }
         } else { // no regs at all , add new
-            $cnt = str_replace('RewriteEngine on', "RewriteEngine on\n    RewriteBase $base", $cnt); 
+            $cnt = str_replace('RewriteEngine on', "RewriteEngine on\n    RewriteBase $base", $cnt);
         }
         // new .htaccess is ready in $cnt
         if (!is_writable($htaccess))
@@ -287,14 +289,14 @@ CUT;
         }
         return file_put_contents($htaccess, $cnt);
     }
-    
+
 
     function step1(){
         $root_dir = ROOT_DIR;
         $SERVER_ADMIN = array_key_exists('SERVER_ADMIN', $_SERVER) ? $_SERVER['SERVER_ADMIN'] : "";
-        
+
         $this->checkHtaccess();
-        
+
         $myurl = preg_replace('|/setup/.*$|', '', $this->getSelfUrl());
         $root_url    = $this->e('@ROOT_URL@', $myurl);
         $root_surl   = $this->e('@ROOT_SURL@', $myurl);
@@ -302,13 +304,13 @@ CUT;
         $admin_login = $this->e('@ADMIN_LOGIN@', 'admin');
         $admin_pass  = $this->e('@ADMIN_PASS@', '');
         $admin_pass_c  = $this->e('@ADMIN_PASS_C@', '');
-        $license     = $this->e('@LICENSE@', '');
+        $license = $this->e('@LICENSE@', '');
+        $site_title = $this->e('@SITE_TITLE@', 'aMember Pro');
 
         print $this->getRewriteCheckJs();
         print $loaderErrs = $this->getLoaderErrors();
         if ($loaderErrs) return;
         print <<<EOF
-        
 <h1>Enter configuration parameters</h1>
 <div class="am-info">
     <p>You may modify these values later via the aMember Control Panel</p>
@@ -316,11 +318,18 @@ CUT;
 <div class="am-form">
     <form method=post>
         <div class="row">
+            <div class="element-title"><label>Site Title</label>
+            </div>
+            <div class="element">
+                <input type=text name="@SITE_TITLE@" value="$site_title" size=50>
+            </div>
+        </div>
+        <div class="row">
             <div class="element-title"><label>Root URL of script</label>
                 <div class="comment">Do not place a trailing slash ( <b>/</b> ) at the end!<br />Please note that url must match your license.
                 </div>
             </div>
-            <div class="element">     
+            <div class="element">
                 <input type=text name="@ROOT_URL@" value="$root_url" size=50>
             </div>
         </div>
@@ -352,11 +361,11 @@ CUT;
         <div class="row">
             <div class="element-title"><label>Admin Password</label>
                 <div class="comment">Password for login to the Admin interface</div>
-            </div>       
+            </div>
             <div class="element">
                 <div><input type=password name="@ADMIN_PASS@" value='$admin_pass' size=30><br /><br />
                     Confirmation<br /><input type=password name="@ADMIN_PASS_C@" value='$admin_pass_c' size=30>
-                </div>    
+                </div>
             </div>
         </div>
 EOF;
@@ -367,9 +376,9 @@ EOF;
         <div class="row">
             <div class="element-title"><label>License</label>
                 <div class="comment">Enter the license key</div>
-            </div>    
+            </div>
             <div class="element">
-                <input type="text" style='font-size: 10px; font-family: Helvetica, sans-serif;' 
+                <input type="text" style='font-family: Helvetica, sans-serif; width:95%'
                     name='@LICENSE@' size="50" value="$license"></div>
         </div>
 EOF;
@@ -382,23 +391,23 @@ EOF;
         </div>
         <input type=hidden name=step value=1>
     </form>
-</div>        
+</div>
 EOF;
     }
 
     function check_step1(){
         $vars = $this->vars;
-
-        if (!strlen($vars['@ROOT_URL@']))    $this->errors[] = "Please enter root url of script";
-        if (!strlen($vars['@ROOT_SURL@']))   $this->errors[] = "Please enter secure root url of script (or keep DEFAULT VALUE - set it equal to Not-secure root URL - it will work anyway)";
+        if (!strlen($vars['@SITE_TITLE@'])) $this->errors[] = "Please enter Site Title";
+        if (!strlen($vars['@ROOT_URL@'])) $this->errors[] = "Please enter root url of script";
+        if (!strlen($vars['@ROOT_SURL@'])) $this->errors[] = "Please enter secure root url of script (or keep DEFAULT VALUE - set it equal to Not-secure root URL - it will work anyway)";
         if (!strlen($vars['@ADMIN_EMAIL@'])) $this->errors[] = "Please enter admin email";
         if (!strlen($vars['@ADMIN_LOGIN@'])) $this->errors[] = "Please enter admin login";
-        if (!strlen($vars['@ADMIN_PASS@']))  $this->errors[] = "Please enter admin password";
-        if (strlen($vars['@ADMIN_PASS@'])<6)  $this->errors[] = "Admin password cannot be shorter than 6 characters";
-        if ($vars['@ADMIN_PASS_C@'] != $vars['@ADMIN_PASS@'])  $this->errors[] = "Admin password and password confirmation do not match";
+        if (!strlen($vars['@ADMIN_PASS@'])) $this->errors[] = "Please enter admin password";
+        if (strlen($vars['@ADMIN_PASS@'])<6) $this->errors[] = "Admin password cannot be shorter than 6 characters";
+        if ($vars['@ADMIN_PASS_C@'] != $vars['@ADMIN_PASS@']) $this->errors[] = "Admin password and password confirmation do not match";
 
         if ('@TRIAL@' == '@'.'TRIAL@'){
-            if (!strlen($vars['@LICENSE@'])) 
+            if (!strlen($vars['@LICENSE@']))
                 $this->errors[] = "Please enter license code";
             else {
                 if (!preg_match('/^L[A-Za-z0-9\/=+]+X$/', $vars['@LICENSE@']))
@@ -488,8 +497,8 @@ EOF;
         $vars = $this->vars;
         if ($this->errors) return false;
         /// really connect
-        try { 
-            // PDO always generate warning if connection failed. 
+        try {
+            // PDO always generate warning if connection failed.
             // To disable that warning change error handler;
             set_error_handler(create_function("",""));
             $this->getSetup()->connectDb();
@@ -497,7 +506,7 @@ EOF;
         } catch (Am_Setup_Exception_Db $e) {
             switch ($e->getCode())
             {
-                case 1045: 
+                case 1045:
                 $this->errors[] = "MySQL user access denied - check username, password and hostname";
                 break;
                 case 1049:
@@ -531,7 +540,7 @@ EOF;
         already created, aMember will intelligently modify its structure
         to match latest aMember version. Your existing configuration and
         database records will not be removed.</p></div>
-<div class="am-form"> 
+<div class="am-form">
     <form method=post>
         <div class="row">
             <div class="element-title">
@@ -546,14 +555,14 @@ EOF;
 </div>
 EOF;
     }
-    
+
     /** @return Am_Setup */
     function getSetup()
     {
         if (!$this->setup)
         {
-            $this->setup = new Am_Setup(dirname(__FILE__), 
-                ROOT_DIR . '/application/configs', 
+            $this->setup = new Am_Setup(dirname(__FILE__),
+                ROOT_DIR . '/application/configs',
                 array(ROOT_DIR . '/application/default/db.xml',),
                 $this->vars);
         }
@@ -570,7 +579,7 @@ EOF;
 </ul>
 
 CUT;
-        
+
     }
     function display_send_files_form()
     {
@@ -596,7 +605,7 @@ CUT;
 </form>
 </p>
 
-<p>Internet Expolorer sometimes rename files when save it. 
+<p>Internet Expolorer sometimes rename files when save it.
     For example, it may rename <i>config.php</i>
     to <i>config[1].inc.php</i>. Don't forget to  fix it before uploading!
 <p>
@@ -650,7 +659,7 @@ CUT;
 
     function step5(){
         print "
-<h1>Thank you for choosing aMember Pro</h1> 
+<h1>Thank you for choosing aMember Pro</h1>
 <p>You can find  the aMember Pro User's Guide <a href='http://www.amember.com/docs/Main_Page'>here</a>.
     Feel free to <a href='https://www.amember.com/support/'>contact CGI-Central</a> any time
     if you have any issues with the script.</p>
@@ -684,7 +693,7 @@ CUT;
 <p>Visit <a href='../admin-content'></a> Setup your protection for protected areas or upload files for customers.</p>
 <p>Check your installation by testing your
     <a href='../signup' target=_blank>Signup Page</a>.</p>
-    
+
 <p><strong>Feel free to contact <a href='https://www.amember.com/support/' target=_blank>CGI-Central Support</a> if you need any customization of the script.</strong></p>
 
 <p>You can also find a lot of useful info in the <a href='http://www.amember.com/forum/?from=setup' target=_blank>aMember Forum</a>.</p>
@@ -719,7 +728,7 @@ CUT;
             $this->title = "Amember Setup : Extensions required";
             return $this->display();
         }
-        
+
         $this->title = "aMember Setup: Step ".($step+1)." of 4";
         switch ($step){
             case 0: case '0':
@@ -819,7 +828,7 @@ $controller->setPageTemplate(<<<EOF
                     <div class="am-footer-actions">
                         <a href="#top"><img src="../application/default/views/public/img/top.png" /></a>
                     </div>
-                    aMember Pro&trade; 4.4.2 by <a href="http://www.amember.com">aMember.com</a>  &copy; 2002&ndash;{$year} CGI-Central.Net
+                    aMember Pro&trade; 4.7.0 by <a href="http://www.amember.com">aMember.com</a>  &copy; 2002&ndash;{$year} CGI-Central.Net
                 </div>
             </div>
         </div>

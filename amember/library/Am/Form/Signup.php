@@ -3,7 +3,7 @@
 require_once 'HTML/QuickForm2/Exception.php';
 
 /**
- * @package Am_SavedForm 
+ * @package Am_SavedForm
  */
 class Am_Form_Signup extends Am_Form_Controller implements Am_Form_Bricked
 {
@@ -14,24 +14,29 @@ class Am_Form_Signup extends Am_Form_Controller implements Am_Form_Bricked
     public function __construct($id = 'signup', $wizard = true, $propagateId = false)
     {
         parent::__construct($id, $wizard, $propagateId);
-        
+
         $this->defaultPageConfig = array(
             'title' => ___('Signup Form'),
             'back' => ___('Back'),
             'next' => ___('Next'),
         );
     }
-    
+
     public function isMultiPage()
     {
         return true;
     }
-    
+
+    public function isHideBricks()
+    {
+        return true;
+    }
+
     public function isValid(HTML_QuickForm2_Controller_Page $reference = null)
     {
         return parent::isValid($reference);
     }
-    
+
     public function addBrickedPage(array $bricks, $pageConfig = null)
     {
         if ($pageConfig) {
@@ -59,7 +64,6 @@ class Am_Form_Signup extends Am_Form_Controller implements Am_Form_Bricked
         if ($record->title)
             $this->defaultPageConfig['title'] = $record->title;
         $bricks = array();
-        Am_Di::getInstance()->plugins_tax->getAllEnabled(); // to load all plugins 
         $loggedIn = Am_Di::getInstance()->auth->getUserId() > 0;
         foreach ($record->getBricks() as $brick)
         {
@@ -67,7 +71,7 @@ class Am_Form_Signup extends Am_Form_Controller implements Am_Form_Bricked
                 continue; // skip brick as user is logged-in
             if ($brick->getClass() == 'page-separator')
             {
-                if ($bricks) 
+                if ($bricks)
                 {
                     $this->addBrickedPage($bricks, $brick->getCustomLabels());
                     $bricks = array();
@@ -138,7 +142,7 @@ class Am_Form_Signup extends Am_Form_Controller implements Am_Form_Bricked
     {
         return Am_Form_Brick::getAvailableBricks($this);
     }
-    
+
     function getFirstPage(){
         return $this->getIterator()->current();
     }
@@ -153,7 +157,7 @@ class Am_Form_Signup extends Am_Form_Controller implements Am_Form_Bricked
                 return $page;
         }
     }
-    
+
     static function getSavedFormUrl(SavedForm $record)
     {
         if ($record->isDefault(SavedForm::D_SIGNUP))
@@ -168,8 +172,8 @@ class Am_Form_Signup extends Am_Form_Controller implements Am_Form_Bricked
 /**
  * This action sends e-mail address confirmation email
  * stores current form entries to Am_Store and redirects
- * to 'emailcode' page 
- * 
+ * to 'emailcode' page
+ *
  * @package Am_SavedForm
  */
 class Am_Form_Signup_Action_SendEmailCode implements HTML_QuickForm2_Controller_Action
@@ -214,7 +218,7 @@ class Am_Form_Signup_Action_SendEmailCode implements HTML_QuickForm2_Controller_
         $signupUrl = $page->getController()->getParentController()->getCurrentUrl();
         $tpl->setCode($code);
         $tpl->setUrl($signupUrl . '?em=' . $code);
-        
+
         $tpl->send($u);
 
         // the $page is never the last page, because emailcode is always inserted after
@@ -242,12 +246,12 @@ class Am_Form_Signup_Page extends HTML_QuickForm2_Controller_Page
         $this->pageNum = $pageNum;
         $this->pageConfig = $pageConfig;
     }
-    
+
     public function getTitle()
     {
         return $this->pageConfig['title'];
     }
-    
+
     public function handle($actionName)
     {
         if ($actionName == 'next')
@@ -266,7 +270,7 @@ class Am_Form_Signup_Page extends HTML_QuickForm2_Controller_Page
             if (!empty($this->bricks))
                 foreach ($this->bricks as $brick)
                 {
-                    if ($brick->getId() == 'paysystem') 
+                    if ($brick->getId() == 'paysystem')
                     {
                         $this->getController()->getSessionContainer()->storeOpaque ('hideBricks', array());
                     }
@@ -293,7 +297,7 @@ class Am_Form_Signup_Page extends HTML_QuickForm2_Controller_Page
             unset($info['pass']);
             $this->form->addDataSource(new HTML_QuickForm2_DataSource_Array($info));
         }
-        
+
         $group = $this->form->addGroup(null, 'id="buttons"');
         $group->setSeparator(' ');
         if ($this->pageNum > 0)

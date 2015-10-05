@@ -46,7 +46,7 @@ class Am_Auth_Result
             case self::LOCKED:
                 return ___("Authentication problem, please contact website administator");
             case self::NOT_APPROVED: 
-                return ___('Your account is not approved yet. You will be notified by email when site administrator review your account and enable access.');
+                return ___('Your account has not yet been approved. You will be notified via email once a site administrator has reviewed your account and enabled access.');
             case self::USER_NOT_FOUND:
             case self::WRONG_CREDENTIALS:
             default:

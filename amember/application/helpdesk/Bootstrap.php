@@ -18,7 +18,7 @@ class Bootstrap_Helpdesk extends Am_Module
         $this->getDi()->uploadTable->defineUsage(self::ADMIN_ATTACHMENT_UPLOAD_PREFIX, 'helpdesk_message', 'attachments', UploadTable::STORE_IMPLODE, "Ticket [%ticket_id%]", '/helpdesk/admin/p/index/index');
 
     }
-    
+
     function renderNotification()
     {
         if ($user_id = $this->getDi()->auth->getUserId()) {
@@ -49,6 +49,7 @@ class Bootstrap_Helpdesk extends Am_Module
             'id' => 'helpdesk.notify_new_message',
             'title' => 'Notify New Message',
             'mailPeriodic' => Am_Mail::USER_REQUESTED,
+            'isAdmin' => true,
             'vars' => $ticket + array('url' => 'Url of Page with Message', 'user'),
             ), 'helpdesk.notify_new_message_admin');
         $event->addReturn(array(
@@ -62,6 +63,7 @@ class Bootstrap_Helpdesk extends Am_Module
             'title' => 'Notify Ticket is Assigned to Admin',
             'mailPeriodic' => Am_Mail::ADMIN_REQUESTED,
             'vars' => $ticket + array('url' => 'Url of Page with Ticket', 'admin'),
+            'isAdmin' => true,
             ), 'helpdesk.notify_assign');
 
         $event->addReturn(array(
@@ -130,6 +132,10 @@ class Bootstrap_Helpdesk extends Am_Module
 
     function onAdminWarnings(Am_Event $event)
     {
+        /* @var $admin Admin */
+        $admin = $this->getDi()->authAdmin->getUser();
+        if (!$admin->hasPermission(self::ADMIN_PERM_ID)) return;
+
         $cnt = $this->getDi()->db->selectCell("SELECT COUNT(ticket_id) FROM ?_helpdesk_ticket WHERE status IN (?a)",
                 array(HelpdeskTicket::STATUS_AWAITING_ADMIN_RESPONSE, HelpdeskTicket::STATUS_NEW));
 
@@ -161,11 +167,7 @@ class Bootstrap_Helpdesk extends Am_Module
                     'action' => 'index',
                     'module' => 'helpdesk',
                     'id' => 'helpdesk-ticket',
-                    'resource' => self::ADMIN_PERM_ID,
-                    'params' => array(
-                        'page_id' => 'index'
-                    ),
-                    'route' => 'inside-pages'
+                    'resource' => self::ADMIN_PERM_ID
                 ),
                 array(
                     'label' => ___('My Tickets'),
@@ -173,11 +175,7 @@ class Bootstrap_Helpdesk extends Am_Module
                     'action' => 'index',
                     'module' => 'helpdesk',
                     'id' => 'helpdesk-ticket-my',
-                    'resource' => self::ADMIN_PERM_ID,
-                    'params' => array(
-                        'page_id' => 'index'
-                    ),
-                    'route' => 'inside-pages'
+                    'resource' => self::ADMIN_PERM_ID
                 ),
                 array(
                     'label' => ___('Categories'),
@@ -205,10 +203,8 @@ class Bootstrap_Helpdesk extends Am_Module
             'label' => ___('Helpdesk'),
             'controller' => 'index',
             'action' => 'index',
-            'params' => array('page_id' => 'index'),
             'module' => 'helpdesk',
             'order' => 600,
-            'route' => 'inside-pages',
         );
 
         if (!$this->getConfig('does_not_show_faq_tab') && $this->getDi()->helpdeskFaqTable->countBy()) {
@@ -263,7 +259,7 @@ class Bootstrap_Helpdesk extends Am_Module
 
     function onUserAfterDelete(Am_Event_UserAfterDelete $event)
     {
-        $this->getDi()->db->query("DELETE FROM ?_helpdesk_message WHERE 
+        $this->getDi()->db->query("DELETE FROM ?_helpdesk_message WHERE
             ticket_id IN (SELECT ticket_id FROM ?_helpdesk_ticket
             WHERE user_id=?)", $event->getUser()->user_id);
         $this->getDi()->db->query("DELETE FROM ?_helpdesk_ticket
@@ -294,7 +290,7 @@ class Bootstrap_Helpdesk extends Am_Module
                     $et = Am_Mail_Template::load('helpdesk.notify_autoclose', $user->lang);
                     $et->setUser($user);
                     $et->setTicket($ticket);
-                    $et->setUrl(sprintf('%s/helpdesk/index/p/view/view/ticket/%s',
+                    $et->setUrl(sprintf('%s/helpdesk/ticket/%s',
                                     $this->getDi()->config->get('root_surl'),
                                     $ticket->ticket_mask));
                     $et->send($user);
@@ -306,7 +302,7 @@ class Bootstrap_Helpdesk extends Am_Module
     function onInitFinished()
     {
         $this->getDi()->blocks->add(new Am_Block('member/main/top', null, 'helpdesk-notification', null, array($this, 'renderNotification')));
-        
+
         $this->getDi()->register('helpdeskStrategy', 'Am_Helpdesk_Strategy_Abstract')
             ->setConstructor('create')
             ->setArguments(array($this->getDi()));
@@ -315,16 +311,34 @@ class Bootstrap_Helpdesk extends Am_Module
         $router = Zend_Controller_Front::getInstance()->getRouter();
         $router->addRoute('helpdesk-item', new Zend_Controller_Router_Route(
                 'helpdesk/faq/i/:title', array(
-                'module' => 'helpdesk',
-                'controller' => 'faq',
-                'action' => 'item'
+                    'module' => 'helpdesk',
+                    'controller' => 'faq',
+                    'action' => 'item'
                 )
         ));
         $router->addRoute('helpdesk-category', new Zend_Controller_Router_Route(
                 'helpdesk/faq/c/:cat', array(
-                'module' => 'helpdesk',
-                'controller' => 'faq',
-                'action' => 'index'
+                    'module' => 'helpdesk',
+                    'controller' => 'faq',
+                    'action' => 'index'
+                )
+        ));
+
+        $router->addRoute('helpdesk-ticket', new Zend_Controller_Router_Route(
+                'helpdesk/ticket/:ticket', array(
+                    'module' => 'helpdesk',
+                    'controller' => 'index',
+                    'action' => 'view',
+                    'page_id' => 'view'
+                )
+        ));
+
+        $router->addRoute('helpdesk-ticket-admin', new Zend_Controller_Router_Route(
+                'helpdesk/admin/ticket/:ticket', array(
+                    'module' => 'helpdesk',
+                    'controller' => 'admin',
+                    'action' => 'view',
+                    'page_id' => 'view'
                 )
         ));
     }

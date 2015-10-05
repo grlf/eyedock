@@ -22,6 +22,10 @@ class Am_Form_JavascriptBuilder extends HTML_QuickForm2_JavascriptBuilder
         $config = $rule->getConfig();
         if ($config['operator'] == '===' && $config['operand'] instanceof HTML_QuickForm2_Node_InputPassword)
             return array('equalTo', '#' . $config['operand']->getId());
+        if ($config['operator'] == '>=')
+            return array('min', (float)$config['operand']);
+        if ($config['operator'] == '<=')
+            return array('max', (float)$config['operand']);
     }
     function _getLength(HTML_QuickForm2_Rule $rule, HTML_QuickForm2_Node $el){
         $config = $rule->getConfig();

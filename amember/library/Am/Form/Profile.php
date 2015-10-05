@@ -12,13 +12,17 @@ class Am_Form_Profile extends Am_Form implements Am_Form_Bricked
     
     public function initFromSavedForm(SavedForm $record)
     {
-        Am_Di::getInstance()->plugins_tax->getAllEnabled(); // to load all plugins 
         foreach ($record->getBricks() as $brick)
             $brick->insertBrick($this);
         $this->addSubmit('_submit_', array('value'=> ___('Save Profile')));
     }
     
     public function isMultiPage()
+    {
+        return false;
+    }
+
+    public function isHideBricks()
     {
         return false;
     }
@@ -63,5 +67,13 @@ class Am_Form_Profile extends Am_Form implements Am_Form_Bricked
             return false;
         }
         return parent::validate();
+    }
+
+    static function getSavedFormUrl(SavedForm $record)
+    {
+        if ($record->isDefault(SavedForm::D_PROFILE))
+            return "profile";
+        else
+            return "profile/" . urlencode($record->code);
     }
 }

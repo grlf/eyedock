@@ -9,6 +9,9 @@ class Helpdesk_FaqController extends Am_Controller
             $this->getDi()->auth->requireLogin(ROOT_URL . '/helpdesk/faq');
         }
         $this->view->headLink()->appendStylesheet($this->view->_scriptCss('helpdesk-user.css'));
+        if ($this->getDi()->auth->getUser() && ($page = $this->getDi()->navigationUser->findOneBy('id', 'helpdesk-faq'))) {
+            $page->setActive(true);
+        }
         parent::preDispatch();
     }
 

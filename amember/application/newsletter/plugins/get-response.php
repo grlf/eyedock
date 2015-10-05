@@ -21,18 +21,45 @@ class Am_Newsletter_Plugin_GetResponse extends Am_Newsletter_Plugin
         return new Am_GetResponse_Api($this->getConfig('api_key'));
     }
 
+    function changeEmail(User $user, $oldEmail, $newEmail)
+    {
+        $lists = $this->getDi()->newsletterUserSubscriptionTable->getSubscribedIds($user->pk());
+        $campaigns = array();
+        foreach($lists as $v){
+            $list = $this->getDi()->newsletterListTable->load($v);
+            $campaigns[] = $list->plugin_list_id;
+        }
+        
+        $user->email = $oldEmail;
+        $this->changeSubscription($user, array(), $campaigns);
+        $user->email = $newEmail;
+        $this->changeSubscription($user, $campaigns, array());
+    }
+    
     public function changeSubscription(User $user, array $addLists, array $deleteLists)
     {
         $api = $this->getApi();
         foreach ($addLists as $list_id)
         {
-            $api->call('add_contact', array(
-                'campaign' => $list_id,
-                'name' => $user->getName(),
-                'email' => $user->email,
-                'cycle_day' => 0,
-                'ip' => $user->remote_addr
-            ));
+            try{
+                $api->call('add_contact', array(
+                    'campaign' => $list_id,
+                    'name' => $user->getName(),
+                    'email' => $user->email,
+                    'cycle_day' => 0,
+                    'ip' => $user->remote_addr
+                ));
+            }
+            catch(Am_Exception_InternalError $e)
+            {
+                if(
+                    (strpos($e->getMessage(), 'Contact already added to target campaign')=== false)
+                    &&
+                    (strpos($e->getMessage(), 'Contact already queued for target campaign')===false)
+                    )
+                    throw $e;
+                
+            }
         }
 
         if (!empty($deleteLists)) {

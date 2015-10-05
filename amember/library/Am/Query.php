@@ -314,6 +314,7 @@ class Am_Query implements Am_Grid_DataSource_Interface_Editable
     function distinct($flag=true)
     {
         $this->distinct = (bool)$flag;
+        return $this;
     }
     /**
      * Proxies this request to @see $db
@@ -485,7 +486,7 @@ class Am_Query_Condition_Data extends Am_Query_Condition {
         $this->value = $value;
     }
     function _getWhere(Am_Query $q) {
-        $field = $this->checkBlob ? 'dcd.`blob`' : 'dcd.`value`';
+        $field = $this->checkBlob ? $this->selfAlias().'.`blob`' : $this->selfAlias().'.`value`';
         $ret = $field . ' ' . $this->op ;
         if ($this->op != 'IS NULL' && $this->op != 'IS NOT NULL')
             $ret .= ' ' . $q->escape($this->value);
@@ -497,11 +498,14 @@ class Am_Query_Condition_Data extends Am_Query_Condition {
         $table = str_replace('?_', '', $db->getTableName());
         $pk = $db->getTable()->getKeyField();
         $key = $db->escape($this->field);
-        $ret = "INNER JOIN ?_data dcd ON dcd.`table`='$table' AND dcd.`id`=`$a`.`$pk` AND dcd.key=$key";
+        $ret = "INNER JOIN ?_data ".$this->selfAlias()." ON ".$this->selfAlias().".`table`='$table' AND ".$this->selfAlias().".`id`=`$a`.`$pk` AND ".$this->selfAlias().".key=$key";
         return $ret;
     }
     private function getAlias(Am_Query $q) {
         return (is_null($this->tableAlias) ? $q->getAlias() : $this->tableAlias);
+    }
+    protected function selfAlias(){
+        return 'dcd';
     }
 }
 

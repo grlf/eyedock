@@ -25,7 +25,7 @@ class Upload extends Am_Record_WithData
     function getName(){ return $this->name; }
     function setName($name){
         $x=preg_split('/[\\\\\/]/', $name);
-        $this->name = Am_Controller::escape(array_pop($x));
+        $this->name = array_pop($x);
         return $this;
     }
     function getPrefix()
@@ -267,6 +267,12 @@ class Upload extends Am_Record_WithData
         $p = realpath($this->getFullPath());
         $f = realpath($this->getTable()->getRoot());
         return strlen($f) && (strpos($p, $f) === 0);
+    }
+
+    function insert($reload = true)
+    {
+        $this->uploaded = $this->getDi()->time;
+        return parent::insert($reload);
     }
 }
 

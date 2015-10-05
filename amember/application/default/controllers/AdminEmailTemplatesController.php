@@ -7,7 +7,7 @@
  *        Web: http://www.cgi-central.net
  *    Details: Admin Info / PHP
  *    FileName $RCSfile$
- *    Release: 4.4.2 ($Revision$)
+ *    Release: 4.7.0 ($Revision$)
  *
  * Please direct bug reports,suggestions or feedback to the cgi-central forums.
  * http://www.cgi-central.net/forum/
@@ -82,6 +82,7 @@ CUT;
                         'attachments' => $this->prepareAttachments($tpl->attachments, $isReverse = true),
                         'conditions' => $this->prepareAttachments($tpl->conditions, $isReverse = true),
                         'days' => $this->prepareAttachments($tpl->days, $isReverse = true),
+                        '_admins' => $tpl->recipient_admins ? explode(',', $tpl->recipient_admins) : -1,
                     ) +
                     $tpl->toArray()
                 )
@@ -92,13 +93,16 @@ CUT;
         {
             $vars = $form->getValue();
             unset($vars['label']);
-
+            if (!$vars['email_template_layout_id']) {
+                $vars['email_template_layout_id'] = null;
+            }
             $tpl->setForUpdate($vars);
             $tpl->conditions = $this->prepareAttachments($this->getParam('conditions'));
             $tpl->attachments = $this->prepareAttachments($this->getParam('attachments'));
             $days = $this->getParam('days');
             sort($days);
             $tpl->days = $this->prepareAttachments($days);
+            $tpl->recipient_admins = implode(',', $vars['_admins']);
             $tpl->save();
             $el = new Am_Form_Element_PendingNotificationRules($tpl->name);
             $el->setLabel($this->getRequest()->getParam('label'));
@@ -115,6 +119,10 @@ CUT;
     public function addPendingNotificationRuleAction()
     {
         $form = $this->createPendingNotificationRulesForm();
+        if($el = $form->getElementById('_admins'))
+        {
+            $el->setValue(-1);
+        }
         if ($form->isSubmitted())
         {
             $form->setDataSources(array(
@@ -132,6 +140,9 @@ CUT;
         {
             $vars = $form->getValue();
             unset($vars['label']);
+            if (!$vars['email_template_layout_id']) {
+                $vars['email_template_layout_id'] = null;
+            }
             $tpl = $this->getDi()->emailTemplateRecord;
 
             $tpl->setForInsert($vars);
@@ -140,6 +151,7 @@ CUT;
             $days = $this->getParam('days');
             sort($days);
             $tpl->days = $this->prepareAttachments($days);
+            $tpl->recipient_admins = implode(',', $vars['_admins']);
             $tpl->save();
             $el = new Am_Form_Element_PendingNotificationRules($tpl->name);
             $el->setLabel($this->getParam('label'));
@@ -164,6 +176,35 @@ CUT;
                 )
         );
 
+        if ($options = $this->getDi()->emailTemplateLayoutTable->getOptions()) {
+            $form->addSelect('email_template_layout_id')
+                ->setLabel(___('Layout'))
+                ->loadOptions(array(''=>___('No Layout')) + $options);
+        }
+
+        $tt = Am_Mail_TemplateTypes::getInstance()->find($this->getParam('name'));
+        if($tt && !empty($tt['isAdmin']))
+        {
+            $op = array('-1' => Am_Controller::escape(sprintf('%s <%s>',
+                Am_Di::getInstance()->config->get('site_title') . ' Admin', Am_Di::getInstance()->config->get('admin_email'))));
+            foreach (Am_Di::getInstance()->adminTable->findBy() as $admin)
+            {
+               $op[$admin->pk()] = Am_Controller::escape(sprintf('%s <%s>', $admin->getName(), $admin->email));
+            }
+            $form->addMagicSelect('_admins', array('value' => 'default'))
+                ->setLabel(___('Admin Recipients'))
+                ->loadOptions($op)
+                ->setId('_admins')
+                ->addRule('required');
+
+        } else
+        {
+            $form->addText('bcc', array('class' => 'el-wide', 'placeholder' => ___('Email Addresses Separated by Comma')))
+                ->setLabel(___("BCC\n" .
+                    "blind carbon copy allows the sender of a message to conceal the person entered in the Bcc field from the other recipients"))
+                ->addRule('callback', ___('Please enter valid e-mail addresses'), array('Am_Validate', 'emails'));
+        }
+        
         $form->addElement('hidden', 'name');
 
         $form->addMagicSelect('days')
@@ -209,6 +250,7 @@ CUT;
                         'attachments' => $this->prepareAttachments($tpl->attachments, $isReverse = true),
                         'conditions' => $this->prepareAttachments($tpl->conditions, $isReverse = true),
                         'days' => $this->prepareAttachments($tpl->days, $isReverse = true),
+                        '_admins' => $tpl->recipient_admins ? explode(',', $tpl->recipient_admins) : -1,
                     ) +
                     $tpl->toArray()
                 )
@@ -219,9 +261,13 @@ CUT;
         {
             $vars = $form->getValue();
             unset($vars['label']);
+            if (!$vars['email_template_layout_id']) {
+                $vars['email_template_layout_id'] = null;
+            }
             $tpl->isLoaded() ? $tpl->setForUpdate($vars) : $tpl->setForInsert($vars);
             $tpl->conditions = $this->prepareAttachments($this->getParam('conditions'));
             $tpl->attachments = $this->prepareAttachments($this->getParam('attachments'));
+            $tpl->recipient_admins = implode(',', isset($vars['_admins']) ? $vars['_admins'] : array());
             $tpl->save();
         }
         else
@@ -364,6 +410,42 @@ CUT;
         if (count($langOptions) == 1)
             $lang->toggleFrozen(true);
         $lang->addRule('required');
+
+        if ($options = $this->getDi()->emailTemplateLayoutTable->getOptions()) {
+            $form->addSelect('email_template_layout_id')
+                ->setLabel(___('Layout'))
+                ->loadOptions(array(''=>___('No Layout')) + $options);
+        }
+
+        $tt = Am_Mail_TemplateTypes::getInstance()->find($this->getParam('name'));
+        if($tt && !empty($tt['isAdmin']))
+        {
+            $op = array('-1' => Am_Controller::escape(sprintf('%s <%s>',
+                Am_Di::getInstance()->config->get('site_title') . ' Admin', Am_Di::getInstance()->config->get('admin_email'))));
+            foreach (Am_Di::getInstance()->adminTable->findBy() as $admin)
+            {
+               $op[$admin->pk()] = Am_Controller::escape(sprintf('%s <%s>', $admin->getName(), $admin->email));
+            }
+            $form->addMagicSelect('_admins', array('value' => 'default'))
+                ->setLabel(___('Admin Recipients'))
+                ->loadOptions($op)
+                ->addRule('required');
+
+        } else
+        {
+            $form->addText('bcc', array('class' => 'el-wide', 'placeholder' => ___('Email Addresses Separated by Comma')))
+                ->setLabel(___("BCC\n" .
+                    "blind carbon copy allows the sender of a message to conceal the person entered in the Bcc field from the other recipients"))
+                ->addRule('callback', ___('Please enter valid e-mail addresses'), array('Am_Validate', 'emails'));
+        }
+
+        $form->addScript()->setScript(<<<CUT
+$("#checkbox-recipient-other").change(function(){
+$("#row-input-recipient-emails").toggle(this.checked);
+}).change();
+CUT
+        );
+
 
         $body = $form->addElement(new Am_Form_Element_MailEditor($this->getParam('name')));
 

@@ -16,14 +16,13 @@ require_once( JPATH_ROOT.DS.'utilities/phpClasses/CLHelper.php' );
 require_once( JPATH_COMPONENT.DS.'helpers/sqlHelper/whereChunks.php' );
 require_once( JPATH_ROOT.DS.'utilities/utilities/parametersFromRx.php' );
 require_once( JPATH_ROOT.DS.'utilities/database.php' );
-
 //require_once( JPATH_COMPONENT.DS.'helpers/powerLists/makePowerLists.php' );
 
 //define('EYEDOCK_LENS_IMG_URL', 'http://www.eyedock.com/modules/Lenses/pnimages/lens_images');
 //define('EYEDOCK_LENS_COMP_IMG_URL', 'http://www.eyedock.com/modules/Lenses/pnimages/comp_logos');
 
 
-class PnlensesModelPnlenses extends JModel {
+class PnlensesModelPnlenses extends JModelLegacy {
        
   function getLenses(){
        		
@@ -175,12 +174,19 @@ class PnlensesModelPnlenses extends JModel {
     function getUserPrefs () {
     	$user =& JFactory::getUser(); //get the current user
     	$db = databaseObj();
+    	
+    	
     	$query = "SELECT prefs FROM pn_lenses_user_prefs WHERE user_id = $user->id LIMIT 1";
     	$db->setQuery($query);
     	//$db->query($query);
     	//$num_rows = $db->getNumRows();
     	//echo  "num ". $num_rows;
-    	$prefs = $db->loadResult();
+        try {
+            $prefs = $db->loadResult();
+        } catch (Exception $e) {
+            error_reporting(0);
+            return null;
+        }
     	
     	//if ($num_rows <1 ) return null;
     	$params = array();

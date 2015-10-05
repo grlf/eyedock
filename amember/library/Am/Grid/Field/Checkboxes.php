@@ -45,7 +45,7 @@ class Am_Grid_Field_Checkboxes extends Am_Grid_Field
         $div .= '</div>' . PHP_EOL;
         
         $div .= '<div class="check-all-offer-selected" style="display:none">';
-        $div .= ___('%s records on this page are selected. You can choose group operation in select box below or %scancel%s', 
+        $div .= ___('%s records on this page are selected. You can choose group operation in the select box below or %scancel%s', 
             '<b>'.$grid->getDataSource()->getFoundRows().'</b>',
             '<a href="javascript:" class="check-all-offer-cancel">', '</a>') . PHP_EOL;
         $div .= '</div>' . PHP_EOL;

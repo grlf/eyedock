@@ -16,6 +16,10 @@
                     </tr>
                     <tr valign="top">
                         <th scope="row"></th>
+                        <td><input type="checkbox" name='options[require_all]' value=1 <?php checked(@$options['require_all'],1);?>><?php _e('Allow access only if user has all above products', 'am4-plugin');?></td>
+                    </tr>
+                    <tr valign="top">
+                        <th scope="row"></th>
                         <td><input type="checkbox" name='options[affiliate]' value=1 <?php checked(@$options['affiliate'],1);?>><?php _e('Make this post/page available for affiliates', 'am4-plugin');?></td>
                     </tr>
                     

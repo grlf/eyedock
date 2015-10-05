@@ -1,6 +1,6 @@
 <?php
 
-/** 
+/**
  * aMember Pro setup exception
  * @package Am_Setup
  */
@@ -23,58 +23,62 @@ class Am_Setup
     const PASS = '@DB_MYSQL_PASS@';
     const PREFIX = '@DB_MYSQL_PREFIX@';
     const CURL = '@CURL_PATH@';
-    
+
     const ROOT_URL = '@ROOT_URL@';
     const ROOT_SURL = '@ROOT_SURL@';
     const ADMIN_EMAIL = '@ADMIN_EMAIL@';
     const ADMIN_PASS = '@ADMIN_PASS@';
     const LICENSE = '@LICENSE@';
-    
+    const SITE_TITLE = '@SITE_TITLE@';
+
     /** @var array config */
     protected $config = array();
+    /** @var array config */
+    protected $options = array();
     /** @var string root of setup directory with all xml,sql files */
     protected $setupRoot;
     /** @var string root of amember directory - to write config files */
     protected $configRoot;
-    
+
     /** @var string paths to XML files to create database */
     protected $dbXmlFiles = array();
-    
+
     /** @var DbSimple_Mypdo */
     protected $db;
-    
-    function __construct($setupRoot, $configRoot, $dbXmlFiles = array(), array $config)
+
+    function __construct($setupRoot, $configRoot, $dbXmlFiles = array(), array $config, array $options = array())
     {
         $this->setupRoot = $setupRoot;
         $this->configRoot = $configRoot;
         $this->dbXmlFiles = $dbXmlFiles;
         $this->config = $config;
+        $this->options = $options;
     }
-    
+
     function process($skipConfigFiles = false)
     {
         $nl = empty($_SERVER['REMOTE_ADDR']) ? "\n" : "<br />\n";
-        
+
         print "Connecting to database...";
         $this->connectDb();
         print "OK$nl";
-        
+
         print "Checking database...";
         $this->checkDbEmpty();
         print "OK$nl";
-        
+
         print "Creating tables....";
         $this->createTables();
         print "OK$nl";
-        
+
         print "Writing config...";
         $this->writeConfigDb();
         print "OK$nl";
-        
+
         print "Import Country/State database...";
         $this->importCountryState();
         print "OK$nl";
-        
+
         print "Import E-Mail Templates...";
         $this->importEmailTemplates();
         print "OK$nl";
@@ -86,11 +90,11 @@ class Am_Setup
             print "OK$nl";
         }
     }
-    
+
     function connectDb()
     {
         require_once 'DbSimple/Generic.php';
-        
+
         $config = array(
             'scheme'=>'mysql',
             'host'  => $this->getConfig(self::HOST),
@@ -100,7 +104,7 @@ class Am_Setup
         );
         if ($port = $this->getConfig(self::PORT))
             $config['port'] = $port;
-        
+
         $err = array();
         if (!strlen($config['host'])) $err[] = "hostname";
         if (!strlen($config['path']))   $err[] = "database name";
@@ -110,9 +114,13 @@ class Am_Setup
         $this->db = new DbSimple_Mypdo($config);
         $this->db->setErrorHandler(array($this,'dbErrorHandler'));
         $this->db->setIdentPrefix($this->getConfig(self::PREFIX));
+        if ($vars = $this->getOption('db.mysql.variables')) {
+            foreach ($vars as $k => $v)
+                $this->db->query('SET ?#=?', $k, $v);
+        }
         return $this->db;
     }
-    
+
     function tryCreateDbAndConnnect()
     {
         $dsn = array(
@@ -146,8 +154,8 @@ class Am_Setup
             }
         }
     }
-    
-    
+
+
     function checkDbEmpty()
     {
         if (@$this->db->selectCell("SELECT COUNT(*) FROM ?_config") > 0)
@@ -164,15 +172,15 @@ class Am_Setup
         foreach ($this->db->selectCol("SHOW TABLES LIKE ?", $prefix.'%') as $table)
             $this->db->query("DROP TABLE ?#", $table);
     }
-    
-    
+
+
     function createTables()
     {
         /// check if database exists and filled-in
         $this->db->query("SET NAMES utf8");
         $this->db->query("SET character_set_database=utf8");
         $this->db->query("SET character_set_server=utf8");
-        
+
         $xml = new Am_DbSync();
         foreach ($this->dbXmlFiles as $fn)
         {
@@ -190,14 +198,14 @@ class Am_Setup
             }
             $xml->parseXml($xmlFile);
         }
-        
+
         $db  = new Am_DbSync();
         $db->parseTables($this->db);
 
         $diff = $xml->diff($db);
         $diff->apply($this->db);
     }
-    
+
     function importCountryState()
     {
         // insert countries
@@ -210,7 +218,7 @@ class Am_Setup
                 print "skipped) ";
                 continue;
             }
-            if (!is_readable($fn)) 
+            if (!is_readable($fn))
                 $this->fatal("File [$fn] not found, make sure you've uploaded all files");
             $sql = file_get_contents($fn);
             $sql = str_replace(self::PREFIX, $prefix, $sql);
@@ -218,7 +226,7 @@ class Am_Setup
             print "done) ";
         }
     }
-    
+
     function writeConfigDb()
     {
         $config = array(
@@ -240,7 +248,7 @@ class Am_Setup
                 'protect' => array('new-rewrite'),
                 'payment' => array('paypal'),
              ),
-            'site_title' => 'aMember Pro',
+            'site_title' => $this->getConfig(self::SITE_TITLE),
             'skip_index_page' => '1',
             'auto_login_after_signup' => '1',
             'admin' => array('records-on-page' => '25')
@@ -250,8 +258,8 @@ class Am_Setup
             config=?",
             serialize($config));
     }
-    
-    
+
+
     function getETXmlFiles() {
         $files = array();
         foreach ($this->dbXmlFiles as $f) {
@@ -261,8 +269,8 @@ class Am_Setup
             }
         }
         return $files;
-    } 
-    
+    }
+
     function importEmailTemplates()
     {
 	    // import email templates
@@ -274,7 +282,7 @@ class Am_Setup
             }
         }
     }
-    
+
     function writeConfigFiles()
     {
         $fn = $this->getConfigFileFn();
@@ -289,7 +297,7 @@ class Am_Setup
     function getConfigFileContent()
     {
         $ret = file_get_contents($fn = $this->configRoot . '/config-dist.php');
-        if (!strlen($ret)) 
+        if (!strlen($ret))
             throw new Am_Setup_Exception("Could not read file [$fn]");
         $replace = array();
         foreach ($this->config as $k => $v)
@@ -299,15 +307,24 @@ class Am_Setup
         }
         return str_replace(array_keys($replace), array_values($replace), $ret);
     }
-    
+
     function fatal($msg)
     {
         throw new Am_Setup_Exception($msg);
     }
-    
+
     function getConfig($key)
     {
         return $this->config[$key];
+    }
+    function getOption($key)
+    {
+        $r = $this->options;
+        foreach(explode('.', $key) as $k) {
+            if (!isset($r[$k])) return null;
+            $r = $r[$k];
+        }
+        return $r;
     }
     function dbErrorHandler($message, $info)
     {

@@ -38,8 +38,6 @@ class Coupon extends Am_Record_WithData {
             return ___('This coupon belongs to another customer');
         if ($this->user_id && $this->user_id != $user_id)
             return ___('This coupon belongs to another customer');
-        if($batch->aff_id &&  $user_id && $batch->aff_id == $user_id)
-            return ___("You can't use your affiliate coupon code");
         $tm = $this->getDi()->time;
         if ($batch->begin_date && strtotime($batch->begin_date) > $tm)
             return ___('Coupon is not yet active');
@@ -51,6 +49,19 @@ class Coupon extends Am_Record_WithData {
             if ($batch->user_use_count <= $member_used_count)
                 return ___('Coupon usage limit exceeded');
         }
+
+        $event = new Am_Event(Am_Event::VALIDATE_COUPON, array(
+            'couponBatch' => $batch,
+            'coupon' => $this,
+            'user' => $user_id ? $this->getDi()->userTable->load($user_id) : null
+        ));
+
+        $this->getDi()->hook->call($event);
+
+        if ($r = $event->getReturn()) {
+            return $r[0];
+        }
+
         return null;
     }
     

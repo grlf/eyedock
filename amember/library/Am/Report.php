@@ -4,7 +4,7 @@
  * Exception during report
  * @package Am_Report
  */
-class Am_Exception_Report extends Am_Exception_InternalError {} 
+class Am_Exception_Report extends Am_Exception_InternalError {}
 
 /**
  * An abstract report class
@@ -15,7 +15,7 @@ abstract class Am_Report_Abstract
     static private $availableReports = array();
     /** @var Am_Form_Admin */
     protected $form;
-    
+
     /** @var mixed executed query statement (PDOStatement?) */
     protected $stmt;
 
@@ -43,7 +43,7 @@ abstract class Am_Report_Abstract
         if (!empty($this->title)) return $this->title;
         return ucfirst($this->getId());
     }
-    
+
     public function getDescription()
     {
         if (!empty($this->description)) return $this->description;
@@ -93,7 +93,7 @@ abstract class Am_Report_Abstract
     }
 
     /** @return Am_Report_Result */
-     public function getReport(Am_Report_Result $result = null) {
+     public function getReport(Am_Report_Result $result = null, Am_Report_Shift $shift = null) {
         $needPropagation = true;
         if ($result === null) {
             $needPropagation = false;
@@ -102,15 +102,16 @@ abstract class Am_Report_Abstract
         }
 
         $result->setQuantity($this->getQuantity());
-        foreach ($this->getLines() as $line)
-            $result->addLine($line);
+        foreach ($this->getLines() as $line) {
+                $result->addLine($line, $shift);
+        }
 
         $this->runQuery();
         while ($r = $this->fetchNextRow())
         {
             $k = $r[self::POINT_FLD];
             unset($r[self::POINT_FLD]);
-            $result->addValues($k, $this->getQuantity()->getLabel($k), $r);
+            $result->addValues($k, $this->getQuantity()->getLabel($k), $r, $shift);
         }
 
         if ($needPropagation) {
@@ -148,7 +149,7 @@ abstract class Am_Report_Abstract
                 self::$availableReports[] = new $c;
         return self::$availableReports;
     }
-    
+
     /** @return Am_Report_Abstract */
     public static function createById($id)
     {
@@ -174,7 +175,7 @@ abstract class Am_Report_Abstract
     {
         throw new Am_Exception_NotImplemented("override getPointField() or, instead entire runQuery() method");
     }
-    
+
     /**
      * Add elements to config form
      * no need to add "time" controls
@@ -185,11 +186,17 @@ abstract class Am_Report_Abstract
         $form->addDataSource(new HTML_QuickForm2_DataSource_Array($this->getFormDefaults()));
         $form->setAction(REL_ROOT_URL . '/admin-reports/run/report_id/'.$this->getId());
         $this->_initConfigForm($form);
+        $this->_afterInitConfigForm($form);
         $form->addSubmit('save', array('value'=>___('Run Report')));
         return $form;
     }
-    
+
     protected function _initConfigForm(Am_Form $form)
+    {
+        // to override
+    }
+
+    protected function _afterInitConfigForm(Am_Form $form)
     {
         // to override
     }
@@ -203,12 +210,12 @@ abstract class Am_Report_Abstract
     {
         // to override
     }
-    
+
     protected function fetchNextRow()
     {
         return $this->getDi()->db->fetchRow($this->stmt);
     }
-    
+
     /** @return Am_Di */
     protected function getDi()
     {
@@ -235,6 +242,7 @@ abstract class Am_Report_Abstract
 abstract class Am_Report_Date extends Am_Report_Abstract
 {
     const PERIOD_EXACT = 'exact';
+    protected $shift = array();
 
     public function getPointFieldType()
     {
@@ -274,6 +282,28 @@ CUT;
         $quant = $form->addElement('Select', 'quant')->setLabel(___('Quantity'));
         $quant->addRule('required');
         $quant->loadOptions($this->getQuantityOptions());
+    }
+
+    protected function _afterInitConfigForm(Am_Form $form)
+    {
+        foreach (Am_Report_Shift::getOptions() as $k => $v) {
+            $s = Am_Report_Shift::create($k, null);
+            $form->addAdvCheckbox('shift_' . $k, array('rel' =>
+                    implode(' ', $s->getCompatiablePeriods())
+                ), array('content' => $v));
+        }
+        $form->addScript()
+            ->setScript(<<<CUT
+$(function(){
+$('select[name=period]').change(function(){
+    $(this).closest('.am-form').find('input[name^=shift_]').
+        closest('div.row').hide();
+    $(this).closest('.am-form').find('input[name^=shift_][rel*=' + $(this).val() + ']').
+        closest('div.row').show();
+}).change();
+})
+CUT
+            );
     }
 
     public function checkStopDate($val){
@@ -316,11 +346,149 @@ CUT;
         $this->setInterval($start, $stop);
         $quant = Am_Report_Quant::createById($values['quant'], $this->getPointFieldType());
         $this->setQuantity($quant);
+
+        $this->period = $values['period'];
+        foreach ($values as $k => $v) {
+            if (strpos($k, 'shift_') === 0 && $v) {
+                $this->shift[] = str_replace('shift_', '', $k);
+            }
+        }
+    }
+
+    public function getReport(Am_Report_Result $result = null, Am_Report_Shift $shift = null) {
+        $result = parent::getReport($result);
+        $origStart = $this->start;
+        $origStop = $this->stop;
+        foreach ($this->shift as $id) {
+            $shift = Am_Report_Shift::create($id, Am_Di::getInstance()->interval->getDuration($this->period));
+            if (!in_array($this->period, $shift->getCompatiablePeriods())) continue;
+            $diff = '-' .  $shift->getDiff();
+            $this->setInterval("{$origStart} $diff", "{$origStop} $diff");
+            $result = parent::getReport($result, $shift);
+        }
+
+        return $result;
+    }
+}
+
+abstract class Am_Report_Shift
+{
+    const SHIFT_PERIOD = 'period';
+    const SHIFT_YEAR = 'year';
+
+    static function create($id, $diff)
+    {
+        switch ($id) {
+            case self::SHIFT_PERIOD:
+                return new Am_Report_Shift_Period($diff);
+            case self::SHIFT_YEAR:
+                return new Am_Report_Shift_Year;
+        }
+    }
+
+    static function getOptions()
+    {
+        return array(
+            self::SHIFT_PERIOD => ___('Add Result for Previouse Period'),
+            self::SHIFT_YEAR => ___('Add Result for Same Period in Previouse Year')
+        );
+    }
+
+
+
+    function getId()
+    {
+        return $this->id;
+    }
+
+    abstract function getDiff();
+    abstract function getTitle();
+    abstract function getCompatiablePeriods();
+
+}
+
+class Am_Report_Shift_Period extends Am_Report_Shift {
+    protected $id = self::SHIFT_PERIOD;
+    protected $diff;
+
+    function __construct($diff)
+    {
+        $this->diff = $diff;
+    }
+
+    function getTitle()
+    {
+        return ___('Previouse Period');
+    }
+
+    function getDiff()
+    {
+        return $this->diff;
+    }
+
+    function getCompatiablePeriods()
+    {
+        return array(
+            Am_Interval::PERIOD_LAST_14_DAYS,
+            Am_Interval::PERIOD_LAST_30_DAYS,
+            Am_Interval::PERIOD_LAST_6_MONTHS,
+            Am_Interval::PERIOD_LAST_7_DAYS,
+            Am_Interval::PERIOD_LAST_90_DAYS,
+            Am_Interval::PERIOD_LAST_MONTH,
+            Am_Interval::PERIOD_LAST_QUARTER,
+            Am_Interval::PERIOD_LAST_WEEK_BUSINESS,
+            Am_Interval::PERIOD_LAST_WEEK_FROM_MON,
+            Am_Interval::PERIOD_LAST_WEEK_FROM_SUN,
+            Am_Interval::PERIOD_LAST_YEAR,
+            Am_Interval::PERIOD_THIS_MONTH,
+            Am_Interval::PERIOD_THIS_QUARTER,
+            Am_Interval::PERIOD_THIS_WEEK_FROM_MON,
+            Am_Interval::PERIOD_THIS_WEEK_FROM_SUN,
+            Am_Interval::PERIOD_THIS_YEAR,
+            Am_Interval::PERIOD_TODAY,
+            Am_Interval::PERIOD_YESTERDAY
+        );
+    }
+}
+
+class Am_Report_Shift_Year extends Am_Report_Shift {
+    protected $id = self::SHIFT_YEAR;
+
+    function getTitle()
+    {
+        return ___('Previouse Year');
+    }
+
+    function getDiff()
+    {
+        return '1 year';
+    }
+
+    function getCompatiablePeriods()
+    {
+        return array(
+            Am_Interval::PERIOD_LAST_14_DAYS,
+            Am_Interval::PERIOD_LAST_30_DAYS,
+            Am_Interval::PERIOD_LAST_6_MONTHS,
+            Am_Interval::PERIOD_LAST_7_DAYS,
+            Am_Interval::PERIOD_LAST_90_DAYS,
+            Am_Interval::PERIOD_LAST_MONTH,
+            Am_Interval::PERIOD_LAST_QUARTER,
+            Am_Interval::PERIOD_LAST_WEEK_BUSINESS,
+            Am_Interval::PERIOD_LAST_WEEK_FROM_MON,
+            Am_Interval::PERIOD_LAST_WEEK_FROM_SUN,
+            Am_Interval::PERIOD_THIS_MONTH,
+            Am_Interval::PERIOD_THIS_QUARTER,
+            Am_Interval::PERIOD_THIS_WEEK_FROM_MON,
+            Am_Interval::PERIOD_THIS_WEEK_FROM_SUN,
+            Am_Interval::PERIOD_TODAY,
+            Am_Interval::PERIOD_YESTERDAY
+        );
     }
 }
 
 /**
- * Report period quantity to group results by axis X 
+ * Report period quantity to group results by axis X
  */
 abstract class Am_Report_Quant
 {
@@ -342,7 +510,7 @@ abstract class Am_Report_Quant
     {
         return sprintf($this->sqlExpr, $pointField);
     }
-    
+
     abstract public function getPointFieldType();
 
     static function getAvailableQuants($pointType)
@@ -368,14 +536,33 @@ abstract class Am_Report_Quant
             if ($q->getId() == $id)
                 return clone $q;
     }
-    
-    /** return human readable label */
+
+    /**
+     * return human readable label
+     *
+     * @param string $key SQL point value
+     */
     abstract public function getLabel($key);
-    /** get params for X axis of morris line*/
+    /**
+     * get params for X axis of morris line
+     */
     abstract public function getLineAxisParams();
-    /** format value for X axis of morris line graph */
+    /**
+     * format value for X axis of morris line graph
+     *
+     * @param string $key SQL point value
+     */
     abstract public function formatKey($key, $graphType = 'line');
+    /**
+     * return next point on X axis according quant
+     *
+     * @param string $key SQL point value
+     */
     abstract public function getNext($key);
+    public function add($key, Am_Report_Shift $lag)
+    {
+        return $key;
+    }
     public function buildQuery(Am_Query $q, $pointField, Am_Report_Date $report)
     {
         $f = $this->getSqlExpr($pointField);
@@ -468,18 +655,24 @@ abstract class Am_Report_Quant_Date extends Am_Report_Quant
         return Am_Report_Abstract::POINT_DATE;
     }
 
+    /**
+     * retrive start and stop datetime for given key in SQL DATE Format
+     *
+     * @return array
+     * @param string $key SQL point value
+     */
     abstract public function getStartStop($key);
 }
 
 class Am_Report_Quant_Day extends Am_Report_Quant_Date
 {
     protected $sqlExpr = "CAST(%s as DATE)";
-    
+
     public function getTitle()
     {
         return ___("Day");
     }
-    public function getLabel($key) 
+    public function getLabel($key)
     {
         return amDate($key);
     }
@@ -497,6 +690,12 @@ class Am_Report_Quant_Day extends Am_Report_Quant_Date
         return array(sprintf('%s', $date),sprintf('%s', $date));
     }
 
+    public function shift($key, $diff)
+    {
+        $diff = '+' . $diff;
+        return sqlDate(strtotime($diff, amstrtotime($key)));
+    }
+
     public function getNext($key)
     {
         return sqlDate(strtotime('+1 day', amstrtotime($key)));
@@ -506,20 +705,17 @@ class Am_Report_Quant_Day extends Am_Report_Quant_Date
 class Am_Report_Quant_Week extends Am_Report_Quant_Date
 {
     protected $sqlExpr = "YEARWEEK(%s, 3)";
-    
+
     public function getTitle()
     {
         return ___("Week");
     }
-    public function getKeyAndLabel($tm1, $tm2) {
-        return array(date('YW',$tm1), amDate($tm1).' - '.amDate($tm2));
-    }
 
     protected function getStart($key)
     {
-        return strtotime(sprintf('%04d-01-01 +%04d week', substr($key,0,4), substr($key, 4,2)-1));
+        return strtotime(sprintf('Monday %04d-01-01 +%04d week', substr($key,0,4), substr($key, 4,2)-1));
     }
-    
+
     public function formatKey($key, $graphType = 'line')
     {
         return $this->getStart($key) * 1000;
@@ -528,12 +724,12 @@ class Am_Report_Quant_Week extends Am_Report_Quant_Date
     public function getLabel($key)
     {
         $tm1 = $this->getStart($key);
-        return amDate($tm1).'-'.amDate($tm1+6*24*3600); // @todo fix last year week?
+        return amDate($tm1).'-'.amDate($tm1+6*24*3600);
     }
 
     public function getLineAxisParams()
     {
-        
+
     }
     public function getStartStop($key)
     {
@@ -541,11 +737,19 @@ class Am_Report_Quant_Week extends Am_Report_Quant_Date
         return array(sqlDate($start),sqlDate($start + 7*24*3600 - 1));
     }
 
+    public function shift($key, $diff)
+    {
+        $diff = '+' . $diff;
+        return date('YW', strtotime($diff, $this->getStart($key)));
+    }
+
     public function getNext($key)
     {
         $year = substr($key,0,4);
         $week = substr($key, 4,2);
-        if ($week == 53) {
+        //ISO-8601: 28 December is always in the last week of its year
+        $lastWeek = date('W', amstrtotime("$year-12-28"));
+        if ($week == $lastWeek) {
             $week=1;
             $year++;
         } else {
@@ -557,14 +761,12 @@ class Am_Report_Quant_Week extends Am_Report_Quant_Date
 }
 class Am_Report_Quant_Month extends Am_Report_Quant_Date
 {
-    
+
     public function getTitle()
     {
         return ___("Month");
     }
-    public function  getKeyAndLabel($tm1, $tm2) {
-        return array(date('Ym',$tm1), date('M Y', $tm1));
-    }
+
     public function getSqlExpr($dateField) {
         return "DATE_FORMAT($dateField, '%Y%m')";
     }
@@ -596,19 +798,89 @@ class Am_Report_Quant_Month extends Am_Report_Quant_Date
         return array(sqlDate($start),sqlDate(strtotime(sprintf('%s +1 month', date('Y-m', $start)))-1));
     }
 
+    public function shift($key, $diff)
+    {
+        $diff = '+' . $diff;
+        return date('Ym', strtotime($diff, $this->getStart($key)));
+    }
+
     public function getNext($key)
     {
         return date('Ym', strtotime('+1 month', $this->getStart($key)));
     }
 }
 
+class Am_Report_Quant_Quarter extends Am_Report_Quant_Date
+{
+
+    public function getTitle()
+    {
+        return ___("Quarter");
+    }
+
+    public function getSqlExpr($dateField) {
+        return "CONCAT(YEAR($dateField), '-', QUARTER($dateField))";
+    }
+
+    protected function getStart($key)
+    {
+        list($year, $quarter) = explode('-', $key);
+        return strtotime(sprintf('%04d-%02d-01 00:00:00', $year, ($quarter - 1)*3+1));
+    }
+
+    public function formatKey($key, $graphType = 'line')
+    {
+        $tm = $this->getStart($key);
+        return date('Y', $tm) . '-' . ceil(date('m', $tm)/3);
+    }
+
+    public function getLabel($key)
+    {
+        list($start, $stop) = $this->getStartStop($key);
+        $start = amstrtotime($start);
+        $stop = amstrtotime($stop);
+        $month = Am_Di::getInstance()->locale->getMonthNames('abbreviated', false);
+        return $month[date('n', $start)] . date(' Y', $start) . '-' .
+            $month[date('n', $stop)] . date(' Y', $stop);
+    }
+
+    public function getLineAxisParams()
+    {
+        return array('parseTime' => false);
+    }
+
+    public function getStartStop($key)
+    {
+        $start = $this->getStart($key);
+        return array(sqlDate($start),sqlDate(strtotime('+3 month', $start)-1));
+    }
+
+    public function shift($key, $diff)
+    {
+        $diff = '+' . $diff;
+        $time = strtotime($diff, $this->getStart($key));
+        return date('Y', $time) . '-' . ceil(date('m', $time)/3);
+    }
+
+    public function getNext($key)
+    {
+        $time = strtotime('+3 month', $this->getStart($key));
+        return date('Y', $time) . '-' . ceil(date('m', $time)/3);
+    }
+}
+
 class Am_Report_Quant_Year extends Am_Report_Quant_Date
 {
     protected $sqlExpr = "YEAR(%s)";
-    
+
     public function getTitle()
     {
         return ___("Year");
+    }
+
+    protected function getStart($key)
+    {
+        return strtotime(sprintf('%04d-01-01', $key));
     }
 
     public function formatKey($key, $graphType = 'line')
@@ -629,6 +901,12 @@ class Am_Report_Quant_Year extends Am_Report_Quant_Date
     public function getStartStop($key)
     {
         return array(sprintf('%s-01-01', $key),sprintf('%s-12-31', $key));
+    }
+
+    public function shift($key, $diff)
+    {
+        $diff = '+' . $diff;
+        return date('Y', strtotime($diff, $this->getStart($key)));
     }
 
     public function getNext($key)
@@ -700,8 +978,17 @@ class Am_Report_Result
         return $p;
     }
 
-    public function addValues($pointKey, $pointLabel, array $values)
+    public function addValues($pointKey, $pointLabel, array $values, Am_Report_Shift $shift = null)
     {
+        if ($shift) {
+            $pointKey = $this->getQuantity()->shift($pointKey, $shift->getDiff());
+            $nvalues = array();
+            foreach ($values as $key => $value) {
+                $nvalues[$key.$shift->getId()] = $value;
+            }
+            $values = $nvalues;
+        }
+
         if (empty($this->points[$pointKey])) {
             $p = $this->addPoint(new Am_Report_Point($pointKey, $pointLabel));
             if (!is_null($this->max) && $p->getKey() > $this->max) {
@@ -717,8 +1004,12 @@ class Am_Report_Result
         }
         $this->points[$pointKey]->addValues($values);
     }
-    public function addLine(Am_Report_Line $line)
+    public function addLine(Am_Report_Line $line, Am_Report_Shift $shift = null)
     {
+        if ($shift) {
+            $line->setlabel(sprintf('%s (%s)', $line->getLabel(), $shift->getTitle()));
+            $line->setKey($line->getKey() . $shift->getId());
+        }
         $this->lines[$line->getKey()] = $line;
     }
     public function getLines()
@@ -758,21 +1049,21 @@ class Am_Report_Result
             if ($min>$v) $min=$v;
             if ($max<$v) $max=$v;
         }
-        return array($min, $max); 
+        return array($min, $max);
     }
     public function setTitle($title){ $this->title = $title; }
     public function getTitle() { return $this->title; }
     public function setQuantity(Am_Report_Quant $quant) { $this->quantity = $quant; }
     public function getQuantity() { return $this->quantity; }
-    
+
     /**
-     * Sort points by keys. By default name sort will be used. 
+     * Sort points by keys. By default name sort will be used.
      * @param callback $cmpFunction
      * @return Am_Report_Result
      */
     public function sortPoints($cmpFunction=null){
         uksort(
-            $this->points, 
+            $this->points,
             $cmpFunction ? $cmpFunction : create_function('$a, $b', 'if ($a == $b) {return 0;} return ($a < $b) ? -1 : 1;')
             );
         return $this;
@@ -814,7 +1105,9 @@ class Am_Report_Line
         $this->setFormatFunc($formatFunc);
     }
     public function getKey(){ return $this->key; }
+    public function setKey($key){ $this->key = $key; }
     public function getLabel() { return $this->label; }
+    public function setLabel($label) { $this->label = $label; }
     public function getColor() { return $this->color; }
     public function formatValue($val)
     {
@@ -835,7 +1128,7 @@ class Am_Report_Line
 
 /**
  * Abstract report output
- * @package Am_Report 
+ * @package Am_Report
  */
 abstract class Am_Report_Output
 {
@@ -854,7 +1147,7 @@ abstract class Am_Report_Output
 }
 
 /**
- * Table output 
+ * Table output
  */
 class Am_Report_Table extends Am_Report_Output
 {
@@ -887,7 +1180,7 @@ class Am_Report_Table extends Am_Report_Output
         foreach ($totals as $k => $tt)
         {
             // if we have at least one numeric value in totals, display total row
-            if ($tt > 0) 
+            if ($tt > 0)
             {
                 $out .= "<tr class='am-report-total'><td><b>" . ___("Total") . "</b></td>";
                 foreach ($totals as $v)
@@ -903,7 +1196,7 @@ class Am_Report_Table extends Am_Report_Output
 }
 
 /**
- * Text report output 
+ * Text report output
  */
 class Am_Report_Text extends Am_Report_Output
 {
@@ -927,7 +1220,7 @@ class Am_Report_Text extends Am_Report_Output
 }
 
 /**
- * Graphical report output 
+ * Graphical report output
  */
 abstract class Am_Report_Graph extends Am_Report_Output
 {
@@ -973,7 +1266,7 @@ CUT;
 }
 
 /**
- * A graph line 
+ * A graph line
  */
 class Am_Report_Graph_Line extends Am_Report_Graph
 {
@@ -983,7 +1276,7 @@ class Am_Report_Graph_Line extends Am_Report_Graph
         $series = array();
         $keys = array();
         $lines = $this->result->getLines();
-        
+
         foreach ($this->result->getPoints() as $p)
         {
             $keys[] = $p->getKey();
@@ -1001,7 +1294,7 @@ class Am_Report_Graph_Line extends Am_Report_Graph
             }
             $series[] = $d;
         }
-        
+
         /// build config
         $config = array(
             'class' => 'Morris.Line',
@@ -1022,7 +1315,7 @@ class Am_Report_Graph_Line extends Am_Report_Graph
 }
 
 /**
- * A graph bar 
+ * A graph bar
  */
 class Am_Report_Graph_Bar extends Am_Report_Graph
 {
@@ -1062,5 +1355,51 @@ class Am_Report_Graph_Bar extends Am_Report_Graph
             $config['labels'][] = $line->getLabel();
         }
         return $config;
+    }
+}
+
+class Am_Report_Csv extends Am_Report_Output
+{
+    protected $title = "CSV";
+    const DELIM = ",";
+
+    public function render()
+    {
+        $out = "#" . self::DELIM;
+        //render headers
+        foreach ($this->result->getLines() as $line)
+        {
+            $out .= amEscapeCsv($line->getLabel(), self::DELIM) . self::DELIM;
+        }
+        $out .= "\r\n";
+
+        $totals = array();
+        foreach ($this->result->getPoints() as $point)
+        {
+            if (!$point->hasValues()) continue;
+            $out .= amEscapeCsv($point->getLabel(), self::DELIM) . self::DELIM;
+            $i = 0;
+            foreach ($this->result->getLines() as $line)
+            {
+                $out .= amEscapeCsv($line->formatValue($point->getValue($line->getKey())), self::DELIM) . self::DELIM;
+                @$lines[$i] = $line;
+                @$totals[ $i++ ] += $point->getValue($line->getKey());
+            }
+            $out .= "\r\n";
+        }
+
+        foreach ($totals as $k => $tt)
+        {
+            // if we have at least one numeric value in totals, display total row
+            if ($tt > 0)
+            {
+                $out .= ___("Total") . self::DELIM;
+                foreach ($totals as $v)
+                    $out .= amEscapeCsv($lines[$k]->formatValue($v), self::DELIM) . self::DELIM;
+                $out .= "\r\n";
+                break;
+            }
+        }
+        return $out;
     }
 }

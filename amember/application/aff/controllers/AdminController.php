@@ -1,6 +1,6 @@
 <?php
 
-include_once('AdminCommissionController.php');
+include_once 'AdminCommissionController.php';
 
 class Am_Grid_Filter_AffCommission extends Am_Grid_Filter_Aff_Abstract
 {
@@ -126,12 +126,14 @@ CUT;
 
     function payoutDetailAction()
     {
+        $hasTiers = $this->getDi()->affCommissionRuleTable->getMaxTier();
+
         $ds = new Am_Query($this->getDi()->affCommissionTable);
         $ds->leftJoin('?_invoice', 'i', 'i.invoice_id=t.invoice_id');
         $ds->leftJoin('?_user', 'u', 'u.user_id=i.user_id');
         $ds->leftJoin('?_product', 'p', 't.product_id=p.product_id');
         $ds->addField('u.user_id', 'user_id')
-            ->addField('CONCAT(u.login, \' (\',u.name_f, \' \',u.name_l,\') [#\', u.user_id, \'] \')', 'user_name')
+            ->addField('CONCAT(u.login, \' (\',u.name_f, \' \',u.name_l,\') #\', u.user_id)', 'user_name')
             ->addField('u.email', 'user_email')
             ->addField('p.title', 'product_title');
         $ds->addWhere('t.aff_id=?', $this->user_id);
@@ -149,8 +151,11 @@ CUT;
         $grid->addField('product_title', ___('Product'));
         $grid->addField('record_type', ___('Type'))->setRenderFunction(array($this, 'renderType'));;
         $fieldAmount = $grid->addField('amount', ___('Commission'))->setRenderFunction(array($this, 'renderCommAmount'));
-        $grid->addField('tier', ___('Tier'))
-            ->setRenderFunction(array($this, 'renderTier'));
+
+        if ($hasTiers) {
+            $grid->addField('tier', ___('Tier'))
+                ->setRenderFunction(array($this, 'renderTier'));
+        }
 
         $grid->addCallback(Am_Grid_ReadOnly::CB_TR_ATTRIBS, array($this, 'commCbGetTrAttribs'));
 
@@ -159,15 +164,21 @@ CUT;
 
     function commTabAction()
     {
+        $hasTiers = $this->getDi()->affCommissionRuleTable->getMaxTier();
+
         $this->setActiveMenu('users-browse');
         $ds = new Am_Query($this->getDi()->affCommissionTable);
         $ds->leftJoin('?_invoice', 'i', 'i.invoice_id=t.invoice_id');
+        $ds->addField('i.public_id');
         $ds->leftJoin('?_user', 'u', 'u.user_id=i.user_id');
         $ds->leftJoin('?_product', 'p', 't.product_id=p.product_id')
+            ->leftJoin('?_aff_payout_detail', 'apd', 't.payout_detail_id=apd.payout_detail_id')
+            ->leftJoin('?_aff_payout', 'ap', 'ap.payout_id=apd.payout_id')
+            ->addField('ap.date', 'payout_date')
+            ->addField('ap.payout_id')
             ->addField('u.user_id', 'user_id')
-            ->addField('CONCAT(u.login, \' (\',u.name_f, \' \',u.name_l,\') [#\', u.user_id, \']\')', 'user_name')
-            ->addField('p.title', 'product_title')
-            ->addField('IF(payout_detail_id IS NULL, \'no\', \'yes\')', 'is_paid');
+            ->addField('CONCAT(u.login, \' (\',u.name_f, \' \',u.name_l,\') #\', u.user_id)', 'user_name')
+            ->addField('p.title', 'product_title');
         $ds->setOrder('date', 'desc')
             ->addWhere('t.aff_id=?', $this->getParam('user_id'));
 
@@ -180,16 +191,23 @@ CUT;
         $grid->addField('user_name', ___('User'))
             ->addDecorator(new Am_Grid_Field_Decorator_Link($userUrl->userUrl('{user_id}'), '_top'));
         $grid->addField('product_title', ___('Product'));
-        $grid->addField('record_type', ___('Type'))->setRenderFunction(array($this, 'renderType'));
+        $grid->addField('invoice_id', ___('Invoice'))
+            ->setGetFunction(array($this, '_getInvoiceNum'))
+            ->addDecorator(
+                new Am_Grid_Field_Decorator_Link(
+                    'admin-user-payments/index/user_id/{user_id}#invoice-{invoice_id}', '_top'));
         $fieldAmount = $grid->addField('amount', ___('Commission'))->setRenderFunction(array($this, 'renderCommAmount'));
-        $grid->addField('is_paid', ___('Paid'));
-        $grid->addField('tier', ___('Tier'))
-            ->setRenderFunction(array($this, 'renderTier'));
+        $grid->addField('payout_date', ___('Payout'))
+            ->setRenderFunction(array($this, 'renderPayout'));
+        if ($hasTiers) {
+            $grid->addField('tier', ___('Tier'))
+                ->setRenderFunction(array($this, 'renderTier'));
+        }
 
         $grid->addCallback(Am_Grid_ReadOnly::CB_TR_ATTRIBS, array($this, 'commCbGetTrAttribs'));
 
         $grid->setFilter(new Am_Grid_Filter_AffCommission());
-        $grid->actionAdd(new Am_Grid_Action_Total())->addField($fieldAmount, "IF(record_type='void', -1*%1\$s, %1\$s)");
+        $grid->actionAdd(new Am_Grid_Action_Total())->addField($fieldAmount, "IF(record_type='void', -1*t.%1\$s, t.%1\$s)");
         $grid->actionAdd(new Am_Grid_Action_Aff_Void());
         $grid->runWithLayout('admin/user-layout.phtml');
     }
@@ -201,11 +219,14 @@ CUT;
         }
     }
 
-    public function renderType(AffCommission $record)
+    public function renderPayout(Am_Record $record, $f, $g)
     {
-        return sprintf('<td>%s</td>',
-                $record->record_type . ($record->is_voided ? ' <span class="red">(' . ___('Voided') . ')' : '')
-            );
+        $out = $record->payout_detail_id ?
+            sprintf('<a href="%s" class="link" target="_top">%s</a>',
+                $this->escape(REL_ROOT_URL . '/aff/admin-payout/view?payout_id=' . $record->payout_id),
+                amDate($record->payout_date)):
+            '&ndash;';
+        return $g->renderTd($out, false);
     }
 
     public function renderTier(AffCommission $record)
@@ -227,6 +248,8 @@ CUT;
         $rs->setAffId($this->user_id);
         $rc = new Am_Report_AffClicks();
         $rc->setAffId($this->user_id);
+        $rn = new Am_Report_AffSales();
+        $rn->setAffId($this->user_id);
 
         $form = $rs->getForm();
         if (!$form->isSubmitted()) {
@@ -240,8 +263,10 @@ CUT;
             $form->addDataSource(new Am_Request(array('start' => $rs->getStart(), 'stop' => $rs->getStop())));
         }
         $rc->setInterval($rs->getStart(), $rs->getStop())->setQuantity(clone $rs->getQuantity());
+        $rn->setInterval($rs->getStart(), $rs->getStop())->setQuantity(clone $rs->getQuantity());
 
-        $result = $rs->getReport();
+        $result = $rn->getReport();
+        $rs->getReport($result);
         $rc->getReport($result);
 
         $this->view->form = $form;
@@ -296,6 +321,11 @@ CUT;
         $this->ajaxResponse($ret);
     }
 
+    function _getInvoiceNum(Am_Record $invoice)
+    {
+        return $invoice->invoice_id . '/' . $invoice->public_id;
+    }
+
     public function getAmount($record, $grid, $field)
     {
         return Am_Currency::render($record->{$field});
@@ -304,6 +334,6 @@ CUT;
     public function renderCommAmount($record, $field, $grid)
     {
         return sprintf('<td style="text-align:right"><strong>%s</strong></td>',
-            ($record->record_type == AffCommission::VOID ? '-&nbsp;' : '') . Am_Currency::render($record->amount));
+            ($record->record_type == AffCommission::VOID ? '&minus;&nbsp;' : '') . Am_Currency::render($record->amount));
     }
 }

@@ -56,6 +56,7 @@ class Am_Grid_Action_TestAffCommissionRule extends Am_Grid_Action_Abstract
 {
     protected $type = Am_Grid_Action_Abstract::NORECORD;
     protected $title = 'Test Commission Rules';
+    protected $cssClass = 'link';
 
     public function run()
     {
@@ -80,6 +81,14 @@ class Am_Grid_Action_TestAffCommissionRule extends Am_Grid_Action_Abstract
             list($el) = $f->getElementsByName('aff');
             $el->setError(___('Affiliate %s not found', $vars['user']));
             return false;
+        }
+
+        $couponAff = null;
+        if ($vars['coupon']) {
+            $coupon = Am_DI::getInstance()->couponTable->findFirstByCode($vars['coupon']);
+            if ($coupon && ($coupon->aff_id || $coupon->getBatch()->aff_id)) {
+                $couponAff = Am_Di::getInstance()->userTable->load($coupon->aff_id ? $coupon->aff_id : $coupon->getBatch()->aff_id, false);
+            }
         }
 
         /* @var $invoice Invoice */
@@ -123,6 +132,14 @@ class Am_Grid_Action_TestAffCommissionRule extends Am_Grid_Action_Abstract
             Am_Controller::escape($aff->login),
             Am_Controller::escape($aff->name_f . ' ' . $aff->name_l),
             Am_Controller::escape($aff->email));
+        if ($couponAff) {
+            printf("Affiliate Detected by Coupon (will get commision): <a target='_blank' class='link' href='%s'>%d/%s &quot;%s&quot; &lt;%s&gt</a>\n",
+                $helper->userUrl($couponAff->pk()),
+                $couponAff->pk(),
+                Am_Controller::escape($couponAff->login),
+                Am_Controller::escape($couponAff->name_f . ' ' . $couponAff->name_l),
+                Am_Controller::escape($couponAff->email));
+        }
 
         $max_tier = Am_Di::getInstance()->affCommissionRuleTable->getMaxTier();
 
@@ -337,6 +354,8 @@ class Am_Grid_Editable_AffCommissionRule extends Am_Grid_Editable
             switch ($type) {
                 case AffCommissionRule::COND_PRODUCT_ID :
                 case AffCommissionRule::COND_PRODUCT_CATEGORY_ID :
+                case AffCommissionRule::COND_AFF_PRODUCT_ID :
+                case AffCommissionRule::COND_AFF_PRODUCT_CATEGORY_ID :
                     if (empty($vars)) unset($conditions[$type]);
                     break;
                 case AffCommissionRule::COND_AFF_SALES_AMOUNT:
@@ -439,44 +458,47 @@ CUT
         {
             $set = $form->addFieldset('', array('id'=>'conditions'))->setLabel('Conditions');
             $set->addSelect('', array('id' => 'condition-select'))->setLabel('Add Condition')->loadOptions(array(
-                '' => 'Select Condition...',
-                'product_id' => 'By Product',
-                'product_category_id' => 'By Product Category',
-                'aff_group_id' => 'By Affiliate Group Id',
-                'aff_sales_count' => 'By Affiliate Sales Count',
-                'aff_items_count' => 'By Affiliate Item Sales Count',
-                'aff_sales_amount' => 'By Affiliate Sales Amount',
-                'coupon' => 'By Used Coupon',
-                'paysys_id' => 'By Used Payemt System',
+                '' => ___('Select Condition...'),
+                'first_time' => ___('First Time Purchase of Product'),
+                'coupon' => ___('By Used Coupon'),
+                'paysys_id' => ___('By Used Payment System'),
+                'product_id' => ___('By Product'),
+                'product_category_id' => ___('By Product Category'),
+                'aff_group_id' => ___('By Affiliate Group Id'),
+                'aff_sales_count' => ___('By Affiliate Sales Count'),
+                'aff_items_count' => ___('By Affiliate Item Sales Count'),
+                'aff_sales_amount' => ___('By Affiliate Sales Amount'),
+                'aff_product_id' => ___('By Affiliate Active Product'),
+                'aff_product_category_id' => ___('By Affiliate Active Product Category'),
             ));
 
             $set->addHidden('_conditions_status[product_id]');
 
             $set->addMagicSelect('_conditions[product_id]', array('id' => 'product_id'))
-                ->setLabel(array('This rule is for particular products',
+                ->setLabel(___("This rule is for particular products\n" .
                     'if none specified, rule works for all products'))
                ->loadOptions(Am_Di::getInstance()->productTable->getOptions());
 
             $set->addHidden('_conditions_status[product_category_id]');
 
             $el = $set->addMagicSelect('_conditions[product_category_id]', array('id' => 'product_category_id'))
-                ->setLabel(array('This rule is for particular product categories',
-                    'if none specified, rule works for all product categories'));
+                ->setLabel(___("This rule is for particular product categories\n" .
+                    "if none specified, rule works for all product categories"));
             $el->loadOptions(Am_Di::getInstance()->productCategoryTable->getAdminSelectOptions());
 
             $set->addHidden('_conditions_status[aff_group_id]');
 
             $el = $set->addMagicSelect('_conditions[aff_group_id]', array('id' => 'aff_group_id'))
-                ->setLabel(array('This rule is for particular affiliate groups',
-                    'you can add user groups and assign it to customers in User editing form'));
+                ->setLabel(___("This rule is for particular affiliate groups\n" .
+                    "you can add user groups and assign it to customers in User editing form"));
             $el->loadOptions(Am_Di::getInstance()->userGroupTable->getSelectOptions());
 
             $set->addHidden('_conditions_status[aff_sales_count]');
 
             $gr = $set->addGroup('_conditions[aff_sales_count]', array('id' => 'aff_sales_count'))
-                ->setLabel(array('Affiliate sales count',
-                'trigger this commission if affiliate made more than ... sales within ... days before the current date' . PHP_EOL .
-                '(only count of new invoices is calculated)'
+                ->setLabel(___("Affiliate sales count\n" .
+                "trigger this commission if affiliate made more than ... sales within ... days before the current date\n" .
+                "(only count of new invoices is calculated)"
                 ));
             $gr->addStatic()->setContent('use only if affiliate referred ');
             $gr->addInteger('count', array('size'=>4));
@@ -487,9 +509,9 @@ CUT
             $set->addHidden('_conditions_status[aff_items_count]');
 
             $gr = $set->addGroup('_conditions[aff_items_count]', array('id' => 'aff_items_count'))
-                ->setLabel(array('Affiliate items count',
-                'trigger this commission if affiliate made more than ... item sales within ... days before the current date' . PHP_EOL .
-                '(only count of items in new invoices is calculated)'
+                ->setLabel(___("Affiliate items count\n" .
+                "trigger this commission if affiliate made more than ... item sales within ... days before the current date\n" .
+                "(only count of items in new invoices is calculated"
                 ));
             $gr->addStatic()->setContent('use only if affiliate made ');
             $gr->addInteger('count', array('size'=>4));
@@ -500,9 +522,9 @@ CUT
             $set->addHidden('_conditions_status[aff_sales_amount]');
 
             $gr = $set->addGroup('_conditions[aff_sales_amount]', array('id' => 'aff_sales_amount'))
-                ->setLabel(array('Affiliate sales amount',
-                'trigger this commission if affiliate made more than ... sales within ... days before the current date' . PHP_EOL .
-                '(only new invoices calculated)'
+                ->setLabel(___("Affiliate sales amount\n" .
+                "trigger this commission if affiliate made more than ... sales within ... days before the current date\n" .
+                "(only new invoices calculated)"
                 ));
             $gr->addStatic()->setContent('use only if affiliate made ');
             $gr->addInteger('count', array('size'=>4));
@@ -513,7 +535,7 @@ CUT
             $set->addHidden('_conditions_status[coupon]');
 
             $gr = $set->addGroup('_conditions[coupon]', array('id' => 'coupon'))
-                ->setLabel(array('Used coupon'));
+                ->setLabel(___('Used coupon'));
             $gr->setSeparator(' ');
             $gr->addSelect('used')
                 ->loadOptions(array(
@@ -523,9 +545,9 @@ CUT
             $gr->addSelect('type')
                 ->setId('used-type')
                 ->loadOptions(array(
-                   'any' => 'Any Coupon',
-                   'batch' => "Coupon From Batch",
-                   'coupon' => "Specific Coupon"
+                   'any' => ___('Any Coupon'),
+                   'batch' => ___("Coupon From Batch"),
+                   'coupon' => ___("Specific Coupon")
                 ));
             $gr->addSelect('batch_id')
                 ->setId('used-batch_id')
@@ -537,10 +559,25 @@ CUT
 
             $set->addHidden('_conditions_status[paysys_id]');
             $set->addMagicSelect('_conditions[paysys_id]', array('id' => 'paysys_id'))
-                ->setLabel('This rule is for particular payment system')
+                ->setLabel(___('This rule is for particular payment system'))
                ->loadOptions(Am_Di::getInstance()->paysystemList->getOptions());
 
+            $set->addHidden('_conditions_status[first_time]');
+            $set->addStatic('_conditions[first_time]', array('id' => 'first_time'))
+                ->setLabel(___("First Time Purchase of Product"))
+                ->setContent("<div><strong>&#x2713;</strong></div>");
 
+            $set->addHidden('_conditions_status[aff_product_id]');
+
+            $set->addMagicSelect('_conditions[aff_product_id]', array('id' => 'aff_product_id'))
+                ->setLabel(___("Apply this rule if affiliate has active access to"))
+               ->loadOptions(Am_Di::getInstance()->productTable->getOptions());
+
+            $set->addHidden('_conditions_status[aff_product_category_id]');
+
+            $el = $set->addMagicSelect('_conditions[aff_product_category_id]', array('id' => 'aff_product_category_id'))
+                ->setLabel(___("Apply this rule if affiliate has active access to"));
+            $el->loadOptions(Am_Di::getInstance()->productCategoryTable->getAdminSelectOptions());
         }
 
         $set = $form->addFieldset('', array('id' => 'commission'))->setLabel('Commission');

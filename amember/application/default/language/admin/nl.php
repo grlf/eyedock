@@ -3,7 +3,6 @@
   '%d days after expiration' => '%d dagen na be&euml;indiging',
   '%d days before expiration' => '%d dagen voor be&euml;indiging',
   '%d user(s) matches your search' => '%d gebruiker(s) komen overeen met je zoekopdracht',
-  '%d-th day' => '%d-e dag',
   '%d-th subscription day' => '%d-e abonnementsdag',
   '%s Plugins' => '%s Plugins',
   '-- Please Select --' => '-- Selecteren s.v.p.  --',
@@ -24,10 +23,7 @@
   'Add Subscription' => 'Abonnement Toevoegen',
   'Add User Fields' => 'Velden Toevoegen',
   'Add points to affiliate for each %s in payment' => 'Ken affiliate punten toe voor elke %s van de betaling',
-  'Added' => 'Toegevoegd',
   'Additional' => 'Extra',
-  'Additional Fields' => 'Extra Velden',
-  'Additionally to "Access", add "Invoice" and "Payment" record with given %s amount, like they have really made a payment' => 'Extra voor "Toegang", voeg "Factuur" en "Betaling" record toe met gegeven bedrag %s, alsof ze werkelijk betaald hebben',
   'Admin Accounts' => 'Beheer Accounts',
   'Admin E-Mail Address
 used to send email notifications to admin
@@ -43,7 +39,6 @@ aan admin indien gratis aanmelding is voltooid',
 to admin once payment is received' => 'Beheerder Betaalnotificaties
 aan beheerder indien betaling is ontvangen',
   'Admin Settings' => 'Beheerderinstellingen',
-  'Admin Username' => 'Beheerder Gebruikersnaam',
   'Admin notification' => 'Beheerder kennisgeving',
   'Admin username must be alphanumeric in small caps' => 'Beheerder gebruikersnaam moet alfanumeriek en in kleine letters zijn',
   'Administrator Login' => 'Beheerder Login',
@@ -133,6 +128,7 @@ lengte van de gegenereerde coupon code
 tussen 5 en 32',
   'Collapse Menu' => 'Menu Invouwen',
   'Comma' => 'Komma',
+  'Commission earned' => 'Verdiende provisie',
   'Commission for First Payment
 calculated for first payment in each invoice' => 'Provisie op Eerste Betaling
 berekend over eerste betaling van iedere factuur',
@@ -140,9 +136,6 @@ berekend over eerste betaling van iedere factuur',
 calculated for first customer invoice only' => 'Provisie op Gratis Aanmelding
 alleen berekend over de eerste factuur van de klant',
   'Commission for Rebills' => 'Provisie op Terugkerende Betalingen',
-  'Company Logo for Invoice
-it must be png/jpeg/tiff file (%s)' => 'Bedrijfslogo voor factuur
-het dient een png/jpeg/tiff bestand zijn (%s)',
   'Conditions' => 'Voorwaarden',
   'Configuration' => 'Configuratie',
   'Configured License Keys' => 'Geconfigureerde Licentiesleutels',
@@ -165,7 +158,6 @@ aantal keren dat een coupon gebruikt kan worden',
   'Create Folder' => 'Maak Map',
   'Create Session Key' => 'Cre&euml;er Sessiesleutel',
   'Create ticket as' => 'Ticket aanmaken als',
-  'Currency' => 'Valuta',
   'Currency Exchange Rates' => 'Wisselkoersen',
   'Custom Bold Font for Invoice (optional)' => 'Aangepast Vet Lettertype voor Factuur (optioneel)',
   'Custom Commission Rules added' => 'Aangepaste Provisieregels toegevoegd',
@@ -177,7 +169,6 @@ leeglaten om standaard titel te gebruiken',
   'Customer' => 'Klant',
   'Customize Dashboard' => 'Dashboard Aanpassen',
   'Daily' => 'Dagelijks',
-  'Dashboard' => 'Dashboard',
   'Date Time' => 'Datum Tijd',
   'Date to Purge
 all records prior to this date will be removed from selected tables' => 'Datum om te Verwijderen
@@ -189,7 +180,7 @@ perdiode waarbinnen een coupon gebruikt kan woren',
   'Days to Send' => 'Aantal dagen te versturen',
   'Default - user clicks a link to become affiliate' => 'Standaard - gebruiker klikt een link om affiliate te worden',
   'Default Billing Plan' => 'Standaard Factureringsplan',
-  'Default Commission' => 'Standaardprovisie',
+  'Default Commission' => 'Standaard commissie',
   'Default Locale' => 'Standaard Landinstelling',
   'Default Signup' => 'Standaard Aanmelding',
   'Default for Members' => 'Standaard voor Leden',
@@ -253,16 +244,13 @@ gebruikt om de naam van de afzender te tonen in uitgaande e-mails',
   'Edit Custom Commission Rules' => 'Aangepaste Provisieregels Bewerken',
   'Edit Groups' => 'Bewerk Groepen',
   'Edit Messages' => 'Berichten Bewerken',
-  'Email' => 'E-mail',
   'Email Backup Frequency' => 'E-mail Backup Frequentie',
   'Email Sending method
 PLEASE DO NOT CHANGE if emailing from aMember works' => 'E-mail Verzendwijze
 S.V.P. ONGEWIJZIGD LATEN als e-mailen vanuit aMember werkt',
   'Email Sent' => 'E-mail verstuurd',
-  'Email Subject' => 'E-mailonderwerp',
   'Email address is required field.' => 'E-mailadres is een vereist veld',
   'Enable plugins if necessary' => 'Indien nodig plugins inschakelen',
-  'End Date' => 'Einddatum',
   'Enter Maintenance Mode' => 'Onderhoudsmodus Starten',
   'Enter admin password for confirmation' => 'Voer ter bevestiging het wachtwoord van de beheerder in.',
   'Error Log' => 'Foutenlogboek',
@@ -276,10 +264,8 @@ S.V.P. ONGEWIJZIGD LATEN als e-mailen vanuit aMember werkt',
   'Exchange Rate
 enter cost of 1 (one) %s' => 'Wisselkoers
 voer in de kosten van 1 (&eacute;&eacute;n) %s',
-  'Field' => 'Veld',
   'Field Name' => 'Veldnaam',
   'Field Title' => 'Veldtitel',
-  'Field Type' => 'Veldtype',
   'Field Values' => 'Veldwaarden',
   'File
 (max filesize %s)' => 'Bestand
@@ -314,7 +300,6 @@ je kunt je sleutel verkrijgen in %sleden gedeelte%s',
   'Folder URL' => 'Map URL',
   'Form Type' => 'Formuliertype',
   'Forms Editor' => 'Formulieren Editor',
-  'From' => 'Van',
   'Future' => 'Toekomst',
   'General' => 'Algemeen',
   'General Link' => 'Algemene Link',
@@ -370,7 +355,6 @@ Bestaande facturen worden niet beinvloed.
   'Is Disabled?
 disable product ordering, hide it from signup and renewal forms' => 'Is Uitgeschakeld?
 productsortering uitschakelen, verberg het van aanmeld- en vernieuwformulieren',
-  'Is Paid?' => 'Is Betaald?',
   'It is required to setup a cron job to trigger backup generation' => 'Het is nodig om een CRON job op te zetten om backup generatie in werking te zetten',
   'Items' => 'Items',
   'JavaScript Code' => 'Javascript code',
@@ -386,7 +370,6 @@ productsortering uitschakelen, verberg het van aanmeld- en vernieuwformulieren',
   'Last existing subscription date of this product' => 'Laatste bestaande abonnementsdatum van dit product',
   'Last expiration date in the renewal group' => 'Laatste expiratiedatum in de vernieuwingsgroep',
   'Last login' => 'Laatste Login',
-  'Leads' => 'Leads',
   'Length of admin password must be from %d to %d' => 'Lengte van het beheerderswachtwoord moet vallen tussen %d en %d',
   'Length of username must be from %d to %d' => 'Lengte van de gebruikersnaam moet vallen tussen %d en %d',
   'Light Boxes' => 'Lightboxen',
@@ -403,8 +386,8 @@ productsortering uitschakelen, verberg het van aanmeld- en vernieuwformulieren',
   'Log In' => 'Inloggen',
   'Log Outgoing E-Mail Messages for ... days' => 'Leg Uitgaande E-mailberichten vast voor ... dagen',
   'Log in' => 'Inloggen',
+  'Logged in as %s' => 'Ingelogd als %s',
   'Login Page' => 'Loginpagina',
-  'Login as User' => 'Login als Gebruiker',
   'Logs' => 'Logboeken',
   'Logs: Access' => 'Logboek: Toegang',
   'Logs: Admin Log' => 'Logboek: Beheerlogboek',
@@ -476,6 +459,7 @@ to customers. If empty, [Admin E-Mail Address] is used' => 'Uitgaand E-mailadres
 gebruikt als Van: adres voor het verzenden van e-mailberichten
 aan gebruikers. Indien leeg, wordt [E-mailadres Beheerder] gebruikt',
   'Overwrite User if Exist User with Same Login' => 'Gebruiker overschrijven als gebruiker met dezelfde login bestaat',
+  'PDF Invoice' => 'PDF Factuur',
   'Paid' => 'Betaald',
   'Password Length' => 'Wachtwoordlengte',
   'Password changed' => 'Wachtwoord gewijzigd',
@@ -489,7 +473,6 @@ aan gebruikers. Indien leeg, wordt [E-mailadres Beheerder] gebruikt',
   'Payment#/Receipt#' => 'Betaal#/Kwitantie#',
   'Payout %d Details' => 'Uitbetaling %d Details',
   'Payout Details' => 'Uitbetalingsdetails',
-  'Payout Method' => 'Uitbetaalwijze',
   'Paysystem' => 'Betaalsysteem',
   'Pending Invoice Notification Rules' => 'Kennisgevingregels voor Hangende Facturen',
   'Permissions' => 'Rechten',
@@ -528,7 +511,6 @@ Eerste en Tweede Prijs is het totaal voor genoemde hoeveelheid',
   'Quit Maintenance Mode' => 'Onderhoudsmodus Stoppen',
   'REST API Documentation' => 'REST API Documentatie',
   'RadioButtons' => 'Radioknoppen',
-  'ReCaptcha' => 'reCaptcha',
   'Rebill' => 'Terugkerende Betaling',
   'Rebill Second Price until cancelled' => 'Breng Tweede Prijs in rekening tot annulering',
   'Rebill Times
@@ -542,7 +524,6 @@ tegen de Tweede Prijs',
   'Recipients' => 'Ontvangers',
   'Record Type' => 'Recordtype',
   'Records Deleted Sucessfully' => 'Records Succesvol Verwijderd',
-  'Recurring' => 'Terugkerend',
   'Redirect URL' => 'Doorverwijs URL',
   'Referrer' => 'Doorverwijzer',
   'Refund Amount' => 'Bedrag Terugbetalen',
@@ -608,7 +589,6 @@ beveiligde URL, gebruikelijk %s',
   'Select option' => 'Selecteer optie',
   'Selected for E-Mailing' => 'Geselecteerd voor e-mailing',
   'Semicolon' => 'Puntkomma',
-  'Send' => 'Versturen',
   'Send Cancel Notifications to Admin
 send email to admin when recurring subscription cancelled by member' => 'Verstuur Annuleringskennisgeving aan Beheerder',
   'Send E-Mail Message' => 'Verstuur E-mailbericht',
@@ -651,8 +631,6 @@ Deze worden vervangen door de voor- en achternaam van de uitvoerende beheerder.'
   'Signup Form Configuration' => 'Configuratie Aanmeldformulier',
   'Signup Info' => 'Aanmeldingsinformatie',
   'Signup Messages' => 'Aanmeldberichten',
-  'Signups' => 'Aanmeldingen',
-  'Site Title' => 'Titel van de site',
   'Site is temporarily disabled for maintenance' => 'Site is tijdelijk buiten gebruik voor onderhoud',
   'Size' => 'Grootte',
   'Size of input field' => 'Grootte van het inputveld',
@@ -664,7 +642,6 @@ Deze worden vervangen door de voor- en achternaam van de uitvoerende beheerder.'
   'Source' => 'Bron',
   'Space' => 'Spatie',
   'Standard PHP Sessions' => 'Standaard PHP Sessies',
-  'Start Date' => 'Startdatum',
   'Start Date Calculation
 rules for subscription start date calculation.
 MAX date from alternatives will be chosen.
@@ -677,6 +654,7 @@ Deze instellingen zijn niet van invloed op wederkerende abonnementen',
   'Step %d of %d' => 'Stap %d van %d',
   'Stop Recurring' => 'Stop Terugkering',
   'String' => 'Tekenreeks',
+  'Subaffiliate' => 'Onderaffiliate',
   'Submitting...' => 'Aan het versturen...',
   'Subscription' => 'Abonnement',
   'Subscription field should have numeric value which represent subscription in current installation. You can find these values at %sManage Products%s page, column #.' => 'Abonnementsveld zou een numerieke waarde moeten bebatten, dat het abonnement vertegenwoordigd bij de huidige installatie. Je kunt deze waarden vinden op de %sBeheer Producten%s pagina, kolom #.',
@@ -689,7 +667,6 @@ dat extra zal worden berekend wanneer klant [Van]->[Naar] plan wijzigt.
 aMember zal niet de Eerste Prijs doorberekenen bij opwaardering, gebruik daarvoor de Toeslag.',
   'Table' => 'Tabel',
   'Tabulation' => 'Tabteken',
-  'Tax Id' => 'Belasting ID',
   'Template' => 'Sjabloon',
   'Template
 alternative template for signup page' => 'Sjabloon
@@ -710,14 +687,12 @@ Press [Skip] to type it manually from scratch.' => 'Dit e-mailsjabloon is voor d
 Toets [Kopieren] om het sjabloon vanuit de standaard taal [Engels] te kopieren
 Toets [Overslaan] om vanaf niets het handmatig in te typen.',
   'This field is requred' => 'Dit veld is vereist',
-  'Thresehold Date' => 'Drempeldatum',
   'Ticket#' => 'Ticket#',
   'Tier' => 'Rang',
   'Title
 displayed to customers' => 'Titel
 vertonen aan klanten',
   'Title of Report for your Reference' => 'Titel van het rapport voor jouw kennisgeving',
-  'To' => 'Aan',
   'To order this product user must have an
 when user orders this subscription, it will be checked
 that user has one from the following subscriptions' => 'Voor dit product moet gebruiker in bezit zijn van
@@ -756,7 +731,6 @@ of gebruiker een van de volgende abonnementen heeft',
   'Use Global Settings' => 'Gebruik Universele Instellingen',
   'Use this %slink%s to delete data from aMember v4 database and use clean database for import' => 'Gebruik deze %slink%s om data uit de aMember v4 database te verwijderen en een schone database te gebruiken om te importeren',
   'Useful for invoices with non-Latin symbols' => 'Handig voor facturen met een niet-Latijnse karakters',
-  'User' => 'Gebruiker',
   'User Coupon Usage Count
 how many times a coupon code can be used by customer' => 'Gebruikerscoupon Gebruiksteller
 aantal keren dat een couponcode gebruikt kan worden door een klant',
@@ -767,6 +741,7 @@ aantal keren dat een couponcode gebruikt kan worden door een klant',
   'User had access to the following products' => 'Gebruiker had toegang tot de volgende producten',
   'User is locked' => 'Gebruiker is geblokkeerd',
   'User is not approved' => 'Gebruiker is niet goedgekeurd',
+  'User is not found in database' => 'Gebruiker is niet gevonden in de database',
   'User notification' => 'Gebruikersmelding',
   'User-Affiliate Relation Lifetime
 how long (in days) calculate commission for referred affiliate (default: 0 - forever)' => 'Levensduur Gebruiker-Affiliate Relatie
@@ -777,7 +752,6 @@ hoelang (in dagen) provisie te berekenen voor doorverwijzende affiliate (standaa
   'Users Report' => 'Gebruikersrapport',
   'Utilities' => 'Hulpprogramma\'s',
   'Valid license key are one-line string,starts with L and ends with X' => 'Geldige licentiesleutel is een tekenreeks van &eacute;&eacute;n regel, begint met L en eidigt op X',
-  'Validation' => 'Bevestiging',
   'Value
 use % as wildcard mask' => 'Waarde
 gebruik % als wildcard masker',

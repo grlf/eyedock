@@ -21,7 +21,7 @@ class AdminLogsController extends Am_Controller_Pages
         if ($admin->hasPermission(Am_Auth_Admin::PERM_LOGS_ADMIN))
             $this->addPage(array($this, 'createAdminLog'), 'adminlog', ___('Admin Log'));
     }
-    /// 
+    ///
     public function checkAdminPermissions(Admin $admin)
     {
         foreach(array(
@@ -42,49 +42,52 @@ class AdminLogsController extends Am_Controller_Pages
         $q->setOrder('time', 'desc');
         $g = new Am_Grid_ReadOnly('_error', ___('Error/Debug Log'), $q, $this->getRequest(), $this->view);
         $g->setPermissionId(Am_Auth_Admin::PERM_LOGS);
-        $g->addField(new Am_Grid_Field_Date('time', ___('Date/Time'), true, '', null, '10%'));
-        $g->addField(new Am_Grid_Field_Expandable('url', ___('URL'), true, '', null, '20%'))
+        $g->addField(new Am_Grid_Field_Date('time', ___('Date/Time')));
+        $g->addField(new Am_Grid_Field_Expandable('url', ___('URL'), true))
             ->setPlaceholder(Am_Grid_Field_Expandable::PLACEHOLDER_SELF_TRUNCATE_BEGIN)
             ->setMaxLength(25);
-        $g->addField(new Am_Grid_Field('remote_addr', ___('IP'), true, '', null, '10%'));
+        $g->addField(new Am_Grid_Field('remote_addr', ___('IP')));
         $g->addField(new Am_Grid_Field('error', ___('Message'), true, '', null, '45%'));
-        $f = $g->addField(new Am_Grid_Field_Expandable('trace', ___('Trace'), false, '', null, '15%'))
-             ->setGetFunction(array($this, 'escapeTrace'));
-        $f->setEscape(false);
+        $f = $g->addField(new Am_Grid_Field_Expandable('trace', ___('Trace')))
+             ->setAjax(REL_ROOT_URL . '/admin-logs/get-trace?id={log_id}');
+
         $g->setFilter(new Am_Grid_Filter_Text(___('Filter'), array(
-            'url' => 'LIKE', 
+            'url' => 'LIKE',
             'remote_addr' => 'LIKE',
             'referrer' => 'LIKE',
             'error' => 'LIKE',
         )));
         return $g;
     }
-    public function escapeTrace(ErrorLog $l)
+    function getTraceAction()
     {
-        return highlight_string($l->trace, true);
+        $this->getDi()->authAdmin->getUser()->checkPermission(Am_Auth_Admin::PERM_LOGS);
+        $log = $this->getDi()->errorLogTable->load($this->getParam('id'));
+        echo highlight_string($log->trace, true);
     }
+
     public function createAccess()
     {
         $query = new Am_Query($this->getDi()->accessLogTable);
         $query->leftJoin('?_user', 'm', 't.user_id=m.user_id')
             ->addField("m.login", 'member_login')
-            ->addField("CONCAT(m.name_f, ' ', m.name_l)", 'member_name');        
+            ->addField("CONCAT(m.name_f, ' ', m.name_l)", 'member_name');
         $query->setOrder('time', 'desc');
         $g = new Am_Grid_Editable('_access', ___('Access Log'), $query, $this->getRequest(), $this->view);
         $g->setPermissionId(Am_Auth_Admin::PERM_LOGS_ACCESS);
         $g->actionsClear();
-        $g->addField(new Am_Grid_Field_Date('time', ___('Date/Time'), true));
+        $g->addField(new Am_Grid_Field_Date('time', ___('Date/Time')));
         $g->addField(new Am_Grid_Field('member_login', ___('User'), true, '', array($this, 'renderAccessMember')));
-        $g->addField(new Am_Grid_Field_Expandable('url', ___('URL'), true))
+        $g->addField(new Am_Grid_Field_Expandable('url', ___('URL')))
             ->setPlaceholder(Am_Grid_Field_Expandable::PLACEHOLDER_SELF_TRUNCATE_BEGIN)
             ->setMaxLength(25);
-        $g->addField(new Am_Grid_Field('remote_addr', ___('IP'), true));
-        $g->addField(new Am_Grid_Field_Expandable('referrer', ___('Referrer'), true))
+        $g->addField(new Am_Grid_Field('remote_addr', ___('IP')));
+        $g->addField(new Am_Grid_Field_Expandable('referrer', ___('Referrer')))
             ->setPlaceholder(Am_Grid_Field_Expandable::PLACEHOLDER_SELF_TRUNCATE_BEGIN)
-            ->setMaxLength(25);;
+            ->setMaxLength(25);
         $g->setFilter(new Am_Grid_Filter_Text(___('Filter by IP or Referrer or URL'), array(
             'remote_addr' => 'LIKE',
-            'referrer' => 'LIKE', 
+            'referrer' => 'LIKE',
             'url' => 'LIKE',
         )));
         $g->actionAdd(new Am_Grid_Action_Export);
@@ -105,15 +108,15 @@ class AdminLogsController extends Am_Controller_Pages
 
         $userUrl = new Am_View_Helper_UserUrl();
 
-        $g->addField(new Am_Grid_Field_Date('tm', ___('Date/Time'), true));
-        $g->addField(new Am_Grid_Field('invoice_id', ___('Invoice'), true, '', array($this, 'renderInvoice'), '5%'));
-        $g->addField(new Am_Grid_Field('login', ___('User'), true))
+        $g->addField(new Am_Grid_Field_Date('tm', ___('Date/Time')));
+        $g->addField(new Am_Grid_Field('invoice_id', ___('Invoice'), true, '', array($this, 'renderInvoice')));
+        $g->addField(new Am_Grid_Field('login', ___('User')))
             ->addDecorator(new Am_Grid_Field_Decorator_Link($userUrl->userUrl('{user_id}'), '_top'));
-        $g->addField(new Am_Grid_Field('remote_addr', ___('IP'), true, '', null, '5%'));
-        $g->addField(new Am_Grid_Field('paysys_id', ___('Paysystem'), true, '', null, '10%'));
-        $g->addField(new Am_Grid_Field('title', ___('Title'), true, '', null, '25%'));
-        $g->addField(new Am_Grid_Field_Expandable('details', ___('Details'), false, '', null, '25%'))
-            ->setGetFunction(array($this, 'renderInvoiceDetails'));
+        $g->addField(new Am_Grid_Field('remote_addr', ___('IP')));
+        $g->addField(new Am_Grid_Field('paysys_id', ___('Paysystem')));
+        $g->addField(new Am_Grid_Field('title', ___('Title')));
+        $g->addField(new Am_Grid_Field_Expandable('details', ___('Details'), false))
+            ->setAjax(REL_ROOT_URL . '/admin-logs/get-invoice-details?id={log_id}');
         $g->actionsClear();
         $g->actionAdd(new Am_Grid_Action_InvoiceRetry('retry'));
         $g->setFilter(new Am_Grid_Filter_InvoiceLog);
@@ -122,10 +125,12 @@ class AdminLogsController extends Am_Controller_Pages
     }
 
     public function renderInvoice($record){
-        return sprintf('<td><a class="link" target="_top" href="%s">%s/%s</a></td>',
-            $this->escape(REL_ROOT_URL . "/admin-user-payments/index/user_id/".$record->user_id."#invoice-".$record->invoice_id), 
-            $record->invoice_id, $record->public_id);
-        
+        return $record->invoice_id ?
+                sprintf('<td><a class="link" target="_top" href="%s">%s/%s</a></td>',
+                    $this->escape(REL_ROOT_URL . "/admin-user-payments/index/user_id/".$record->user_id."#invoice-".$record->invoice_id),
+                    $record->invoice_id, $record->public_id) :
+                    '<td>&mdash;</td>'
+            ;
     }
 
     public function renderAccessMember($record)
@@ -142,10 +147,17 @@ class AdminLogsController extends Am_Controller_Pages
         // @todo - add links here to edit pages
         return sprintf('<td>%s</td>', $text);
     }
-    
-    public function renderInvoiceDetails(InvoiceLog $obj, $field, $controller, $fieldObj)
+
+    function getInvoiceDetailsAction()
     {
-        $fieldObj->setEscape(true);
+        $this->getDi()->authAdmin->getUser()->checkPermission(Am_Auth_Admin::PERM_LOGS_INVOICE);
+        $log = $this->getDi()->invoiceLogTable->load($this->getParam('id'));
+        echo $this->renderInvoiceDetails($log);
+    }
+
+    public function renderInvoiceDetails(Am_Record $obj)
+    {
+
         $ret = "";
         $ret .= "<div class='collapsible'>\n";
         $rows = $obj->getRenderedDetails();
@@ -165,8 +177,14 @@ class AdminLogsController extends Am_Controller_Pages
     public function createMailQueue()
     {
         $ds = new Am_Query($this->getDi()->mailQueueTable);
+        $ds->clearFields();
+        $ds->addField('recipients')
+            ->addField('added')
+            ->addField('sent')
+            ->addField('subject')
+            ->addField('queue_id');
         $ds->setOrder('added', true);
-        
+
         $g = new Am_Grid_Editable('_mail', ___("E-Mail Queue"), $ds, $this->getRequest(), $this->view);
         $g->setPermissionId(Am_Auth_Admin::PERM_LOGS_MAIL);
         $g->addField(new Am_Grid_Field('recipients', ___('Recipients'), true, '', null, '20%'));
@@ -174,13 +192,10 @@ class AdminLogsController extends Am_Controller_Pages
         $g->addField(new Am_Grid_Field_Date('sent', ___('Sent'), true));
         $g->addField(new Am_Grid_Field('subject', ___('Subject'), true, '', null, '30%'))
             ->setRenderFunction(array($this, 'renderSubject'));
-        
-        $body = new Am_Grid_Field_Expandable('body', ___('Mail'), true, '', null, '20%');
-        $body->setEscape(true);
-        $body->setGetFunction(array($this, 'renderMail'));
-        $g->addField($body);
-        
-        $g->setFilter(new Am_Grid_Filter_Text(___("Filter by subject or recepient"), array(
+        $g->addField(new Am_Grid_Field_Expandable('queue_id', ___('Mail'), false, '', null, '20%'))
+            ->setAjax(REL_ROOT_URL . '/admin-logs/get-mail?id={queue_id}');
+
+        $g->setFilter(new Am_Grid_Filter_Text(___("Filter by subject or recipient"), array(
             'subject' => 'LIKE',
             'recipients' => 'LIKE',
         )));
@@ -194,73 +209,97 @@ class AdminLogsController extends Am_Controller_Pages
 
         return $g;
     }
-    
-    function renderMail($obj, $controller, $field, Am_Grid_Field_Expandable $fieldObj)
+
+    function getMailAction()
     {
-        $_body = $obj->body;
-        $_headers = unserialize($obj->headers);
-        $atRendered = null;
-
-        $val = '';
-        $headers = array();
-        foreach ($_headers as $k => $v)
-        {
-            $headers[$k] = $v[0];
-        }
-
-        if (isset($headers['Content-Transfer-Encoding']) &&
-            $headers['Content-Transfer-Encoding'] == 'quoted-printable')
-        {
-            $body = quoted_printable_decode($_body);
-            if (strpos($headers['Subject'], '=?') === 0)
-                $headers['Subject'] = mb_decode_mimeheader($headers['Subject']);
-        } else
-        {
-            $body = base64_decode($_body);
-        }
-        if ($body) $body = nl2br($body);
-
-        foreach ($headers as $headerName => $headerVal)
-        {
-            $val .= '<b>' . $headerName . '</b> : <i>' . Am_Controller::escape($headerVal) . '</i><br />';
-        }
-
-        if (isset($headers['Content-Type']) &&
-            strstr($headers['Content-Type'], 'multipart/mixed'))
-        {
-
-            preg_match('/boundary="(.*)"/', $headers['Content-Type'], $matches);
-            $boundary = $matches[1];
-
-            $message = @Zend_Mime_Message::createFromMessage($body, $boundary);
-            $parts = $message->getParts();
-            $part = @$parts[0];
-            if ($part)
-            {
-                $body = $part->getContent();
-                if ($part->encoding == 'quoted-printable')
-                {
-                    $body = quoted_printable_decode($body);
-                } else
-                {
-                    $body = base64_decode($body);
-                }
-                }
-            $attachments = array_slice($parts, 1);
-            $atRendered = '';
-            foreach ($attachments as $at)
-            {
-                preg_match('/filename="(.*)"/', $at->disposition, $matches);
-                $filename = @$matches[1];
-                $atRendered .= sprintf("&mdash %s (%s)", $filename, $at->type) . '<br />';
-            }
-        }
-        $attachTitle = ___('Attachments');
-        $val .= '<br />' . $body . ($atRendered ? '<br /><strong>' . $attachTitle . ':</strong><br />' . $atRendered : '');
-        return $val;
+        $this->getDi()->authAdmin->getUser()->checkPermission(Am_Auth_Admin::PERM_LOGS_MAIL);
+        $mail = $this->getDi()->mailQueueTable->load($this->getParam('id'));
+        echo $this->renderMail($mail);
     }
 
-    function renderSubject(MailQueue $m)
+    function renderMail(Am_Record $obj)
+    {
+        $_body = $obj->body;
+        $atRendered = null;
+
+        $headersRendered = '';
+        foreach (unserialize($obj->headers) as $headerName => $headerVal)
+        {
+            if (isset($headerVal['append'])) {
+                unset($headerVal['append']);
+                $headerVal = implode(',' . "\r\n" . ' ', $headerVal);
+            } else {
+                $headerVal = implode("\r\n", $headerVal);
+            }
+
+            $_headers[strtolower($headerName)] = $headerVal;
+            if (strpos($headerVal, '=?') === 0)
+                $headerVal = mb_decode_mimeheader($headerVal);
+
+            $headersRendered .= '<strong>' . $headerName . '</strong>: <em>' . nl2br(Am_Controller::escape($headerVal)) . '</em><br />';
+        }
+
+        $part = new Zend_Mail_Part(array(
+            'headers' => $_headers,
+            'content' => $_body
+        ));
+
+        $canHasAttacments = false;
+
+        list($type) = explode(";", $part->getHeader('content-type'));
+        if ($type == 'multipart/alternative') {
+            $msgPart = $part->getPart(2);
+        } else {
+            $msgPart = $part->isMultipart() ? $part->getPart(1) : $part;
+            if ($msgPart->isMultipart()) {
+                $msgPart = $msgPart->getPart(2); //html part
+            }
+            $canHasAttacments = true;
+        }
+
+        list($type) = explode(";", $msgPart->getHeader('content-type'));
+        $encoding = $msgPart->getHeader('content-transfer-encoding');
+
+        $content = $msgPart->getContent();
+        if ($encoding && $encoding == 'quoted-printable') {
+            $content = quoted_printable_decode($content);
+        } else {
+            $content = base64_decode($content);
+        }
+
+        switch ($type) {
+            case 'text/plain':
+                $bodyRendered = nl2br(Am_Controller::escape($content));
+                break;
+            case 'text/html':
+                $content = preg_replace('#^.*<body.*?>#mi', '', $content);
+                $content = preg_replace('#</body>.*$#mi', '', $content);
+                $bodyRendered = $content;
+                break;
+        }
+
+        //attachments
+        $atRendered = '';
+        if ($canHasAttacments) {
+            if ($part->isMultipart()) {
+                for ($i=2; $i<=$part->countParts(); $i++) {
+                    $attPart = $part->getPart($i);
+
+                    preg_match('/filename="(.*)"/', $attPart->{'content-disposition'}, $matches);
+                    $filename = @$matches[1];
+                    $atRendered .= sprintf("&ndash; %s (<em>%s</em>)", $filename, $attPart->{'content-type'}) . '<br />';
+                }
+            }
+        }
+
+        $attachTitle = ___('Attachments');
+        return $headersRendered .
+            '<br />' .
+            $bodyRendered .
+            ($atRendered ? '<br /><strong>' . $attachTitle . '</strong>:<br />' . $atRendered : '');
+    }
+
+    function renderSubject(Am_Record $m)
     {
         $s = $m->subject;
         if (strpos($s, '=?') === 0)
@@ -272,7 +311,7 @@ class AdminLogsController extends Am_Controller_Pages
     {
         $ds = new Am_Query($this->getDi()->adminLogTable);
         $ds->setOrder('dattm', 'desc');
-        
+
         $g = new Am_Grid_ReadOnly('_admin', ___('Admin Log'), $ds, $this->getRequest(), $this->view);
         $g->setPermissionId(Am_Auth_Admin::PERM_LOGS_ADMIN);
         $g->addField(new Am_Grid_Field_Date('dattm', ___('Date/Time'), true));
@@ -281,7 +320,7 @@ class AdminLogsController extends Am_Controller_Pages
         $g->addField(new Am_Grid_Field('ip', ___('IP'), true, '', null, '10%'));
         $g->addField(new Am_Grid_Field('message', ___('Message')));
         $g->addField(new Am_Grid_Field('record', ___('Record')))->setRenderFunction(array($this, 'renderRec'));
-        
+
         $g->setFilter(new Am_Grid_Filter_AdminLog);
         return $g;
     }
@@ -335,14 +374,14 @@ class Am_Grid_Filter_AdminLog extends Am_Grid_Filter_Abstract
 class Am_Grid_Action_InvoiceRetry extends Am_Grid_Action_Abstract
 {
     protected $type = self::SINGLE;
-    
+
     public function __construct($id = null, $title = null)
     {
         $this->title = ___('Repeat Action Handling');
         parent::__construct($id, $title);
         $this->setTarget('_top');
     }
-    
+
     public function isAvailable($record)
     {
         return (strpos($record->details, 'type="incoming-request"') !== false);
@@ -374,8 +413,8 @@ class Am_Grid_Action_InvoiceRetry extends Am_Grid_Action_Abstract
             $response['msg'] = sprintf("Exception %s : %s", get_class($e), $e->getMessage());
         }
     }
-    
-    
+
+
     public function run()
     {
         echo $this->renderTitle();
@@ -396,13 +435,13 @@ class Am_Grid_Action_InvoiceRetry extends Am_Grid_Action_Abstract
         echo "<br /><br />\n";
         echo $this->renderBackUrl();
     }
-    
+
     static function groupCallback($id, InvoiceLog $record, Am_Grid_Action_Group_Callback $action, Am_Grid_Editable $grid)
     {
         @set_time_limit(3600);
         try {
             $req = $record->getFirstRequest();
-            if (!$req) 
+            if (!$req)
             {
                 echo "<br />\n$record->log_id: SKIPPED";
                 return;

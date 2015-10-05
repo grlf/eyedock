@@ -120,11 +120,7 @@ setInterval(ticket_lock, 1000*60);
                     <div class="am-helpdesk-ticket-action am-helpdesk-ticket-action-change-category"><a class="local" href="javascript:;"><?php __e('Change Category') ?></a></div>
                 <?php endif; ?>
                 <div class="am-helpdesk-ticket-action am-helpdesk-ticket-action-refresh"><a class="link" href="<?php
-                echo $strategy->assembleUrl(array(
-                    'page_id' => 'view',
-                    'action' => 'view',
-                    'ticket' => $ticket->ticket_mask,
-                ), 'inside-pages')
+                    p($strategy->ticketUrl($ticket))
                 ?>"><?php __e('Refresh') ?></a></div>
                 <div class="am-helpdesk-ticket-action am-helpdesk-ticket-action-fold-all">[<a href="javascript:;">&minus;</a>]</div>
             </div>
@@ -139,6 +135,7 @@ setInterval(ticket_lock, 1000*60);
 </div>
 <script type="text/javascript">
 (function($){
+    var ticket = '<?php p($ticket->ticket_mask) ?>';
     $(function() {
         $(".am-helpdesk-history-title-action a").click(function(){
             $('.am-helpdesk-history-content').slideToggle();
@@ -213,7 +210,9 @@ setInterval(ticket_lock, 1000*60);
         $(document).on('click','.am-helpdesk-reply-panel-tool-snippets a', function(){
             var $this = $(this);
             var div = $('<div></div>');
-            div.load(window.rootUrl + '/helpdesk/admin/p/view/displaysnippets', {}, function(){
+            div.load(window.rootUrl + '/helpdesk/admin/p/view/displaysnippets', {
+                    'ticket' : ticket
+                }, function(){
                 div.dialog({
                     autoOpen: true,
                     modal : true,

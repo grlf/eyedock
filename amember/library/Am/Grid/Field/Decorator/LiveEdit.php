@@ -19,7 +19,7 @@ class Am_Grid_Field_Decorator_LiveEdit extends Am_Grid_Field_Decorator_Abstract
     public function render(&$out, $obj, $grid)
     {
         $wrap = $this->getWrapper($obj, $grid);
-        preg_match('{(<td.*>)(.*)(</td>)}i', $out, $match);
+        preg_match('{(<td.*>)(.*)(</td>)}is', $out, $match);
         $out = $match[1] . '<div class="editable"></div>'. $wrap[0]
                 . ($match[2] ? $match[2] : $grid->escape($this->action->getPlaceholder())) 
                 . $wrap[1] . $match[3];

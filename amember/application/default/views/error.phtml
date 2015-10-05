@@ -53,6 +53,6 @@ if(empty($_SERVER['HTTP_X_REQUESTED_WITH']) || strtolower($_SERVER['HTTP_X_REQUE
 </pre></td></tr></table>
 
 <br /><br />
-<?php p($plzcnt) ?>: <a href="mailto:<?php p($di->config->get('admin_email')) ?>"><?php p($di->config->get('admin_email')) ?></a>.
+<?php p($plzcnt) ?>: <a href="mailto:<?php p($di->config->get('technical_email', $di->config->get('admin_email'))) ?>"><?php p($di->config->get('technical_email', $di->config->get('admin_email'))) ?></a>.
 
 

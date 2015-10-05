@@ -10,7 +10,7 @@
 class Am_Paysystem_Payza extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.0';
 
     protected $defaultTitle = 'Payza (formerly AlertPay)';
 
@@ -179,7 +179,8 @@ class Am_Paysystem_Transaction_Payza extends Am_Paysystem_Transaction_Incoming
 
     public function validateTerms()
     {
-        return $this->ipnData['ap_amount'] == $this->invoice->first_total;
+        $amount = $this->ipnData['ap_trialamount'] ? $this->ipnData['ap_trialamount'] : $this->ipnData['ap_amount'];
+        return $amount == $this->invoice->first_total;
     }
 
     public function findInvoiceId()

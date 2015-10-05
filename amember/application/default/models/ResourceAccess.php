@@ -160,6 +160,31 @@ class ResourceAccessTable extends Am_Table {
             $q->addWhere("resource_type IN (?a)", is_array($types) ? $types : array($types));
         return $this->_db->fetchRows($q->query());
     }
+    
+    /**
+     * Return allowed product emails as objects
+     * @return array of ResourceAbstract
+     * @see self::selectAllowedResources
+     */
+    function getProductWelcomeEmails($product_ids)
+    {
+        $ret = array();
+        $groups = $this->getDi()->db->selectCol("SELECT product_category_id from ?_product_product_category where product_id IN (?a)",$product_ids);
+        $groups[]= -1;
+        $q = new Am_Query($this, 'r');
+        $q->clearFields();
+        $q->addField('DISTINCT r.resource_id', 'resource_id');
+        $q->leftJoin('?_email_template', 'et', '(r.resource_id = et.email_template_id)');
+        $q->addWhere("resource_type = ?", ResourceAccess::EMAILTEMPLATE);
+        $q->addWhere("(r.fn = 'product_id' AND r.id IN (?a) ) OR (r.fn = 'product_category_id' AND r.id IN (?a) )",$product_ids,$groups);
+        $q->addWhere('et.name=?',EmailTemplate::PRODUCTWELCOME);
+        $q->groupBy('resource_id');
+        $res = $this->_db->fetchRows($q->query());
+        $ret = array();
+        foreach ($res as $r)
+            $ret[] = $this->getDi()->emailTemplateTable->load($r['resource_id']);
+        return $ret;        
+    }
     /**
      * Return allowed resources as objects
      * @return array of ResourceAbstract
@@ -168,7 +193,7 @@ class ResourceAccessTable extends Am_Table {
     function getAllowedResources(User $user, $types = null, $groupByType = true)
     {
         $ret = array();
-        $res = $this->selectAllowedResources($user, $this->getResourceTypes($types));
+        $res = $this->selectAllowedResources($user, $types = $this->getResourceTypes($types));
         $ids = array();
         $order = array();
         $i = 0;
@@ -196,6 +221,13 @@ class ResourceAccessTable extends Am_Table {
                 }
             }
         }
+        $event = new Am_Event(Am_Event::GET_ALLOWED_RESOURCES, array(
+            'user' => $user,
+            'types' => $types
+        ));
+        $event->setReturn($ret);
+        $this->getDi()->hook->call($event);
+        $ret = $event->getReturn();
         ksort($ret);
         return $ret;
     }

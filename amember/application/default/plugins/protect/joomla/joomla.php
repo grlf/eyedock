@@ -16,7 +16,7 @@ class Am_Protect_Joomla extends Am_Protect_Databased {
 
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
     const PLUGIN_COMM = self::COMM_COMMERCIAL; //paid
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.0';
 
     protected $groupMode = self::GROUP_MULTI;
     protected $guessTablePattern = "users";
@@ -410,6 +410,8 @@ CUT;
     function getSessionData_170(Am_Record $record, Am_Record $session) {
         $user = new JUser($record);
         //$user->setParams(new JParameter);
+        $groups = $this->getTable()->getGroups($record);
+        $user->groups = array_combine($groups, $groups);
         $data = array(
             'session.counter'           =>  1,
             'session.timer.start'       =>  time(),

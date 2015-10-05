@@ -1,8 +1,8 @@
 <?php
 
-/** 
+/**
  * Export interface
- * @package Am_Grid 
+ * @package Am_Grid
  */
 interface Am_Grid_Export_Processor {
 
@@ -13,7 +13,7 @@ interface Am_Grid_Export_Processor {
 
 /**
  * Factory for export processors
- * @package Am_Grid 
+ * @package Am_Grid
  */
 class Am_Grid_Export_Processor_Factory {
 
@@ -52,7 +52,7 @@ class Am_Grid_Export_Processor_Factory {
 
 /**
  * Export as CSV file
- * @package Am_Grid 
+ * @package Am_Grid
  */
 class Am_Grid_Export_CSV implements Am_Grid_Export_Processor {
     const EXPORT_REC_LIMIT = 1024;
@@ -76,7 +76,7 @@ class Am_Grid_Export_CSV implements Am_Grid_Export_Processor {
 
         //render headers
         foreach ($fields as $field) {
-            echo $this->filterValue(
+            echo amEscapeCsv(
                     $field->getFieldTitle(), $delim
             ) . $delim;
         }
@@ -87,7 +87,7 @@ class Am_Grid_Export_CSV implements Am_Grid_Export_Processor {
             $ret = $dataSource->selectPageRecords($i, self::EXPORT_REC_LIMIT);
             foreach ($ret as $r) {
                 foreach ($fields as $field) {
-                    echo $this->filterValue(
+                    echo amEscapeCsv(
                             $field->get($r, $grid), $delim
                     ) . $delim;
                 }
@@ -96,26 +96,11 @@ class Am_Grid_Export_CSV implements Am_Grid_Export_Processor {
         }
         return;
     }
-
-    private function filterValue($value, $delim) {
-        $result = $value;
-        $result = str_replace("\n", " ", $result);
-        $result = str_replace("\r", " ", $result);
-
-        if (strstr($result, $delim) ||
-                strstr($result, '"')) {
-
-            $result = sprintf('"%s"', str_replace('"', '""', $result));
-        };
-
-        return $result;
-    }
-
 }
 
 /**
  * Export as XML
- * @package Am_Grid 
+ * @package Am_Grid
  */
 class Am_Grid_Export_XML implements Am_Grid_Export_Processor {
     const EXPORT_REC_LIMIT = 1024;
@@ -166,9 +151,9 @@ Am_Grid_Export_Processor_Factory::register('xml', 'Am_Grid_Export_XML', 'XML');
 
 /**
  * Grid action to display "export" option
- * @package Am_Grid 
+ * @package Am_Grid
  */
-class Am_Grid_Action_Export extends Am_Grid_Action_Abstract 
+class Am_Grid_Action_Export extends Am_Grid_Action_Abstract
 {
     protected $privilege = 'export';
     protected $type = self::HIDDEN;
@@ -210,8 +195,8 @@ CUT
         function update_options(\$sel) {
             $('[id^=form-export-options-]').hide();
             $('#form-export-options-' + \$sel.val()).show();
-        }   
-        
+        }
+
         update_options($('#form-export-type'));
         $('#form-export-type').bind('change', function() {
             update_options($(this));
@@ -244,7 +229,7 @@ CUT;
     /**
      * can be used to customize datasource to add some UNION for example
      *
-     * @param type $callback 
+     * @param type $callback
      */
     public function setGetDataSourceFunc($callback) {
         if (!is_callable($callback))
@@ -260,7 +245,7 @@ CUT;
 
     /**
      *
-     * @param string $fieldName 
+     * @param string $fieldName
      * @return Am_Grid_Field
      */
     public function getField($fieldName) {
@@ -279,18 +264,17 @@ CUT;
             $this->grid->getCompleteRequest(),
         ));
 
-
         $vars = array();
         foreach ($this->grid->getVariablesList() as $k) {
             $vars[$this->grid->getId() . '_' . $k] = $this->grid->getRequest()->get($k, "");
         }
-        $form->addHtml('hidden')
-            ->setHtml(Am_Controller::renderArrayAsInputHiddens($vars));
-
+        foreach (Am_Controller::getArrayOfInputHiddens($vars) as $name => $value) {
+            $form->addHidden($name)->setValue($value);
+        }
     }
 
     /**
-     * 
+     *
      * @return Am_Grid_DataSource_Interface_ReadOnly
      */
     protected function getDataSource($fields) {

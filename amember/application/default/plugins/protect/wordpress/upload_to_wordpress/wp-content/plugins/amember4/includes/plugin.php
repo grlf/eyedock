@@ -30,12 +30,12 @@ class am4Plugin{
 }
 class am4Basic extends am4Plugin {
     function action_AdminInit(){
-        wp_register_script("dirbrowser", AM4_PLUGIN_URL . "/js/dirbrowser.js");
-        wp_register_script('amember-jquery-outerclick',  AM4_PLUGIN_URL . "/views/jquery.outerClick.js");
-        wp_register_script('amember-jquery-tabby',  AM4_PLUGIN_URL . "/views/jquery.textarea.js");
-        wp_register_script('amember-resource-access',  AM4_PLUGIN_URL . "/views/resourceaccess.js");
-        wp_register_style( 'jquery-style', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/redmond/jquery-ui.css', true);
-        wp_register_style('amember-style', AM4_PLUGIN_URL . "/views/admin_styles.css");
+        wp_register_script("dirbrowser", plugins_url("/js/dirbrowser.js", dirname(__FILE__)));
+        wp_register_script('amember-jquery-outerclick',  plugins_url("/views/jquery.outerClick.js", dirname(__FILE__)));
+        wp_register_script('amember-jquery-tabby',  plugins_url("/views/jquery.textarea.js", dirname(__FILE__)));
+        wp_register_script('amember-resource-access',  plugins_url("/views/resourceaccess.js", dirname(__FILE__)));
+        wp_register_style( 'jquery-style', '//ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/redmond/jquery-ui.css', true);
+        wp_register_style('amember-style', plugins_url("/views/admin_styles.css", dirname(__FILE__)));
     }
     
     

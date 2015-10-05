@@ -21,25 +21,25 @@ class Am_Form_Setup_Global extends Am_Form_Setup
                 'class' => 'el-wide',
         ), array('help-id' => '#Setup.2FEdit_Site_Title'))
         ->setLabel(___('Site Title'));
-         
-         
+
+
         $this->addElement('static', null, null, array('help-id' => '#Root_URL_and_License_Key'))->setContent(
                 '<a href="' . Am_Controller::escape(REL_ROOT_URL) . '/admin-license" target="_top" class="link">'
                 . ___('change')
                 . '</a>')->setLabel(___('Root Url and License Keys'));
-         
+
         $players = array('Flowplayer'=>'Flowplayer');
         if(file_exists(ROOT_DIR . '/application/default/views/public/js/jwplayer/jwplayer.js'))
             $players['JWPlayer'] = 'JWPlayer';
-        
+
         $this->addSelect('video_player')
             ->setId('video-player')
             ->setLabel(___('Video Player'))
             ->loadOptions($players)
             ->toggleFrozen(count($players)==1 ?true:false);
-        
+
         $this->setDefault('video_player', 'Flowplayer');
-        
+
         $this->addText('flowplayer_license')
                 ->setId('video-player-Flowplayer')
                 ->setLabel(___("FlowPlayer License Key\nyou may get your key in %smembers area%s",
@@ -69,27 +69,24 @@ CUT
         $this->addElement('select', 'admin_theme', null, array('help-id' => '#Setup.2FEdit_Admin_Pages_Theme'))
         ->setLabel(___('Admin Pages Theme'))
         ->loadOptions(Am_View::getThemes('admin'));
-         
-        $this->addSelect('plugins.tax', array('size' => 1))
-        ->setLabel(___('Tax'))
-        ->loadOptions(array(
-                '' => ___('No Tax'),
+
+        $tax_plugins =array(
                 'global-tax' => ___('Global Tax'),
                 'regional' => ___('Regional Tax'),
                 'vat' => ___('EU VAT'),
-                'gst' => ___('GST (Inclusive Tax)'),
-        ));
-         
-        /*
-         if (!extension_loaded("curl")){
-        $el = $this->addElement('text', 'curl')
-        ->setLabel(___('cURL executable file location', "you need it only if you are using payment processors<br />
-                like Authorize.Net or PayFlow Pro<br />
-                usually valid path is /usr/bin/curl or /usr/local/bin/curl"));
-        $el->default = '/usr/bin/curl';
-        $el->addRule('callback2', 'error', array($this, 'validateCurl'));
-        }
-        */
+                'vat2015' => ___('EU VAT (New Rules 2015)'),
+                'gst' => ___('GST (Inclusive Tax)')
+        );
+        foreach(Am_Di::getInstance()->plugins_tax->getAvailable() as $plugin)
+            if(!isset($tax_plugins[$plugin]))
+                $tax_plugins[$plugin] = ucwords(str_replace("-", ' ', $plugin));
+
+        $this->addSelect('plugins.tax', array('size' => 1))
+        ->setLabel(___('Tax'))
+        ->loadOptions(array(
+                '' => ___('No Tax')
+        ) + $tax_plugins);
+
         $fs = $this->addElement('fieldset', '##02')
         ->setLabel(___('Signup Form Configuration'));
 
@@ -163,7 +160,7 @@ class Am_Form_Setup_Plugins extends Am_Form_Setup
 {
     // list of cc plugins saved for special handling
     protected $plugins_cc = array();
-    
+
     function __construct()
     {
         parent::__construct('plugins');
@@ -196,7 +193,7 @@ class Am_Form_Setup_Plugins extends Am_Form_Setup
         $this->addMagicSelect('modules', null, array('help-id' => '#Enabling.2FDisabling_Modules'))
         ->setLabel(___('Enabled Modules'));
         $this->setDefault('modules', array());
-         
+
         foreach (Am_Di::getInstance()->modules->getAvailable() as $module)
         {
             $fn = APPLICATION_PATH . '/' . $module . '/module.xml';
@@ -205,7 +202,7 @@ class Am_Form_Setup_Plugins extends Am_Form_Setup
             if (!$xml) continue;
             $modules->addOption($module . ' - ' . $xml->desc, $module);
         }
-         
+
         foreach (Am_Di::getInstance()->plugins as $type => $mgr)
         {
             if ($type == 'modules') continue;
@@ -230,7 +227,7 @@ class Am_Form_Setup_Plugins extends Am_Form_Setup
 
             $el = $this->addMagicSelect('plugins.' . $type, array('class' => 'magicselect am-combobox'), array('help-id' => $help_id))
             ->setLabel(___('%s Plugins', ___($mgr->getTitle())));
-            
+
             $paths = $mgr->getPaths();
             $plugins = self::getPluginsList($paths);
             if ($type == 'payment')
@@ -241,7 +238,7 @@ class Am_Form_Setup_Plugins extends Am_Form_Setup
                         $plugins = array_merge($plugins, $this->plugins_cc);
                         ksort($plugins);
                 }
-                
+
                 array_remove_value($plugins, 'free');
             } elseif ($type == 'storage') {
                 $plugins = array('upload'=>'upload', 'disk'=>'disk') + $plugins;
@@ -279,7 +276,7 @@ class Am_Form_Setup_Plugins extends Am_Form_Setup
             }
             foreach ($enabled as $plugin)
             {
-                if (($type == 'payment') && !empty($this->plugins_cc[$plugin]) 
+                if (($type == 'payment') && !empty($this->plugins_cc[$plugin])
                     && !Am_Di::getInstance()->modules->isEnabled('cc'))
                 { // we got a cc plugin enabled but cc module is not yet enabled!
                     $modules_cc = $after->get('modules', array());
@@ -339,6 +336,11 @@ class Am_Form_Setup_Email extends Am_Form_Setup
         )
         ->addRule('callback', ___('Please enter valid e-mail address'), array('Am_Validate', 'email'));
 
+        $this->addElement('text', 'technical_email', array('size' => 50))
+        ->setLabel(___("Technical E-Mail Address\n".
+                "shown on error pages. If empty, [Admin E-Mail Address] is used"))
+        ->addRule('callback', ___('Please enter valid e-mail address'), array('Am_Validate', 'empty_or_email'));
+
         $this->addElement('text', 'admin_email_from', array (
                 'size' => 50,
         ), array('help-id' => '#Email_Address_Configuration'))
@@ -368,13 +370,15 @@ class Am_Form_Setup_Email extends Am_Form_Setup
                         'mail' => ___('Internal PHP mail() function (default)'),
                         'smtp' => ___('SMTP'),
                         'ses' => ___('Amazon SES'),
+                        'sendgrid' => ___('Send Grid (Web API)'),
+                        'campaignmonitor' => ___('CampaignMonitor (Transactional API)'),
                         'disabled' => ___('Disabled')
                 ));
 
         $fs->addElement('text', 'smtp_host', array('size'=>40), array('help-id' => '#SMTP_Mail_Settings'))
         ->setLabel(___('SMTP Hostname'));
         $this->addRule('callback', ___('SMTP Hostname is required if you have enabled SMTP method'), array($this, 'checkSMTPHost'));
-         
+
         $fs->addElement('integer', 'smtp_port', array('size' => 4),  array('help-id' => '#SMTP_Mail_Settings'))
         ->setLabel(___('SMTP Port'));
         $fs->addElement('select', 'smtp_security', null,  array('help-id' => '#SMTP_Mail_Settings'))
@@ -399,7 +403,19 @@ class Am_Form_Setup_Email extends Am_Form_Setup
             Am_Mail_Transport_Ses::REGION_EU_WEST_1 => 'EU (Ireland)'
             )))
         ->setLabel(___('Amazon SES Region'));
-         
+
+        $fs->addText('sendgrid_user')
+            ->setlabel(___('SendGrid Username'));
+
+        $fs->addText('sendgrid_key')
+            ->setlabel(___('SendGrid Password'));
+
+        $fs->addText('campaignmonitor_apikey', array('size' => 40))
+            ->setlabel(___('Campaignmonitor API Key'));
+
+        $fs->addText('campaignmonitor_clientid', array('size' => 40))
+            ->setlabel(___('Client API ID'));
+
         $test = ___('Test E-Mail Settings');
         $em = ___('E-Mail Address to Send to');
         $se = ___('Send Test E-Mail');
@@ -447,6 +463,10 @@ $(function(){
         $(".row[id*='smtp_']").toggle(is_smtp);
         var is_ses = $(this).val() == 'ses';
         $(".row[id*='ses_']").toggle(is_ses);
+        var is_sendgrid = $(this).val() == 'sendgrid';
+        $(".row[id*='sendgrid_']").toggle(is_sendgrid);
+        var is_campaignmonitor = $(this).val() == 'campaignmonitor';
+        $(".row[id*='campaignmonitor_']").toggle(is_campaignmonitor);
     }).change();
 });
 CUT
@@ -496,7 +516,7 @@ CUT
         ->setLabel(___("Verify E-Mail Address On Signup Page\n".
             "e-mail verification may be enabled for each signup form separately\n".
             "at aMember CP -> Forms Editor -> Edit, click \"configure\" on E-Mail brick"));
-         
+
         $fs->addElement('email_link', 'verify_email_profile', null, array('help-id' => '#Validation_Message_Configuration'))
         ->setLabel(___("Verify New E-Mail Address On Profile Page\n".
             "e-mail verification for profile form may be enabled\n".
@@ -504,11 +524,11 @@ CUT
 
         $fs = $this->addElement('fieldset', '##11')
         ->setLabel(___('Signup Messages'));
-         
+
         $fs->addElement('email_checkbox', 'registration_mail')
         ->setLabel(___("Send Registration E-Mail\n".
                 "once customer completes signup form (before payment)"));
-         
+
         $fs = $this->addElement('fieldset', '##12')
         ->setLabel(___("Pending Invoice Notification Rules"));
 
@@ -526,7 +546,7 @@ CUT
 
         $fs = $this->addElement('fieldset', '##13')
         ->setLabel(___('Messages to Customer after Payment'));
-         
+
         $fs->addElement('email_checkbox', 'send_signup_mail', null, array('help-id' => '#Email_Messages_Configuration'))
         ->setLabel(___("Send Signup E-Mail\n".
                 "once FIRST subscripton is completed"));
@@ -546,15 +566,19 @@ CUT
         $fs = $this->addElement('fieldset', '##15')
         ->setLabel(___('E-Mails by User Request'));
 
-        $fs->addElement('email_checkbox', 'mail_cancel_member', null, array('help-id' => '#Forgotten_Password_Templates'))
+        $fs->addElement('email_checkbox', 'mail_cancel_member')
         ->setLabel(___("Send Cancel Notifications to User\n" .
             'send email to member when he cancels recurring subscription.'));
 
-        $fs->addElement('email_checkbox', 'mail_cancel_admin', null, array('help-id' => '#Forgotten_Password_Templates'))
+        $fs->addElement('email_checkbox', 'mail_upgraded_cancel_member')
+        ->setLabel(___("Send Cancel (due to upgrade) Notifications to User\n" .
+            'send email to member when he cancels recurring subscription due to upgrade.'));
+
+        $fs->addElement('email_checkbox', 'mail_cancel_admin')
         ->setLabel(___("Send Cancel Notifications to Admin\n" .
             'send email to admin when recurring subscription cancelled by member'));
 
-        $fs->addElement('email_link', 'send_security_code', null, array('help-id' => '#Forgotten_Password_Templates'))
+        $fs->addElement('email_link', 'send_security_code')
         ->setLabel(___("Remind Password to Customer"));
 
         $fs->addElement('email_checkbox', 'changepass_mail')
@@ -563,14 +587,14 @@ CUT
 
         if($this->haveCronRebillPlugins())
         {
-        
+
             $fs = $this->addElement('fieldset', '##17')
             ->setLabel(___('E-Mail Messages on Rebilling Event', ''));
-            
+
             $fs->addElement('email_checkbox', 'cc.admin_rebill_stats')
             ->setLabel(___("Send Credit Card Rebill Stats to Admin\n" .
                 "Credit Card Rebill Stats will be sent to Admin daily. It works for payment processors like Authorize.Net and PayFlow Pro only"));
-            
+
             $fs->addElement('email_checkbox', 'cc.rebill_failed')
             ->setLabel(___("Credit Card Rebill Failed\n" .
                 "if credit card rebill failed, user will receive the following e-mail message. It works for payment processors like Authorize.Net and PayFlow Pro only"));
@@ -589,18 +613,23 @@ CUT
                 $gr->addHTML()->setHTML(' ' . ___('Send message') . ' ');
                 $gr->addText('cc.card_expire_days', array('size'=>2, 'value'=>5));
                 $gr->addHTML()->setHTML(' ' . ___('days before rebilling'));
-                
+
             }
         }
         $fs = $this->addElement('fieldset', '##16')
         ->setLabel(___('E-Mails by Admin Request'));
-         
+
         $fs->addElement('email_link', 'send_security_code_admin', null, array('help-id' => '#Forgotten_Password_Templates'))
         ->setLabel(___('Remind Password to Admin'));
-         
-         
+
+
         $fs = $this->addElement('fieldset', '##18')
         ->setLabel(___('Miscellaneous'));
+
+        $fs->addElement('email_checkbox', 'profile_changed', null, array('help-id' => '#Configuring_Advanced_Options'))
+            ->setLabel(___("Send Notification to Admin When Profile is Changed\n".
+                    "admin will receive an email if user has changed profile"
+            ));
 
         $fs->addElement('advcheckbox', 'disable_unsubscribe_link', null, array('help-id' => '#Miscellaneous_Email_Settings'))
         ->setLabel(___('Do not include Unsubscribe Link into e-mails'));
@@ -634,13 +663,13 @@ CUT
                 'test@email.com,test1@email.com,test2@email.com'))
             ->addRule('callback', 'Please enter valid e-mail address', array('Am_Validate', 'emails'));
     }
-    
+
     function haveCronRebillPlugins(){
         foreach(Am_Di::getInstance()->plugins_payment->getAllEnabled() as $p)
         {
             if($p->getRecurringType() == Am_Paysystem_Abstract::REPORTS_CRONREBILL)
                 return true;
-               
+
         }
     }
     function haveStoreCreditCardPlugins(){
@@ -648,10 +677,10 @@ CUT
         {
             if($p->storesCcInfo())
                 return true;
-               
+
         }
     }
-    
+
 }
 
 class Am_Form_Setup_Pdf extends Am_Form_Setup
@@ -699,14 +728,20 @@ CUT
 
         $this->addAdvcheckbox('invoice_do_not_include_terms')
         ->setLabel(___('Do not Include Subscription Terms to PDF Invoice'));
-        
+
+        $this->addAdvcheckbox('different_invoice_for_refunds')
+        ->setLabel(array(
+            ___("Display Separate Invoice for Refunds\n".
+                "Setting affect aMember Control Panel only. User will see regular invoice which includes refund information inside")
+            ));
+
         $upload = $this->addElement('upload', 'invoice_custom_template',
                 array(), array('prefix'=>'invoice_custom_template', 'help-id' => '#PDF_Invoice_Template')
         )->setLabel(___('Custom PDF Template for Invoice (optional)')
         )->setAllowedMimeTypes(array(
                 'application/pdf'
         ));
-         
+
         $this->setDefault('invoice_custom_template', '');
 
         $jsOptions = <<<CUT
@@ -746,11 +781,11 @@ CUT;
         $invoice_logo = $fsGenerated->addElement('upload', 'invoice_logo', array(),
                 array('prefix'=>'invoice_logo', 'help-id' => '#Company_Logo_for_Invoice')
         )->setLabel(___("Company Logo for Invoice\n".
-                "it must be png/jpeg/tiff file (%s)", '200&times;100 px'))
+                "it must be png/jpeg/tiff file, please keep aspect ratio 2:1 (width×height)"))
                 ->setAllowedMimeTypes(array(
                         'image/png', 'image/jpeg', 'image/tiff'
                 ));
-         
+
         $this->setDefault('invoice_logo', '');
 
         $fsGenerated->addElement('textarea', 'invoice_contacts', array (
@@ -771,7 +806,7 @@ CUT;
 (function($){
     $(function() {
         function change_template_type(obj) {
-            if ($(obj).val()) {
+            if ($(obj).val() && $(obj).val() != -1) {
                 $('fieldset#template-custom-settings').show();
                 $('fieldset#template-generated-settings').hide();
             } else {
@@ -923,7 +958,7 @@ class Am_Form_Setup_Advanced extends Am_Form_Setup
     {
         $this->addElement('advcheckbox', 'use_cron', null, array('help-path' => 'Cron'))
         ->setLabel(___('Use External Cron'));
-         
+
         $gr = $this->addGroup(null, null, array('help-id' => '#Configuring_Advanced_Settings'))->setLabel(array(
             ___('Maintenance Mode'), ___('put website offline, making it available for admins only')));
         $gr->setSeparator(' ');
@@ -949,7 +984,7 @@ $(function(){
 });
 CUT
         );
-         
+
         $gr = $this->addGroup(null, null, array('help-id'=>'#Configuring_Advanced_Settings'))->setLabel(___("Clear Access Log"));
         $gr->addElement('advcheckbox', 'clear_access_log', null, array('help-id' => '#Configuring_Advanced_Settings'));
         $gr->addStatic()->setContent(sprintf('<span class="clear_access_log_days"> %s </span>', ___("after")));
@@ -1036,14 +1071,14 @@ CUT
     <strong>%EXECUTION_TIME% /usr/bin/curl $backUrl</strong><br />
 </div>
 CUT;
-         
+
             $fs->addHtml('email_backup_note')->setHtml($html);
 
             $fs->addElement('text', 'email_backup_address')
                 ->setLabel(___('E-Mail Backup Address'));
-         
+
             $this->addRule('callback', ___('Email is required if you have enabled Email Backup Feature'), array($this, 'checkBackupEmail'));
-         
+
             $script = <<<CUT
 (function($) {
     function toggle_frequency() {
@@ -1083,7 +1118,7 @@ CUT;
 
 })(jQuery)
 CUT;
-         
+
             $this->addScript('script-backup')->setScript($script);
         }
 
@@ -1105,15 +1140,26 @@ CUT;
         $fs->addAdvCheckbox('manually_approve_invoice', null, array('help-id' => '#Configuring_Advanced_Options'))
             ->setLabel(___("Manually Approve New Invoices\n" .
                 'manually approve all new invoices'));
+        $maPc = array();
+        foreach (Am_Di::getInstance()->productCategoryTable->getAdminSelectOptions() as $id => $title) {
+            $maPc['c' . $id] = $title;
+        }
+        if ($maPc) {
+            $maOptions = array(
+                ___('Products') => Am_Di::getInstance()->productTable->getOptions(),
+                ___('Product Categories') => $maPc
+            );
+        } else {
+            $maOptions = Am_Di::getInstance()->productTable->getOptions();
+        }
+
         $fs->addMagicSelect('manually_approve_invoice_products', array('rel'=>'manually_approve_invoice'), array('help-id' => '#Configuring_Advanced_Options'))
             ->setLabel(array(
                 ___('Require Approval Only if Invoice has these Products (Invoice)'),
                 ___('By default each invoice will be set as "Not Approved" ').
                 ___('although you can enable this functionality only for selected products')
             ))
-            ->loadOptions(
-                Am_Di::getInstance()->productTable->getOptions()
-            );
+            ->loadOptions($maOptions);
 
         $fs->addElement('email_link', 'invoice_approval_wait_admin', array('rel'=>'manually_approve_invoice'), array('help-id' => '#Configuring_Advanced_Options'))
             ->setLabel('Require Approval Notification to Admin (Invoice)');
@@ -1154,24 +1200,26 @@ CUT
 
         $fs = $this->addElement('fieldset', '##5')
             ->setLabel(___('Miscellaneous'));
-        $fs->addElement('email_checkbox', 'profile_changed', null, array('help-id' => '#Configuring_Advanced_Options'))
-        ->setLabel(___("Send Notification to Admin When Profile is Changed\n".
-                "admin will receive an email if user has changed profile\n"
-        ));
-         
-        $fs->addElement('advcheckbox', 'dont_check_updates', null, array('help-id' => '#Configuring_Advanced_Options'))
-        ->setLabel(___("Disable Checking for aMember Updates"));
 
-        $fs->addElement('advcheckbox', 'quickstart-disable', null, array('help-id' => '#Configuring_Advanced_Options'))
-        ->setLabel(___("Disable QuickStart Wizard"));
-         
-        $fs->addElement('advcheckbox', 'am3_urls', null, array('help-id' => '#Configuring_Advanced_Options'))
-        ->setLabel(___("Use aMember3 Compatible Urls\n".
-                "Enable old style urls (ex.: signup.php, profile.php)\n".
-                "Usefull only after upgrade from aMember v3 to keep old links working.\n"
-        ));
-         
-         
+        $fs->addAdvCheckbox('dont_check_updates', null, array('help-id' => '#Configuring_Advanced_Options'))
+            ->setLabel(___("Disable Checking for aMember Updates"));
+
+        $fs->addAdvCheckbox('signup_disable')
+            ->setLabel(___("Disable New Signups"));
+
+        $fs->addAdvCheckbox('product_paysystem')
+            ->setLabel(___("Assign Paysystem to Product"));
+
+        $fs->addAdvCheckbox('quickstart-disable', null, array('help-id' => '#Configuring_Advanced_Options'))
+            ->setLabel(___("Disable QuickStart Wizard"));
+
+        $fs->addAdvCheckbox('am3_urls', null, array('help-id' => '#Configuring_Advanced_Options'))
+            ->setLabel(___("Use aMember3 Compatible Urls\n".
+                    "Enable old style urls (ex.: signup.php, profile.php)\n".
+                    "Usefull only after upgrade from aMember v3 to keep old links working.\n"
+            ));
+
+
         if(!ini_get('suhosin.session.encrypt')) {
             $fs->addSelect('session_storage', null, array('help-id' => '#Configuring_Advanced_Options'))
             ->setLabel(___("Session Storage"))
@@ -1274,11 +1322,12 @@ CUT
 
         $this->addElement('advcheckbox', 'allow_auth_by_savedpass')
         ->setLabel(___('Allow to Use Password Hash from 3ty part Scripts to Authenticate User in aMember'));
-         
+
         $this->setDefault('login_session_lifetime', 120);
         $this->addElement('integer', 'login_session_lifetime', null, array('help-id' => '#Login_Page_Options'))
         ->setLabel(___("User Session Lifetime (minutes)\n".
-                "default - 120"));
+                "default - 120"))
+        ->addRule('regex', ___('Please specify number greater then zero'), '/^[1-9][0-9]*$/');
 
         $gr = $this->addGroup(null, null, array('help-id' => '#Account_Sharing_Prevention'))
         ->setLabel(___("Account Sharing Prevention"));
@@ -1317,7 +1366,7 @@ CUT
             3 => ___('Use first %d IP address octets to determine different IP (%s)', 1, '123.xx.xx.xx'),
         ));
         $gr->addStatic()->setContent('</div>');
-        
+
         $gr = $this->addGroup(null, null, array('help-id' => '#Bruteforce_Protection'))
         ->setLabel(___('Bruteforce Protection'));
         $gr->addStatic()->setContent('<div>');
@@ -1333,7 +1382,7 @@ CUT
         $this->addElement('email_checkbox', 'bruteforce_notify')
             ->setLabel(___("Bruteforce Notification\n".
                 "notify admin when bruteforce attack is detected"));
-         
+
         $this->addElement('advcheckbox', 'skip_index_page')
             ->setLabel(___("Skip Index Page if User is Logged-in\n" .
                 'When logged-in user try to access /amember/index page, he will be redirected to /amember/member'))
@@ -1358,12 +1407,10 @@ CUT
                 )));
         $this->addSelect('login_recaptcha_theme', '', array(
             'options' => array(
-                'red'   =>  'red',
-                'clean' =>  'clean',
-                'white' =>  'white',
-                'blackglass'    =>  'blackglass'
+                'light' => 'light',
+                'dark' => 'dark'
                 )
-            ))->setLabel(___('ReCaptcha Theme for Login Page'));
+            ))->setLabel(___('reCAPTCHA Theme for Login Page'));
 
          $this->addSelect('video_non_member')
             ->setLabel(___("Video for Non User\n" .
@@ -1400,7 +1447,7 @@ class Am_Form_Setup_Language extends Am_Form_Setup
         ->setLabel(___('Display Language Choice'));
         $list = Am_Di::getInstance()->languagesListUser;
 
-        $sel = $this->addElement('select', 'lang.enabled', array('multiple'=> 'multiple', 'class' => 'magicselect am-combobox'), array('help-id' => '#Selecting_Languages_to_Offer'))
+        $sel = $this->addSortableMagicSelect('lang.enabled', array('class' => 'am-combobox'), array('help-id' => '#Selecting_Languages_to_Offer'))
         ->setLabel(___("Available Locales\ndefines both language and date/number formats"));
         $sel->loadOptions($list);
 
@@ -1431,33 +1478,31 @@ class Am_Form_Setup_Recaptcha extends Am_Form_Setup
     function __construct()
     {
         parent::__construct('recaptcha');
-        $this->setTitle(___('ReCaptcha'));
+        $this->setTitle(___('reCAPTCHA'));
     }
     function initElements()
     {
-        $this->addText("recaptcha-public-key", array('size'=>50), array('help-id' => 'Setup/ReCaptcha'))->setLabel("ReCaptcha Public Key\n" .
+        $this->addText("recaptcha-public-key", array('size'=>50), array('help-id' => 'Setup/ReCaptcha'))->setLabel("reCAPTCHA Public Key\n" .
             "you can get it in your account on <a href='http://www.google.com/recaptcha' class='link' target='_blank'>reCAPTCHA site</a>, you may need to sign up (it is free) if you have no account yet")
         ->addRule('required', ___('This field is required'));
-        $this->addText("recaptcha-private-key", array('size'=>50), array('help-id' => 'Setup/ReCaptcha'))->setLabel("ReCaptcha Private Key\n" .
+        $this->addText("recaptcha-private-key", array('size'=>50), array('help-id' => 'Setup/ReCaptcha'))->setLabel("reCAPTCHA Private Key\n" .
             "you can get it in your account on <a href='http://www.google.com/recaptcha' class='link' target='_blank'>reCAPTCHA site</a>, you may need to sign up (it is free) if you have no account yet")
         ->addRule('required', ___('This field is required'));
         $this->addSelect('recaptcha-theme', '', array(
             'options' => array(
-                'clean' =>  'clean',
-                'white' =>  'white',
-                'red'   =>  'red',
-                'blackglass'    =>  'blackglass'
+                'light' =>  'light',
+                'dark' =>  'dark'
                 )
-            ))->setLabel(___('ReCaptcha Theme'));
+            ))->setLabel(___('reCAPTCHA Theme'));
     }
 
     function getReadme(){
         return <<<CUT
-<strong>reCaptcha configuration</strong>
+<strong>reCAPTCHA configuration</strong>
 Complete instructions can be found here:
 <a href='http://www.amember.com/docs/Setup/ReCaptcha' target='_blank'>http://www.amember.com/docs/Setup/ReCaptcha</a>
 
-Use Forms Editor in order to add recaptcha field to signup/renewal page:
+Use Forms Editor in order to add reCAPTCHA field to signup/renewal page:
 <a href='%root_url%/admin-saved-form'>%root_url%/admin-saved-form</a>
 
 CUT;

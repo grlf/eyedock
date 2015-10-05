@@ -321,7 +321,11 @@ class Am_Form_Controller_Page_PluginMaker_Columns extends HTML_QuickForm2_Contro
         {
             $el = $fs->addSelect('field['.$name . ']['.$k.']')->setLabel($v)
                 ->loadOptions(array_combine($fields, $fields));
-            if ($k != 'lifetime' && $k != 'updated')
+            if (!in_array($k,array('Am_Protect_SessionTable::FIELD_UID',
+                'Am_Protect_SessionTable::FIELD_IP',
+                'Am_Protect_SessionTable::FIELD_UA',
+                'Am_Protect_SessionTable::FIELD_CREATED',
+                'Am_Protect_SessionTable::FIELD_CHANGED')))
                 $el->addRule('required');
         }
     }
@@ -331,13 +335,13 @@ class Am_Form_Controller_Page_PluginMaker_Columns extends HTML_QuickForm2_Contro
         $info = $this->getController()->getValue();
         $db = Am_Db::connect($info);
         $tables = array();
+
         foreach ($info['table'] as $k => $v)
         {
             if (!empty($v))
                 $tables[$k] = new Am_Table($db, $v);
         }
-        
-        
+
         /// user table
         $userOptions = array('expr' => 'PHP Expression', 'string' => 'PHP String');
         $class = new ReflectionClass('Am_Protect_Table');
@@ -372,12 +376,14 @@ class Am_Form_Controller_Page_PluginMaker_Columns extends HTML_QuickForm2_Contro
         if (!empty($tables['session']))
         {
             $sessionOptions = array(
-                'id' => 'Session ID',
-                'data' => 'Session Data',
-                'lifetime' => 'Lifetime',
-                'updated' => 'Updated',
+                'Am_Protect_SessionTable::FIELD_SID' => 'Session ID',
+                'Am_Protect_SessionTable::FIELD_UID' => 'User ID',
+                'Am_Protect_SessionTable::FIELD_IP' => 'IP Address',
+                'Am_Protect_SessionTable::FIELD_UA' => 'User Agent',
+                'Am_Protect_SessionTable::FIELD_CREATED' => 'Created',
+                'Am_Protect_SessionTable::FIELD_CHANGED' => 'Changed',
             );
-            $this->addFieldSelect('session', $tables['session'], 'Session Table', $sessionOptions);
+            $this->addTable('session', $tables['session'], 'Session Table', $sessionOptions);
         }
         
 

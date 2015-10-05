@@ -5,7 +5,7 @@
  * "Edit Profile", "Invoices", etc.
  * @package Am_Utils 
  */
-class Am_Navigation_UserTabs extends Zend_Navigation
+class Am_Navigation_UserTabs extends Zend_Navigation_Container
 {
     public function addDefaultPages()
     {
@@ -30,26 +30,35 @@ class Am_Navigation_UserTabs extends Zend_Navigation
                 'label' => ___('User Info'),
                 'order' => 0,
                 'disabled' => $id <= 0,
+                'resource' => 'grid_u',
                 'active' => $request->getFiltered('_u_id', false)
           ))->addPage(array(
                 'id' => 'payments',
-                'label' => ___('Payments'),
+                'type' => 'Am_Navigation_Page_Uri',
+                'label' => ___('Payments/Access'),
                 'uri' => 'javascript:;',
                 'order' => 100,
-                'resource' => 'grid_payment',
+                'resource' => array(
+                    'grid_payment',
+                    'grid_access'
+                ),
                 'pages' => array(
                     array(
                         'id' => 'payments-invoice',
+                        'type' => 'Am_Navigation_Page_Mvc',
                         'label' => ___('Invoices/Access'),
                         'controller' => 'admin-user-payments',
                         'params' => array(
                             'user_id' => $id,
                         ),
-                        'resource' => 'grid_payment',
+                        'resource' => array(
+                            'grid_payment',
+                            'grid_access'
+                        )
                     ),
                     array(
                         'id' => 'payments-payment',
-                        'label' => ___('User Payments'),
+                        'label' => ___('Payments'),
                         'controller' => 'admin-user-payments',
                         'action' => 'payment',
                         'params' => array(
@@ -68,7 +77,7 @@ class Am_Navigation_UserTabs extends Zend_Navigation
                     'user_id' => $id,
                 ),
                 'order' => 200,
-                'resource' => Am_Auth_Admin::PERM_LOGS,
+                'resource' => Am_Auth_Admin::PERM_LOGS_ACCESS,
           ));
         if (Am_Di::getInstance()->config->get('email_log_days')) {
             $this->addPage(array(
@@ -106,6 +115,7 @@ class Am_Navigation_UserTabs extends Zend_Navigation
             if ($id<=0) $child->set('disabled', true);
         }
     }
+
     public function setActive($id)
     {
         foreach($this->getPages() as $page) {

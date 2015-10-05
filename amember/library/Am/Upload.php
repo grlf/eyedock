@@ -43,11 +43,18 @@ class Am_Upload
             $upload[$k]->prefix = $this->prefix;
             $upload[$k]->admin_id = $is_admin ? Am_Di::getInstance()->authAdmin->getUserId() : null;
             $upload[$k]->user_id = $is_admin ? null : Am_Di::getInstance()->auth->getUserId();
+            $upload[$k]->session_id = (!$is_admin && ! Am_Di::getInstance()->auth->getUserId()) ? Zend_Session::getId() : null;
             $upload[$k]->setFrom_FILES($_FILES[$fieldName], $k);
         }
         foreach ($upload as $k => $file) {
             if ($f = $this->checkFileAndMove($file)) {
                 $this->files[] = $f;
+                if (!$is_admin && !Am_Di::getInstance()->auth->getUserId()) {
+                    if (!isset($this->getDi()->session->uploadNeedBind)) {
+                        $this->getDi()->session->uploadNeedBind = array();
+                    }
+                    $this->getDi()->session->uploadNeedBind[] = $f->pk();
+                }
             }
         }
         return $this;

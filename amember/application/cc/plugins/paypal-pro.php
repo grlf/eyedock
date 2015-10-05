@@ -130,7 +130,7 @@ class Am_Paysystem_PaypalPro extends Am_Paysystem_CreditCard
         $trans = new Am_Paysystem_Transaction_Manual($this);
         $trans->setAmount($amount);
         $trans->setReceiptId($res['REFUNDTRANSACTIONID']);
-        $result->setSuccess($trans);
+        $result->setSuccess();
     }
 
     public function ccRebill($date = null) {
