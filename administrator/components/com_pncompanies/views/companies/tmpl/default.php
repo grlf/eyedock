@@ -3,22 +3,16 @@
 <?php JHTML::_('behavior.tooltip'); ?>
 
 <?php
-	JSubMenuHelper::addEntry('Soft Lenses', 'index.php?option=com_pnlenses');
-	JSubMenuHelper::addEntry('Soft Lenses Polymers', 'index.php?option=com_pnpolymers');
 
-	JToolBarHelper::title( JText::_( 'Soft Lens Companies Administration' ), 'generic.png' );
-	JToolBarHelper::deleteList();
-	JToolBarHelper::editListX();
-	JToolBarHelper::addNewX();
-	JToolBarHelper :: custom( 'report', 'send.png', '', 'Report', false, false );
 ?>
+
 
 <form action="index.php?option=com_pncompanies" method="post" name="adminForm">
 <table>
 	<tr>
-	
 
-			
+
+
 		<td align="left" width="100%">
 			<?php echo JText::_( 'Filter' ); ?>:
 			<input type="text" name="search" id="search" value="<?php echo htmlspecialchars($this->search);?>" class="text_area" onchange="document.adminForm.submit();" />

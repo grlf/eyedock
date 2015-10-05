@@ -13,7 +13,7 @@
 	<description>COM_GPLENS_XML_DESCRIPTION</description>
 
 	<administration>
-		<menu img="class:pnlenses">com_pnlenses</menu>
+		<menu img="class:pnlenses">Soft Lenses</menu>
 		<submenu>
 			<!--
 				Note that all & must be escaped to &amp; for the file to be valid
@@ -21,10 +21,8 @@
 			-->
 			<menu link="option=com_pnlenses" img="class:pnlenses"
 				alt="Soft Lenses">com_gplens_soft</menu>
-			<menu link="option=com_pncompanies"
-				img="class:pncompanies" alt="Soft Lens Companies">com_pncompanies</menu>
 			<menu link="option=com_pnpolymers"
-				img="class:pnpolymers" alt="Soft Lens Polymers">com_pnpolymers</menu>
+				img="class:pnpolymers" alt="Soft Lens Polymers">Soft Lens Polymers</menu>
 		</submenu>
 		<files folder="admin">
 			<filename>access.xml</filename>

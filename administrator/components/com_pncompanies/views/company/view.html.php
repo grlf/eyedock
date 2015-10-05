@@ -1,11 +1,11 @@
 <?php
 
 defined('_JEXEC') or die();
- 
+
 jimport( 'joomla.application.component.view' );
 require_once( JPATH_ROOT.DS.'utilities/sqli.php' );
 
-class PncompaniesViewCompany extends JView {
+class PncompaniesViewCompany extends JViewLegacy {
 
 	const LENSIMGURL = '';
 	const LENSPDFURL = '';
@@ -19,7 +19,7 @@ class PncompaniesViewCompany extends JView {
 	//	echo $boxchecked;
 		$uid = (int) @$id[0];
 		$edit = JRequest::getVar( 'edit', true );
-		
+
 		if($edit) {
 			if($boxchecked != 0){
 				$uid = $boxchecked;
@@ -28,12 +28,14 @@ class PncompaniesViewCompany extends JView {
 			$query = 'SELECT * from pn_lenses_companies where pn_comp_tid = ' . $uid;
 			$result = $mysqli->query($query);
 			$company = $result->fetch_object();
+		}else{
+			$company = new stdClass();
 		}
-		
+
 		$this->assignRef('company', $company);
-		
+
 		parent::display($tpl);
-		
+
 	}
 
 }

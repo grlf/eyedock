@@ -1,14 +1,14 @@
-<?php defined('_JEXEC') or die('Restricted access'); 
+<?php defined('_JEXEC') or die('Restricted access');
 
 	JToolBarHelper::title( JText::_( 'PN Company Report' ), 'generic.png' );
 	JToolBarHelper::back("Go back", "index.php?option=com_pncompanies");
-	
+
 	$document = JFactory::getDocument();
 	$document->addScript("/administrator/components/com_pncompanies/javascript/form.js");
-	
-	
+
+
 	echo "<p>The following is a company report. An email may be sent to the contact person by using the form below. To change the company's contact person, hit the back button and edit the company's listing.</p><p><hr></p>";
-	
+
 ?>
 <div style='margin: 3em 0; border: 1px solid black; padding: 2em; width: 600px;'>
 	<div style='float:right; width: 100px;'>Last email sent <?= $this->companyData["pn_last_email"] ?></div>
@@ -19,7 +19,7 @@
 	<p>Message<br/>
 
 	<?php
-		$editor =& JFactory::getEditor();
+		$editor = JFactory::getEditor();
 		echo $editor->display('email_body', $this->companyData['content'] , '600', '250', '60', '20', false);
 	?>
 
@@ -36,7 +36,7 @@
 
 <div id='lens_report_content'>
 	<?php
-	
+
 		echo $this->data['company'] ;
 		echo $this->data['lenses'];
 	?>
