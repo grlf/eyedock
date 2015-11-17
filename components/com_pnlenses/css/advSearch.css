@@ -66,9 +66,8 @@
 	top: -10px;
 	left: 308px;
 	height: 17px;
-	font-size: 10px;
+	font-size: smaller;
 	padding: 2px;
-    line-height: 1.22em;
 }
 
 .ui-autocomplete {
@@ -166,6 +165,10 @@ label.ui-widget {
 	margin: 15px 0 0;
 }
 
+#adv-search-hiDk .ui-button {
+	width: 85px !important;
+}
+
 .adv-type-column {
 	display: inline;
 	float: left;
@@ -178,7 +181,7 @@ label.ui-widget {
 }
 
 
-#ed-lenses-searchForm input.adv-rounded {
+input.adv-rounded {
 	border: 1px solid #CDE1F3;;
 	-moz-border-radius: 6px;
 	-webkit-border-radius: 6px;
@@ -192,7 +195,7 @@ label.ui-widget {
 	-webkit-appearance: none;
 	background-color : #eaf4fd; 
 }
-#ed-lenses-searchForm input.adv-rounded:focus {
+input.adv-rounded:focus {
 	border-color: #5da3cc;
 }
 

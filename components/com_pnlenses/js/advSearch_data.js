@@ -115,8 +115,8 @@ var bc_options = new Array("any", "flat", "median", "steep");
 
 // = new Array("daily", "2 weeks", "monthly", "quarterly", "6 months", "yearly");
 
-var colors_enh_options = new Array("any", "Aqua", "amber", "Blue", "Brown", "Gray", "Green", "Honey", "Yellow", "Violet");
-var colors_opq_options = new Array("any", "Aqua", "amber", "Blue", "Brown", "Gray", "Green", "Honey", "Yellow", "Violet");
+var colors_enh_options = new Array("yes", "Aqua", "amber", "Blue", "Brown", "Gray", "Green", "Honey", "Yellow", "Violet");
+var colors_opq_options = new Array("yes", "Aqua", "amber", "Blue", "Brown", "Gray", "Green", "Honey", "Yellow", "Violet");
 
 var cylinder_options = new Array( "any", "-0.75 D", "-1.25 D", "-1.75 D", "-2.25 D", "-2.75 D", "-3.25 D", "-3.75 D", "-4.00 D", "-5.00 D", "-6.00 D", "-7.00 D", "-8.00 D",  "-9.00 D", "-10.00 D");
 

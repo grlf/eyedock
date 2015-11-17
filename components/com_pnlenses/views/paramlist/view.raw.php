@@ -3,7 +3,7 @@
 defined( '_JEXEC' ) or die( 'Restricted access' );
 jimport( 'joomla.application.component.view');
 
-class PnlensesViewParamlist extends JView {
+class PnlensesViewParamlist extends JViewLegacy {
                                                
     function display($params){
         //echo "Greetings, everything is ok!";

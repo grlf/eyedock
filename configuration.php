@@ -20,7 +20,7 @@ class JConfig {
 	public $live_site = '';
 	public $secret = '5IbeGlhkoeM2TYmY';
 	public $gzip = '0';
-	public $error_reporting = 'maximum';
+	public $error_reporting = 'none';
 	public $helpurl = 'http://help.joomla.org/proxy/index.php?option=com_help&keyref=Help{major}{minor}:{keyref}';
 	public $ftp_host = '';
 	public $ftp_port = '';
@@ -49,7 +49,7 @@ class JConfig {
 	public $MetaAuthor = '1';
 	public $MetaVersion = '0';
 	public $robots = 'noindex, nofollow';
-	public $sef = '0';
+	public $sef = '1';
 	public $sef_rewrite = '1';
 	public $sef_suffix = '0';
 	public $unicodeslugs = '0';

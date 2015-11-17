@@ -17,6 +17,7 @@ class PnlensesViewPnlenses extends JViewLegacy {
         $userPrefs = $model->getUserPrefs();
         //print_r($userPrefs);
         $this->assignRef( 'userPrefs', $userPrefs);
+        JHtml::_('jquery.framework');
         parent::display();
     }
 }

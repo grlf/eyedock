@@ -18,6 +18,13 @@ if (!isset($userPrefs) ) {
 	$userPrefs['image'] = 1;
 	$userPrefs['allDiam'] = 1;
 	$userPrefs['userFav'] = 1;
+	$userPrefs['sDiam'] = 1;
+	$userPrefs['iDiam'] = 1;
+	$userPrefs['lDiam'] = 1;
+	$userPrefs['dk'] = 1;
+	$userPrefs['ct'] = 1;
+	$userPrefs['oz'] = 1;
+	$userPrefs['h2o'] = 1;
 }
 
 

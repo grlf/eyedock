@@ -17,8 +17,6 @@ var hiDkValue = 45; //it's best if this value is NOT in the dk_options array
 
 jQuery(document).ready(function() {
 
-	initSearchOptions();
-	
 	//makes the checkboxes buttons
 	jQuery(function() {
 		//jQuery( "#adv-search-type-checkboxes" ).buttonset();
@@ -28,7 +26,9 @@ jQuery(document).ready(function() {
 		jQuery( "#adv-search-cosmetic-radio").buttonset();
 		jQuery( "#adv-search-hiDk" ).buttonset();
 	});
-	
+
+	//initSearchOptions();
+		
 	//add a new row of filter options when the plus button is pressed
 	jQuery(".clonefilter_btn").on("click", function(event){
 		var row = jQuery(event.target).closest(".filterRow");	
@@ -376,7 +376,7 @@ function getParamsToSearch (){
 		if (jQuery('#bifocal-no').prop('checked')) params['bifocal'] = 0;
 		if (jQuery('#cosmetic-yes').prop('checked')) params['cosmetic'] = 1;
 		if (jQuery('#cosmetic-no').prop('checked')) params['cosmetic'] = 0;
-		if (jQuery('#hiDk').prop('checked')) params['dk'] = new Array("+"+  hiDkValue);
+		if (jQuery('#hiDk-yes').prop('checked')) params['dk'] = new Array("+"+  hiDkValue);
 		
 		//wantSpherical = (params['toric'] == 0 )?1:0;
 
@@ -399,6 +399,11 @@ function getParamsToSearch (){
 				params[q1].push(q2 + q3);
 			}
 		});
+		
+		//if cosmetic color choice is any make sure we still do a search for opaque or enhancer lenses
+		//if (q1 == "colors_enh") params["enhance"] = 1;
+		//if (q1 == "colors_opq") params["opaque"] = 1;
+		
 
 	}
 	
@@ -550,14 +555,17 @@ function populateSearchForm (params) {
 			
 
 			//check if the dk is equal to the "only hi dk" checkbox value (hiDkValue). if so, set the checkbox too true and continue so that the dk dropdown isn't also set below
+			//uncheck all values first
+			jQuery("#adv-search-hiDk radio").attr('checked', false).button('refresh');
 			if (prop == "dk" && propVal[0] == hiDkValue) {
-				//alert (propVal[0] );
-				jQuery("#hiDk").attr('checked', true).button('refresh');
+				jQuery("#hiDk-yes").attr('checked', true).button('refresh');
 				needMoreOptions++;
 				continue;
 			} else {
-				jQuery("#hiDk").attr('checked', false).button('refresh');
+				jQuery("#hiDk-any").attr('checked', true).button('refresh');
 			}
+			
+			
 			
 			//eliminate duplicates in the propVal's array
 			var uniqueProps = [];
@@ -585,6 +593,9 @@ function populateSearchForm (params) {
 			}
 		}
 	}
+	
+
+	
 	if (needMoreOptions > 0) {
 		    jQuery('#more-options').html('<b>less options &uarr;</b>');
     		jQuery('#adv-search-div').show();

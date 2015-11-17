@@ -6,7 +6,6 @@ defined('_JEXEC') or die('Restricted access');
 //$theRoot = "http://www.eyeodock.com/";
 
 $document = JFactory::getDocument();
-JHtml::_('bootstrap.framework');
 $document->addStyleSheet('components/com_pnlenses/css/lenses.css');
 $document->addStyleSheet('components/com_pnlenses/css/lenslists.css');
 $document->addStyleSheet('components/com_pnlenses/css/advSearch.css');
@@ -14,18 +13,18 @@ $document->addStyleSheet('components/com_pnlenses/css/details.css');
 $document->addStyleSheet('components/com_pnlenses/css/rating.css');
 $document->addStyleSheet('/javascript/jquery/tablesorter/css/theme.ice.css');
 
-$document->addScript("/javascript/rxClasses/RxObject.js");
-$document->addScript("/javascript/jquery/tablesorter/js/jquery.tablesorter.min.js");
-$document->addScript("/javascript/jquery/tablesorter/js/jquery.tablesorter.widgets.min.js");
-$document->addScript("/javascript/jquery/bbq.js");
-$document->addScript("/javascript/jquery/jquery.clearsearch.js");
+$document->addScript("javascript/rxClasses/RxObject.js");
+$document->addScript("javascript/jquery/tablesorter/js/jquery.tablesorter.min.js");
+$document->addScript("javascript/jquery/tablesorter/js/jquery.tablesorter.widgets.min.js");
+$document->addScript("javascript/jquery/bbq.js");
+$document->addScript("javascript/jquery/jquery.clearsearch.js");
 //$document->addScript("/javascript/jquery/tablesorter/jquery.scrollableFixedHeaderTable.js");
-$document->addScript("/javascript/jquery/jquery.printElement.js");
-$document->addScript("/components/com_pnlenses/js/details.js");
-$document->addScript("/components/com_pnlenses/js/lenses.js");
-$document->addScript("/components/com_pnlenses/js/lenslists.js");
-$document->addScript("/components/com_pnlenses/js/advSearch_data.js");
-$document->addScript("/components/com_pnlenses/js/advSearch.js");
+$document->addScript("javascript/jquery/jquery.printElement.js");
+$document->addScript("components/com_pnlenses/js/details.js");
+$document->addScript("components/com_pnlenses/js/lenses.js");
+$document->addScript("components/com_pnlenses/js/lenslists.js");
+$document->addScript("components/com_pnlenses/js/advSearch_data.js");
+$document->addScript("components/com_pnlenses/js/advSearch.js");
 
 //include_once($_SERVER['DOCUMENT_ROOT'] . '/utilities/is_subscriber.php' );
 

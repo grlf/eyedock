@@ -290,8 +290,8 @@ $user =& JFactory::getUser();
 				<div class='ed-ld-paramcolumns'>
 					<div class='ed-ld-tablecomments'>
 						<?
-							if ($this->lens['bifocal_type'] != '')  echo "<strong>Bifocal Type:</strong> " . $this->lens['bifocal_type'] ."&nbsp;&nbsp;&nbsp;"; 
-							if ($this->lens['toric_type'] != '')  echo " <strong>Toric Type:</strong>" . $this->lens['toric_type'] . "  &nbsp;&nbsp;&nbsp;"; 
+							if ($this->lens['bifocal_type'] != '' && $this->lens['bifocal'] ==1)   echo "<strong>Bifocal Type: </strong> " . $this->lens['bifocal_type'] ."&nbsp;&nbsp;&nbsp;"; 
+							if ($this->lens['toric_type'] != '')  echo " <strong>Toric Type: </strong>" . $this->lens['toric_type'] . "  &nbsp;&nbsp;&nbsp;"; 
 						?>
 					</div>
 					<div class='ed-ld-row'>
@@ -305,7 +305,7 @@ $user =& JFactory::getUser();
 
 <?
               //offer to select a trial lens (unless it's a bifocal or a hybrid lens. . .) <- kinda clunky
-              if($this->lens['bifocal'] != 1 && strpos($this->lens['name'], "Synergeye") == false && strpos($this->lens['name'], "Softperm") == false && $subscriber == 1) { ?>
+              if($this->lens['bifocal'] != 1 && strpos($this->lens['name'], "SynergEye") == false && strpos($this->lens['name'], "Softperm") == false && $subscriber == 1) { ?>
 							<div class="ed-ld-mrsearch">
 								Enter your refraction for a trial lens suggestion: &nbsp; 
 								<input type="text" id="edas_mr"  class='adv-rounded deletable' placeholder='Enter a refraction'  "> &nbsp;&nbsp; 

@@ -16,6 +16,7 @@ require_once( JPATH_ROOT.DS.'utilities/phpClasses/CLHelper.php' );
 require_once( JPATH_COMPONENT.DS.'helpers/sqlHelper/whereChunks.php' );
 require_once( JPATH_ROOT.DS.'utilities/utilities/parametersFromRx.php' );
 require_once( JPATH_ROOT.DS.'utilities/database.php' );
+
 //require_once( JPATH_COMPONENT.DS.'helpers/powerLists/makePowerLists.php' );
 
 //define('EYEDOCK_LENS_IMG_URL', 'http://www.eyedock.com/modules/Lenses/pnimages/lens_images');
@@ -174,19 +175,12 @@ class PnlensesModelPnlenses extends JModelLegacy {
     function getUserPrefs () {
     	$user =& JFactory::getUser(); //get the current user
     	$db = databaseObj();
-    	
-    	
     	$query = "SELECT prefs FROM pn_lenses_user_prefs WHERE user_id = $user->id LIMIT 1";
     	$db->setQuery($query);
     	//$db->query($query);
     	//$num_rows = $db->getNumRows();
     	//echo  "num ". $num_rows;
-        try {
-            $prefs = $db->loadResult();
-        } catch (Exception $e) {
-            error_reporting(0);
-            return null;
-        }
+    	$prefs = $db->loadResult();
     	
     	//if ($num_rows <1 ) return null;
     	$params = array();
@@ -436,9 +430,16 @@ echo "</p>"; */
 	if ($cosmetic == 1 || ( (isset($colors_enh) || isset($colors_opq) || isset($novelty))) ) {
 		$cosmetic = 1;
 		$where[] = " pn_cosmetic = 1 ";
-		if (isset($colors_enh) )  $where[] = makeWhereChunk ("pn_enh_names_simple", $colors_enh, "OR", "LIKE");
-		if (isset($colors_opq) )  $where[] = makeWhereChunk ("pn_opaque_names_simple", $colors_opq, "OR", "LIKE");
+		if ($colors_enh[0] == "yes") {
+			$where[] = "  pn_enh_names_simple !='' ";
+		} else if ($colors_opq[0] == "yes")  {
+			$where[] = "  pn_opaque_names_simple !='' ";
+		} else {
+			if (isset($colors_enh) )  $where[] = makeWhereChunk ("pn_enh_names_simple", $colors_enh, "OR", "LIKE");
+			if (isset($colors_opq) )  $where[] = makeWhereChunk ("pn_opaque_names_simple", $colors_opq, "OR", "LIKE");
+		}
 		if ($novelty == 1 )  $where[]= " pn_opaque_names_simple LIKE %novelty% " ;
+		
 	} 
 	
 

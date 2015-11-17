@@ -5,7 +5,7 @@ jimport( 'joomla.application.component.view');
 
 //require_once( JPATH_COMPONENT.DS.'helpers/powerLists/formatNumberText.php' );
 
-class PnlensesViewDetails extends JView {
+class PnlensesViewDetails extends JViewLegacy {
                                                
     function display($id){
         //echo "Greetings, everything is ok!";

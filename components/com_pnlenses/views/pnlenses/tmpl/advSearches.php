@@ -77,8 +77,10 @@ defined('_JEXEC') or die('Restricted access');
 			
 			<div style="clear:left;">
 				<div id="adv-search-hiDk">
-					<input type="checkbox" id="hiDk" value='' />
-					<label for="hiDk">Only high Dk lenses</label> 
+					<input type="radio" id="hiDk-any" value='' name='dk-radio' checked='checked'/>
+					<label for="hiDk-any">All lenses</label> 
+					<input type="radio" id="hiDk-yes" value='' name='dk-radio' />
+					<label for="hiDk-yes">Only high Dk</label> 
 				</div>
 			</div>
 

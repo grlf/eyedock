@@ -54,7 +54,7 @@ if ($q || $id || $adv) {
 			$adv_search['pregclass'] = substr(preg_replace("/[^a-z]/i", '', $adv_search['pregclass']), 0, 1);
 			$where[] = "m.pn_preg = '" . $adv_search['pregclass'] . "'";
 		}
-		if($adv_search['generic'] == 'Y'){
+		if(isset($adv_search['generic']) && $adv_search['generic'] == 'Y'){
 			$where[] = "m.pn_generic = 'yes'";
 		}
 
