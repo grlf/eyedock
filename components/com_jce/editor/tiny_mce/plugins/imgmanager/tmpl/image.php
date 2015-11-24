@@ -1,8 +1,7 @@
 <?php
-
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2014 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -30,9 +29,7 @@ $plugin = WFEditorPlugin::getInstance();
                     <tr id="attributes-dimensions">
                         <td><label for="width" class="hastip" title="<?php echo WFText::_('WF_LABEL_DIMENSIONS_DESC'); ?>"><?php echo WFText::_('WF_LABEL_DIMENSIONS'); ?></label></td>
                         <td colspan="3">
-                            <input type="text" id="width" value="" onchange="ImageManagerDialog.setDimensions('width', 'height');" /> x <input type="text" id="height" value="" onchange="ImageManagerDialog.setDimensions('height', 'width');" />
-                            <input type="hidden" id="tmp_width" value=""  />
-                            <input type="hidden" id="tmp_height" value="" />
+                            <input type="text" id="width" value="" /> x <input type="text" id="height" value="" />
                             <input id="constrain" type="checkbox" class="checkbox" checked="checked" /><label for="constrain"><?php echo WFText::_('WF_LABEL_PROPORTIONAL'); ?></label>
                             <span id="dim_loader">&nbsp;</span>
                         </td>
@@ -42,9 +39,16 @@ $plugin = WFEditorPlugin::getInstance();
                         <td>
                             <select id="align">
                                 <option value=""><?php echo WFText::_('WF_OPTION_NOT_SET'); ?></option>
-                                <option value="left"><?php echo WFText::_('WF_OPTION_ALIGN_LEFT'); ?></option>
-                                <option value="right"><?php echo WFText::_('WF_OPTION_ALIGN_RIGHT'); ?></option>
-                                <option value="center"><?php echo WFText::_('WF_OPTION_ALIGN_CENTER'); ?></option>
+                                <optgroup label="------------">
+                                    <option value="left"><?php echo WFText::_('WF_OPTION_ALIGN_LEFT'); ?></option>
+                                    <option value="center"><?php echo WFText::_('WF_OPTION_ALIGN_CENTER'); ?></option>
+                                    <option value="right"><?php echo WFText::_('WF_OPTION_ALIGN_RIGHT'); ?></option>
+                                </optgroup>
+                                <optgroup label="------------">
+                                    <option value="top"><?php echo WFText::_('WF_OPTION_ALIGN_TOP'); ?></option>
+                                    <option value="middle"><?php echo WFText::_('WF_OPTION_ALIGN_MIDDLE'); ?></option>
+                                    <option value="bottom"><?php echo WFText::_('WF_OPTION_ALIGN_BOTTOM'); ?></option>
+                                </optgroup>
                             </select>
 
                             <label for="clear" class="hastip" title="<?php echo WFText::_('WF_LABEL_CLEAR_DESC'); ?>"><?php echo WFText::_('WF_LABEL_CLEAR'); ?></label>

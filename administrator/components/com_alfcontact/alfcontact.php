@@ -11,8 +11,6 @@ if (!JFactory::getUser()->authorise('core.manage', 'com_alfcontact')) {
 $controller = JControllerLegacy::getInstance('Alfcontact');
 
 // Perform the Request task
-//$controller->execute(JRequest::getCmd('task'));
-$controller->execute(JFactory::getApplication()->input->getCmd('task')); 
-
+$controller->execute(JFactory::getApplication()->input->get('task', 'display'));
 // Redirect if set by the controller
 $controller->redirect();

@@ -3,140 +3,150 @@
  * NoNumber Framework Helper File: Assignments: DateTime
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die;
 
-/**
- * Assignments: DateTime
- */
-class NNFrameworkAssignmentsDateTime
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/assignment.php';
+
+class NNFrameworkAssignmentsDateTime extends NNFrameworkAssignment
 {
-	function passDate(&$parent, &$params, $selection = array(), $assignment = 'all')
+	var $timezone = null;
+	var $dates = array();
+
+	function passDate()
 	{
-		if ((int) $params->publish_up || (int) $params->publish_down)
+		if (!$this->params->publish_up && !$this->params->publish_down)
 		{
-			$now = strtotime($parent->date->format('Y-m-d H:i:s', 1));
-			if (isset($params->recurring) && $params->recurring)
-			{
-				if (!(int) $params->publish_up || !(int) $params->publish_down)
-				{
-					// no date range set
-					return ($assignment == 'include');
-				}
-
-				$up = strtotime(date('Y') . JFactory::getDate($params->publish_up)->format('-m-d H:i:s'));
-				$down = strtotime(date('Y') . JFactory::getDate($params->publish_down)->format('-m-d H:i:s'));
-
-				// pass:
-				// 1) now is between up and down
-				// 2) up is later in year than down and:
-				// 2a) now is after up
-				// 2b) now is before down
-				if (
-					($up < $now && $down > $now)
-					|| ($up > $down
-						&& (
-							$up < $now
-							|| $down > $now
-						)
-					)
-				)
-				{
-					return ($assignment == 'include');
-				}
-
-				// outside date range
-				return $parent->pass(0, $assignment);
-			}
-			if ((int) $params->publish_up)
-			{
-				if (strtotime($params->publish_up) > $now)
-				{
-					// outside date range
-					return $parent->pass(0, $assignment);
-				}
-			}
-			if ((int) $params->publish_down)
-			{
-				if (strtotime($params->publish_down) < $now)
-				{
-					// outside date range
-					return $parent->pass(0, $assignment);
-				}
-			}
+			// no date range set
+			return ($this->assignment == 'include');
 		}
 
-		// pass or no date range set
-		return ($assignment == 'include');
+		require_once JPATH_PLUGINS . '/system/nnframework/helpers/text.php';
+
+		NNText::fixDate($this->params->publish_up);
+		NNText::fixDate($this->params->publish_down);
+
+		$now  = $this->getNow();
+		$up   = $this->getDate($this->params->publish_up);
+		$down = $this->getDate($this->params->publish_down);
+
+		if (isset($this->params->recurring) && $this->params->recurring)
+		{
+			if (!(int) $this->params->publish_up || !(int) $this->params->publish_down)
+			{
+				// no date range set
+				return ($this->assignment == 'include');
+			}
+
+			$up   = strtotime(date('Y') . $up->format('-m-d H:i:s', true));
+			$down = strtotime(date('Y') . $down->format('-m-d H:i:s', true));
+
+			// pass:
+			// 1) now is between up and down
+			// 2) up is later in year than down and:
+			// 2a) now is after up
+			// 2b) now is before down
+			if (
+				($up < $now && $down > $now)
+				|| ($up > $down
+					&& (
+						$up < $now
+						|| $down > $now
+					)
+				)
+			)
+			{
+				return ($this->assignment == 'include');
+			}
+
+			// outside date range
+			return $this->pass(false);
+		}
+
+		if (
+			(
+				(int) $this->params->publish_up
+				&& strtotime($up->format('Y-m-d H:i:s', true)) > $now
+			)
+			|| (
+				(int) $this->params->publish_down
+				&& strtotime($down->format('Y-m-d H:i:s', true)) < $now
+			)
+		)
+		{
+			// outside date range
+			return $this->pass(false);
+		}
+
+		// pass
+		return ($this->assignment == 'include');
 	}
 
-	function passSeasons(&$parent, &$params, $selection = array(), $assignment = 'all')
+	function passSeasons()
 	{
-		$season = self::getSeason($parent->date, $params->hemisphere);
+		$season = self::getSeason($this->date, $this->params->hemisphere);
 
-		return $parent->passSimple($season, $selection, $assignment);
+		return $this->passSimple($season);
 	}
 
-	function passMonths(&$parent, &$params, $selection = array(), $assignment = 'all')
+	function passMonths()
 	{
-		$month = $parent->date->format('m', 1); // 01 (for January) through 12 (for December)
-		return $parent->passSimple((int) $month, $selection, $assignment);
+		$month = $this->date->format('m', true); // 01 (for January) through 12 (for December)
+		return $this->passSimple((int) $month);
 	}
 
-	function passDays(&$parent, &$params, $selection = array(), $assignment = 'all')
+	function passDays()
 	{
-		$day = $parent->date->format('N', 1); // 1 (for Monday) though 7 (for Sunday )
-		return $parent->passSimple($day, $selection, $assignment);
+		$day = $this->date->format('N', true); // 1 (for Monday) though 7 (for Sunday )
+		return $this->passSimple($day);
 	}
 
-	function passTime(&$parent, &$params, $selection = array(), $assignment = 'all')
+	function passTime()
 	{
-		$date = strtotime($parent->date->format('Y-m-d H:i:s', 1));
+		$now  = $this->getNow();
+		$up   = strtotime($this->date->format('Y-m-d ', true) . $this->params->publish_up);
+		$down = strtotime($this->date->format('Y-m-d ', true) . $this->params->publish_down);
 
-		$publish_up = strtotime($params->publish_up);
-		$publish_down = strtotime($params->publish_down);
-
-		$pass = 0;
-		if ($publish_up > $publish_down)
+		if ($up > $down)
 		{
 			// publish up is after publish down (spans midnight)
 			// current time should be:
 			// - after publish up
 			// - OR before publish down
-			if ($date >= $publish_up || $date < $publish_down)
+			if ($now >= $up || $now < $down)
 			{
-				$pass = 1;
+				return $this->pass(true);
 			}
-		}
-		else
-		{
-			// publish down is after publish up (simple time span)
-			// current time should be:
-			// - after publish up
-			// - AND before publish down
-			if ($date >= $publish_up && $date < $publish_down)
-			{
-				$pass = 1;
-			}
+
+			return $this->pass(false);
 		}
 
-		return $parent->pass($pass, $assignment);
+		// publish down is after publish up (simple time span)
+		// current time should be:
+		// - after publish up
+		// - AND before publish down
+		if ($now >= $up && $now < $down)
+		{
+			return $this->pass(true);
+		}
+
+		return $this->pass(false);
 	}
 
 	function getSeason(&$d, $hemisphere = 'northern')
 	{
 		// Set $date to today
-		$date = strtotime($d->format('Y-m-d H:i:s', 1));
+		$date = strtotime($d->format('Y-m-d H:i:s', true));
 
 		// Get year of date specified
-		$date_year = $d->format('Y', 1); // Four digit representation for the year
+		$date_year = $d->format('Y', true); // Four digit representation for the year
 
 		// Specify the season names
 		$season_names = array('winter', 'spring', 'summer', 'fall');
@@ -152,15 +162,18 @@ class NNFrameworkAssignmentsDateTime
 				{
 					return $season_names['2']; // Must be in Summer
 				}
-				else if ($date >= strtotime($date_year . '-09-23'))
+
+				if ($date >= strtotime($date_year . '-09-23'))
 				{
 					return $season_names['1']; // Must be in Spring
 				}
-				else if ($date >= strtotime($date_year . '-06-21'))
+
+				if ($date >= strtotime($date_year . '-06-21'))
 				{
 					return $season_names['0']; // Must be in Winter
 				}
-				else if ($date >= strtotime($date_year . '-03-21'))
+
+				if ($date >= strtotime($date_year . '-03-21'))
 				{
 					return $season_names['3']; // Must be in Fall
 				}
@@ -173,15 +186,18 @@ class NNFrameworkAssignmentsDateTime
 				{
 					return $season_names['2']; // Must be in Summer
 				}
-				else if ($date >= strtotime($date_year . '-09-01'))
+
+				if ($date >= strtotime($date_year . '-09-01'))
 				{
 					return $season_names['1']; // Must be in Spring
 				}
-				else if ($date >= strtotime($date_year . '-06-01'))
+
+				if ($date >= strtotime($date_year . '-06-01'))
 				{
 					return $season_names['0']; // Must be in Winter
 				}
-				else if ($date >= strtotime($date_year . '-03-01'))
+
+				if ($date >= strtotime($date_year . '-03-01'))
 				{
 					return $season_names['3']; // Must be in Fall
 				}
@@ -194,15 +210,18 @@ class NNFrameworkAssignmentsDateTime
 				{
 					return $season_names['0']; // Must be in Winter
 				}
-				else if ($date >= strtotime($date_year . '-09-23'))
+
+				if ($date >= strtotime($date_year . '-09-23'))
 				{
 					return $season_names['3']; // Must be in Fall
 				}
-				else if ($date >= strtotime($date_year . '-06-21'))
+
+				if ($date >= strtotime($date_year . '-06-21'))
 				{
 					return $season_names['2']; // Must be in Summer
 				}
-				else if ($date >= strtotime($date_year . '-03-21'))
+
+				if ($date >= strtotime($date_year . '-03-21'))
 				{
 					return $season_names['1']; // Must be in Spring
 				}
@@ -210,5 +229,34 @@ class NNFrameworkAssignmentsDateTime
 		}
 
 		return 0;
+	}
+
+	private function getNow()
+	{
+		return strtotime($this->date->format('Y-m-d H:i:s', true));
+	}
+
+	private function getDate($date = '')
+	{
+		$id = 'date_' . $date;
+
+		if (isset($this->dates[$id]))
+		{
+			return $this->dates[$id];
+		}
+
+		$this->dates[$id] = JFactory::getDate($date)->setTimeZone($this->getTimeZone());
+
+		return $this->dates[$id];
+	}
+
+	private function getTimeZone()
+	{
+		if (!is_null($this->timezone))
+		{
+			return $this->timezone;
+		}
+
+		return new DateTimeZone(JFactory::getApplication()->getCfg('offset'));
 	}
 }

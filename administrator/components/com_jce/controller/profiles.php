@@ -2,7 +2,7 @@
 
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2014 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -128,11 +128,11 @@ class WFControllerProfiles extends WFController {
                     $value = implode(',', $this->cleanInput($value));
                     break;
                 case 'usergroups':
-                    $key = 'types';
-                    $value = implode(',', $this->cleanInput($value, 'int'));
+                    $key    = 'types';
+                    $value  = implode(',', $this->cleanInput(array_filter($value), 'int'));
                     break;
                 case 'users':
-                    $value = implode(',', $this->cleanInput($value, 'int'));
+                    $value = implode(',', $this->cleanInput(array_filter($value), 'int'));
                     break;
                 case 'area':
                     if (empty($value) || count($value) == 2) {
@@ -431,11 +431,14 @@ class WFControllerProfiles extends WFController {
             if (is_uploaded_file($file['tmp_name']) && $file['name']) {
                 // create destination path
                 $destination = $tmp . '/' . $file['name'];
+                
                 if (JFile::upload($file['tmp_name'], $destination)) {
                     // check it exists, was uploaded properly
                     if (JFile::exists($destination)) {
                         // process import
-                        $model->processImport($destination);
+                        if ($model->processImport($destination) === false) {
+                            JFile::delete($destination);
+                        }
                     } else {
                         $app->enqueueMessage(WFText::_('WF_PROFILES_UPLOAD_FAILED'), 'error');
                     }

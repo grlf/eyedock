@@ -4,25 +4,30 @@
  * Displays a list of radio items and the images you can chose from
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die;
 
-class JFormFieldNN_Icons extends JFormField
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/field.php';
+
+class JFormFieldNN_Icons extends NNFormField
 {
 	public $type = 'Icons';
-	private $params = null;
 
 	protected function getInput()
 	{
 		$this->params = $this->element->attributes();
-		$value = !is_array($this->value) ? explode(',', $this->value) : $this->value;
+		$value        = $this->value;
+		if (!is_array($value))
+		{
+			$value = explode(',', $value);
+		}
 
 		$classes = array(
 			'nonumber icon-contenttemplater',
@@ -118,7 +123,7 @@ class JFormFieldNN_Icons extends JFormField
 			'download',
 			'upload',
 			'bookmark',
-			'out-2'
+			'out-2',
 		);
 
 		$html = array();
@@ -126,27 +131,22 @@ class JFormFieldNN_Icons extends JFormField
 		if ($this->get('show_none'))
 		{
 			$checked = (in_array('0', $value) ? ' checked="checked"' : '');
-			$html[] = '<fieldset>';
-			$html[] = '<input type="radio" id="' . $this->id . '0" name="' . $this->name . '"' . ' value="0"' . $checked . '/>';
-			$html[] = '<label for="' . $this->id . '0">' . JText::_('NN_NO_ICON') . '</label>';
-			$html[] = '</fieldset>';
+			$html[]  = '<fieldset>';
+			$html[]  = '<input type="radio" id="' . $this->id . '0" name="' . $this->name . '"' . ' value="0"' . $checked . '/>';
+			$html[]  = '<label for="' . $this->id . '0">' . JText::_('NN_NO_ICON') . '</label>';
+			$html[]  = '</fieldset>';
 		}
 
 		foreach ($classes as $i => $class)
 		{
 			$checked = (in_array($class, $value) ? ' checked="checked"' : '');
-			$html[] = '<fieldset class="pull-left">';
-			$html[] = '<input type="radio" id="' . $this->id . $class . '" name="' . $this->name . '"'
+			$html[]  = '<fieldset class="pull-left">';
+			$html[]  = '<input type="radio" id="' . $this->id . $class . '" name="' . $this->name . '"'
 				. ' value="' . htmlspecialchars($class, ENT_COMPAT, 'UTF-8') . '"' . $checked . '/>';
-			$html[] = '<label for="' . $this->id . $class . '" class="btn btn-small"><span class="icon-' . $class . '"></span></label>';
-			$html[] = '</fieldset>';
+			$html[]  = '<label for="' . $this->id . $class . '" class="btn btn-small"><span class="icon-' . $class . '"></span></label>';
+			$html[]  = '</fieldset>';
 		}
 
 		return '<div id="' . $this->id . '" class="btn-group radio nn_icon_group">' . implode('', $html) . '</div>';
-	}
-
-	private function get($val, $default = '')
-	{
-		return (isset($this->params[$val]) && (string) $this->params[$val] != '') ? (string) $this->params[$val] : $default;
 	}
 }

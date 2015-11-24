@@ -4,20 +4,21 @@
  * Displays options as checkboxes
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die;
 
-class JFormFieldNN_Checkbox extends JFormField
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/field.php';
+
+class JFormFieldNN_Checkbox extends NNFormField
 {
 	public $type = 'Checkbox';
-	private $params = null;
 
 	protected function getInput()
 	{
@@ -45,13 +46,13 @@ class JFormFieldNN_Checkbox extends JFormField
 				continue;
 			}
 
-			$text = trim((string) $option);
+			$text   = trim((string) $option);
 			$hasval = 0;
 			if (isset($option['value']))
 			{
-				$val = (string) $option['value'];
+				$val      = (string) $option['value'];
 				$disabled = (int) $option['disabled'];
-				$hasval = 1;
+				$hasval   = 1;
 			}
 			if ($hasval)
 			{
@@ -93,16 +94,11 @@ class JFormFieldNN_Checkbox extends JFormField
 		}
 		$options .= '<input type="hidden" id="' . $this->id . 'x" name="' . $this->name . '' . '[]" value="x" checked="checked" />';
 
-		$html = array();
+		$html   = array();
 		$html[] = '<fieldset id="' . $this->id . '" class="checkbox">';
 		$html[] = $options;
 		$html[] = '</fieldset>';
 
 		return implode('', $html);
-	}
-
-	private function get($val, $default = '')
-	{
-		return (isset($this->params[$val]) && (string) $this->params[$val] != '') ? (string) $this->params[$val] : $default;
 	}
 }

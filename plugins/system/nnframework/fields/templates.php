@@ -4,28 +4,28 @@
  * Displays a select box of templates
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die;
 
-class JFormFieldNN_Templates extends JFormField
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/field.php';
+
+class JFormFieldNN_Templates extends NNFormField
 {
 	public $type = 'Templates';
-	private $params = null;
 
 	protected function getInput()
 	{
 		$this->params = $this->element->attributes();
 
-		$size = (int) $this->get('size');
+		$size     = (int) $this->get('size');
 		$multiple = $this->get('multiple');
-		$attribs = 'class="inputbox"';
 
 		$options = array();
 
@@ -37,7 +37,7 @@ class JFormFieldNN_Templates extends JFormField
 			foreach ($styles as $style)
 			{
 				$style->level = $level;
-				$options[] = $style;
+				$options[]    = $style;
 				if (count($styles) <= 2)
 				{
 					$level = 0;
@@ -50,18 +50,18 @@ class JFormFieldNN_Templates extends JFormField
 		// fix old '::' separator and change it to '--'
 		$value = json_encode($this->value);
 		$value = str_replace('::', '--', $value);
-		$value = (array) json_decode($value);
+		$value = (array) json_decode($value, true);
 
-		return nnHtml::selectlist($options, $this->name, $value, $this->id, $size, $multiple, $attribs);
+		return NNHtml::selectlist($options, $this->name, $value, $this->id, $size, $multiple);
 	}
 
 	protected function getTemplates()
 	{
 		$groups = array();
-		$lang = JFactory::getLanguage();
+		$lang   = JFactory::getLanguage();
 
 		// Get the database object and a new query object.
-		$db = JFactory::getDbo();
+		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true)
 			->select('s.id, s.title, e.name as name, s.template')
 			->from('#__template_styles as s')
@@ -89,7 +89,7 @@ class JFormFieldNN_Templates extends JFormField
 				// Initialize the group if necessary.
 				if (!isset($groups[$template]))
 				{
-					$groups[$template] = array();
+					$groups[$template]   = array();
 					$groups[$template][] = JHtml::_('select.option', $template, $name);
 				}
 
@@ -98,10 +98,5 @@ class JFormFieldNN_Templates extends JFormField
 		}
 
 		return $groups;
-	}
-
-	private function get($val, $default = '')
-	{
-		return (isset($this->params[$val]) && (string) $this->params[$val] != '') ? (string) $this->params[$val] : $default;
 	}
 }

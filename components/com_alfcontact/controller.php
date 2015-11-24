@@ -29,6 +29,7 @@ class AlfcontactController extends JControllerLegacy
 		}
 				
 		$app = JFactory::getApplication();
+		$jinput = $app->input;
 		$model = $this->getModel();
 
 		// check if website uses CloudFlare and set IP
@@ -53,9 +54,8 @@ class AlfcontactController extends JControllerLegacy
 		$verbose = $params->get('verbose', 1);
 		$html = $params->get('mailformat', 1);
 		$site = $params->get('fromsite', 0);
-		$max = $params->get('maxchars', '');
-		$sitename = $app->getCfg('fromname');
-		$siteaddress = $app->getCfg('mailfrom');
+		$sitename = $app->get('fromname');
+		$siteaddress = $app->get('mailfrom');
 		
 		if ($html)
 		{
@@ -64,19 +64,19 @@ class AlfcontactController extends JControllerLegacy
 		} 
 		else 
 		{
-			$sep  = "\n";
-			$line = "-------------------------------------------------------------------------------\n";
+			$sep  = PHP_EOL;
+			$line = PHP_EOL . '-------------------------------------------------------------------------------' . PHP_EOL;
 		}
 						
 				
 		//Variable ophalen die verstuurd zijn via URL
-        $name       = JRequest::getString('name','', 'post');
-		$email      = JRequest::getString('email','', 'post');		
-		$emailto_id = JRequest::getInt('emailto_id', 99);
-		$subject    = JRequest::getString('subject','','post');
-        $message    = JRequest::getString('message','','post');
-		$copy       = JRequest::getVar('copy', 0);
-		$extravalues= JRequest::getString('extravalues','','post');
+        $name       = $jinput->getString('name','', 'post');
+		$email      = $jinput->getString('email','', 'post');
+		$emailto_id = $jinput->getInt('emailto_id', 99);
+		$subject    = $jinput->getString('subject','','post');
+        $message    = $jinput->getString('message','','post');
+		$copy       = $jinput->getBool('copy', 0);
+		$extravalues= $jinput->getString('extravalues','','post');
 		
 		    
         //Store form data in the session
@@ -131,6 +131,7 @@ class AlfcontactController extends JControllerLegacy
 			$db->setQuery( $query );
         	$rows      = $db->loadObjectList();
 			$emailto   = $rows[0]->email;
+            $bcc       = $rows[0]->bcc;
 			$prefix    = $rows[0]->prefix;
 			$optfields = $rows[0]->extra;
 					
@@ -140,20 +141,25 @@ class AlfcontactController extends JControllerLegacy
 		
 		//Split multiple email addresses into an array
 		$recipients = explode("\n", $emailto);
+
+        //Split multiple bcc addresses into an array
+        $bccs = explode("\n", $bcc);
 		
 		// Add information from the extra fields if applicable
-		$fields_array = explode("\n", $optfields);
-		$values_array = explode("\n", $extravalues);
+		$fields_array = explode("\r\n", $optfields);
+        $values_array = explode('#', $extravalues);
+        unset($values_array[0]);
 		$extra_array = array_combine($fields_array, $values_array);
-		
-		if ($extra_array > 0){
+
+		if (count($extra_array) > 0){
 			$extramsg = '';
-			foreach ($extra_array as $key=>$value) {
+			foreach ($extra_array as $key => $value) {
 				$extramsg = $extramsg . $key . ' ' . $value . $line;
 			}
 			$message = $extramsg . $sep . $message;
-		}	
-												
+		}
+
+
 		// send copy if requested
 		if ($copy)
 		{
@@ -192,6 +198,11 @@ class AlfcontactController extends JControllerLegacy
 		{
 			$mail->addRecipient($value);	
 		}
+
+        foreach($bccs as $value)
+        {
+            $mail->addBCC($value);
+        }
 						
 		if ($site)
 		{

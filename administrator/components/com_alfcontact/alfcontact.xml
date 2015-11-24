@@ -3,14 +3,14 @@
  
         <name>COM_ALFCONTACT</name>
         <!-- The following elements are optional and free of formatting constraints -->
-        <creationDate>September 2014</creationDate>
+        <creationDate>June 2015</creationDate>
         <author>Alfred Vink</author>
         <authorEmail>alfred@alfsoft.com</authorEmail>
         <authorUrl>http://www.alfsoft.com</authorUrl>
-        <copyright>Copyright © 2014 - All rights reserved.</copyright>
+        <copyright>Copyright © 2015 - All rights reserved.</copyright>
         <license>GNU/GPL</license>
         <!--  The version string is recorded in the components table -->
-        <version>3.1.8</version>
+        <version>3.2.1</version>
         <!-- The description is optional and defaults to the name -->
         <!-- <description>COM_ALFCONTACT_DESCRIPTION</description> -->
  
@@ -40,7 +40,7 @@
                 <filename>index.html</filename>
                 <filename>alfcontact.php</filename>
                 <filename>controller.php</filename>
-				<filename>recaptchalib.php</filename>
+	            <!-- <filename>router.php</filename> -->
 				<filename>captchasdotnet.php</filename>
                 <folder>views</folder>
 				<folder>models</folder>
@@ -76,9 +76,7 @@
                         
                         <language tag="en-GB">language/en-GB/en-GB.com_alfcontact.ini</language>
                         <language tag="en-GB">language/en-GB/en-GB.com_alfcontact.sys.ini</language>
-                        <language tag="ar-SA">language/ar-SA/ar-SA.com_alfcontact.ini</language>
-                        <language tag="ar-SA">language/ar-SA/ar-SA.com_alfcontact.sys.ini</language>
-                        <language tag="bg-BG">language/bg-BG/bg-BG.com_alfcontact.ini</language>
+						<language tag="bg-BG">language/bg-BG/bg-BG.com_alfcontact.ini</language>
                         <language tag="bg-BG">language/bg-BG/bg-BG.com_alfcontact.sys.ini</language>
                         <language tag="cs-CZ">language/cs-CZ/cs-CZ.com_alfcontact.ini</language>
                         <language tag="cs-CZ">language/cs-CZ/cs-CZ.com_alfcontact.sys.ini</language>
@@ -86,53 +84,48 @@
                         <language tag="nl-NL">language/nl-NL/nl-NL.com_alfcontact.sys.ini</language>
                         <language tag="fi-FI">language/fi-FI/fi-FI.com_alfcontact.ini</language>
                         <language tag="fi-FI">language/fi-FI/fi-FI.com_alfcontact.sys.ini</language>
-                        <language tag="fr-FR">language/fr-FR/fr-FR.com_alfcontact.ini</language>
+						<language tag="de-DE">language/de-DE/de-DE.com_alfcontact.ini</language>
+						<language tag="de-DE">language/de-DE/de-DE.com_alfcontact.sys.ini</language>
+						<language tag="lt-LT">language/lt-LT/lt-LT.com_alfcontact.ini</language>
+						<language tag="lt-LT">language/lt-LT/lt-LT.com_alfcontact.sys.ini</language>
+						<language tag="sk-SK">language/sk-SK/sk-SK.com_alfcontact.ini</language>
+						<language tag="sk-SK">language/sk-SK/sk-SK.com_alfcontact.sys.ini</language>
+						<language tag="sl-SI">language/sl-SI/sl-SI.com_alfcontact.ini</language>
+						<language tag="sl-SI">language/sl-SI/sl-SI.com_alfcontact.sys.ini</language>
+						<language tag="ru-RU">language/ru-RU/ru-RU.com_alfcontact.ini</language>
+						<language tag="ru-RU">language/ru-RU/ru-RU.com_alfcontact.sys.ini</language>
+						<language tag="tr-TR">language/tr-TR/tr-TR.com_alfcontact.ini</language>
+						<language tag="tr-TR">language/tr-TR/tr-TR.com_alfcontact.sys.ini</language>
+
+						<language tag="fr-FR">language/fr-FR/fr-FR.com_alfcontact.ini</language>
                         <language tag="fr-FR">language/fr-FR/fr-FR.com_alfcontact.sys.ini</language>
-                        <language tag="de-DE">language/de-DE/de-DE.com_alfcontact.ini</language>
-                        <language tag="de-DE">language/de-DE/de-DE.com_alfcontact.sys.ini</language>
-                        <language tag="el-GR">language/el-GR/el-GR.com_alfcontact.ini</language>
+						<language tag="ar-SA">language/ar-SA/ar-SA.com_alfcontact.ini</language>
+						<language tag="ar-SA">language/ar-SA/ar-SA.com_alfcontact.sys.ini</language>
+						<language tag="nb-NO">language/nb-NO/nb-NO.com_alfcontact.ini</language>
+						<language tag="nb-NO">language/nb-NO/nb-NO.com_alfcontact.sys.ini</language>
+						<language tag="pl-PL">language/pl-PL/pl-PL.com_alfcontact.ini</language>
+						<language tag="pl-PL">language/pl-PL/pl-PL.com_alfcontact.sys.ini</language>
+						<language tag="pt-PT">language/pt-PT/pt-PT.com_alfcontact.ini</language>
+						<language tag="pt-PT">language/pt-PT/pt-PT.com_alfcontact.sys.ini</language>
+						<language tag="pt-BR">language/pt-BR/pt-BR.com_alfcontact.ini</language>
+						<language tag="pt-BR">language/pt-BR/pt-BR.com_alfcontact.sys.ini</language>
+						<language tag="sr-RS">language/sr-RS/sr-RS.com_alfcontact.ini</language>
+						<language tag="sr-RS">language/sr-RS/sr-RS.com_alfcontact.sys.ini</language>
+						<language tag="sr-YU">language/sr-YU/sr-YU.com_alfcontact.ini</language>
+						<language tag="sr-YU">language/sr-YU/sr-YU.com_alfcontact.sys.ini</language>
+						<language tag="sv-SE">language/sv-SE/sv-SE.com_alfcontact.ini</language>
+						<language tag="sv-SE">language/sv-SE/sv-SE.com_alfcontact.sys.ini</language>
+						<language tag="el-GR">language/el-GR/el-GR.com_alfcontact.ini</language>
                         <language tag="el-GR">language/el-GR/el-GR.com_alfcontact.sys.ini</language>
-                        <language tag="lt-LT">language/lt-LT/lt-LT.com_alfcontact.ini</language>
-                        <language tag="lt-LT">language/lt-LT/lt-LT.com_alfcontact.sys.ini</language>
-                        <language tag="nb-NO">language/nb-NO/nb-NO.com_alfcontact.ini</language>
-                        <language tag="nb-NO">language/nb-NO/nb-NO.com_alfcontact.sys.ini</language>
-                        <language tag="pl-PL">language/pl-PL/pl-PL.com_alfcontact.ini</language>
-                        <language tag="pl-PL">language/pl-PL/pl-PL.com_alfcontact.sys.ini</language>
-                        <language tag="pt-PT">language/pt-PT/pt-PT.com_alfcontact.ini</language>
-                        <language tag="pt-PT">language/pt-PT/pt-PT.com_alfcontact.sys.ini</language>
-                        <language tag="sk-SK">language/sk-SK/sk-SK.com_alfcontact.ini</language>
-                        <language tag="sk-SK">language/sk-SK/sk-SK.com_alfcontact.sys.ini</language>
-                        <language tag="sl-SI">language/sl-SI/sl-SI.com_alfcontact.ini</language>
-                        <language tag="sl-SI">language/sl-SI/sl-SI.com_alfcontact.sys.ini</language>
-                        <language tag="sr-RS">language/sr-RS/sr-RS.com_alfcontact.ini</language>
-                        <language tag="sr-RS">language/sr-RS/sr-RS.com_alfcontact.sys.ini</language>
-                        <language tag="sr-YU">language/sr-YU/sr-YU.com_alfcontact.ini</language>
-                        <language tag="sr-YU">language/sr-YU/sr-YU.com_alfcontact.sys.ini</language>
-                        <language tag="sv-SE">language/sv-SE/sv-SE.com_alfcontact.ini</language>
-                        <language tag="sv-SE">language/sv-SE/sv-SE.com_alfcontact.sys.ini</language>
-                        <language tag="tr-TR">language/tr-TR/tr-TR.com_alfcontact.ini</language>
-                        <language tag="tr-TR">language/tr-TR/tr-TR.com_alfcontact.sys.ini</language>
+						<language tag="es-ES">language/es-ES/es-ES.com_alfcontact.ini</language>
+						<language tag="es-ES">language/es-ES/es-ES.com_alfcontact.sys.ini</language>
+						<language tag="zh-CN">language/zh-CN/zh-CN.com_alfcontact.ini</language>
+						<language tag="zh-CN">language/zh-CN/zh-CN.com_alfcontact.sys.ini</language>
+						<language tag="da-DK">language/da-DK/da-DK.com_alfcontact.ini</language>
+						<language tag="da-DK">language/da-DK/da-DK.com_alfcontact.sys.ini</language>
+						<language tag="hu-HU">language/hu-HU/hu-HU.com_alfcontact.ini</language>
+						<language tag="hu-HU">language/hu-HU/hu-HU.com_alfcontact.sys.ini</language>
 
-
-                    <!--<language tag="ru-RU">language/ru-RU/ru-RU.com_alfcontact.ini</language>
-                    <language tag="ru-RU">language/ru-RU/ru-RU.com_alfcontact.sys.ini</language>
-                    <language tag="da-DK">language/da-DK/da-DK.com_alfcontact.ini</language>
-                    <language tag="da-DK">language/da-DK/da-DK.com_alfcontact.sys.ini</language>
-                    <language tag="pt-BR">language/pt-BR/pt-BR.com_alfcontact.ini</language>
-                    <language tag="pt-BR">language/pt-BR/pt-BR.com_alfcontact.sys.ini</language>
-                    <language tag="zh-CN">language/zh-CN/zh-CN.com_alfcontact.ini</language>
-                    <language tag="zh-CN">language/zh-CN/zh-CN.com_alfcontact.sys.ini</language>
-                    <language tag="es-ES">language/es-ES/es-ES.com_alfcontact.ini</language>
-                    <language tag="es-ES">language/es-ES/es-ES.com_alfcontact.sys.ini</language>
-                    <language tag="hu-HU">language/hu-HU/hu-HU.com_alfcontact.ini</language>
-                    <language tag="hu-HU">language/hu-HU/hu-HU.com_alfcontact.sys.ini</language>
-                    <language tag="he-IL">language/h/hu-HU.com_alfcontact.ini</language>
-                    <language tag="he-IL">language/hu-HU/hu-HU.com_alfcontact.sys.ini</language>-->
-
-
-
-
-						
                 </languages>
         </administration>
 		

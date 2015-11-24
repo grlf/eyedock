@@ -63,7 +63,8 @@ class T3Action
 			T3Less::compileAll($input->get('theme', ''));
 			$result['successful'] = JText::_('T3_MSG_COMPILE_SUCCESS');
 		}catch(Exception $e){
-			$result['error'] = JText::sprintf('T3_MSG_COMPILE_FAILURE', $e->__toString());
+			// $result['error'] = JText::sprintf('T3_MSG_COMPILE_FAILURE', $e->__toString());
+			$result['error'] = JText::sprintf('T3_MSG_COMPILE_FAILURE', $e->getMessage());
 		}
 		
 		echo json_encode($result);
@@ -223,7 +224,9 @@ class T3Action
 
 		if($buffer){
 			//remove invisibile content, there are more ... but ...
-			$buffer = preg_replace(array( '@<style[^>]*?>.*?</style>@siu', '@<script[^>]*?.*?</script>@siu'), array('', ''), $buffer);
+			if ($input->get('skipjscss')) {
+				$buffer = preg_replace(array( '@<style[^>]*?>.*?</style>@siu', '@<script[^>]*?.*?</script>@siu'), array('', ''), $buffer);
+			}
 
 			echo $buffer;	
 		} else {

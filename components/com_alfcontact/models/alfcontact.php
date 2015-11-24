@@ -39,11 +39,11 @@ class AlfcontactModelAlfcontact extends JModelList
 	function CheckCaptcha()
 	{
 		$app = JFactory::getApplication();
+		$jinput = $app->input;
 		$user = JFactory::getUser();
 		
 		$params = JComponentHelper::getParams('com_alfcontact');
 		$captchatype = $params->get('captchatype', 0);
-		$privatekey  = $params->get('privatekey');
 		$captcha 	 = $params->get('captcha');
 		$captchas_user = $params->get('captchas_user', 'demo');
 		$captchas_key = $params->get('captchas_key', 'secret');
@@ -53,10 +53,8 @@ class AlfcontactModelAlfcontact extends JModelList
 		$captchas_height = $params->get('captchas_height', '80');
 		$captchas_color = $params->get('captchas_color', '000000');
 		$captchas_random_path = JPATH_SITE . '/tmp/captchasnet-random-strings';
-		$response_field  = JRequest::getVar('recaptcha_response_field', '', 'post', 'string');				
-		$challenge_field = JRequest::getVar('recaptcha_challenge_field', '', 'post', 'string');
-		$captchas_entry  = JRequest::getVar('captchas_entry', '', 'post');
-		$captchas_random = JRequest::getVar('captchas_random', '', 'post');
+		$captchas_entry  = $jinput->getString('captchas_entry');
+		$captchas_random = $jinput->getString('captchas_random');
 		
 		// not using captcha!
 		if (($captcha == 0) OR (($captcha == 2) AND ($user->name))) {
@@ -66,9 +64,11 @@ class AlfcontactModelAlfcontact extends JModelList
 		$return = false;
 		if ($captchatype == 0) 
 		{
-			require_once(JPATH_COMPONENT_SITE . '/recaptchalib.php');
-			$resp = recaptcha_check_answer ($privatekey,$_SERVER["REMOTE_ADDR"], $challenge_field, $response_field);
-			if ($resp->is_valid) 
+            $post = $jinput->getArray($_POST);
+			JPluginHelper::importPlugin('captcha');
+			$dispatcher = JEventDispatcher::getInstance();
+			$resp = $dispatcher->trigger('onCheckAnswer', $post['recaptcha_response_field']);
+			if ($resp[0])
 			{
 				$return = true;
 			}

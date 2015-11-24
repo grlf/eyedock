@@ -3,78 +3,74 @@
  * NoNumber Framework Helper File: Assignments: K2
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die;
 
-/**
- * Assignments: K2
- */
-class NNFrameworkAssignmentsK2
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/assignment.php';
+
+class NNFrameworkAssignmentsK2 extends NNFrameworkAssignment
 {
-	function passPageTypes(&$parent, &$params, $selection = array(), $assignment = 'all')
+	public function passPageTypes()
 	{
-		return $parent->passPageTypes('com_k2', $selection, $assignment);
+		return $this->passByPageTypes('com_k2', $this->selection, $this->assignment, false, true);
 	}
 
-	function passCategories(&$parent, &$params, $selection = array(), $assignment = 'all', $article = 0)
+	public function passCategories()
 	{
-		if ($parent->params->option != 'com_k2')
+		if ($this->request->option != 'com_k2')
 		{
-			return $parent->pass(0, $assignment);
+			return $this->pass(false);
 		}
 
 		$pass = (
-			($params->inc_categories
-				&& (($parent->params->view == 'itemlist' && $parent->params->task == 'category')
-					|| $parent->params->view == 'latest'
+			($this->params->inc_categories
+				&& (($this->request->view == 'itemlist' && $this->request->task == 'category')
+					|| $this->request->view == 'latest'
 				)
 			)
-			|| ($params->inc_items && $parent->params->view == 'item')
+			|| ($this->params->inc_items && $this->request->view == 'item')
 		);
 
 		if (!$pass)
 		{
-			return $parent->pass(0, $assignment);
+			return $this->pass(false);
 		}
 
-		$cats = $parent->makeArray(
-			$this->getCategories($parent, $article), 1
-		);
+		$cats = $this->makeArray($this->getCategories(), true);
+		$pass = $this->passSimple($cats, 'include');
 
-		$pass = $parent->passSimple($cats, $selection, 'include');
-
-		if ($pass && $params->inc_children == 2)
+		if ($pass && $this->params->inc_children == 2)
 		{
-			return $parent->pass(0, $assignment);
+			return $this->pass(false);
 		}
-		else if (!$pass && $params->inc_children)
+		else if (!$pass && $this->params->inc_children)
 		{
 			foreach ($cats as $cat)
 			{
-				$cats = array_merge($cats, self::getCatParentIds($parent, $cat));
+				$cats = array_merge($cats, $this->getCatParentIds($cat));
 			}
 		}
 
-		return $parent->passSimple($cats, $selection, $assignment);
+		return $this->passSimple($cats);
 	}
 
-	private function getCategories(&$parent, &$item)
+	private function getCategories()
 	{
-		switch ($parent->params->view)
+		switch ($this->request->view)
 		{
 			case 'item' :
-				return $this->getCategoryIDFromItem($parent, $item);
+				return $this->getCategoryIDFromItem();
 				break;
 
 			case 'itemlist' :
-				return $this->getCategoryID($parent);
+				return $this->getCategoryID();
 				break;
 
 			default:
@@ -82,76 +78,115 @@ class NNFrameworkAssignmentsK2
 		}
 	}
 
-	private function getCategoryID(&$parent)
+	private function getCategoryID()
 	{
-		return $parent->params->id ?: JFactory::getApplication()->getUserStateFromRequest('com_k2itemsfilter_category', 'catid', 0, 'int');
+		return $this->request->id ?: JFactory::getApplication()->getUserStateFromRequest('com_k2itemsfilter_category', 'catid', 0, 'int');
 	}
 
-	private function getCategoryIDFromItem(&$parent, &$item)
+	private function getCategoryIDFromItem()
 	{
-		if ($item && isset($item->catid))
+		if ($this->article && isset($this->article->catid))
 		{
-			return $item->catid;
+			return $this->article->catid;
 		}
 
-		$parent->q->clear()
+		$query = $this->db->getQuery(true)
 			->select('i.catid')
 			->from('#__k2_items AS i')
-			->where('i.id = ' . (int) $parent->params->id);
-		$parent->db->setQuery($parent->q);
+			->where('i.id = ' . (int) $this->request->id);
+		$this->db->setQuery($query);
 
-		return $parent->db->loadResult();
+		return $this->db->loadResult();
 	}
 
-	function passTags(&$parent, &$params, $selection = array(), $assignment = 'all')
+	public function passTags()
 	{
-		if ($parent->params->option != 'com_k2')
+		if ($this->request->option != 'com_k2')
 		{
-			return $parent->pass(0, $assignment);
+			return $this->pass(false);
 		}
 
-		$tag = trim(JFactory::getApplication()->input->getString('tag', ''));
+		$tag  = trim(JFactory::getApplication()->input->getString('tag', ''));
 		$pass = (
-			($params->inc_tags && $tag != '')
-			|| ($params->inc_items && $parent->params->view == 'item')
+			($this->params->inc_tags && $tag != '')
+			|| ($this->params->inc_items && $this->request->view == 'item')
 		);
 
 		if (!$pass)
 		{
-			return $parent->pass(0, $assignment);
+			return $this->pass(false);
 		}
 
-		if ($params->inc_tags && $tag != '')
+		if ($this->params->inc_tags && $tag != '')
 		{
 			$tags = array(trim(JFactory::getApplication()->input->getString('tag', '')));
-		}
-		else
-		{
-			$parent->q->clear()
-				->select('t.name')
-				->from('#__k2_tags_xref AS x')
-				->join('LEFT', '#__k2_tags AS t ON t.id = x.tagID')
-				->where('x.itemID = ' . (int) $parent->params->id)
-				->where('t.published = 1');
-			$parent->db->setQuery($parent->q);
-			$tags = $parent->db->loadColumn();
+
+			return $this->passSimple($tags, true);
 		}
 
-		return $parent->passSimple($tags, $selection, $assignment, 1);
+		$query = $this->db->getQuery(true)
+			->select('t.name')
+			->from('#__k2_tags_xref AS x')
+			->join('LEFT', '#__k2_tags AS t ON t.id = x.tagID')
+			->where('x.itemID = ' . (int) $this->request->id)
+			->where('t.published = 1');
+		$this->db->setQuery($query);
+		$tags = $this->db->loadColumn();
+
+		return $this->passSimple($tags, true);
 	}
 
-	function passItems(&$parent, &$params, $selection = array(), $assignment = 'all')
+	public function passItems()
 	{
-		if (!$parent->params->id || $parent->params->option != 'com_k2' || $parent->params->view != 'item')
+		if (!$this->request->id || $this->request->option != 'com_k2' || $this->request->view != 'item')
 		{
-			return $parent->pass(0, $assignment);
+			return $this->pass(false);
 		}
 
-		return $parent->passSimple($parent->params->id, $selection, $assignment);
+		$pass = false;
+
+		// Pass Article Id
+		if (!$this->passItemByType($pass, 'ContentIds'))
+		{
+			return $this->pass(false);
+		}
+
+		// Pass Content Keywords
+		if (!$this->passItemByType($pass, 'ContentKeywords'))
+		{
+			return $this->pass(false);
+		}
+
+		// Pass Meta Keywords
+		if (!$this->passItemByType($pass, 'MetaKeywords'))
+		{
+			return $this->pass(false);
+		}
+
+		// Pass Authors
+		if (!$this->passItemByType($pass, 'Authors'))
+		{
+			return $this->pass(false);
+		}
+
+		return $this->pass($pass);
 	}
 
-	function getCatParentIds(&$parent, $id = 0)
+	public function getItem($fields = array())
 	{
-		return $parent->getParentIds($id, 'k2_categories', 'parent');
+		$query = $this->db->getQuery(true)
+			->select($fields)
+			->from('#__k2_items')
+			->where('id = ' . (int) $this->request->id);
+		$this->db->setQuery($query);
+
+		return $this->db->loadObject();
+	}
+
+	private function getCatParentIds($id = 0)
+	{
+		$parent_field = NN_K2_VERSION == 3 ? 'parent_id' : 'parent';
+
+		return $this->getParentIds($id, 'k2_categories', $parent_field);
 	}
 }

@@ -3,37 +3,37 @@
  * NoNumber Framework Helper File: Assignments: IPs
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die;
 
-/**
- * Assignments: IPs
- */
-class NNFrameworkAssignmentsIPs
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/assignment.php';
+
+class NNFrameworkAssignmentsIPs extends NNFrameworkAssignment
 {
-	function passIPs(&$parent, &$params, $selection = array(), $assignment = 'all')
+	function passIPs()
 	{
-		if (is_array($selection))
+		if (is_array($this->selection))
 		{
-			$selection = implode(',', $selection);
+			$this->selection = implode(',', $this->selection);
 		}
-		$selection = explode(',', str_replace(array(' ', "\r", "\n"), array('', '', ','), $selection));
 
-		$pass = $this->checkIPList($selection);
+		$this->selection = explode(',', str_replace(array(' ', "\r", "\n"), array('', '', ','), $this->selection));
 
-		return $parent->pass($pass, $assignment);
+		$pass = $this->checkIPList();
+
+		return $this->pass($pass);
 	}
 
-	function checkIPList($selection)
+	function checkIPList()
 	{
-		foreach ($selection as $range)
+		foreach ($this->selection as $range)
 		{
 			// Check next range if this one doesn't match
 			if (!$this->checkIP($range))
@@ -108,7 +108,7 @@ class NNFrameworkAssignmentsIPs
 			return false;
 		}
 
-		$ip_parts = explode('.', $ip);
+		$ip_parts    = explode('.', $ip);
 		$range_parts = explode('.', trim($range));
 
 		// Trim the IP to the part length of the range

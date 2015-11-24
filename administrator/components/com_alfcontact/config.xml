@@ -61,7 +61,7 @@
 			label="COM_ALFCONTACT_OPTIONS_CAPTCHA_TYPE"
 			description="COM_ALFCONTACT_OPTIONS_CAPTCHA_TYPE_DESC">
 			<option
-				value="0">reCAPTCHA</option>
+				value="0">Joomla</option>
 			<option
 				value="1">captchas.net</option>
 		</field>
@@ -115,70 +115,6 @@
 			<option
 				value="1">COM_ALFCONTACT_OPTIONS_MAIL_FORMAT_HTML</option>
 		</field>
-	</fieldset>	
-	<fieldset
-		name="recaptcha"
-		label="COM_ALFCONTACT_RECAPTCHA_OPTIONS_LABEL"
-		description="COM_ALFCONTACT_RECAPTCHA_OPTIONS_DESC">
-		<field
-			name="publickey"
-			type="text"
-			label="COM_ALFCONTACT_OPTIONS_RECAPTCHA_PUBLICKEY"
-			description="COM_ALFCONTACT_OPTIONS_RECAPTCHA_PUBLICKEY"
-			size="40"
-			Default=" ">
-		</field>
-		<field
-			name="privatekey"
-			type="text"
-			label="COM_ALFCONTACT_OPTIONS_RECAPTCHA_PRIVATEKEY"
-			description="COM_ALFCONTACT_OPTIONS_RECAPTCHA_PRIVATEKEY"
-			size="40"
-			Default=" ">
-		</field>
-		<field
-			id="captchatheme"
-			name="captchatheme"
-			type="list"
-			label="COM_ALFCONTACT_OPTIONS_RECAPTCHA_THEME"
-			description="COM_ALFCONTACT_OPTIONS_RECAPTCHA_THEME_DESC"
-			default="red">
-			<option
-				value="white">White</option>
-			<option
-				value="red">Red</option>
-			<option
-				value="blackglass">Blackglass</option>
-			<option
-				value="clean">Clean</option>
-		</field>
-		<field
-			id="captchalng"
-			name="captchalng"
-			type="list"
-			label="COM_ALFCONTACT_OPTIONS_RECAPTCHA_LNG"
-			description="COM_ALFCONTACT_OPTIONS_RECAPTCHA_LNG_DESC"
-			default="en">
-			<option value="en">English</option>
-			<option value="nl">Dutch</option>
-			<option value="fr">French</option>
-			<option value="de">German</option>
-			<option value="pt">Portuguese</option>
-			<option value="ru">Russian</option>
-			<option value="es">Spanish</option>
-			<option value="tr">Turkish</option>
-		</field>
-		<field
-			name="force_ssl"
-			type="radio"
-			class="btn-group btn-group-yesno"
-			default="0"
-			label="COM_ALFCONTACT_OPTIONS_SSL"
-			description="COM_ALFCONTACT_OPTIONS_SSL_DESC">
-			<option value="0">COM_ALFCONTACT_OPTIONS_AUTO</option>
-			<option value="1">JYES</option>
-		</field>
-
 	</fieldset>
 	
 	<fieldset
@@ -298,6 +234,7 @@
 			type="textarea"
 			name="custom_text"
 			label="COM_ALFCONTACT_OPTIONS_CUSTOM_TEXT"
+            description="COM_ALFCONTACT_OPTIONS_CUSTOM_TEXT_DESC"
 			cols="30"
 			rows="9"
 			filter="safehtml">
@@ -314,6 +251,7 @@
 				type="textarea"
 				name="css_style"
 				label="COM_ALFCONTACT_OPTIONS_CSS_STYLE"
+                description="COM_ALFCONTACT_OPTIONS_CSS_STYLE_DESC"
 				cols="30"
 				rows="9"
 				filter="safehtml">

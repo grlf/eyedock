@@ -4,26 +4,26 @@
  * Displays a text area with extra options
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die;
 
-require_once JPATH_PLUGINS . '/system/nnframework/helpers/text.php';
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/field.php';
 
-class JFormFieldNN_TextAreaPlus extends JFormField
+class JFormFieldNN_TextAreaPlus extends NNFormField
 {
 	public $type = 'TextAreaPlus';
-	private $params = null;
 
 	protected function getLabel()
 	{
 		$this->params = $this->element->attributes();
+		$resize       = $this->get('resize', 0);
 
 		$label = NNText::html_entity_decoder(JText::_($this->get('label')));
 
@@ -36,18 +36,38 @@ class JFormFieldNN_TextAreaPlus extends JFormField
 		{
 			$html .= '>';
 		}
-		$html .= $label . '</label>';
+
+		$html .= $label;
+
+		if ($resize)
+		{
+			JHtml::_('jquery.framework');
+			NNFrameworkFunctions::addScriptVersion(JUri::root(true) . '/media/nnframework/js/script.min.js');
+			JHtml::stylesheet('nnframework/style.min.css', false, true);
+
+			$html .= '<br /><span role="button" class="nn_resize_textarea nn_maximize"'
+				. ' data-id="' . $this->id . '"  data-min="' . $this->get('height', 80) . '" data-max="' . $resize . '">'
+				. '<span class="nn_resize_textarea_maximize">'
+				. '[ + ]'
+				. '</span>'
+				. '<span class="nn_resize_textarea_minimize">'
+				. '[ - ]'
+				. '</span>'
+				. '</span>';
+		}
+
+		$html .= '</label>';
 
 		return $html;
 	}
 
 	protected function getInput()
 	{
-		$width = $this->get('width', 600);
+		$width  = $this->get('width', 600);
 		$height = $this->get('height', 80);
-		$class = trim('nn_textarea ' . $this->get('class'));
-		$class = 'class="' . $class . '"';
-		$type = $this->get('texttype');
+		$class  = trim('nn_textarea ' . $this->get('class'));
+		$class  = 'class="' . $class . '"';
+		$type   = $this->get('texttype');
 
 		if (is_array($this->value))
 		{
@@ -68,10 +88,5 @@ class JFormFieldNN_TextAreaPlus extends JFormField
 		$this->value = htmlspecialchars($this->value, ENT_COMPAT, 'UTF-8');
 
 		return '<textarea name="' . $this->name . '" cols="' . (round($width / 7.5)) . '" rows="' . (round($height / 15)) . '" style="width:' . (($width == '600') ? '100%' : $width . 'px') . ';height:' . $height . 'px" ' . $class . ' id="' . $this->id . '" >' . $this->value . '</textarea>';
-	}
-
-	private function get($val, $default = '')
-	{
-		return (isset($this->params[$val]) && (string) $this->params[$val] != '') ? (string) $this->params[$val] : $default;
 	}
 }

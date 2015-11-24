@@ -3,11 +3,11 @@
  * Plugin Helper File
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
@@ -16,9 +16,9 @@ defined('_JEXEC') or die;
 require_once JPATH_PLUGINS . '/system/nnframework/helpers/functions.php';
 
 /**
- * Helper NoNumber Quick Page stuf (nn_qp=1 in url)
+ * Helper NoNumber Quick Page stuff (nn_qp=1 in url)
  */
-class plgSystemNNFrameworkHelper
+class PlgSystemNNFrameworkHelper
 {
 	function render()
 	{
@@ -29,24 +29,25 @@ class plgSystemNNFrameworkHelper
 		if ($url)
 		{
 			echo $func->getByUrl($url);
+
 			die;
-		}
-
-		$file = JFactory::getApplication()->input->getString('file', '');
-
-		// only allow files that have .inc.php in the file name
-		if (!$file || (strpos($file, '.inc.php') === false))
-		{
-			die;
-		}
-
-		$folder = JFactory::getApplication()->input->getString('folder', '');
-		if ($folder)
-		{
-			$file = implode('/', explode('.', $folder)) . '/' . $file;
 		}
 
 		$allowed = array(
+			'administrator/components/com_dbreplacer/ajax.php',
+			'administrator/modules/mod_addtomenu/popup.php',
+			'media/rereplacer/images/popup.php',
+			'plugins/editors-xtd/articlesanywhere/popup.php',
+			'plugins/editors-xtd/contenttemplater/popup.php',
+			'plugins/editors-xtd/dummycontent/popup.php',
+			'plugins/editors-xtd/modals/popup.php',
+			'plugins/editors-xtd/modulesanywhere/popup.php',
+			'plugins/editors-xtd/sliders/popup.php',
+			'plugins/editors-xtd/snippets/popup.php',
+			'plugins/editors-xtd/sourcerer/popup.php',
+			'plugins/editors-xtd/tabs/popup.php',
+			'plugins/editors-xtd/tooltips/popup.php',
+			// old filenames
 			'administrator/components/com_dbreplacer/dbreplacer.inc.php',
 			'administrator/components/com_nonumbermanager/details.inc.php',
 			'administrator/modules/mod_addtomenu/addtomenu.inc.php',
@@ -56,8 +57,16 @@ class plgSystemNNFrameworkHelper
 			'plugins/editors-xtd/dummycontent/dummycontent.inc.php',
 			'plugins/editors-xtd/modulesanywhere/modulesanywhere.inc.php',
 			'plugins/editors-xtd/snippets/snippets.inc.php',
-			'plugins/editors-xtd/sourcerer/sourcerer.inc.php'
+			'plugins/editors-xtd/sourcerer/sourcerer.inc.php',
 		);
+
+		$file   = JFactory::getApplication()->input->getString('file', '');
+		$folder = JFactory::getApplication()->input->getString('folder', '');
+
+		if ($folder)
+		{
+			$file = implode('/', explode('.', $folder)) . '/' . $file;
+		}
 
 		if (!$file || in_array($file, $allowed) === false)
 		{
@@ -72,12 +81,12 @@ class plgSystemNNFrameworkHelper
 		}
 
 		$_REQUEST['tmpl'] = 'component';
-		JFactory::getApplication()->input->set('option', '1');
+		JFactory::getApplication()->input->set('option', 'com_content');
 
 		header('Content-Type: text/html; charset=utf-8');
 		JHtml::_('bootstrap.framework');
-		JFactory::getDocument()->addScript(JURI::root(true) . '/administrator/templates/isis/js/template.js');
-		JFactory::getDocument()->addStyleSheet(JURI::root(true) . '/administrator/templates/isis/css/template.css');
+		JFactory::getDocument()->addScript(JUri::root(true) . '/administrator/templates/isis/js/template.js');
+		JFactory::getDocument()->addStyleSheet(JUri::root(true) . '/administrator/templates/isis/css/template.css');
 
 		JHtml::stylesheet('nnframework/popup.min.css', false, true);
 
@@ -94,7 +103,7 @@ class plgSystemNNFrameworkHelper
 
 		JFactory::getDocument()->setBuffer($html, 'component');
 
-		nnApplication::render();
+		NNApplication::render();
 
 		$html = JResponse::toString(JFactory::getApplication()->getCfg('gzip'));
 		$html = preg_replace('#\s*<' . 'link [^>]*href="[^"]*templates/system/[^"]*\.css[^"]*"[^>]* />#s', '', $html);
@@ -107,7 +116,7 @@ class plgSystemNNFrameworkHelper
 	}
 }
 
-class nnApplication
+class NNApplication
 {
 	static function render()
 	{
@@ -115,19 +124,10 @@ class nnApplication
 
 		$options = array();
 		// Setup the document options.
-		$options['template'] = $app->get('theme');
-		$options['file'] = $app->get('themeFile', 'index.php');
-		$options['params'] = $app->get('themeParams');
-
-		if ($app->get('themes.base'))
-		{
-			$options['directory'] = $app->get('themes.base');
-		}
-		// Fall back to constants.
-		else
-		{
-			$options['directory'] = defined('JPATH_THEMES') ? JPATH_THEMES : (defined('JPATH_BASE') ? JPATH_BASE : __DIR__) . '/themes';
-		}
+		$options['template']  = $app->get('theme');
+		$options['file']      = $app->get('themeFile', 'index.php');
+		$options['params']    = $app->get('themeParams');
+		$options['directory'] = self::getThemesDirectory();
 
 		// Parse the document.
 		JFactory::getDocument()->parse($options);
@@ -155,5 +155,25 @@ class nnApplication
 		// Mark afterRender in the profiler.
 		// Causes issues, so commented out.
 		// JDEBUG ? $app->profiler->mark('afterRender') : null;
+	}
+
+	static function getThemesDirectory()
+	{
+		if (JFactory::getApplication()->get('themes.base'))
+		{
+			return JFactory::getApplication()->get('themes.base');
+		}
+
+		if (defined('JPATH_THEMES'))
+		{
+			return JPATH_THEMES;
+		}
+
+		if (defined('JPATH_BASE'))
+		{
+			return JPATH_BASE . '/themes';
+		}
+
+		return __DIR__ . '/themes';
 	}
 }

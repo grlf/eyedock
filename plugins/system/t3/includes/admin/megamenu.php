@@ -153,15 +153,13 @@ class T3AdminMegamenu
 			$mmconfig  = stripslashes($mmconfig);
 		} 
 		
-		$currentconfig = $tplparams instanceof JRegistry ? json_decode($tplparams->get('mm_config', ''), true) : null;
+		$currentconfig = $tplparams instanceof JRegistry ? $tplparams->get('mm_config', '') : null;
+		$_reg = new JRegistry;
+		$_reg->loadArray(json_decode($currentconfig, true));
+		$_reg->set($mmkey, json_decode($mmconfig, true));
 
-		if (!is_array($currentconfig)) {
-			$currentconfig = array();
-		}
+		$mm_config = $_reg->toString();
 
-		$currentconfig[$mmkey] = json_decode($mmconfig, true);
-		$currentconfig         = json_encode($currentconfig);
-		
 		//get all other styles that have the same template
 		$db    = JFactory::getDBO();
 		$query = $db->getQuery(true);
@@ -179,7 +177,7 @@ class T3AdminMegamenu
 			$registry->loadString($theme->params);
 
 			//overwrite with new value
-			$registry->set('mm_config', $currentconfig);
+			$registry->set('mm_config', $mm_config);
 
 			$query = $db->getQuery(true);
 			$query

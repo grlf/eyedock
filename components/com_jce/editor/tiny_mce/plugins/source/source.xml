@@ -1,12 +1,12 @@
 <?xml version="1.0" ?>
 <install version="2.0" type="plugin" plugin="source" core="1" editable="1">
 	<name>WF_SOURCE_TITLE</name>
-	<version>2.4.3</version>
-	<creationDate>11 September 2014</creationDate>
+	<version>2.5.11</version>
+	<creationDate>26 October 2015</creationDate>
 	<author>Ryan Demmer</author>
 	<authorEmail>info@joomlacontenteditor.net</authorEmail>
 	<authorUrl>http://www.joomlacontenteditor.net/</authorUrl>
-	<copyright>Copyright (C) 2006 - 2014 Ryan Demmer. All rights reserved</copyright>
+	<copyright>Copyright (C) 2006 - 2015 Ryan Demmer. All rights reserved</copyright>
 	<license>GNU/GPL Version 2 or later - http://www.gnu.org/licenses/gpl-2.0.html</license>
 	<description>WF_SOURCE_DESC</description>
 	<icon>source</icon>
@@ -31,11 +31,11 @@
 	      <option value="1">WF_OPTION_YES</option>
 	      <option value="0">WF_OPTION_NO</option>
 	    </param>
-            <param name="selection_match" type="radio" default="1" label="WF_SOURCE_SELECTION_MATCH" description="WF_SOURCE_SELECTION_MATCH_DESC">
+            <!--param name="selection_match" type="radio" default="1" label="WF_SOURCE_SELECTION_MATCH" description="WF_SOURCE_SELECTION_MATCH_DESC">
 	      <option value="1">WF_OPTION_YES</option>
 	      <option value="0">WF_OPTION_NO</option>
-	    </param>
-	    <param name="theme" type="filelist" directory="components/com_jce/editor/tiny_mce/plugins/source/css/codemirror/theme" hide_none="true" hide_default="true" stripext="true" filter="\.css$" default="textmate" label="WF_SOURCE_THEME" description="WF_SOURCE_THEME_DESC" />
+	    </param-->
+	    <param name="theme" type="filelist" directory="components/com_jce/editor/tiny_mce/plugins/source/css/codemirror/theme" hide_none="true" hide_default="true" stripext="true" filter="\.css$" default="codemirror" label="WF_SOURCE_THEME" description="WF_SOURCE_THEME_DESC" />
             <param name="font_size" type="text" default="" label="WF_SOURCE_FONT_SIZE" description="WF_SOURCE_FONT_SIZE_DESC" placeholder="eg: 16px" />
         </params>
 	<help>

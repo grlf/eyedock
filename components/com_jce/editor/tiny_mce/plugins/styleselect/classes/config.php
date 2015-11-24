@@ -2,7 +2,7 @@
 
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2014 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -34,6 +34,10 @@ class WFStyleselectPluginConfig {
             foreach ((array) $custom_styles as $style) {
                 if (isset($style->styles)) {
                     $style->styles = self::cleanJSON($style->styles);
+                }
+                
+                if (isset($style->attributes)) {
+                    $style->attributes = self::cleanJSON($style->attributes, " ", "=");
                 }
 
                 if (isset($style->element)) {
@@ -70,14 +74,14 @@ class WFStyleselectPluginConfig {
         }
     }
 
-    protected static function cleanJSON($string, $delim = ";") {
+    protected static function cleanJSON($string, $delim1 = ";", $delim2=":") {
         $ret = array();
 
-        foreach (explode($delim, $string) as $item) {
+        foreach (explode($delim1, $string) as $item) {
             $item = trim($item);
 
             // split style at colon
-            $parts = explode(":", $item);
+            $parts = explode($delim2, $item);
 
             if (count($parts) < 2) {
                 continue;

@@ -4,11 +4,11 @@
  * Displays an error if given file is not found
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
@@ -16,10 +16,12 @@ defined('_JEXEC') or die;
 
 jimport('joomla.form.formfield');
 
-class JFormFieldNN_Dependency extends JFormField
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/functions.php';
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/field.php';
+
+class JFormFieldNN_Dependency extends NNFormField
 {
 	public $type = 'Dependency';
-	private $params = null;
 
 	protected function getLabel()
 	{
@@ -31,50 +33,48 @@ class JFormFieldNN_Dependency extends JFormField
 		$this->params = $this->element->attributes();
 
 		JHtml::_('jquery.framework');
-		JFactory::getDocument()->addScriptVersion(JURI::root(true) . '/media/nnframework/js/script.min.js');
+		NNFrameworkFunctions::addScriptVersion(JUri::root(true) . '/media/nnframework/js/script.min.js');
 
-		$file = $this->get('file');
-		if (!$file)
-		{
-			$path = ($this->get('path') == 'site') ? '' : '/administrator';
-			$label = $this->get('label');
-			$file = $this->get('alias', $label);
-			$file = preg_replace('#[^a-z-]#', '', strtolower($file));
-			$extension = $this->get('extension');
-			switch ($extension)
-			{
-				case 'com';
-					$file = $path . '/components/com_' . $file . '/com_' . $file . '.xml';
-					break;
-				case 'mod';
-					$file = $path . '/modules/mod_' . $file . '/mod_' . $file . '.xml';
-					break;
-				case 'plg_editors-xtd';
-					$file = '/plugins/editors-xtd/' . $file . '.xml';
-					break;
-				default:
-					$file = '/plugins/system/' . $file . '.xml';
-					break;
-			}
-			$label = JText::_($label) . ' (' . JText::_('NN_' . strtoupper($extension)) . ')';
-		}
-		else
+		if ($file = $this->get('file'))
 		{
 			$label = $this->get('label', 'the main extension');
+
+			NNFieldDependency::setMessage($file, $label);
+
+			return '';
 		}
 
-		nnFieldDependency::setMessage($file, $label);
+		$path      = ($this->get('path') == 'site') ? '' : '/administrator';
+		$label     = $this->get('label');
+		$file      = $this->get('alias', $label);
+		$file      = preg_replace('#[^a-z-]#', '', strtolower($file));
+		$extension = $this->get('extension');
+
+		switch ($extension)
+		{
+			case 'com';
+				$file = $path . '/components/com_' . $file . '/com_' . $file . '.xml';
+				break;
+			case 'mod';
+				$file = $path . '/modules/mod_' . $file . '/mod_' . $file . '.xml';
+				break;
+			case 'plg_editors-xtd';
+				$file = '/plugins/editors-xtd/' . $file . '.xml';
+				break;
+			default:
+				$file = '/plugins/system/' . $file . '.xml';
+				break;
+		}
+
+		$label = JText::_($label) . ' (' . JText::_('NN_' . strtoupper($extension)) . ')';
+
+		NNFieldDependency::setMessage($file, $label);
 
 		return '';
 	}
-
-	private function get($val, $default = '')
-	{
-		return (isset($this->params[$val]) && (string) $this->params[$val] != '') ? (string) $this->params[$val] : $default;
-	}
 }
 
-class nnFieldDependency
+class NNFieldDependency
 {
 	static function setMessage($file, $name)
 	{
@@ -95,8 +95,8 @@ class nnFieldDependency
 
 		if (!JFile::exists($file) && !JFile::exists($file_alt))
 		{
-			$msg = JText::sprintf('NN_THIS_EXTENSION_NEEDS_THE_MAIN_EXTENSION_TO_FUNCTION', JText::_($name));
-			$message_set = 0;
+			$msg          = JText::sprintf('NN_THIS_EXTENSION_NEEDS_THE_MAIN_EXTENSION_TO_FUNCTION', JText::_($name));
+			$message_set  = 0;
 			$messageQueue = JFactory::getApplication()->getMessageQueue();
 			foreach ($messageQueue as $queue_message)
 			{

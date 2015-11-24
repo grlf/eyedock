@@ -4,25 +4,21 @@
  * Displays plain text as element
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die;
 
-require_once JPATH_PLUGINS . '/system/nnframework/helpers/text.php';
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/field.php';
 
-/**
- * PlainText Element
- */
-class JFormFieldNN_PlainText extends JFormField
+class JFormFieldNN_PlainText extends NNFormField
 {
 	public $type = 'PlainText';
-	private $params = null;
 
 	protected function getLabel()
 	{
@@ -30,8 +26,8 @@ class JFormFieldNN_PlainText extends JFormField
 
 		$this->params = $this->element->attributes();
 
-		$label = $this->prepareText($this->get('label'));
-		$tooltip = $this->prepareText(trim($this->get('description')));
+		$label   = $this->prepareText($this->get('label'));
+		$tooltip = $this->prepareText($this->get('description'));
 
 		if (!$label && !$tooltip)
 		{
@@ -56,7 +52,7 @@ class JFormFieldNN_PlainText extends JFormField
 	{
 		$this->params = $this->element->attributes();
 
-		$text = $this->prepareText(trim($this->value));
+		$text = $this->prepareText($this->value);
 
 		if (!$text)
 		{
@@ -64,32 +60,5 @@ class JFormFieldNN_PlainText extends JFormField
 		}
 
 		return '<fieldset class="nn_plaintext">' . $text . '</fieldset>';
-	}
-
-	private function prepareText($string = '')
-	{
-		if ($string == '')
-		{
-			return '';
-		}
-
-		// variables
-		$var1 = JText::_($this->get('var1'));
-		$var2 = JText::_($this->get('var2'));
-		$var3 = JText::_($this->get('var3'));
-		$var4 = JText::_($this->get('var4'));
-		$var5 = JText::_($this->get('var5'));
-
-		$string = JText::sprintf(JText::_($string), $var1, $var2, $var3, $var4, $var5);
-		$string = trim(NNText::html_entity_decoder($string));
-		$string = str_replace('&quot;', '"', $string);
-		$string = str_replace('span style="font-family:monospace;"', 'span class="nn_code"', $string);
-
-		return $string;
-	}
-
-	private function get($val, $default = '')
-	{
-		return (isset($this->params[$val]) && (string) $this->params[$val] != '') ? (string) $this->params[$val] : $default;
 	}
 }

@@ -4,20 +4,21 @@
  * Element to display the date and time
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die;
 
-class JFormFieldNN_DateTime extends JFormField
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/field.php';
+
+class JFormFieldNN_DateTime extends NNFormField
 {
 	public $type = 'DateTime';
-	private $params = null;
 
 	protected function getLabel()
 	{
@@ -28,7 +29,7 @@ class JFormFieldNN_DateTime extends JFormField
 	{
 		$this->params = $this->element->attributes();
 
-		$label = $this->get('label');
+		$label  = $this->get('label');
 		$format = $this->get('format');
 
 		$date = JFactory::getDate();
@@ -43,11 +44,11 @@ class JFormFieldNN_DateTime extends JFormField
 				require_once JPATH_PLUGINS . '/system/nnframework/helpers/text.php';
 				$format = NNText::dateToDateFormat($format);
 			}
-			$html = $date->format($format, 1);
+			$html = $date->format($format, true);
 		}
 		else
 		{
-			$html = $date->format('', 1);
+			$html = $date->format('', true);
 		}
 
 		if ($label)
@@ -56,10 +57,5 @@ class JFormFieldNN_DateTime extends JFormField
 		}
 
 		return '</div><div>' . $html;
-	}
-
-	private function get($val, $default = '')
-	{
-		return (isset($this->params[$val]) && (string) $this->params[$val] != '') ? (string) $this->params[$val] : $default;
 	}
 }

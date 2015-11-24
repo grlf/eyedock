@@ -3,11 +3,11 @@
  * Main File
  *
  * @package         Modules Anywhere
- * @version         3.5.2
+ * @version         4.1.2
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
@@ -16,7 +16,7 @@ defined('_JEXEC') or die;
 /**
  * Plugin that loads modules
  */
-class plgSystemModulesAnywhere extends JPlugin
+class PlgSystemModulesAnywhere extends JPlugin
 {
 	private $_alias = 'modulesanywhere';
 	private $_title = 'MODULES_ANYWHERE';
@@ -30,14 +30,19 @@ class plgSystemModulesAnywhere extends JPlugin
 		$this->getHelper();
 	}
 
-	public function onContentPrepare($context, &$article)
+	public function onContentPrepare($context, &$article, &$params)
 	{
+		if ($context == 'com_zoo.element.textarea')
+		{
+			return;
+		}
+
 		if (!$this->getHelper())
 		{
 			return;
 		}
 
-		$this->_helper->onContentPrepare($article, $context);
+		$this->_helper->onContentPrepare($article, $context, $params);
 	}
 
 	public function onAfterDispatch()
@@ -162,7 +167,7 @@ class plgSystemModulesAnywhere extends JPlugin
 		}
 
 		// load the admin language file
-		JFactory::getLanguage()->load('plg_' . $this->_type . '_' . $this->_name, JPATH_ADMINISTRATOR);
+		JFactory::getLanguage()->load('plg_' . $this->_type . '_' . $this->_name, JPATH_PLUGINS . '/' . $this->_type . '/' . $this->_name);
 
 		$text = JText::_($text) . ' ' . JText::sprintf($this->_lang_prefix . '_EXTENSION_CAN_NOT_FUNCTION', JText::_($this->_title));
 

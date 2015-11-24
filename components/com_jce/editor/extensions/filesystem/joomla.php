@@ -2,7 +2,7 @@
 
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2014 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -131,26 +131,25 @@ class WFJoomlaFileSystem extends WFFileSystem {
 
         return $FTPOptions['enabled'] == 1;
     }
-
-    /**
-     * Count the number of folders in a given folder
-     * @return integer Total number of folders
-     * @param string $path Absolute path to folder
-     */
-    public function countFolders($path) {
+    
+    public function getTotalSize($path, $recurse = true) {
         jimport('joomla.filesystem.folder');
+        
         $total = 0;
-
+        
         if (strpos($path, $this->getBaseDir()) === false) {
             $path = WFUtility::makePath($this->getBaseDir(), $path);
         }
-
+        
         if (JFolder::exists($path)) {
-            $folders = JFolder::folders($path);
-            return count($folders);
+            $files = JFolder::files($path, '.', $recurse, true, array('.svn', 'CVS', '.DS_Store', '__MACOSX', 'index.html', 'thumbs.db'));
+            
+            foreach($files as $file) {
+                $total += filesize($file);
+            }
         }
-
-        return 0;
+        
+        return $total;
     }
 
     /**
@@ -158,16 +157,36 @@ class WFJoomlaFileSystem extends WFFileSystem {
      * @return integer File total
      * @param string $path Absolute path to folder
      */
-    public function countFiles($path) {
-        jimport('joomla.filesystem.file');
+    public function countFiles($path, $recurse = false) {
+        jimport('joomla.filesystem.folder');
 
         if (strpos($path, $this->getBaseDir()) === false) {
             $path = WFUtility::makePath($this->getBaseDir(), $path);
         }
 
         if (JFolder::exists($path)) {
-            $files = JFolder::files($path, '.', false, false, array('index.html', 'thumbs.db'));
+            $files = JFolder::files($path, '.', $recurse, false, array('.svn', 'CVS', '.DS_Store', '__MACOSX', 'index.html', 'thumbs.db'));
             return count($files);
+        }
+
+        return 0;
+    }
+    
+    /**
+     * Count the number of folders in a folder
+     * @return integer Folder total
+     * @param string $path Absolute path to folder
+     */
+    public function countFolders($path) {
+        jimport('joomla.filesystem.folder');
+
+        if (strpos($path, $this->getBaseDir()) === false) {
+            $path = WFUtility::makePath($this->getBaseDir(), $path);
+        }
+
+        if (JFolder::exists($path)) {
+            $folders = JFolder::folders($path, '.', false, false, array('.svn', 'CVS', '.DS_Store', '__MACOSX'));
+            return count($folders);
         }
 
         return 0;
@@ -327,27 +346,22 @@ class WFJoomlaFileSystem extends WFFileSystem {
             'modified' => $date
         );
 
-        if (preg_match('#\.(jpg|jpeg|bmp|gif|tiff|png)#i', $file) && $count <= 100) {
-            $props = @getimagesize($path);
+        if (preg_match('#\.(jpg|jpeg|bmp|gif|tiff|png)#i', $file)) {
+            $data['preview'] = WFUtility::cleanPath($url, '/');
+            
+            $image = array();
 
-            /* if (preg_match('#\.(jpg|jpeg|tiff)#i', $file)) {
-              $data = exif_read_data($path, 'IDF0', true, false);
+            if ($count <= 100) {
+                $props = @getimagesize($path);
 
-              if ($data !== false) {
-              $idf 	= isset($data['IDF0']) ? $data['IDF0'] : array();
-              $exif 	= isset($data['EXIF']) ? $data['EXIF'] : array();
-              $data 	= array_merge($idf, $exif);
-              }
-              } */
+                $width = $props[0];
+                $height = $props[1];
 
-            $width = $props[0];
-            $height = $props[1];
-
-            $image = array(
-                'width' => $width,
-                'height' => $height,
-                'preview' => WFUtility::cleanPath($url, '/')
-            );
+                $image = array(
+                    'width'     => $width,
+                    'height'    => $height
+                );
+            }
 
             return array_merge_recursive($data, $image);
         }
@@ -551,100 +565,21 @@ class WFJoomlaFileSystem extends WFFileSystem {
         // get suffix
         $suffix = WFFileBrowser::getFileSuffix();
 
-        switch ($method) {
-            case 'multipart' :
-                if ($conflict == 'unique') {
-                    // get extension
-                    $extension = JFile::getExt($name);
-                    // get name without extension
-                    $name = JFile::stripExt($name);
+        if ($conflict == 'unique') {
+            // get extension
+            $extension = JFile::getExt($name);
+            // get name without extension
+            $name = JFile::stripExt($name);
 
-                    while (JFile::exists($dest)) {
-                        $name .= $suffix;
-                        $dest = WFUtility::makePath($path, $name . '.' . $extension);
-                    }
-                }
+            while (JFile::exists($dest)) {
+                $name .= $suffix;
+                $dest = WFUtility::makePath($path, $name . '.' . $extension);
+            }
+        }
 
-                if (JFile::upload($src, $dest)) {
-                    $result->state = true;
-                    $result->path = $dest;
-                }
-
-                break;
-            case 'multipart-chunking' :
-                if ($safe_mode || !is_writable(dirname($dest))) {
-                    $result->message = WFText::_('WF_MANAGER_UPLOAD_NOSUPPORT');
-                    $result->code = 103;
-                } else {
-                    if ($chunk == 0 && $overwrite) {
-                        // get extension
-                        $extension = JFile::getExt($name);
-                        // get name without extension
-                        $name = JFile::stripExt($name);
-
-                        // make unique file name
-                        while (JFile::exists($dest)) {
-                            $name .= $suffix;
-                            $dest = WFUtility::makePath($path, $name . '.' . $extension);
-                        }
-                    }
-
-                    $out = fopen($dest, $chunk == 0 ? "wb" : "ab");
-
-                    if ($out) {
-                        // Read binary input stream and append it to temp file
-                        $in = fopen($src, "rb");
-
-                        if ($in) {
-                            while ($buff = fread($in, 4096)) {
-                                fwrite($out, $buff);
-                            }
-
-                            fclose($in);
-                            fclose($out);
-                            @unlink($src);
-
-                            $result->state = true;
-
-                            if ($chunk == $chunks - 1) {
-                                if (is_file($dest)) {
-                                    $result->path = $dest;
-                                }
-                            }
-                        } else {
-                            $result->code = 102;
-                            $result->message = 'UPLOAD_INPUT_STREAM_ERROR';
-                        }
-                    } else {
-                        $result->code = 102;
-                        $result->message = 'UPLOAD_OUTPUT_STREAM_ERROR';
-                    }
-                }
-                break;
-            case 'stream' :
-                if ($safe_mode || !is_writable(dirname($dest))) {
-                    $result->message = WFText::_('WF_MANAGER_UPLOAD_NOSUPPORT');
-                } else {
-                    // Open destination file
-                    $out = fopen($dest, $chunk == 0 ? "wb" : "ab");
-
-                    if ($out) {
-                        // Read binary input stream and append it to temp file
-                        $in = fopen("php://input", "rb");
-
-                        if ($in) {
-                            while ($buff = fread($in, 4096)) {
-                                fwrite($out, $buff);
-                            }
-
-                            if (fclose($out) && is_file($dest)) {
-                                $result->state = true;
-                                $result->path = $dest;
-                            }
-                        }
-                    }
-                }
-                break;
+        if (JFile::upload($src, $dest, false, true)) {
+            $result->state = true;
+            $result->path = $dest;
         }
 
         return $result;

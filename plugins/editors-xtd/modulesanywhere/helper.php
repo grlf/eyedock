@@ -3,11 +3,11 @@
  * Plugin Helper File
  *
  * @package         Modules Anywhere
- * @version         3.5.2
+ * @version         4.1.2
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
@@ -16,7 +16,7 @@ defined('_JEXEC') or die;
 /**
  ** Plugin that places the button
  */
-class plgButtonModulesAnywhereHelper
+class PlgButtonModulesAnywhereHelper
 {
 	public function __construct(&$params)
 	{
@@ -37,27 +37,37 @@ class plgButtonModulesAnywhereHelper
 			return $button;
 		}
 
-		JHtml::_('behavior.modal');
+		$user = JFactory::getUser();
+		if ($user->get('guest')
+			|| (
+				!$user->authorise('core.edit', 'com_content')
+				&& !$user->authorise('core.create', 'com_content')
+			)
+		)
+		{
+			return $button;
+		}
+
 		JHtml::stylesheet('nnframework/style.min.css', false, true);
 
 		$icon = 'nonumber icon-modulesanywhere';
 		$link = 'index.php?nn_qp=1'
 			. '&folder=plugins.editors-xtd.modulesanywhere'
-			. '&file=modulesanywhere.inc.php'
+			. '&file=popup.php'
 			. '&name=' . $name;
 
 		$text_ini = strtoupper(str_replace(' ', '_', $this->params->button_text));
-		$text = JText::_($text_ini);
+		$text     = JText::_($text_ini);
 		if ($text == $text_ini)
 		{
 			$text = JText::_($this->params->button_text);
 		}
 
-		$button->modal = true;
-		$button->class = 'btn';
-		$button->link = $link;
-		$button->text = trim($text);
-		$button->name = $icon;
+		$button->modal   = true;
+		$button->class   = 'btn';
+		$button->link    = $link;
+		$button->text    = trim($text);
+		$button->name    = $icon;
 		$button->options = "{handler: 'iframe', size: {x:window.getSize().x-100, y: window.getSize().y-100}}";
 
 		return $button;

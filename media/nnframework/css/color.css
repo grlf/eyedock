@@ -2,11 +2,11 @@
  * Stylesheet for Element: Color
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 /**
@@ -139,7 +139,7 @@
   left: 152px;
   width: 20px;
   height: 150px;
-  background: #ffffff url(../images/minicolors.png) 0 0;
+  background: white url(../images/minicolors.png) 0 0;
   cursor: crosshair;
 }
 .minicolors-slider-saturation .minicolors-slider {

@@ -4,20 +4,21 @@
  * Displays the version check
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die;
 
-class JFormFieldNN_Version extends JFormField
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/field.php';
+
+class JFormFieldNN_Version extends NNFormField
 {
 	public $type = 'Version';
-	private $params = null;
 
 	protected function getLabel()
 	{
@@ -29,7 +30,7 @@ class JFormFieldNN_Version extends JFormField
 		$this->params = $this->element->attributes();
 
 		$extension = $this->get('extension');
-		$xml = $this->get('xml');
+		$xml       = $this->get('xml');
 
 		if (!$xml && $this->form->getValue('element'))
 		{
@@ -60,11 +61,6 @@ class JFormFieldNN_Version extends JFormField
 
 		require_once JPATH_PLUGINS . '/system/nnframework/helpers/versions.php';
 
-		return '</div><div class="hide">' . NNVersions::getInstance()->getMessage($extension, $xml);
-	}
-
-	private function get($val, $default = '')
-	{
-		return (isset($this->params[$val]) && (string) $this->params[$val] != '') ? (string) $this->params[$val] : $default;
+		return '</div><div class="hide">' . NoNumberVersions::render($extension);
 	}
 }

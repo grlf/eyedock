@@ -19,6 +19,14 @@
 			required="true"
             default=""
         />
+        <field
+                name="bcc"
+                type="textarea"
+                label="COM_ALFCONTACT_CONTACT_BCC"
+                description="COM_ALFCONTACT_CONTACT_BCC_DESC"
+                class="inputbox"
+                default=""
+                />
 		<field
             name="prefix"
             type="text"

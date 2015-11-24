@@ -4,20 +4,21 @@
  * Loads the English language file as fallback
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die;
 
-class JFormFieldNN_LoadLanguage extends JFormField
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/field.php';
+
+class JFormFieldNN_LoadLanguage extends NNFormField
 {
 	public $type = 'LoadLanguage';
-	private $params = null;
 
 	protected function getLabel()
 	{
@@ -29,7 +30,7 @@ class JFormFieldNN_LoadLanguage extends JFormField
 		$this->params = $this->element->attributes();
 
 		$extension = $this->get('extension');
-		$admin = $this->get('admin', 1);
+		$admin     = $this->get('admin', 1);
 
 		self::loadLanguage($extension, $admin);
 
@@ -38,14 +39,11 @@ class JFormFieldNN_LoadLanguage extends JFormField
 
 	function loadLanguage($extension, $admin = 1)
 	{
-		if ($extension)
+		if (!$extension)
 		{
-			JFactory::getLanguage()->load($extension, $admin ? JPATH_ADMINISTRATOR : JPATH_SITE);
+			return;
 		}
-	}
 
-	private function get($val, $default = '')
-	{
-		return (isset($this->params[$val]) && (string) $this->params[$val] != '') ? (string) $this->params[$val] : $default;
+		NNFrameworkFunctions::loadLanguage($extension, $admin ? JPATH_ADMINISTRATOR : JPATH_SITE);
 	}
 }

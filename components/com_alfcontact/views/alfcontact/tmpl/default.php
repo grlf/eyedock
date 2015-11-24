@@ -7,6 +7,9 @@ JHtml::_('behavior.formvalidation');
 JHtml::_('jquery.framework');
 
 $app = JFactory::getApplication();
+$jinput = JFactory::getApplication()->input;
+$selcontact = $jinput->getInt('contactid');
+
 // get some menu parameters
 $menu = $app->getMenu()->getActive();
 $this->defcontact = (int)$menu->params->get('defcontact');
@@ -18,7 +21,14 @@ $this->pageclass_sfx = htmlspecialchars($menu->params->get('pageclass_sfx'));
 $user = JFactory::getUser();
 $document = JFactory::getDocument();
 $params = JComponentHelper::getParams( 'com_alfcontact' );
-	
+
+// Use contact from url or else default contact from menu item settings
+if (isset($selcontact)) {
+	$contact = $selcontact;
+} else {
+	$contact = $this->defcontact;
+}
+
 $emailto_id = 99;
 $extravalues = '';
 $title = $menu->params->get('title', '');
@@ -26,15 +36,11 @@ $header = $menu->params->get('header', '');
 $footer = $menu->params->get('footer', '');
 $copyme = $params->get('copytome', 1);
 $icons = $params->get('icons', 0);
+$max = $params->get('maxchars', '');
 $resetbtn = $params->get('resetbtn', 1);
 $autouser = $params->get('autouser', 1);
-$force_ssl = $params->get('force_ssl', 0);
 $captcha = $params->get('captcha', 0);
 $captchatype = $params->get('captchatype', 1);
-$captchatheme = $params->get('captchatheme', 'red');
-$captchalng = $params->get('captchalng', 'en');
-$publickey = $params->get('publickey', '');
-$privatekey = $params->get('privatekey', '');
 $captchas_user = $params->get('captchas_user', 'demo');
 $captchas_key = $params->get('captchas_key', 'secret');
 $captchas_alphabet = $params->get('captchas_alphabet', 'abcdefghijklmnopqrstuvwxyz');
@@ -45,17 +51,24 @@ $captchas_color = $params->get('captchas_color', '000000');
 $captchas_audiolink = $params->get('captchas_audiolink', 0);
 $captchas_audiolng = $params->get('captchas_audiolng', 'en');
 $captchas_random_path = JPATH_SITE . '/tmp/captchasnet-random-strings';
-	
-if ($captchatype == 1){
+
+if (($captcha == 1) or ($captcha == 2)) {
+	// Joomla reCaptcha support
+	JPluginHelper::importPlugin('captcha');
+	$dispatcher = JEventDispatcher::getInstance();
+	$dispatcher->trigger('onInit', 'dynamic_recaptcha_1');
+}
+
+if ($captchatype == 1) {
 	require_once(JPATH_COMPONENT_SITE . '/captchasdotnet.php');
 	$captchas = new CaptchasDotNet ($captchas_user, $captchas_key, $captchas_random_path, '3600',
-                               $captchas_alphabet, $captchas_chars, $captchas_width, $captchas_height, $captchas_color);
-	$audiolink = $captchas->audio_url();
-	$audiolink = $audiolink	. '&language=' . $captchas_audiolng ;
-}?>
+                                    $captchas_alphabet, $captchas_chars, $captchas_width, $captchas_height, $captchas_color);
+}
+
+?>
 		
 <script language="javascript" type="text/javascript">
-	<!--
+
 	var $j = jQuery;
 	
 	$j(document).ready(function(){
@@ -71,7 +84,7 @@ if ($captchatype == 1){
 		{
 			var e_values = '';
 			$j('.extra_field').each(function(index) {
-				e_values = e_values + '\n' + $j(this).val();
+				e_values = e_values + '#' + $j(this).val();
 			});
 			$j('#extravalues').val(e_values); 
 		});
@@ -122,9 +135,25 @@ if ($captchatype == 1){
 		}
 		
 	}
-	
-	var RecaptchaOptions = {theme : '<?php echo $captchatheme; ?>', lang : '<?php echo $captchalng; ?>'};
-	//-->
+
+	/*This function first get the value of Textarea. And read length of that Textarea
+	 character. then compare the value of set value.*/
+
+	function displayWordCounter() {
+		var max = <?php echo (int)$max; ?>;                         // MaxChars naar Integer
+		if (max > 0) {
+			var getTextValue = $j('#contact-form-message').val();   // Get textarea value
+			var getTextLength = getTextValue.length;                // Get length of input textarea value
+			if (getTextLength > max) {                              // Compare this length with total count
+				getTextValue = getTextValue.substring(0, max);
+				$j('#contact-form-message').val(getTextValue);
+				return false;
+			}
+            $j('#textcount').text('(' + String(max-getTextLength) + '/' + max + ')');
+		}
+	}
+
+
 </script>
 
 <div class="item-page<?php echo $this->pageclass_sfx?>">
@@ -143,28 +172,26 @@ if ($captchatype == 1){
 			<div class="control-label">
 				<label for="name" class="hasTip required"><?php echo htmlspecialchars(JText::_('COM_ALFCONTACT_FORM_FROM')); ?></label>
 			</div>
-			<div class="controls">
-				<?php if (!$autouser OR ($autouser AND !$user->name)) { ?> 
-					<input class="required" name="name" id="name" type="text" value="<?php echo htmlspecialchars(isset($this->name) ? $this->name : ''); ?>"/>
-				<?php } else { ?>
-					<span><?php echo htmlspecialchars($user->name); ?></span>
-					<input type="hidden" name="name" id="name" value= "<?php echo htmlspecialchars($user->name); ?>" /> 
-				<?php } ?>
-			</div>
+            <div class="controls">
+                <?php if (!$autouser OR ($autouser AND !$user->name)) { ?>
+                    <input class="required" name="name" id="name" type="text" value="<?php echo htmlspecialchars(isset($this->name) ? $this->name : ''); ?>"/>
+                <?php } else { ?>
+					<input readonly name="name" id="name" type="text" value= "<?php echo htmlspecialchars($user->name); ?>" />
+                <?php } ?>
+            </div>
 		</div>
 		<div class="control-group">
 			<div class="control-label">
 				<label for="email" class="hasTip required"><?php echo htmlspecialchars(JText::_('COM_ALFCONTACT_FORM_EMAIL')); ?></label>
 			</div>
-			<div class="controls">
-				<?php if (!$autouser OR ($autouser AND !$user->email)) { ?> 
-					<input class="required validate-email" name="email" id="email" type="text" value="<?php echo htmlspecialchars(isset($this->email) ? $this->email : ''); ?>"/>
-				<?php } else { ?>
-					<span><?php echo htmlspecialchars($user->email); ?></span>
-					<input type="hidden" name="email" id="email" value= "<?php echo htmlspecialchars($user->email); ?>" />
-				<?php } ?>
-			</div>
-		</div>	
+            <div class="controls">
+                <?php if (!$autouser OR ($autouser AND !$user->email)) { ?>
+                    <input class="required validate-email" name="email" id="email" type="text" value="<?php echo htmlspecialchars(isset($this->email) ? $this->email : ''); ?>"/>
+			    <?php } else { ?>
+					<input readonly name="email" id="email" type="text" value= "<?php echo htmlspecialchars($user->email); ?>" />
+                <?php } ?>
+            </div>
+        </div>
 		<div>
 			<hr />
 		</div>
@@ -176,7 +203,7 @@ if ($captchatype == 1){
 				<?php if (count($this->items) > 1) { ?>
                     <select name="emailid" id="emailid">
                         <?php foreach ($this->items as $i => $item) { ?>
-                            <?php if ($item->id == $this->defcontact) { ?>
+                            <?php if ($item->id == $contact) { ?>
                                 <option value="<?php echo htmlspecialchars($item->id . ',' . $item->extra . ',' . $item->defsubject); ?>" selected="selected"><?php echo htmlspecialchars($item->name); ?></option>
                             <?php } else { ?>
                                 <option value="<?php echo htmlspecialchars($item->id . ',' . $item->extra . ',' . $item->defsubject); ?>" ><?php echo htmlspecialchars($item->name); ?></option>
@@ -185,10 +212,10 @@ if ($captchatype == 1){
                     </select>
                 <?php } else { ?>
                     <?php if (count($this->items) == 0) { ?>
-                        <span><?php echo htmlspecialchars($app->getCfg('fromname')); ?></span>
+                        <input readonly type="text" value="<?php echo htmlspecialchars($app->get('fromname')); ?>" />
                         <input type="hidden" name="emailid" id="emailid" value="99,," />
                     <?php } else { ?>
-                        <span><?php echo htmlspecialchars($this->items[0]->name); ?></span>
+                        <input readonly type="text" value="<?php echo htmlspecialchars($this->items[0]->name); ?>" />
                         <input type="hidden" id="emailid" name="emailid" value="<?php echo htmlspecialchars($this->items[0]->id . ',' . $this->items[0]->extra . ',' . $this->items[0]->defsubject); ?>" />
                     <?php } ?>
                 <?php } ?>
@@ -205,16 +232,19 @@ if ($captchatype == 1){
 		<div class="control-group startfields">
 			<div class="control-label">
 				<label for="contact-form-message" class="hasTip required"><?php echo htmlspecialchars(JText::_('COM_ALFCONTACT_FORM_MESSAGE')); ?></label>
+                <?php if ((int)$max > 0) { ?>
+                    <label id="textcount"><?php echo "(".$max."/".$max.")"; ?></label>
+                <?php } ?>
 			</div>
 			<div class="controls">
-				<textarea class="required" rows="6" name="message" id="contact-form-message"><?php echo htmlspecialchars(isset($this->message) ? $this->message : ''); ?></textarea>
+				<textarea class="required" rows="6" name="message" id="contact-form-message" onkeyup="return displayWordCounter();"><?php echo htmlspecialchars(isset($this->message) ? $this->message : ''); ?></textarea>
 			</div>
 		</div>	
 		
 		<?php if ($copyme == 1) { ?>
 			<div class="control-group">
 				<div class="control-label">
-					<label for="copy"><span><?php echo JText::_('COM_ALFCONTACT_FORM_COPYTOME') ?></span></label>
+					<label for="copy"><span><?php echo JText::_('COM_ALFCONTACT_FORM_COPYTOME'); ?></span></label>
 				</div>
 				<div class="controls">
 					<input type="checkbox" name="copy" id="copy"<?php echo (isset($this->copy) && $this->copy) ? ' checked=""' : '' ?> />
@@ -222,46 +252,46 @@ if ($captchatype == 1){
 			</div>
 		<?php } 	
             if (($captcha == 1) OR (($captcha == 2) AND (!$user->name))) { 
-                if ($captchatype == 0)  {
-                    require_once(JPATH_COMPONENT_SITE . '/recaptchalib.php');
-					$use_ssl = false;
-					if ((isset($_SERVER['HTTPS']) &&	($_SERVER['HTTPS'] == 'on')) ||	getenv('SSL_PROTOCOL_VERSION')){
-						$use_ssl = true;
-					if ($force_ssl == 1) {
-						$use_ssl = true;
-					}
-					}?>
-                <div class="control-group">
-					<div class="control-label"></div>
-					<div class="controls">
-						<?php echo recaptcha_get_html($publickey, null, $use_ssl); ?>
+                if ($captchatype == 0)  { ?>
+	                <div class="control-group">
+						<div class="control-label"></div>
+						<div class="controls">
+							<div id="dynamic_recaptcha_1"></div>
+						</div>
 					</div>
-				</div>
 				<?php } else { ?>
-                <div class="control-group">
-					<div class="control-label">
-						<input type="hidden" name="captchas_random" id="captchas_random" value="<?php echo $captchas->random(); ?>" />
-					</div>
-					<div class="controls">
-						<?php
-                        echo $captchas->image(); 
-                        if ($captchas_audiolink == 1) { ?> 
-                            <br />
-                            <a href="<?php echo $audiolink; ?>"><?php echo JText::_('COM_ALFCONTACT_CAPTCHAS_SPELLING')?></a>
-                        <?php } ?>
-					</div>
-				</div>
-				<div class="control-group">
-					<div class="control-label">
-						<label for="captchas_entry" class="hasTip required"><?php echo JText::_('COM_ALFCONTACT_CAPTCHAS_VERIFICATION')?></label>
-					</div>
-					<div class="controls">
-						<input type="text" name="captchas_entry" class="required" id="captchas_entry" />
-					</div>
-				</div>
-				<?php
-                }
+	                <div class="control-group">
+		                <div class="control-label">
+			                <input type="hidden" name="captchas_random" id="captchas_random" value="<?php echo $captchas->random(); ?>" />
+		                </div>
+		                <div class="controls">
+			                <?php
+                            $audiolink = $captchas->audio_url();
+                            $audiolink = $audiolink	. '&language=' . $captchas_audiolng ;
+			                echo $captchas->image();
+			                if ($captchas_audiolink == 1) { ?>
+				                <br />
+				                <a target="_blank" href="<?php echo $audiolink; ?>"><?php echo JText::_('COM_ALFCONTACT_CAPTCHAS_SPELLING'); ?></a>
+			                <?php } ?>
+		                </div>
+	                </div>
+	                <div class="control-group">
+		                <div class="control-label">
+			                <label for="captchas_entry" class="hasTip required"><?php echo JText::_('COM_ALFCONTACT_CAPTCHAS_VERIFICATION'); ?></label>
+		                </div>
+		                <div class="controls">
+			                <input type="text" name="captchas_entry" class="required" id="captchas_entry" />
+		                </div>
+	                </div>
+                <?php }
             } ?>
+
+		<div>
+			<?php if (JLoader::import('components.com_dpattachments.libraries.dpattachments.core', JPATH_ADMINISTRATOR)) {
+			//	echo DPAttachmentsCore::render('com_alfcontact.item', $object->id);
+			} ?>
+		</div>
+
 		<div class="form-actions">
 			<button type="submit" id="submit_btn" class="btn btn-primary validate"><?php echo JText::_('COM_ALFCONTACT_FORM_SEND'); ?></button>
 			<?php if ($resetbtn == 1) { ?>

@@ -15,8 +15,10 @@ class AlfcontactController extends JControllerLegacy
          */
     function display($cachable = false, $urlparams = false) 
     {
+        $jinput = JFactory::getApplication()->input;
+
         // set default view if not set
-        JRequest::setVar('view', JRequest::getCmd('view', 'Alfcontacts'));
+        $jinput->set('view', $jinput->get('view', 'Alfcontacts'));
  
         // call parent behavior
         parent::display($cachable, $urlparams);

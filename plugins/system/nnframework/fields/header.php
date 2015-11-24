@@ -4,22 +4,21 @@
  * Displays a title with a bunch of extras, like: description, image, versioncheck
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die;
 
-require_once JPATH_PLUGINS . '/system/nnframework/helpers/text.php';
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/field.php';
 
-class JFormFieldNN_Header extends JFormField
+class JFormFieldNN_Header extends NNFormField
 {
 	public $type = 'Header';
-	private $params = null;
 
 	protected function getLabel()
 	{
@@ -32,10 +31,10 @@ class JFormFieldNN_Header extends JFormField
 
 		JHtml::stylesheet('nnframework/style.min.css', false, true);
 
-		$title = $this->get('label');
+		$title       = $this->get('label');
 		$description = $this->get('description');
-		$xml = $this->get('xml');
-		$url = $this->get('url');
+		$xml         = $this->get('xml');
+		$url         = $this->get('url');
 
 		if ($description)
 		{
@@ -77,7 +76,7 @@ class JFormFieldNN_Header extends JFormField
 
 		if ($xml)
 		{
-			$xml = JApplicationHelper::parseXMLInstallFile(JPATH_SITE . '/' . $xml);
+			$xml     = JApplicationHelper::parseXMLInstallFile(JPATH_SITE . '/' . $xml);
 			$version = 0;
 			if ($xml && isset($xml['version']))
 			{
@@ -126,10 +125,5 @@ class JFormFieldNN_Header extends JFormField
 		}
 
 		return '</div><div>' . implode('', $html);
-	}
-
-	private function get($val, $default = '')
-	{
-		return (isset($this->params[$val]) && (string) $this->params[$val] != '') ? (string) $this->params[$val] : $default;
 	}
 }

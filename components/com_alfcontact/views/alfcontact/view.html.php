@@ -39,14 +39,16 @@ class AlfcontactViewAlfcontact extends JViewLegacy
 		$menu = $app->getMenu()->getActive();
 		$params = JComponentHelper::getParams( 'com_alfcontact' );
 
-		$this->pagetitle = $menu->params->get('page_title');
-		$title = null;
-
-		$title = $this->pagetitle;
+		if (isset($menu)){
+			$this->pagetitle = $menu->params->get('page_title');
+			// $title = null;
+			$title = $this->pagetitle;
+		}
 		
 		//Check Session variables
 		$this->name 		= $app->getUserState('com_alfcontact.name', '');
 		$this->email 		= $app->getUserState('com_alfcontact.email', '');
+        $this->bcc          = $app->getUserState('com_alfcontact.bcc', '');
 		$this->emailto_id 	= $app->getUserState('com_alfcontact.emailto_id', 0);
 		$this->subject 		= $app->getUserState('com_alfcontact.subject', '');
 		$this->message 		= $app->getUserState('com_alfcontact.message', '');
@@ -54,13 +56,13 @@ class AlfcontactViewAlfcontact extends JViewLegacy
 				
 		// Check for empty title and add site name if param is set
 		if (empty($title)) {
-			$title = $app->getCfg('sitename');
+			$title = $app->get('sitename');
 		}
-		elseif ($app->getCfg('sitename_pagetitles', 0) == 1) {
-			$title = JText::sprintf('JPAGETITLE', $app->getCfg('sitename'), $title);
+		elseif ($app->get('sitename_pagetitles', 0) == 1) {
+			$title = JText::sprintf('JPAGETITLE', $app->get('sitename'), $title);
 		}
-		elseif ($app->getCfg('sitename_pagetitles', 0) == 2) {
-			$title = JText::sprintf('JPAGETITLE', $title, $app->getCfg('sitename'));
+		elseif ($app->get('sitename_pagetitles', 0) == 2) {
+			$title = JText::sprintf('JPAGETITLE', $title, $app->get('sitename'));
 		}
 		
 		$this->document->setTitle($title);

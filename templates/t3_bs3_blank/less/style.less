@@ -20,8 +20,8 @@
 // ---------------------------------------------------------
 
 .t3-header {
-  padding-top: @t3-global-padding/2;
-  padding-bottom: @t3-global-padding/2;
+  padding-top: @t3-global-padding;
+  padding-bottom: @t3-global-padding;
 }
 
 
@@ -46,18 +46,9 @@
 // Logo Image
 // ----------
 .logo-image {
-  // Hide sitename
-  span{
+  // Hide sitename and slogan
+  span, small {
     display: none;
-  }
-  small {
-	font-family: helvetica;
-	font-size: 21px;
-	padding-left: 20px;
-	position: absolute;
-	text-align: left;
-	top: 37px;
-	width: auto;
   }
 }
 
@@ -91,19 +82,15 @@
 // -----------
 .head-search {
 
-  margin-top: 0;
+  margin-top: @t3-global-margin;
   .clearfix();
 
   form {
-    float: right;
     margin: 0;
-    width: 50%;
   }
   
   label {
-/*
     display: none;
-*/
   }
   
   .search {
@@ -127,7 +114,6 @@
   .form-control {
     width : 100%;
     padding-left: 30px;
-    height: 29px;
 
     // Width Control on Tablets / Desktop
     @media screen and (min-width: @screen-sm) {
@@ -184,10 +170,8 @@
 // MAIN BODY
 // ---------------------------------------------------------
 .t3-mainbody {
-  padding-top: 0;
+  padding-top: @line-height-computed ;
   padding-bottom: @line-height-computed;
-  border-left: 2px solid #565f64;
-  border-right: 2px solid #565f64;
 }
 
 // Content
@@ -195,17 +179,13 @@
 .t3-content {
   padding-top: @line-height-computed ;
   padding-bottom: @line-height-computed;
-  padding: @line-height-computed *2;
 }
 
 // Sidebars
 // --------
 .t3-sidebar {
-  padding: 0 0 @line-height-computed 0;
-  background: none repeat scroll 0 0 #f2f2f2;
-  border-right: 1px solid #bdc3c3;
-  border-bottom: 1px solid #bdc3c3;
-
+  padding-top: @line-height-computed;
+  padding-bottom: @line-height-computed;
 }
 
 .t3-sidebar-1 {
@@ -220,7 +200,7 @@
 // FOOTER
 // ---------------------------------------------------------
 .t3-footer {
-  border-top: none;
+  border-top: 1px solid @t3-border-color;
   background: @t3-footer-background;
   color: @t3-footer-text-color;
   .clearfix();
@@ -290,13 +270,12 @@
 // Copyright
 // ---------
 .t3-copyright {
-  border-top: none;
+  border-top: 1px solid @t3-border-color;
   font-size: @font-size-small;
-  padding: 0 0 (@t3-global-padding * 4);
+  padding: (@t3-global-padding * 2) 0 (@t3-global-padding * 4);
   .clearfix();
   small {
     margin-bottom: 5px;
-    display: none;
   }
 }
 

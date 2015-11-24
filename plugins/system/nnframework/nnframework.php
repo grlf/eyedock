@@ -3,11 +3,11 @@
  * Main Plugin File
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
@@ -20,13 +20,20 @@ if (JFactory::getApplication()->isAdmin())
 	NNFrameworkFunctions::loadLanguage('plg_system_nnframework');
 }
 
+jimport('joomla.filesystem.file');
+
+// If controller.php exists, assume this is K2 v3
+define('NN_K2_VERSION', JFile::exists(JPATH_ADMINISTRATOR . '/components/com_k2/controller.php') ? 3 : 2);
+
 /**
  * Plugin that loads Framework
  */
-class plgSystemNNFramework extends JPlugin
+class PlgSystemNNFramework extends JPlugin
 {
 	public function onAfterRoute()
 	{
+		$this->updateDownloadKey();
+
 		$this->loadSearchHelper();
 
 		if (!JFactory::getApplication()->input->getInt('nn_qp', 0))
@@ -36,9 +43,48 @@ class plgSystemNNFramework extends JPlugin
 
 		// Include the Helper
 		require_once JPATH_PLUGINS . '/system/nnframework/helper.php';
-		$helper = new plgSystemNNFrameworkHelper;
+		$helper = new PlgSystemNNFrameworkHelper;
 
 		$helper->render();
+	}
+
+	function updateDownloadKey()
+	{
+		// Save the download key from the NoNumber Extension Manager config to the update sites
+		if (
+			JFactory::getApplication()->isSite()
+			|| JFactory::getApplication()->input->get('option') != 'com_config'
+			|| JFactory::getApplication()->input->get('task') != 'config.save.component.apply'
+			|| JFactory::getApplication()->input->get('component') != 'com_nonumbermanager'
+		)
+		{
+			return;
+		}
+
+		$form = JFactory::getApplication()->input->post->get('jform', array(), 'array');
+
+		if (!isset($form['key']))
+		{
+			return;
+		}
+
+		$key = $form['key'];
+
+		$db    = JFactory::getDbo();
+		$query = $db->getQuery(true)
+			->update('#__update_sites')
+			->set($db->qn('extra_query') . ' = ' . $db->q(''))
+			->where($db->qn('location') . ' LIKE ' . $db->q('http://download.nonumber.nl%'));
+		$db->setQuery($query);
+		$db->execute();
+
+		$query->clear()
+			->update('#__update_sites')
+			->set($db->qn('extra_query') . ' = ' . $db->q('k=' . $key))
+			->where($db->qn('location') . ' LIKE ' . $db->q('http://download.nonumber.nl%'))
+			->where($db->qn('location') . ' LIKE ' . $db->q('%&pro=1%'));
+		$db->setQuery($query);
+		$db->execute();
 	}
 
 	function loadSearchHelper()
@@ -59,3 +105,4 @@ class plgSystemNNFramework extends JPlugin
 		require_once JPATH_PLUGINS . '/system/nnframework/helpers/search.php';
 	}
 }
+

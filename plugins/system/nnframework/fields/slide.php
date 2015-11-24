@@ -4,22 +4,21 @@
  * Element to create a new slide pane
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die;
 
-require_once JPATH_PLUGINS . '/system/nnframework/helpers/text.php';
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/field.php';
 
-class JFormFieldNN_Slide extends JFormField
+class JFormFieldNN_Slide extends NNFormField
 {
 	public $type = 'Slide';
-	private $params = null;
 
 	protected function getLabel()
 	{
@@ -32,27 +31,15 @@ class JFormFieldNN_Slide extends JFormField
 
 		JHtml::stylesheet('nnframework/style.min.css', false, true);
 
-		$label = NNText::html_entity_decoder(JText::_($this->get('label')));
-		$description = $this->get('description');
-		$lang_file = $this->get('language_file');
+		$label       = NNText::html_entity_decoder(JText::_($this->get('label')));
+		$description = $this->prepareText($this->get('description'));
+		$lang_file   = $this->get('language_file');
 
 		$html = '</td></tr></table></div></div>';
 		$html .= '<div class="panel"><h3 class="jpane-toggler title" id="advanced-page"><span>';
 		$html .= $label;
 		$html .= '</span></h3>';
 		$html .= '<div class="jpane-slider content"><table width="100%" class="paramlist admintable" cellspacing="1"><tr><td colspan="2" class="paramlist_value">';
-
-		if ($description)
-		{
-			// variables
-			$v1 = $this->get('var1');
-			$v2 = $this->get('var2');
-			$v3 = $this->get('var3');
-			$v4 = $this->get('var4');
-			$v5 = $this->get('var5');
-
-			$description = NNText::html_entity_decoder(trim(JText::sprintf($description, $v1, $v2, $v3, $v4, $v5)));
-		}
 
 		if ($lang_file)
 		{
@@ -61,7 +48,7 @@ class JFormFieldNN_Slide extends JFormField
 			// Include extra language file
 			$lang = str_replace('_', '-', JFactory::getLanguage()->getTag());
 
-			$inc = '';
+			$inc       = '';
 			$lang_path = 'language/' . $lang . '/' . $lang . '.' . $lang_file . '.inc.php';
 			if (JFile::exists(JPATH_ADMINISTRATOR . '/' . $lang_path))
 			{
@@ -73,7 +60,7 @@ class JFormFieldNN_Slide extends JFormField
 			}
 			if (!$inc && $lang != 'en-GB')
 			{
-				$lang = 'en-GB';
+				$lang      = 'en-GB';
 				$lang_path = 'language/' . $lang . '/' . $lang . '.' . $lang_file . '.inc.php';
 				if (JFile::exists(JPATH_ADMINISTRATOR . '/' . $lang_path))
 				{
@@ -92,7 +79,6 @@ class JFormFieldNN_Slide extends JFormField
 
 		if ($description)
 		{
-			$description = str_replace('span style="font-family:monospace;"', 'span class="nn_code"', $description);
 			if ($description['0'] != '<')
 			{
 				$description = '<p>' . $description . '</p>';
@@ -104,10 +90,5 @@ class JFormFieldNN_Slide extends JFormField
 		}
 
 		return $html;
-	}
-
-	private function get($val, $default = '')
-	{
-		return (isset($this->params[$val]) && (string) $this->params[$val] != '') ? (string) $this->params[$val] : $default;
 	}
 }

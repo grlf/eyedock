@@ -11,6 +11,10 @@
 //
 // ChangeLog:
 //
+// 2014-04-27: Fixed missing initialization 
+//
+// 2011-04-25: Added function captchas_image_reload
+//
 // 2011-03-08: Added color option (Alfred Vink)
 //
 // 2006-08-16: New optional features integrated
@@ -33,7 +37,7 @@ class CaptchasDotNet
                            $letters           = 6,
                            $width             = 240,
                            $height            = 80,
-						   $color             = '000000'
+                           $color             = '000000'
                            )
   {
     $this->__client = $client;
@@ -45,8 +49,8 @@ class CaptchasDotNet
     $this->__letters           = $letters;
     $this->__width             = $width;
     $this->__height            = $height;
-	$this->__color             = $color;				
-	$this->__random            = false;
+    $this->__color             = $color; 
+    $this->__random_file       = ""; 
   }
 
   function __random_string ()
@@ -172,7 +176,7 @@ class CaptchasDotNet
     if ($this->__letters!=6) {$image_url .= '&amp;letters='  . $this->__letters;};
     if ($this->__width!=240) {$image_url .= '&amp;width='    . $this->__width;};
     if ($this->__height!=80) {$image_url .= '&amp;height='   . $this->__height;};
-	if ($this->__color!=80) {$image_url .= '&amp;color='   . $this->__color;};
+    if ($this->__color!='000000') {$image_url .= '&amp;color='   . $this->__color;};
     return $image_url;
   }
 
@@ -206,6 +210,13 @@ class CaptchasDotNet
             alt="The Captcha image" /></a>
         <script type="text/javascript">
           <!--
+          function captchas_image_reload (imgId) 
+          {
+	    var image_url = document.getElementById(imgId).src;
+            image_url+= "&";
+	    document.getElementById(imgId).src = image_url;
+          }
+
           function captchas_image_error (image)
           {
             if (!image.timeout) return true;

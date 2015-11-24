@@ -22,35 +22,31 @@
 .t3-module {
   background: @t3-module-bg;
   color: @t3-module-color;
-  margin-top: @line-height-computed;
+  margin-bottom: @line-height-computed;
 
   // Larger margin on Tablet / Desktop
   @media screen and (min-width: @screen-sm) {
-    margin-bottom: @line-height-computed
+    margin-bottom: @line-height-computed * 2;
   }
 
   // Module padding
   .module-inner {
-/*     padding: @t3-module-padding; */
-	padding: 0;
+    padding: @t3-module-padding;
   }
 }
 
 // Module Title
 // ------------
 .module-title {
-  text-align: center;
   background: @t3-module-title-bg;
   color: @t3-module-title-color;
   font-size: @font-size-large;
-  margin: 0;
-  padding: @t3-module-title-padding*.66;
-  text-transform: uppercase;
-  font-weight: 200;
+  margin: 0 0 (@line-height-computed / 2) 0;
+  padding: @t3-module-title-padding;
 
   // Larger margin on Tablet / Desktop
   @media screen and (min-width: @screen-sm) {
-    margin-bottom: 0;
+    margin-bottom: @line-height-computed;
   }
 
 }
@@ -70,7 +66,7 @@
 .module-ct .custom {
   > ul,
   > ol {
-    margin-left: 0;
+    margin-left: 20px;
     padding-left: 0;
   }
   
@@ -83,11 +79,6 @@
   > ol.nav {
     padding-left: 0;
     margin-left: 0;
-  }
-  > ul > li {
-	  list-style: none;
-	  font-size: @font-size-small;
-	  margin-bottom: 4px;
   }
 }
 
@@ -135,22 +126,8 @@
   }
   
   ul.unstyled {
-	margin-top: 0;
-	clear: both;
-	float: none;
-	padding-left: 20px;
-	text-align: right;
-	
-	li {
-		list-style: none;
-		height: @font-size-base;
-		
-		a {
-		font-size: @font-size-small;
-		color: #000;
-		}
-	}
-	
+    margin-top: @line-height-computed;
+    padding-left: 20px;
   }
 
   #form-login-username {

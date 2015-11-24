@@ -4,14 +4,16 @@
  * Adds slide in and out functionality to framework based on an framework value
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die;
+
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/functions.php';
 
 /**
  * To use this, make a start xml param tag with the param and value set
@@ -25,7 +27,6 @@ defined('_JEXEC') or die;
 class JFormFieldNN_Toggler extends JFormField
 {
 	public $type = 'Toggler';
-	private $params = null;
 
 	protected function getLabel()
 	{
@@ -34,13 +35,13 @@ class JFormFieldNN_Toggler extends JFormField
 
 	protected function getInput()
 	{
-		$field = new nnFieldToggler;
+		$field = new NNFieldToggler;
 
 		return $field->getInput($this->element->attributes());
 	}
 }
 
-class nnFieldToggler
+class NNFieldToggler
 {
 	function getInput($params)
 	{
@@ -54,15 +55,15 @@ class nnFieldToggler
 			return '';
 		}
 
-		$param = $this->get('param');
-		$value = $this->get('value');
-		$nofx = $this->get('nofx');
+		$param  = $this->get('param');
+		$value  = $this->get('value');
+		$nofx   = $this->get('nofx');
 		$method = $this->get('method');
-		$div = $this->get('div', 0);
+		$div    = $this->get('div', 0);
 
 		JHtml::_('jquery.framework');
-		JFactory::getDocument()->addScriptVersion(JURI::root(true) . '/media/nnframework/js/script.min.js');
-		JFactory::getDocument()->addScriptVersion(JURI::root(true) . '/media/nnframework/js/toggler.min.js');
+		NNFrameworkFunctions::addScriptVersion(JUri::root(true) . '/media/nnframework/js/script.min.js');
+		NNFrameworkFunctions::addScriptVersion(JUri::root(true) . '/media/nnframework/js/toggler.min.js');
 
 		$param = preg_replace('#^\s*(.*?)\s*$#', '\1', $param);
 		$param = preg_replace('#\s*\|\s*#', '|', $param);
@@ -70,11 +71,11 @@ class nnFieldToggler
 		$html = array();
 		if ($param != '')
 		{
-			$param = preg_replace('#[^a-z0-9-\.\|\@]#', '_', $param);
-			$param = str_replace('@', '_', $param);
+			$param      = preg_replace('#[^a-z0-9-\.\|\@]#', '_', $param);
+			$param      = str_replace('@', '_', $param);
 			$set_groups = explode('|', $param);
 			$set_values = explode('|', $value);
-			$ids = array();
+			$ids        = array();
 			foreach ($set_groups as $i => $group)
 			{
 				$count = $i;
@@ -120,6 +121,11 @@ class nnFieldToggler
 
 	private function get($val, $default = '')
 	{
-		return (isset($this->params[$val]) && (string) $this->params[$val] != '') ? (string) $this->params[$val] : $default;
+		if (!isset($this->params[$val]) || (string) $this->params[$val] == '')
+		{
+			return $default;
+		}
+
+		return (string) $this->params[$val];
 	}
 }

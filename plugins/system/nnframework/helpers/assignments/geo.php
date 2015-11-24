@@ -3,82 +3,102 @@
  * NoNumber Framework Helper File: Assignments: Geo
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die;
 
-/**
- * Assignments: Browsers
- */
-class NNFrameworkAssignmentsGeo
+if (is_dir(JPATH_LIBRARIES . '/geoip'))
+{
+	JLoader::registerNamespace('GeoIp2', JPATH_LIBRARIES . '/geoip');
+	JLoader::registerNamespace('MaxMind', JPATH_LIBRARIES . '/geoip');
+}
+
+use GeoIp2\GeoIp;
+
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/assignment.php';
+
+class NNFrameworkAssignmentsGeo extends NNFrameworkAssignment
 {
 	var $geo = null;
 
 	/**
 	 * passContinents
 	 */
-	function passContinents(&$parent, &$params, $selection = array(), $assignment = 'all')
+	function passContinents()
 	{
-		$selection = $parent->makeArray($selection);
-
-		$geo = self::getGeo();
-		if (!$geo)
+		if (!$this->getGeo() || empty($this->geo->continentCode))
 		{
-			return $parent->pass(0, $assignment);
+			return $this->pass(false);
 		}
-		$continent = $geo->geoplugin_continentCode;
 
-		return $parent->passSimple($continent, $selection, $assignment);
+		return $this->passSimple($this->geo->continentCode);
 	}
 
 	/**
 	 * passCountries
 	 */
-	function passCountries(&$parent, &$params, $selection = array(), $assignment = 'all')
+	function passCountries()
 	{
-		$selection = $parent->makeArray($selection);
-
-		$geo = self::getGeo();
-		if (!$geo)
+		if (!$this->getGeo() || empty($this->geo->countryCode))
 		{
-			return $parent->pass(0, $assignment);
+			return $this->pass(false);
 		}
-		$country = $geo->geoplugin_countryCode;
 
-		return $parent->passSimple($country, $selection, $assignment);
+		return $this->passSimple($this->geo->countryCode);
 	}
 
 	/**
 	 * passRegions
 	 */
-	function passRegions(&$parent, &$params, $selection = array(), $assignment = 'all')
+	function passRegions()
 	{
-		$selection = $parent->makeArray($selection);
-
-		$geo = self::getGeo();
-		if (!$geo)
+		if (!$this->getGeo() || empty($this->geo->countryCode) || empty($this->geo->regionCode))
 		{
-			return $parent->pass(0, $assignment);
+			return $this->pass(false);
 		}
-		$region = $geo->geoplugin_countryCode . '-' . $geo->geoplugin_regionCode;
 
-		return $parent->passSimple($region, $selection, $assignment);
+		$region = $this->geo->countryCode . '-' . $this->geo->regionCode;
+
+		return $this->passSimple($region);
 	}
 
-	function getGeo()
+	/**
+	 * passPostalcodes
+	 */
+	function passPostalcodes()
 	{
-		if (!$this->geo)
+		if (!$this->getGeo() || empty($this->geo->postalCode))
 		{
-			require_once JPATH_PLUGINS . '/system/nnframework/helpers/functions.php';
-			$func = new NNFrameworkFunctions;
-			$this->geo = json_decode($func->getContents('http://www.geoplugin.net/json.gp?ip=' . $_SERVER['REMOTE_ADDR']));
+			return $this->pass(false);
 		}
+
+		// replace dashes with dots: 730-0011 => 730.0011
+		$postalcode = str_replace('-', '.', $this->geo->postalCode);
+
+		return $this->passInRange($postalcode);
+	}
+
+	public function getGeo($ip = '')
+	{
+		if ($this->geo !== null)
+		{
+			return $this->geo;
+		}
+
+		if (!class_exists('GeoIp2\\GeoIp'))
+		{
+			return null;
+		}
+
+		$geo = new GeoIp($ip);
+
+		$this->geo = $geo->get();
 
 		return $this->geo;
 	}

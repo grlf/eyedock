@@ -16,7 +16,7 @@ class com_AlfContactInstallerScript
 	{
 		// Shows after install
 		echo '<div class="well"><img style="float: left; margin-left: 15px; margin-right: 15px; margin-bottom: 10px;" src="' . JURI::root() . 'media/com_alfcontact/images/' . 'alfcontact-48.png' . '" alt="ALFContact logo" />';
-		echo '<h2 style="color: #FEA23B; margin: 0pt; padding: 15px;">' . JText::_('COM_ALFCONTACT') . ' v3.1.7</h2>';
+		echo '<h2 style="color: #FEA23B; margin: 0pt; padding: 15px;">' . JText::_('COM_ALFCONTACT') . ' v3.2.0</h2>';
 		echo '<div style="width: 50em; margin: 0pt; padding: 0.5em;">';
 		echo '<p><br>' . JText::_('COM_ALFCONTACT_DESCRIPTION') . '</p>';
 		echo '<p>' . JText::_('COM_ALFCONTACT_INSTALL_TEXT') . '</p>';
@@ -75,7 +75,7 @@ class com_AlfContactInstallerScript
 	{
 		// $parent is the class calling this method
 		// $type is the type of change (install, update or discover_install)
-		$siteApp = JApplication::getInstance('site');
+		$siteApp = JApplicationCms::getInstance('site');
 		$menu = $siteApp->getMenu()->getItems('link','index.php?option=com_alfcontact&view=alfcontact');
 		$firstmenu = array_shift($menu);
 				
@@ -95,17 +95,15 @@ class com_AlfContactInstallerScript
 			//Copy the parameteres to the menu-item settings			
 			$db = JFactory::getDBO();
 			$name = 'com_alfcontact';
-			$db->setQuery('UPDATE #__extensions SET params = ' . $db->quote((string) $c_params) .
-							' WHERE name = ' . $db->quote((string) $name));
-			$db->query();
+			$query = "UPDATE #__extensions SET params =". $db->quote((string) $c_params) . "WHERE name =" . $db->quote((string) $name);
+			$db->setQuery($query);
 			
 			foreach($menu as $val) {
 				$val->params->set('title', $temp_title);
 				$val->params->set('header', $temp_header);
 				$val->params->set('footer', $temp_footer);
-				$db->setQuery('UPDATE #__menu SET params = ' . $db->quote((string) $val->params) .
-							  ' WHERE id = ' . $db->quote((string) $val->id));
-				$db->query();
+				$query = "UPDATE #__menu SET params = " . $db->quote((string) $val->params) . " WHERE id = " . $db->quote((string) $val->id);
+				$db->setQuery($query);
 			}
 		}
 		

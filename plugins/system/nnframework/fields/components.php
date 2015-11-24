@@ -4,52 +4,50 @@
  * Displays a list of components with check boxes
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die;
 
-class JFormFieldNN_Components extends JFormField
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/field.php';
+
+class JFormFieldNN_Components extends NNFormField
 {
 	public $type = 'Components';
-	private $params = null;
-	private $db = null;
 
 	protected function getInput()
 	{
 		$this->params = $this->element->attributes();
-		$this->db = JFactory::getDBO();
 
-		$frontend = $this->get('frontend', 1);
-		$admin = $this->get('admin', 1);
-		$size = (int) $this->get('size');
+		$options = $this->getComponents();
 
-		if (!$frontend && !$admin)
+		if (empty($options))
 		{
 			return '';
 		}
 
-		$components = $this->getComponents($frontend, $admin);
-
-		$options = array();
-
-		foreach ($components as $component)
-		{
-			$options[] = JHtml::_('select.option', $component->element, $component->name);
-		}
+		$size = (int) $this->get('size');
 
 		require_once JPATH_PLUGINS . '/system/nnframework/helpers/html.php';
 
-		return nnHtml::selectlistsimple($options, $this->name, $this->value, $this->id, $size, 1);
+		return NNHtml::selectlistsimple($options, $this->name, $this->value, $this->id, $size, 1);
 	}
 
-	function getComponents($frontend = 1, $admin = 1)
+	function getComponents()
 	{
+		$frontend = $this->get('frontend', 1);
+		$admin    = $this->get('admin', 1);
+
+		if (!$frontend && !$admin)
+		{
+			return array();
+		}
+
 		jimport('joomla.filesystem.folder');
 		jimport('joomla.filesystem.file');
 
@@ -65,7 +63,7 @@ class JFormFieldNN_Components extends JFormField
 		$components = $this->db->loadObjectList();
 
 		$comps = array();
-		$lang = JFactory::getLanguage();
+		$lang  = JFactory::getLanguage();
 
 		foreach ($components as $i => $component)
 		{
@@ -93,16 +91,18 @@ class JFormFieldNN_Components extends JFormField
 				|| $lang->load($component->element . '.sys', JPATH_BASE, $lang->getDefault(), false, false)
 				|| $lang->load($component->element . '.sys', JPATH_ADMINISTRATOR . '/components/' . $component->element, $lang->getDefault(), false, false);
 			}
-			$component->name = JText::_(strtoupper($component->name));
+			$component->name                                                                        = JText::_(strtoupper($component->name));
 			$comps[preg_replace('#[^a-z0-9_]#i', '', $component->name . '_' . $component->element)] = $component;
 		}
 		ksort($comps);
 
-		return $comps;
-	}
+		$options = array();
 
-	private function get($val, $default = '')
-	{
-		return (isset($this->params[$val]) && (string) $this->params[$val] != '') ? (string) $this->params[$val] : $default;
+		foreach ($comps as $component)
+		{
+			$options[] = JHtml::_('select.option', $component->element, $component->name);
+		}
+
+		return $options;
 	}
 }

@@ -3,23 +3,22 @@
  * NoNumber Framework Helper File: Assignments: Components
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die;
 
-/**
- * Assignments: Components
- */
-class NNFrameworkAssignmentsComponents
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/assignment.php';
+
+class NNFrameworkAssignmentsComponents extends NNFrameworkAssignment
 {
-	function passComponents(&$parent, &$params, $selection = array(), $assignment = 'all')
+	function passComponents()
 	{
-		return $parent->passSimple(strtolower($parent->params->option), $selection, $assignment);
+		return $this->passSimple(strtolower($this->request->option));
 	}
 }

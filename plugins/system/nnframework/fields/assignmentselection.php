@@ -4,22 +4,21 @@
  * Displays Assignment Selection radio options
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die;
 
-require_once JPATH_PLUGINS . '/system/nnframework/helpers/text.php';
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/field.php';
 
-class JFormFieldNN_AssignmentSelection extends JFormField
+class JFormFieldNN_AssignmentSelection extends NNFormField
 {
 	public $type = 'AssignmentSelection';
-	private $params = null;
 
 	protected function getLabel()
 	{
@@ -33,13 +32,13 @@ class JFormFieldNN_AssignmentSelection extends JFormField
 		JHtml::stylesheet('nnframework/style.min.css', false, true);
 
 		require_once __DIR__ . '/toggler.php';
-		$toggler = new nnFieldToggler;
+		$toggler = new NNFieldToggler;
 
 		$this->value = (int) $this->value;
-		$label = $this->get('label');
-		$param_name = $this->get('name');
-		$noshow = $this->get('noshow', 0);
-		$showclose = $this->get('showclose', 0);
+		$label       = $this->get('label');
+		$param_name  = $this->get('name');
+		$noshow      = $this->get('noshow', 0);
+		$showclose   = $this->get('showclose', 0);
 
 		$html = array();
 
@@ -78,12 +77,12 @@ class JFormFieldNN_AssignmentSelection extends JFormField
 			$html[] = '<fieldset id="' . $this->id . '"  class="radio btn-group">';
 
 			$onclick = ' onclick="nnScripts.setToggleTitleClass(this, 0)"';
-			$html[] = '<input type="radio" id="' . $this->id . '0" name="' . $this->name . '" value="0"' . ((!$this->value) ? ' checked="checked"' : '') . $onclick . '/>';
-			$html[] = '<label class="nn_btn-ignore" for="' . $this->id . '0">' . JText::_('NN_IGNORE') . '</label>';
+			$html[]  = '<input type="radio" id="' . $this->id . '0" name="' . $this->name . '" value="0"' . ((!$this->value) ? ' checked="checked"' : '') . $onclick . '/>';
+			$html[]  = '<label class="nn_btn-ignore" for="' . $this->id . '0">' . JText::_('NN_IGNORE') . '</label>';
 
 			$onclick = ' onclick="nnScripts.setToggleTitleClass(this, 1)"';
-			$html[] = '<input type="radio" id="' . $this->id . '1" name="' . $this->name . '" value="1"' . (($this->value === 1) ? ' checked="checked"' : '') . $onclick . '/>';
-			$html[] = '<label class="nn_btn-include" for="' . $this->id . '1">' . JText::_('NN_INCLUDE') . '</label>';
+			$html[]  = '<input type="radio" id="' . $this->id . '1" name="' . $this->name . '" value="1"' . (($this->value === 1) ? ' checked="checked"' : '') . $onclick . '/>';
+			$html[]  = '<label class="nn_btn-include" for="' . $this->id . '1">' . JText::_('NN_INCLUDE') . '</label>';
 
 			$onclick = ' onclick="nnScripts.setToggleTitleClass(this, 2)"';
 			$onclick .= ' onload="nnScripts.setToggleTitleClass(this, ' . $this->value . ', 7)"';
@@ -109,10 +108,5 @@ class JFormFieldNN_AssignmentSelection extends JFormField
 		}
 
 		return '</div>' . implode('', $html);
-	}
-
-	private function get($val, $default = '')
-	{
-		return (isset($this->params[$val]) && (string) $this->params[$val] != '') ? (string) $this->params[$val] : $default;
 	}
 }

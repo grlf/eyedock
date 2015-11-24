@@ -3,26 +3,25 @@
  * NoNumber Framework Helper File: Assignments: Users
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die;
 
-/**
- * Assignments: Users
- */
-class NNFrameworkAssignmentsUsers
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/assignment.php';
+
+class NNFrameworkAssignmentsUsers extends NNFrameworkAssignment
 {
-	function passUserGroupLevels(&$parent, &$params, $selection = array(), $assignment = 'all')
+	function passUserGroupLevels()
 	{
 		$user = JFactory::getUser();
 
-		if (isset($user->groups) && !empty($user->groups))
+		if (!empty($user->groups))
 		{
 			$groups = array_values($user->groups);
 		}
@@ -31,11 +30,11 @@ class NNFrameworkAssignmentsUsers
 			$groups = $user->getAuthorisedGroups();
 		}
 
-		return $parent->passSimple($groups, $selection, $assignment);
+		return $this->passSimple($groups);
 	}
 
-	function passUsers(&$parent, &$params, $selection = array(), $assignment = 'all')
+	function passUsers()
 	{
-		return $parent->passSimple(JFactory::getUser()->get('id'), $selection, $assignment);
+		return $this->passSimple(JFactory::getUser()->get('id'));
 	}
 }

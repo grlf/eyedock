@@ -2,7 +2,7 @@
 
 /**
  * @package   	JCE
- * @copyright 	Copyright (c) 2009-2014 Ryan Demmer. All rights reserved.
+ * @copyright 	Copyright (c) 2009-2015 Ryan Demmer. All rights reserved.
  * @license   	GNU/GPL 2 or later - http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * JCE is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -19,19 +19,19 @@ class WFCleanupPluginConfig {
         $model = new WFModelEditor();
         
         // Encoding
-        $settings['entity_encoding'] = $wf->getParam('editor.entity_encoding', 'raw', 'named');
+        $settings['entity_encoding'] = $wf->getParam('editor.entity_encoding');
         
         // keep &nbsp;
         $nbsp = (bool) $wf->getParam('editor.keep_nbsp', 1);
         
         // use named encoding with limited entities set if raw/utf-8 and keep_nbsp === true
-        if ($settings['entity_encoding'] == 'raw' && $nbsp) {
+        if ($settings['entity_encoding'] === 'raw' && $nbsp) {
             $settings['entity_encoding'] = '';
             $settings['entities'] = '160,nbsp,173,shy';
         }
 
         // set "plugin mode"
-        $settings['cleanup_pluginmode'] = $wf->getParam('cleanup.pluginmode', 0, 0);
+        $settings['cleanup_pluginmode'] = $wf->getParam('editor.cleanup_pluginmode', 0, 0);
         
         // get verify html (default is true)
         $settings['verify_html'] = $wf->getParam('editor.verify_html', 1, 1, 'boolean', false);
@@ -39,7 +39,11 @@ class WFCleanupPluginConfig {
         $settings['pad_empty_tags'] = $wf->getParam('editor.pad_empty_tags', 1, 1, 'boolean');
 
         // set schema
-        $settings['schema'] = $wf->getParam('editor.schema', 'html4', 'html4', false);
+        $settings['schema'] = $wf->getParam('editor.schema', 'mixed');
+        
+        if ($settings['schema'] === "html5") {
+            $settings['schema'] = "html5-strict";
+        }
 
         // Get Extended elements
         $settings['extended_valid_elements'] = $wf->getParam('editor.extended_elements', '', '');

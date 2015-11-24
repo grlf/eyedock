@@ -4,46 +4,44 @@
  * Display a menuitem field with a button
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die;
 
-require_once JPATH_PLUGINS . '/system/nnframework/helpers/text.php';
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/field.php';
 
-class JFormFieldNN_MenuItems extends JFormField
+class JFormFieldNN_MenuItems extends NNFormField
 {
 	public $type = 'MenuItems';
-	private $params = null;
 
 	protected function getInput()
 	{
 		$this->params = $this->element->attributes();
 
-		$size = (int) $this->get('size');
+		$size     = (int) $this->get('size');
 		$multiple = $this->get('multiple', 0);
 
-		JFactory::getLanguage()->load('com_menus', JPATH_ADMINISTRATOR);
+		NNFrameworkFunctions::loadLanguage('com_menus', JPATH_ADMINISTRATOR);
 
-		require_once JPATH_ADMINISTRATOR . '/components/com_menus/helpers/menus.php';
-		$options = $this->getMenuLinks();
+		$options = $this->getMenuItems();
 
 		require_once JPATH_PLUGINS . '/system/nnframework/helpers/html.php';
 
-		return nnHtml::selectlist($options, $this->name, $this->value, $this->id, $size, $multiple);
+		return NNHtml::selectlist($options, $this->name, $this->value, $this->id, $size, $multiple);
 	}
 
 	/**
 	 * Get a list of menu links for one or all menus.
 	 */
-	public static function getMenuLinks()
+	public static function getMenuItems()
 	{
-		$db = JFactory::getDbo();
+		$db    = JFactory::getDbo();
 		$query = $db->getQuery(true)
 			->select('a.id AS value, a.title AS text, a.alias, a.level, a.menutype, a.type, a.template_style_id, a.checked_out, a.language')
 			->from('#__menu AS a')
@@ -89,14 +87,14 @@ class JFormFieldNN_MenuItems extends JFormField
 		$rlu = array();
 		foreach ($menuTypes as &$type)
 		{
-			$type->value = 'type.' . $type->menutype;
-			$type->text = $type->title;
-			$type->level = 0;
-			$type->class = 'hidechildren';
+			$type->value      = 'type.' . $type->menutype;
+			$type->text       = $type->title;
+			$type->level      = 0;
+			$type->class      = 'hidechildren';
 			$type->labelclass = 'nav-header';
 
 			$rlu[$type->menutype] = &$type;
-			$type->links = array();
+			$type->links          = array();
 		}
 
 		// Loop through the list of menu links.
@@ -128,10 +126,5 @@ class JFormFieldNN_MenuItems extends JFormField
 		}
 
 		return $menuTypes;
-	}
-
-	private function get($val, $default = '')
-	{
-		return (isset($this->params[$val]) && (string) $this->params[$val] != '') ? (string) $this->params[$val] : $default;
 	}
 }

@@ -4,11 +4,11 @@
  * Displays a textfield with a color picker
  *
  * @package         NoNumber Framework
- * @version         14.10.1
+ * @version         15.11.2132
  *
  * @author          Peter van Westen <peter@nonumber.nl>
  * @link            http://www.nonumber.nl
- * @copyright       Copyright © 2014 NoNumber All Rights Reserved
+ * @copyright       Copyright © 2015 NoNumber All Rights Reserved
  * @license         http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
@@ -16,37 +16,39 @@ defined('_JEXEC') or die;
 
 jimport('joomla.form.formfield');
 
+require_once JPATH_PLUGINS . '/system/nnframework/helpers/functions.php';
+
 class JFormFieldNN_ColorPicker extends JFormField
 {
 	public $type = 'ColorPicker';
 
 	protected function getInput()
 	{
-		$field = new nnFieldColorPicker;
+		$field = new NNFieldColorPicker;
 
 		return $field->getInput($this->name, $this->id, $this->value, $this->element->attributes());
 	}
 }
 
-class nnFieldColorPicker
+class NNFieldColorPicker
 {
 	function getInput($name, $id, $value, $params)
 	{
-		$this->name = $name;
-		$this->id = $id;
-		$this->value = $value;
+		$this->name   = $name;
+		$this->id     = $id;
+		$this->value  = $value;
 		$this->params = $params;
-		$action = '';
+		$action       = '';
 
 		if ($this->get('inlist', 0) && $this->get('action'))
 		{
 			$this->name = $name . $id;
-			$this->id = $name . $id;
-			$action = ' onchange="' . $this->get('action') . '"';
+			$this->id   = $name . $id;
+			$action     = ' onchange="' . $this->get('action') . '"';
 		}
 
 		JHtml::stylesheet('nnframework/colorpicker.min.css', false, true);
-		JFactory::getDocument()->addScriptVersion(JURI::root(true) . '/media/nnframework/js/colorpicker.min.js');
+		NNFrameworkFunctions::addScriptVersion(JUri::root(true) . '/media/nnframework/js/colorpicker.min.js');
 
 		$class = ' class="' . trim('nncolorpicker chzn-done ' . $this->get('class')) . '"';
 
@@ -75,7 +77,7 @@ class nnFieldColorPicker
 				'#ffffff',
 				'#999999',
 				'#555555',
-				'#000000'
+				'#000000',
 			);
 		}
 		else
@@ -98,7 +100,7 @@ class nnFieldColorPicker
 		}
 		$split = $split ? $split : 3;
 
-		$html = array();
+		$html   = array();
 		$html[] = '<select ' . $action . ' name="' . $this->name . '" id="' . $this->id . '"'
 			. $class . ' style="visibility:hidden;width:22px;height:1px">';
 
@@ -117,6 +119,11 @@ class nnFieldColorPicker
 
 	private function get($val, $default = '')
 	{
-		return (isset($this->params[$val]) && (string) $this->params[$val] != '') ? (string) $this->params[$val] : $default;
+		if (!isset($this->params[$val]) || (string) $this->params[$val] == '')
+		{
+			return $default;
+		}
+
+		return (string) $this->params[$val];
 	}
 }
