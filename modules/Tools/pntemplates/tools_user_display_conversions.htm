@@ -1,0 +1,136 @@
+<!--[headscript_conversions]-->
+
+<h2 title="Conversion Calculators">Conversion Calculators</h2>
+
+<div style="width:100%;"><div style="float:left;">[ <a href="javascript:history.go(-1);" title="Go Back">Go Back</a> ]</div><div style="float:right;">[ <a href="<!--[pnmodurl modname="Tools" type="user" func="explain" tool="conversions"]-->" title="Learn How This Tool Works">Learn How This Tool Works</a> ]</div></div><br />
+
+<form name="prescriptions">
+
+<div style="border:1px solid #ccc;padding:10px;">
+
+    <div style="border:1px solid #eee;background:#fafafa;padding:10px;"><h3 title="Vertex Calculator" style="display:inline;">Vertex Calculator</h3></div><br />
+    
+    <strong>Enter a refraction (plus or minus cyl) in the box on the left then press &quot;vertex&quot;.</strong><br /><br />
+
+    <table style="width:100%:border:0;" cellpadding="10" cellspacing="2">
+
+        <tr>
+
+            <td style="width:50%;border:1px solid #f2f2f2;background:#fafafa;">
+
+                <img src="modules/Tools/pnimages/phoropter.gif" style="float:left;width:86px;height:85px;margin-right:10px;" alt="Phoropter" />
+
+                Vertex Distance:<br />
+
+                <select name="vertexdist" size="1" onChange="vertexChanged(document.prescriptions.vertexdist.options[selectedIndex].value);">
+                    <option value="7" />7
+                    <option value="8" />8
+                    <option value="9" />9
+                    <option value="10" />10
+                    <option value="11" />11
+                    <option value="12" selected="selected" />12
+                    <option value="13" />13
+                    <option value="14" />14
+                    <option value="15" />15
+                    <option value="16" />16
+                </select><br /><br />
+
+                Round To .25 D:<br />
+                <input type="checkbox" name="round" value="ON" checked="checked" />
+
+            </td>
+
+            <td>&nbsp;</td>
+
+            <td style="width:50%;border:1px solid #f2f2f2;background:#fafafa;">
+
+                <img src="modules/Tools/pnimages/insert_contact.gif" style="float:left;width:88px;height:87px;margin-right:10px;" alt="Contact Lens" />
+
+                Prescription at the corneal plane.
+
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td style="border:1px solid #f2f2f2;background:#fafafa;">
+
+                <input type="text" name="refraction" size="20" maxlength="20" onkeydown="anythingChanged(window.event.keyCode);" onChange="submitRx(document.prescriptions.refraction.value);" tabindex="1" /><br /><br />
+
+                <input type="reset" name="reset" value="clear" />
+
+            </td>
+
+            <td valign="top">
+
+                <a href="javascript:vertex();" title="Get Vertext"><img src="modules/Tools/pnimages/vertex.gif" style="width:64px;height:37px;border:0;" alt="Get Vertex" /></a>
+
+            </td>
+
+            <td style="border:1px solid #f2f2f2;background:#fafafa;">
+
+                <input type="text" name="answer" value="" size="20" maxlength="20" onChange="answerChanged();" onFocus="blur(this);" /><br /><br />
+
+                <input type="button" name="switchCyl" value="transpose" onClick="transpose();" />
+
+            </td>
+
+        </tr>
+
+    </table>
+
+</div>
+
+</form>
+
+<form name="keratometry">
+
+<div style="border:1px solid #ccc;padding:10px;">
+
+    <div style="border:1px solid #eee;background:#fafafa;padding:10px;"><h3 title="Keratometry Converter" style="display:inline;">Keratometry Converter</h3></div><br />
+
+    <strong>Enter a keratometry value (in D or mm) in the <strong>left</strong> box and press &quot;convert&quot;.</strong><br /><br />
+    
+    <table style="width:100%:border:0;" cellpadding="10" cellspacing="2">
+
+        <tr>
+
+            <td style="width:50%;border:1px solid #f2f2f2;background:#fafafa;">
+
+                K Value:<br />
+
+                <input type="text" name="kvalue" size="20" onkeydown="document.keratometry.kans.value=''" tabindex="3" /><br /><br />
+
+                Round To .25 D:<br />
+
+                <input type="checkbox" name="krounder" value="ON" checked="checked" />
+
+            </td>
+
+            <td valign="top">
+
+                <a href="javascript:ksubmit(document.keratometry.kvalue.value);"></a>
+
+                <a href="javascript:ksubmit(document.keratometry.kvalue.value);"><img src="modules/Tools/pnimages/convert.gif" style="width:64px;height:37px;border:0;" alt="Convert K" /></a>
+
+            </td>
+
+            <td style="width:50%;border:1px solid #f2f2f2;background:#fafafa;">
+
+                <input type="text" name="kans" size="20" onFocus="blur(this);" /><br /><br />
+
+                <input type="reset" name="kclear" value="clear" />
+
+            </td>
+
+        </tr>
+
+    </table>
+
+</div>
+
+</form>
+
+<div style="width:100%;"><div style="float:left;">[ <a href="javascript:history.go(-1);" title="Go Back">Go Back</a> ]</div><div style="float:right;">[ <a href="<!--[pnmodurl modname="Tools" type="user" func="explain" tool="conversions"]-->" title="Learn How This Tool Works">Learn How This Tool Works</a> ]</div></div><br />
+

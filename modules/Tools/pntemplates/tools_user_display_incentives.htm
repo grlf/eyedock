@@ -1,0 +1,174 @@
+<!--[headscript_incentives]-->
+
+<h2 title="Employee Incentive Calculator">Employee Incentive Calculator</h2>
+
+<div style="width:100%;"><div style="float:left;">[ <a href="javascript:history.go(-1);" title="Go Back">Go Back</a> ]</div><div style="float:right;">[ <a href="<!--[pnmodurl modname="Tools" type="user" func="explain" tool="incentives"]-->" title="Learn How This Tool Works">Learn How This Tool Works</a> ]</div></div><br />
+
+<div style="width:95%;text-align:center;border:1px solid #ccc;background:#fafafa;">
+    <br />
+
+<form name="theForm">
+<div style="width:95%;text-align:center;border:1px solid #ccc;background:#fafafa; margin: 1.5em;">
+    <br />
+        <table style="width:100%;border:0;" cellpadding="5" cellspacing="2">
+            <tr>
+                <td style="border-right:1px solid #000;">
+                    <h3 title="Goal Calculator">Calculate Goals</h3>
+                    Calculate incentives for:<br />
+                    <select size="1" name="month" onChange="changeDate()";>
+                        <option value="January" />January
+                        <option value="February" />February
+                        <option value="March" />March
+                        <option value="April" />April
+                        <option value="May" />May
+                        <option value="June" />June
+                        <option value="July" />July
+                        <option value="August" />August
+                        <option value="September" />September
+                        <option value="October" />October
+                        <option value="November" />November
+                        <option value="December" selected="selected" />December
+                    </select> 
+                    <select size="1" name="year" onChange="changeDate()">
+
+                        <option value="2007" />2007                   
+                      <option value="2008" selected="selected" />2008                     
+                      <option value="2009" />2009  
+                      <option value="2010" />2010              
+                       <option value="2011" />2011          
+                      <option value="2012" />2012
+                    
+                  </select><br /><br />
+		  
+                    Gross Collections for:
+                    <table style="width:100%;border:0;" cellpadding="5" cellspacing="2">
+                        <tr>
+                            <td>
+                                <div id="month14">14 months ago:</div>
+                            </td>
+                            <td>
+                                <input type="text" name="gross14" size="11" tabindex="1" onChange="oldGrossChange(this);" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div id="month13">13 months ago:</div>
+                            </td>
+                            <td>
+                                <input type="text" name="gross13" size="11" tabindex="2" onChange="oldGrossChange(this);" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div id="month12">12 months ago:</div>
+                            </td>
+                            <td>
+                                <input type="text" name="gross12" size="11" tabindex="3" onChange="oldGrossChange(this);" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;
+                                
+                            </td>
+                            <td>&nbsp;
+                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Rate of inflation <span style="cursor: help;" <!--[popup caption='Inflation Rate' trigger=onClick sticky=true text='For this variable you can use the increase rate for social security benefits, which reflects the rate of inflation. Any social security office should be able to provide the rate of increase in benefits tied to inflation.']--> >[?]</span> :
+                            </td>
+                            <td>
+                                <input type="text" name="inflation" size="4" tabindex="4" onChange="javascript:this.value=verifyMoney(this.value);resetted();" value="3.0" /> %
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Practice Inherent growth rate <span style="cursor: help;" <!--[popup caption='Growth Rate' trigger=onClick sticky=true text='Inherent Growth Rate is the annual percentage of growth that the practice naturally experiences.  Gale Stoner suggests using the average historical (minimum 3 years) growth rate prior to implementation of an incentive plan.']--> >[?]</span> :
+                            </td>
+                            <td>
+                                <input type="text" name="growth" size="4" tabindex="5" onChange="javascript:this.value=verifyMoney(this.value);resetted();" value="5"> %
+                            </td>
+                        </tr>
+                    </table>
+                    
+                    <input type="button" value="Calculate Goal" name="calc1" onClick="infORgrowth();" tabindex="6" />
+                </td>
+                <td>
+                    <h3 title="Goal Calculator">Calculate Incentives</h3>
+                    <table style="width:100%;border:0;" cellpadding="5" cellspacing="2">
+                        <tr>
+                            <td>
+                                Approximate percentage of gross going to staff compensation:
+                            </td>
+                            <td>
+                                <input type="text" name="percentComp" size="4" tabindex="7" value="20" onChange="javascript:this.value=verifyMoney(this.value);" /> %
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Equivalent full-time staff members <span style="cursor: help;" <!--[popup caption='Full Time Employee' trigger=onClick sticky=true text='A full time employee is an individual
+working at least 80% of the available office hours.&nbsp; It is recommended that they
+become eligible for the incentive plan after 90 days of employment.&nbsp; Some
+offices include part-time staff members and pro-rate their hours.']--> >[?]</span> :
+                              
+                            </td>
+                            <td>
+                                <input type="text" name="staffNum" size="4" tabindex="8" onChange="javascript:this.value=verifyMoney(this.value);" />
+                            </td>
+                        </tr>
+                    </table>
+                    Gross Collections for:
+                    <table style="width:100%;border:0;" cellpadding="5" cellspacing="2">
+                        <tr>
+                            <td width="140" >
+                                <div id="month2">2 months ago:</div>
+                            </td>
+                            <td width="90" >
+                                <input type="text" name="gross2" size="11" tabindex="9" onChange="newGrossChange(this);" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="140">
+                                <div id="month1">Last month's:</div>
+                            </td>
+                            <td width="90" >
+                                <input type="text" name="gross1" size="11" tabindex="9"onChange="newGrossChange(this);" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="140">
+                                <div id="month0">This month:</div>
+                            </td>
+                            <td width="90" >
+                                <input type="text" name="gross0" size="11" tabindex="9" onChange="newGrossChange(this);" />
+                            </td>
+                        </tr>
+                    </table>
+                    
+                    <input type="button" value="Calculate Incentives" name="calc2" onClick="doCalc();" tabindex="12" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div id="begins"></div>
+                    <div id="answer"></div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="reset" value="Reset" name="B2" onClick="resetted();" />
+                    <input type="button" value="Print Screen" name="printer" onClick="window.print();" />
+                </td>
+            </tr>
+        </table>
+    </form>
+    </div>
+    <br /><br />
+</div><br />
+<div style="width:100%;"><div style="float:left;">[ <a href="javascript:history.go(-1);" title="Go Back">Go Back</a> ]</div><div style="float:right;">[ <a href="<!--[pnmodurl modname="Tools" type="user" func="explain" tool="incentives"]-->" title="Learn How This Tool Works">Learn How This Tool Works</a> ]</div></div><br />
+    The formula for this calculator was graciously provided by Gale Stoner. Click the link below to visit his website.<br /><br />
+    <a href="http://www.galestoner.com" title="Contact Gale Stoner" target="_blank"><img src="http://www.eyedock.com/images/galestonerlogo.gif" width="270" height="63" alt="Contact Gale Stoner" /></a>
+
+
+

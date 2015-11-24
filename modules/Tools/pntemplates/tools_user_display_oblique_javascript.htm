@@ -1,0 +1,503 @@
+
+<h2 title="Oblique Crossed Cylinders Calculator - Javascript Version">Oblique Crossed Cylinders Calculator - Javascript Version</h2>
+
+<div style="width:100%;"><div style="float:left;">[ <a href="javascript:history.go(-1);" title="Go Back">Go Back</a> ]</div><div style="float:right;">[ <a href="<!--[pnmodurl modname="Tools" type="user" func="explain" tool="oblique"]-->" title="Learn How This Tool Works">Learn How This Tool Works</a> ]</div></div><br />
+
+<script type="text/javascript" src="/modules/Tools/pnjavascript/rx.js"></script>
+
+
+<script language="JavaScript">
+
+<!--
+var myImg=new Image();
+myImg.src="/modules/Tools/pnimages/CL_insert_animation.gif";
+
+
+var clRx=new rx;
+var clArray=new Array(0,0,0);
+var orArray=new Array(0,0,0);
+var ansArray=new Array(0,0,0);
+var rotateNum=0;
+var calcDone=0;
+
+var clReady=0;
+var orReady=0;
+var rotateReady=0;
+
+var storedComment="";
+
+function replaceImage (anImgName,anImageFile)
+{
+   document.images[anImgName].src=anImageFile;
+}
+
+
+function submitRx(prescription,CLorOR)
+{
+   var rxArray=new Array(0,0,0);
+   var rxNumsOnly=clRx.onlyNums(prescription.value);
+   var ready=0;
+
+   if (!clRx.validateFormat(rxNumsOnly)){
+      alert("Please enter the prescription in this format: -10.25+2.50x130.  Plus or minus cyl is accepable");
+      prescription.select();
+
+   } else {
+
+      rxArray=clRx.stringBreaker(rxNumsOnly);
+
+      var comment =clRx.validateNumbers(rxArray);
+      if (comment !="")
+      {
+         alert (comment);
+         prescription.select();
+      } else {
+
+         //check if OR should be vertexed
+         if (CLorOR=="OR" && (Math.abs(rxArray[0])>=4 || Math.abs(rxArray[1]>4)))
+         {
+            var userInput=confirm("You should probably convert this over refraction to the spectacle plane. I can do this for you if you like (I'll assume a 12mm working distance).");
+
+            if (userInput==true)
+            {
+               rxArray=clRx.corneaPlane(rxArray,12);
+            }
+         }
+
+         isChecked=document.theForm.round.checked;
+
+         prescription.value=clRx.prettyString(rxArray,isChecked);
+         ready=1;
+         if (CLorOR=="CL") clArray=rxArray;
+         if (CLorOR=="OR") orArray=rxArray;
+      }
+   }
+
+   return ready;
+}
+
+function enterCL (prescription)
+{
+   clReady=submitRx(prescription,"CL");
+
+}
+
+function enterOR (prescription)
+{
+   orReady=submitRx (prescription,"OR");
+}
+
+function enterPic()
+{
+   myTarget=document.getElementById("comment");
+   storedComment=myTarget.value;
+   myTarget.innerHTML="Click the picture to indicate where it's rotating, or type it in down below (Netscape users must type it in).";
+}
+
+function rotateEntered(daString)
+{
+   rotateReady=0;
+   var dir="";
+   daString=daString.replace(/[^\dlr\-\+]/ig,"");
+   daString=daString.replace(/[R]/g,"r");
+   daString=daString.replace(/[L]/g,"l");
+
+   daMinus=daString.indexOf("-");
+   daPlus=daString.indexOf("+");
+   daR=daString.indexOf("r");
+   daL=daString.indexOf("l");
+
+
+   daDeg=parseInt(daString.replace(/[^\d]/ig,""));
+   if (daDeg>180)
+   {
+      alert ("Be realistic.  A lens rotating this much could be used as fan.");
+   } else {
+      if (daMinus>=0 || daL>=0)
+      {
+         dir=" left";
+         rotateNum=-daDeg;
+         rotateReady=1;
+      }
+
+      if (daPlus>=0 || daR>=0 ||(daPlus<0 && daMinus<0 && daR<0 && daL<0 && daDeg!=0 && daString!=""))
+      {
+         dir=" right";
+         rotateNum=daDeg;
+         rotateReady=1;
+      }
+
+      if (daDeg==0)
+      {
+         dir="";
+         rotateNum=0;
+         daDeg=0;
+         rotateReady=1;
+      }
+
+      if (rotateReady==1)
+      {        //identify excessive rotation
+         if (Math.abs(rotateNum)>55) rotateReady=2;
+         document.theForm.rotation.value=daDeg + dir;
+        // rotateChange (daDeg,dir);
+      }
+  }
+}
+
+function rotateChange (angle,dir)
+{
+
+   if (dir==" right") dir="r";
+   if (dir==" left") dir="l";
+  // var x=document.images;
+   if (angle==0) dir="";
+   if (angle>45) angle=(Math.floor(angle/10))*10 +5;
+  // x[1].src="../images/rotateCl/cl_rotation_"+angle+dir+".gif";
+
+   var picSrc="../images/rotateCl/cl_rotation_"+angle+dir+".gif"
+   replaceImage("rotatePic",picSrc);
+
+
+}
+
+function CLrxFocus ()
+{
+
+	myTarget=document.getElementById("comment");
+   myTarget.innerHTML="Enter the contact lens Rx in plus or minus cyl."
+}
+
+function ORrxFocus()
+{
+	var myTarget=document.getElementById("comment");
+   myTarget.innerHTML="Enter the over refraction in plus or minus cyl."
+}
+
+function rotateFocus()
+{
+	var myTarget=document.getElementById("comment");
+    myTarget.innerHTML="Enter the rotation in degrees.  Indicate left rotation with a '-' or 'L'. Or, click on the lens."
+}
+
+function picClicked(anEvent)
+{
+
+   anythingChanged("rotate");
+   if (anEvent.offsetX)
+   {
+      var dir=" right";
+      var x=anEvent.offsetX;
+      var y=anEvent.offsetY;
+
+      if (x<50) dir=" left";
+      x=Math.abs(x-50);
+      y=y-50;
+
+      var angle=Math.atan(x/y); //answer in rads
+      angle= Math.round((angle*180)/3.14159265);
+      if (angle<0) angle=180+angle;
+      //rotateChange(angle,dir);  - cant get the lens to rotate!
+      if (dir==" left") rotateNum=-angle;
+      if (dir==" right") rotateNum=angle;
+      if (angle==0) dir="";
+      rotateReady=1;
+      if (Math.abs(angle)>60) rotateReady=2;
+      document.theForm.rotation.value=angle+ dir;
+      //document.theForm.rotation.focus();
+   }
+}
+
+function anythingChanged(what)
+{
+   //if (what=="rotate") rotateReady=0;
+   if (what=="cl") clReady=0;
+   if (what=="or") orReady=0;
+
+   document.theForm.answer.value="";
+   ansArray=[0,0,0];
+   calcDone=0;
+}
+
+function deg2rads (degrees)  //converts degrees to radians
+{
+   return (degrees*3.1415926535)/180;
+}
+
+function rads2degs (rads) //converts radians to degrees
+{
+   return (rads*180)/3.1415926535;
+}
+
+function ready2go()
+{
+    var comment="";
+    if (clReady==1 && orReady==1 && (rotateReady==1 || rotateNum==0))
+    {
+       return true;
+    } else {
+       if (clReady!=1) comment +="You have not entered a valid contact lens prescription.  ";
+       if (orReady!=1) comment+= "You have not entered a valid over refraction prescription.  ";
+       if (rotateReady==0) comment += "You have not entered a valid contact lens rotation.  ";
+       if (rotateReady==2) comment +="  This amount of rotation is ludicrous and I refuse to calculate a new lens power.  I suggest you try a different lens.";
+
+       alert (comment);
+       return false;
+     }
+}
+
+
+function startCalc()
+{
+//the following two lines were added on 1/04 because the calculator would malfunction when the user used the refresh or back arrows
+
+clReady=submitRx(document.theForm.CLrx,"CL");
+orReady=submitRx (document.theForm.ORrx,"OR");
+
+var theCL =new Array;
+var theOR = new Array;
+theCL=[clArray[0],clArray[1],clArray[2]];
+theOR=[orArray[0],orArray[1],orArray[2]];
+
+if (ready2go() && calcDone!=1)
+{
+  var resSph,resCyl,resAxis,loAxis,hiAxis,loPower,hiPower,tempAxis,tempPower,top,bottom;
+
+
+
+  theCL[2]=(theCL[2]*1)+(rotateNum*1);
+  if (theCL[2]>180) theCL[2]=theCL[2]-180;
+
+  if (theCL[1]<0) theCL=clRx.transposer(theCL);
+  if (theOR[1]<0) theOR=clRx.transposer(theOR);
+
+
+  axisDiff=theOR[2]-theCL[2];
+
+  //alert(axisDiff);
+
+if (axisDiff>90) axisDiff=axisDiff-180;
+//alert(axisDiff);
+
+  resAxis=(Math.atan((theOR[1]*Math.sin(deg2rads(axisDiff*2)))/((theCL[1]*1)+(theOR[1]*Math.cos(deg2rads(axisDiff*2))))))/2;
+
+
+  resAxis=rads2degs(resAxis);
+
+  if (axisDiff==0)
+  {
+      //alert ('axis dif = 0');
+      ansArray[0]=(1*theCL[0])+(1*theOR[0]);
+      ansArray[1]=(1*theCL[1])+(1*theOR[1]);
+      ansArray[2]=theCL[2];
+  } else {
+
+     resCyl=(theOR[1]*Math.sin(deg2rads(2*axisDiff)))   /(Math.sin(deg2rads(2*resAxis)));
+
+     resSph=((1*theCL[1])+(1*theOR[1])-resCyl)/2;
+
+
+
+resAxis=theCL[2]+resAxis;
+
+     if (resAxis>180) resAxis=resAxis-180;
+
+
+    // if (resAxis<0) resAxis=resAxis+180;
+
+     resSph=(1*resSph)+(1*theCL[0]) +(1*theOR[0]);
+
+     if (theOR[1]==0 || theCL[1]==0)
+     {
+        ansArray[0]=theOR[0]+(1*theCL[0]);
+        ansArray[1]=theOR[1]+(1*theCL[1]);
+        ansArray[2]=theOR[2]+(1*theCL[2]);
+        //alert ('hello');
+     } else {
+        ansArray[0]=resSph;
+        ansArray[1]=resCyl;
+       // alert (resAxis);
+        ansArray[2]=resAxis-rotateNum;
+
+        //next line added on 1/27/04
+        if (ansArray[2]<0) ansArray[2]+=180;
+        //alert (ansArray[2]);
+     }
+
+  }
+
+  //in case a spherical OR was entered
+  if (orArray[1]==0 )
+  {
+     ansArray[0]=(1*clArray[0])+(1*orArray[0]);
+     ansArray[1]=clArray[1];
+     ansArray[2]=clArray[2];
+  }
+
+  if (ansArray[1]>0) ansArray=clRx.transposer(ansArray);
+  isChecked=document.theForm.round.checked;
+  document.theForm.answer.value=clRx.prettyString(ansArray,isChecked);
+  calcDone=1;
+
+  if (Math.abs(rotateNum)>30 )
+  {
+  	myTarget=document.getElementById("comment");
+     myTarget.innerHTML="<font color='red'>With this much rotation, you may want to consider another lens.</font>";
+  } else {
+     myTarget.innerHTML="&nbsp;&nbsp;&nbsp;&nbsp;";
+  }
+}
+}
+
+function transposeAns()
+{
+   if (ansArray[1]!=0)
+   {
+      isChecked=document.theForm.round.checked;
+      document.theForm.answer.value=clRx.prettyString(clRx.transposer(ansArray),isChecked);
+   }
+}
+
+function resetAll()
+{
+   clArray=[0,0,0];
+   orArray=[0,0,0];
+   orArray=[0,0,0];
+   rotateNum=0;
+   calcDone=0;
+   clReady=0;
+   orReady=0;
+   rotateReady=0;
+   storedComment="";
+
+   document.theForm.ORrx.value="";
+   document.theForm.CLrx.value="";
+   document.theForm.answer.value="";
+   document.theForm.rotation.value="0";
+   document.theForm.round.checked="true";
+   myTarget.value="Enter a contact lens Rx in plus or minus cyl."
+   document.images[1].src="../animations/CL_insert_animation.gif";
+
+}
+
+function MM_openBrWindow(theURL,winName,features) { //v2.0
+  window.open(theURL,winName,features);
+}
+
+/*
+function MM_swapImgRestore() { //v3.0
+  var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+}
+
+function MM_preloadImages() { //v3.0
+  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+}
+
+function MM_findObj(n, d) { //v4.01
+  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+  if(!x && d.getElementById) x=d.getElementById(n); return x;
+}
+
+function MM_swapImage() { //v3.0
+  var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+   if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+}
+*/
+//-->
+</script>
+
+
+
+<table width="600" border="0" align="center"  >
+    <tr>
+      <td width="530" valign="top" ><!--menu-->        <!--body-->
+
+       
+        <p align="left">
+        <form name="theForm">
+  
+    <div align="center">
+        <table border="1" cellpadding="2" width="530" height="1" bordercolor="#C0C0C0" bgcolor="#FFFFFF">
+            <tr>
+              <td width="75"  ><img border="0" src="/modules/Tools/pnimages/CLpower.gif" width="73" height="72"></td>
+              <td width="170"  >Contact lens power:
+                <p>
+      
+          <input type="text" name="CLrx" size="18"  style="background-color:transparent;font-size:16pt;"  onkeydown='anythingChanged("cl")' onChange="enterCL(document.theForm.CLrx)" tabindex="1" onFocus="CLrxFocus();">
+      
+          </td>
+              <td  rowspan="2" align="center" width="102">
+      
+        Rotation:
+                <p>
+      
+          <img name="rotatePic" border="0" src="/modules/Tools/pnimages/CL_insert_animation.gif" width="102" height="102" onMouseEnter="enterPic();" onMouseOut="myTarget=document.getElementById("comment");myTarget.innerHTML=storedComment;" onClick="picClicked(event);"></p>
+      
+
+                <p align="center">
+      
+          <input type="text" name="rotation" size="9"   style="background-color:transparent;font-size:16pt;" value="0" tabindex="3" onFocus="rotateFocus();" onkeydown='anythingChanged("rotate")' onChange="rotateEntered(document.theForm.rotation.value);"></td>
+              <td   rowspan="2" width="150">
+      
+          <p><div id="comment"  style="background-color:transparent;font-size:10pt;" onFocus="blur(this)" >
+                Enter a contact lens Rx in plus or minus cyl.</div>
+      
+          </td>
+            </tr>
+            <tr>
+              <td  height="23" width="75">
+      
+        <img border="0" src="/modules/Tools/pnimages/phoropter2.gif" width="73" height="72"></td>
+      
+        <td  height="23" width="170">
+      
+        Overrefraction:
+                <p><input type="text" name="ORrx"  size="18"  style="background-color:transparent;font-size:16pt;" tabindex="2" onFocus="ORrxFocus();" onkeydown='anythingChanged("or")' onChange="enterOR(document.theForm.ORrx);">
+      
+          </td>
+            </tr>
+            <tr>
+              <td  height="23" colspan="4" width="472">
+      
+        <input type="checkbox" name="round" value="ON" checked tabindex="0" onClick='anythingChanged("");' >Round to the nearest .25 D</td>
+      
+
+            </tr>
+            <tr>
+              <td  height="23" colspan="4" align="center" valign="middle" width="472">
+      
+    
+        
+    
+        <input type="button" onclick="javascript:startCalc();" title="calculate!" value="Calcuate!">
+      
+        &nbsp;&nbsp;Answer:&nbsp;&nbsp;
+                <input type="text" name="answer" size="18"  style="background-color:transparent;font-size:16pt;" onFocus="blur(this)">&nbsp;&nbsp;&nbsp;
+      
+          <input type="button" value="Transpose" name="transBtn" onClick="transposeAns();"></td>
+      
+      </tr>
+        </table>
+      </div>
+      <p align="center"><input type="button" value="Reset" name="clearbtn" onClick='resetAll()'></p>
+          </form> 
+          There is a <a href="module-Tools-display-tool-oblique.htm">newer version</a> of this calculator which requires Flash (version 7 or newer). This calculator works just as well, it's just less Flash-y. <br />
+        If you are unable to use the Flash version it may be because        
+        <ul>
+          <li>You do not have Flash installed or enabled in your browser</li>
+          <li>Your browser's security settings are not allowing Flash </li>
+          <li>You have an ad-blocker blocking Flash</li>
+        </ul>
+     </td>
+    </tr>
+  </table>
+
+
+
+
+
+

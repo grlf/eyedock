@@ -1,0 +1,86 @@
+<!--[headscript_contact_lens]-->
+
+<h2 title="Contact Lens Calculator">Contact Lens Calculator</h2>
+
+<div style="width:100%;"><div style="float:left;">[ <a href="javascript:history.go(-1);" title="Go Back">Go Back</a> ]</div><div style="float:right;">[ <a href="<!--[pnmodurl modname="Tools" type="user" func="explain" tool="contact_lens"]-->" title="Learn How This Tool Works">Learn How This Tool Works</a> ]</div></div><br />
+
+<form name="theForm" method="POST" action="<!--[pnmodurl modname='Lenses' type='user' func='view']-->">
+
+<div style="width:95%;text-align:center;border:1px solid #ccc;background:#fafafa;">
+    <br />
+        <table style="width:100%;border:1;" cellpadding="5" cellspacing="2" width="559" height="551" border="1" >
+            <tr>
+                <td width="97" height="66" align="center" bgcolor="white">
+                    <img border="0" src="modules/Tools/pnimages/specs.gif" width="88" height="66">
+                </td>
+                <td width="207" height="66" bgcolor="white">
+                    Spectacle Rx:<br />
+                    <input type="text" name="rxBox" size="20" style="background-color:transparent;font-size:16pt;" tabindex="1" onKeyPress="clearAnswer('mr');" onFocus="focusThing('spec');" onChange='submitRx(this.value);'>
+                </td>
+                <td width="452" valign="top" rowspan="4" align="left">
+                    <div id='theComment' style="width: 244; height: 150">Enter a spectacle Rx, keratometry values, and then select the type of lens you want to calculate.</div>
+                </td>
+            </tr>
+            <tr>
+                <td width="97" height="72" align="center" bgcolor="white" >
+                    <img border="0" src="modules/Tools/pnimages/kerato.gif" width="93" height="72">
+                </td>
+                <td width="207" height="72" bgcolor="white">
+                    Keratometry:<br />
+                    <input type="text" name="kBox" size="20" style="background-color:transparent;font-size:16pt;" tabindex="2" onKeyPress="clearAnswer('k');" onFocus="focusThing('k');" onChange='submitK(this.value);'>
+                </td>
+            </tr>
+            <tr>
+                <td width="318" colspan="2" height="71" bgcolor="white" style="text-align: center;">
+
+                   <select size="1" name="calcType" onFocus='focusThing("calc");' tabindex="3">
+                      <option>Advice</option>
+                      <option>Soft Spherical</option>
+                      <option>Soft Toric</option>
+                      <option>Spherical RGP</option>
+                                    <option>Bitoric RGP</option>
+                      <option>Back Toric RGP</option>
+                      <option>Front Toric RGP</option>
+                   </select>
+
+                  <input type="button" onCLick="javascript:startCalc()" value="Calculate">
+                  <input type="button" style="color:red;" value="Reset Form" name="clear" onClick="clearForm();">
+                </td>
+            </tr>
+            <tr>
+                <td width="318" colspan="2" bgcolor="white">
+                    Things you can change if you desire:<br /><br />
+                    Spectacle vertex distance:<br />
+                    <select size="1" name="vertexDist" onChange='clearAnswer("");'>
+                        <option>7</option>
+                        <option>8</option>
+                        <option>9</option>
+                        <option>10</option>
+                        <option>11</option>
+                        <option selected>12</option>
+                        <option>13</option>
+                        <option>14</option>
+                        <option>14</option>
+                        <option>15</option>
+                        <option>16</option>
+                    </select> mm<br/><br/>
+                    <input type="checkbox" name="round" value="ON" checked onChange="changeRound();">Round everything to .25 D:<br /><br />
+                    
+                    Spherical RGP philosophy:<br />
+                    <select size="1" name="philosophy" onChange='clearAnswer("");'>
+                        <option selected>ICO mid-K</option>
+                        <option>Bennett &amp; Henry</option>
+                    </select>
+                    <a href="explain.html#RGPsphere" target="_blank">what is this?</a>
+                    <br /><br /><br /><br /><p style="text-align:center;"></p>
+                </td>
+            </tr>
+        </table>
+         <input name='search[discontinued]' type='hidden' id='search[discontinued]' value='=0' >
+         <input type='hidden' id='search[bifocal]' name='search[bifocal]' value='=0'>
+        <div id='hidden_content'></div>
+    </div>
+</form>
+
+<div style="width:100%;"><div style="float:left;">[ <a href="javascript:history.go(-1);" title="Go Back">Go Back</a> ]</div><div style="float:right;">[ <a href="<!--[pnmodurl modname="Tools" type="user" func="explain" tool="contact_lens"]-->" title="Learn How This Tool Works">Learn How This Tool Works</a> ]</div></div><br />
+

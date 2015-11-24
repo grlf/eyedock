@@ -126,3 +126,19 @@ div#b2jcontainer_c29.b2jcontainer {
 .t3-copyright .pull-right {
 	margin-right: 15px;
 }
+
+#plaquenilDaily {
+	padding: 2em;
+}
+
+#plaquenilCum {
+	padding: 2em;
+}
+
+.head-search form{
+	text-align: right;
+}
+
+#form-login-remember{
+	text-align: left;
+}
