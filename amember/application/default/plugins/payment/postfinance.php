@@ -10,7 +10,7 @@
 class Am_Paysystem_Postfinance extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.1';
 
     const SANDBOX_URL = "https://e-payment.postfinance.ch/ncol/test/orderstandard.asp";
     const LIVE_URL = "https://e-payment.postfinance.ch/ncol/prod/orderstandard.asp";

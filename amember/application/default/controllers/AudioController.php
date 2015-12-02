@@ -9,7 +9,7 @@
  *        Web: http://www.cgi-central.net
  *    Details: Member display page
  *    FileName $RCSfile$
- *    Release: 4.4.2 ($Revision: 5371 $)
+ *    Release: 4.7.1 ($Revision: 5371 $)
  *
  * Please direct bug reports,suggestions or feedback to the cgi-central forums.
  * http://www.cgi-central.net/forum/

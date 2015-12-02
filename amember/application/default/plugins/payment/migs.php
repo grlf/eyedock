@@ -10,7 +10,7 @@
 class Am_Paysystem_Migs extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.1';
 
     const URL = "https://migs.mastercard.com.au/vpcpay";
 

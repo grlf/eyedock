@@ -11,7 +11,7 @@ class Am_Paysystem_Braintree extends Am_Paysystem_CreditCard
 
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.1';
     const CUSTOMER_ID = 'braintree_customer_id';
 
     protected $defaultTitle = "Pay with your Credit Card";

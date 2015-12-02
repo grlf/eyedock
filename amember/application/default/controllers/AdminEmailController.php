@@ -7,7 +7,7 @@
  *        Web: http://www.cgi-central.net
  *    Details: Admin Info / PHP
  *    FileName $RCSfile$
- *    Release: 4.7.0 ($Revision$)
+ *    Release: 4.7.1 ($Revision$)
  *
  * Please direct bug reports,suggestions or feedback to the cgi-central forums.
  * http://www.cgi-central.net/forum/
@@ -401,7 +401,8 @@ CUT
         $grid->addField('admin_login', ___('Sender'));
         $grid->addField('count_users', ___('Total'));
         $grid->addField('sent_users', ___('Sent'));
-        $grid->addField('desc_users', ___('To'));
+        $grid->addField('desc_users', ___('To'))
+            ->setAttrs(array('class' => 'break'));
         $grid->actionsClear();
         $grid->actionAdd(new Am_Grid_Action_Url('resend', ___('Resend'), REL_ROOT_URL . "/admin-email?resend_id=__ID__"))->setTarget('_top');
         $grid->actionAdd(new Am_Grid_Action_Url('continue', ___('Continue'), REL_ROOT_URL . "/admin-email/send?queue_id=__ID__"))

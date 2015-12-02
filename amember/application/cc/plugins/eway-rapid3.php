@@ -11,7 +11,7 @@ class Am_Paysystem_EwayRapid3 extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.1';
 
     protected $defaultTitle = "eWay Rapid 3.1";
     protected $defaultDescription = "accepts all major credit cards";

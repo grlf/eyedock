@@ -7,7 +7,7 @@
 class Am_Paysystem_Offline extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
     
     public function __construct(Am_Di $di, array $config)
     {

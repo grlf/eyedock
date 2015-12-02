@@ -10,7 +10,7 @@
 
 class Am_Paysystem_charge2000 extends Am_Paysystem_Abstract{
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     protected $defaultTitle = '2000Charge';
     protected $defaultDescription = 'The Leader in Alternative Payment Solutions';

@@ -12,7 +12,7 @@ class Am_Paysystem_Pesapal extends Am_Paysystem_Abstract
     static $consumer;
     static $method;
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.1';
 
     const URL = "https://www.pesapal.com/api/PostPesapalDirectOrderV2";
     

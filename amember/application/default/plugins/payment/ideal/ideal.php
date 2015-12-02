@@ -37,7 +37,7 @@ class Am_Paysystem_Ideal extends Am_Paysystem_Abstract
 
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.1';
 
     const ING_TEST = 'https://idealtest.secure-ing.com/ideal/iDEALv3';
     const ING_LIVE = 'https://ideal.secure-ing.com/ideal/iDEALv3';

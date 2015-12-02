@@ -11,7 +11,7 @@ class Am_Paysystem_Bitpay extends Am_Paysystem_Abstract
 {
 
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.1';
 
     protected $defaultTitle = 'BitPay';
     protected $defaultDescription = 'paid by bitcoins';

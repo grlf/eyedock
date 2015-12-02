@@ -7,7 +7,7 @@
  *        Web: http://www.cgi-central.net
  *    Details: Affiliate pages
  *    FileName $RCSfile$
- *    Release: 4.7.0 ($Revision$)
+ *    Release: 4.7.1 ($Revision$)
  *
  * Please direct bug reports,suggestions or feedback to the cgi-central forums.
  * http://www.cgi-central.net/forum/
@@ -185,18 +185,40 @@ class Aff_MemberController extends Am_Controller
     
     public function keywordsAction()
     {
-        $ds = new Am_Query($this->getDi()->affKeywordTable);
-        $ds->addField('t.`value`', 'keyword');
-        $ds->addField('count(clicks.log_id)', 'clicks_count');
-        $ds->addField('count(distinct leads.user_id)', 'leads_count');
-        $ds->addField('sum(if(commissions.record_type="commission", 1, 0))', 'sales_count');
-        $ds->addField('sum(if(commissions.record_type="commission", amount, -amount))', 'sales_amount');
-        $ds->addWhere('t.aff_id=?', $this->getDi()->auth->getUserId());
-        $ds->leftJoin('?_aff_click', 'clicks', 't.keyword_id = clicks.keyword_id');
-        $ds->leftJoin('?_aff_commission', 'commissions', 't.keyword_id = commissions.keyword_id');
-        $ds->leftJoin('?_aff_lead', 'leads', 't.keyword_id = leads.keyword_id');
-        $ds->groupBy('keyword_id');
+        $uid = $this->getDi()->auth->getUserId();
+        $db = $this->getDi()->db;
+        $db->query('DROP TEMPORARY TABLE IF EXISTS ?_aff_keywords_tmp');
+        $db->query("CREATE TEMPORARY TABLE ?_aff_keywords_tmp (
+            keyword_id int not null DEFAULT 0,
+            keyword varchar(64) not null DEFAULT '',
+            clicks_count int not null DEFAULT 0,
+            leads_count int not null DEFAULT 0,
+            sales_count int not null DEFAULT 0,
+            sales_amount int not null DEFAULT 0,
+            PRIMARY KEY (`keyword_id`)
+            )");
+        //clicks
+        $db->query("INSERT into ?_aff_keywords_tmp (keyword_id, clicks_count) 
+            SELECT keyword_id, count(*) from ?_aff_click where keyword_id is not null and aff_id = ? group by keyword_id", $uid);
+        //leads
+        $db->query("INSERT into ?_aff_keywords_tmp (keyword_id, leads_count) 
+            SELECT keyword_id, cnt from (SELECT keyword_id, count(*) as cnt from ?_aff_lead 
+            where keyword_id is not null and aff_id = ? group by keyword_id) s
+            ON DUPLICATE KEY UPDATE leads_count = s.cnt", $uid);
+        //sales_count
+        $db->query("INSERT into ?_aff_keywords_tmp (keyword_id, sales_count) 
+            SELECT keyword_id, cnt from (SELECT keyword_id, sum(if(record_type='commission', 1, 0)) as cnt from ?_aff_commission 
+            where keyword_id is not null and aff_id = ? group by keyword_id) s
+            ON DUPLICATE KEY UPDATE sales_count = s.cnt", $uid);
+        //sales_amount
+        $db->query("INSERT into ?_aff_keywords_tmp (keyword_id, sales_amount) 
+            SELECT keyword_id, cnt from (SELECT keyword_id, sum(if(record_type='commission', amount, -amount)) as cnt from ?_aff_commission 
+            where keyword_id is not null and aff_id = ? group by keyword_id) s
+            ON DUPLICATE KEY UPDATE sales_amount = s.cnt", $uid);
+        //keyword
+        $db->query("UPDATE ?_aff_keywords_tmp t set keyword = (SELECT value from ?_aff_keyword s where s.keyword_id = t.keyword_id)");
         
+        $ds = new Am_Query(new Am_Table($db, '?_aff_keywords_tmp', 't'));
         
         $grid = new Am_Grid_ReadOnly('_aff_keywords', 'Keywords', $ds, $this->getRequest(), $this->getView());
         $grid->addField('keyword', ___('Keyword'));

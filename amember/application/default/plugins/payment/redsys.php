@@ -12,7 +12,7 @@
 class Am_Paysystem_Redsys extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     const LIVE_URL = 'https://sis.redsys.es/sis/realizarPago';
     const SANDBOX_URL = 'https://sis-t.redsys.es:25443/sis/realizarPago';

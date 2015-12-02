@@ -8,13 +8,11 @@
 class Am_Mail_Template extends ArrayObject
 {
     const TO_ADMIN = '|TO-ADMIN|';
-    protected $admins;
-
+    public $admins;
     /** @var array */
     protected $template = array();
     /** @var Am_Mail */
     protected $mail;
-
     protected $_mailPeriodic = Am_Mail::REGULAR;
 
     public function __construct($tplId = null, $lang = null)
@@ -157,10 +155,10 @@ class Am_Mail_Template extends ArrayObject
             $name = Am_Di::getInstance()->config->get('site_title') . ' Admin';
             if($this->admins)
             {
-                if(in_array(-1, explode(',',$this->admins)))
+                if(in_array(-1, $this->admins))
                     $this->addTo(Am_Di::getInstance()->config->get('admin_email'), Am_Di::getInstance()->config->get('site_title') . ' Admin');
-                foreach (Am_Di::getInstance()->adminTable->loadIds(explode(',',$this->admins)) as $admin)
-                    $this->getMail()->addTo($admin->email, $name);
+                foreach (Am_Di::getInstance()->adminTable->loadIds($this->admins) as $admin)
+                    $this->getMail()->addTo($admin->email, $admin->getName());
 
                 if ($copyAdmin = Am_Di::getInstance()->config->get('copy_admin_email'))
                     foreach (preg_split("/[,;]/", $copyAdmin) as $copy)
@@ -197,6 +195,7 @@ class Am_Mail_Template extends ArrayObject
     {
         return $this->_mailPeriodic;
     }
+
     function setMailPeriodic($periodic)
     {
         $this->_mailPeriodic = $periodic;
@@ -233,7 +232,7 @@ class Am_Mail_Template extends ArrayObject
             $et->getLayout()
         );
 
-        $t->admins = $et->recipient_admins;
+        $t->admins = array_filter(explode(',', $et->recipient_admins));
         $rec = Am_Mail_TemplateTypes::getInstance()->find($et->name);
         if ($rec)
             $t->setMailPeriodic($rec['mailPeriodic']);

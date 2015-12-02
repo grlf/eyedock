@@ -10,7 +10,7 @@ class Am_Paysystem_Graypay extends Am_Paysystem_Nmi
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.1';
     
     protected $defaultTitle = "GrayPAY";
     protected $defaultDescription  = "accept payments in the world";

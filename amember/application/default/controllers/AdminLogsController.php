@@ -47,7 +47,8 @@ class AdminLogsController extends Am_Controller_Pages
             ->setPlaceholder(Am_Grid_Field_Expandable::PLACEHOLDER_SELF_TRUNCATE_BEGIN)
             ->setMaxLength(25);
         $g->addField(new Am_Grid_Field('remote_addr', ___('IP')));
-        $g->addField(new Am_Grid_Field('error', ___('Message'), true, '', null, '45%'));
+        $g->addField(new Am_Grid_Field('error', ___('Message'), true, '', null, '45%'))
+            ->setAttrs(array('class' => 'break'));
         $f = $g->addField(new Am_Grid_Field_Expandable('trace', ___('Trace')))
              ->setAjax(REL_ROOT_URL . '/admin-logs/get-trace?id={log_id}');
 

@@ -11,7 +11,7 @@ class Am_Paysystem_Cybersource extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     const URL_LIVE = 'https://ics2ws.ic3.com/commerce/1.x/transactionProcessor/CyberSourceTransaction_1.90.wsdl';
     const URL_TEST = "https://ics2wstest.ic3.com/commerce/1.x/transactionProcessor/CyberSourceTransaction_1.90.wsdl";

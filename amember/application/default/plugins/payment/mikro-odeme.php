@@ -11,7 +11,7 @@ class Am_Paysystem_MikroOdeme extends Am_Paysystem_Abstract
 {
 
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
     const WSDL = 'http://vas.mikro-odeme.com/services/msaleservice.asmx?wsdl';
 
     protected $defaultTitle = 'Mikro Ödeme';

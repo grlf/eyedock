@@ -7,7 +7,7 @@
  */
 class Am_Paysystem_Plimus extends Am_Paysystem_Abstract {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.1';
     
     protected $defaultTitle = 'Plimus';
     protected $defaultDescription = 'Credit Card Payment';

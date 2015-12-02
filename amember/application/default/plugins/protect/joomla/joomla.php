@@ -16,7 +16,7 @@ class Am_Protect_Joomla extends Am_Protect_Databased {
 
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
     const PLUGIN_COMM = self::COMM_COMMERCIAL; //paid
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     protected $groupMode = self::GROUP_MULTI;
     protected $guessTablePattern = "users";

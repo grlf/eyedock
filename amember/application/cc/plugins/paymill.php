@@ -4,7 +4,7 @@ class Am_Paysystem_Paymill extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     const TOKEN = 'paymill_token';
     const CLIENT_ID = 'paymill_clientId';

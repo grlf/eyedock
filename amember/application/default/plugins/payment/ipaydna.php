@@ -12,7 +12,7 @@ class Am_Paysystem_Ipaydna extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     protected $defaultTitle = "iPayDNA";
     protected $defaultDescription = "accepts credit cards";

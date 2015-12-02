@@ -12,7 +12,7 @@ class Am_Paysystem_Securepaycomau extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.1';
 
     const LIVE_URL = 'https://api.securepay.com.au/xmlapi/periodic';
     const SANDBOX_URL = 'https://test.securepay.com.au/xmlapi/periodic';

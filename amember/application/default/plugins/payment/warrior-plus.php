@@ -9,7 +9,7 @@
 class Am_Paysystem_WarriorPlus extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.1';
 
     public $domain = "";
 

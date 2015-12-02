@@ -6,7 +6,7 @@ class Am_Paysystem_DirectOne extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.1';
 
     const LIVE_URL = "https://vault.safepay.com.au/cgi-bin/direct_process.pl";
     const SANDBOX_URL = 'https://vault.safepay.com.au/cgi-bin/direct_test.pl';

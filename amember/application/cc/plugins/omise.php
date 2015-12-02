@@ -13,7 +13,7 @@ class Am_Paysystem_Omise extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     const OMISE_CUSTOMER_ID = 'omise_customer_id';
     const OMISE_CARD_ID = 'omise_card_id';

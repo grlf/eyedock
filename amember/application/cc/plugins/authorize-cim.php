@@ -13,7 +13,7 @@ class Am_Paysystem_AuthorizeCim extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     const LIVE_URL = 'https://api.authorize.net/xml/v1/request.api';
     const SANDBOX_URL = 'https://apitest.authorize.net/xml/v1/request.api';

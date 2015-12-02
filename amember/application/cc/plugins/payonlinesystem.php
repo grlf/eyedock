@@ -11,7 +11,7 @@ class Am_Paysystem_Payonlinesystem extends Am_Paysystem_CreditCard
 {
 
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.1';
 
     protected $defaultTitle = 'PayOnlineSystem';
     protected $defaultDescription = 'Cost-effective Internet acquiring for any payment system';

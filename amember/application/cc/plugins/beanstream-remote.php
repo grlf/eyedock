@@ -11,7 +11,7 @@ class Am_Paysystem_BeanstreamRemote extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_BETA; // this plugin must be kept not-public as it stored cc info
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     const URL_PT = 'https://www.beanstream.com/scripts/process_transaction.asp';
     const URL_RB = 'https://www.beanstream.com/scripts/recurring_billing.asp';

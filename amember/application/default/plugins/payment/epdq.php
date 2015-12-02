@@ -10,7 +10,7 @@
 class Am_Paysystem_Epdq extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     const ACTION_URL_TEST = 'https://mdepayments.epdq.co.uk/ncol/test/orderstandard.asp';
     const ACTION_URL_PROD = 'https://payments.epdq.co.uk/ncol/prod/orderstandard.asp';

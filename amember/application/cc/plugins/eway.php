@@ -12,7 +12,7 @@ class Am_Paysystem_Eway extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     const GATEWAY_URL = 'https://www.eway.com.au/gateway_cvn/xmlpayment.asp';
     const GATEWAY_URL_TEST = "https://www.eway.com.au/gateway_cvn/xmltest/testpage.asp";

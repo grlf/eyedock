@@ -933,6 +933,7 @@ class Am_Import_Product3 extends Am_Import_Abstract
             // subuser
             if (in_array('subusers', $this->getDi()->modules->getEnabled()) && @$this->options['keep_product_id'])
             {
+                $subusersCount = $subusersGroup = null;
                 foreach ($r as $k => $v)
                 {
                     if(preg_match('/^subusers_count_(.*)$/', $k, $match))
@@ -1033,8 +1034,7 @@ class Am_Import_User3 extends Am_Import_Abstract
 
     function getCfDataSource() {
         if (is_null(self::$cfDs)) {
-            include_once ROOT_DIR . '/application/default/controllers/AdminFieldsController.php';
-            self::$cfDs = new Am_Grid_DataSource_CustomFields(array());
+            self::$cfDs = new Am_Grid_DataSource_CustomField(array(), $this->getDi()->userTable);
         }
         return self::$cfDs;
     }

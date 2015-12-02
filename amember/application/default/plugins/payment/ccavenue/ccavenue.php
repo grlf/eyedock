@@ -11,7 +11,7 @@ class Am_Paysystem_Ccavenue extends Am_Paysystem_Abstract
 {
 
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
     const LIVE_URL = 'https://www.ccavenue.com/shopzone/cc_details.jsp';
 
     protected $defaultTitle = 'CCAvenue';

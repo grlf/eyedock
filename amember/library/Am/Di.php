@@ -244,7 +244,7 @@ class Am_Di extends sfServiceContainerBuilder
             ->addArgument(array(
                 'lifetime'=>3600,
                 'automatic_serialization' => true,
-                'cache_id_prefix' => sprintf('%s.',
+                'cache_id_prefix' => sprintf('%s_',
                         $this->app->getSiteHash($this->config->get('db.mysql.db') . $this->config->get('db.mysql.prefix'), 10)
                     )))
             ->addMethodCall('setBackend', array(new sfServiceReference('cacheBackend')));

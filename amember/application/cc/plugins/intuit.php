@@ -11,7 +11,7 @@ class Am_Paysystem_Intuit extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.2';    
+    const PLUGIN_REVISION = '4.7.1';    
     
     const URL_LIVE = 'https://webmerchantaccount.quickbooks.com/j/AppGateway';
     const URL_TEST = 'https://webmerchantaccount.ptc.quickbooks.com/j/AppGateway';

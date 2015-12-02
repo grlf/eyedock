@@ -6,7 +6,7 @@
 *      Email: alex@cgi-central.net
 *        Web: http://www.amember.com/
 *    FileName $RCSfile$
-*    Release: 4.4.2 ($Revision$)
+*    Release: 4.7.1 ($Revision$)
 *
 * Please direct bug reports,suggestions or feedback to the cgi-central forums.
 * http://www.cgi-central.net/forums
@@ -19,10 +19,10 @@ return array(
     'db' => array(
         'mysql' => array(
             'db'    => 'eyedock_amember4',
-            'user'  => 'webstix',
-            'pass'  => 'madr0ss',
+            'user'  => 'eyedockdata33',
+            'pass'  => 'ytzUGuZnRfC2X#m',
             'host'  => 'mysql.eyedock.com',
-            'prefix' => 'amember_',
+            'prefix' => 'am4_',
             'port'  => '',
         ),
     ),

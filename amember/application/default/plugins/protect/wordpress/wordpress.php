@@ -17,7 +17,7 @@ class Am_Protect_Wordpress extends Am_Protect_Databased
 {
 
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     protected $_error_reporting_backup = null;
     protected $_timezone_backup = null;

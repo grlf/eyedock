@@ -11,7 +11,7 @@ class Am_Paysystem_TargetpayWap extends Am_Paysystem_CreditCard
 
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.1';
 
     protected $defaultTitle = "TargetPay Wap";
     protected $defaultDescription = "accepts all major credit cards";

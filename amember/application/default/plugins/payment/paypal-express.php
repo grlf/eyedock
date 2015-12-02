@@ -16,7 +16,7 @@ class Am_Paysystem_PaypalExpress extends Am_Paysystem_Abstract
     
     const SANDBOX_URL = "https://www.sandbox.paypal.com/webscr";
     const LIVE_URL = "https://www.paypal.com/webscr";
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
     
     protected $defaultTitle = "PayPal Express";
     protected $defaultDescription = "pay with paypal quickly";

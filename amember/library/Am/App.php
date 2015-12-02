@@ -1790,6 +1790,14 @@ class Am_App
                     'action' => 'p'
                 )
         ));
+        $router->addRoute('profile-email-confirm', new Zend_Controller_Router_Route(
+                'profile/confirm-email',
+                array(
+                    'module' => 'default',
+                    'controller' => 'profile',
+                    'action' => 'confirm-email',
+                )
+        ));
 
         $router->addRoute('profile', new Zend_Controller_Router_Route(
                 'profile/:c',
@@ -2271,7 +2279,7 @@ class Am_App
         if (!defined('DATA_DIR'))
             define('DATA_DIR', ROOT_DIR . '/data');
         if (!defined('AM_VERSION'))
-            define('AM_VERSION', '4.7.0');
+            define('AM_VERSION', '4.7.1');
         if (!defined('AM_BETA'))
             define('AM_BETA', '0' == 1);
     }

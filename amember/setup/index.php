@@ -41,7 +41,7 @@ error_reporting(E_ALL);
 *        Web: http://www.cgi-central.net
 *    Details: The installation file
 *    FileName $RCSfile$
-*    Release: 4.7.0 ($Revision$)
+*    Release: 4.7.1 ($Revision$)
 *
 * Please direct bug reports,suggestions or feedback to the cgi-central forums.
 * http://www.cgi-central.net/forum/
@@ -828,7 +828,7 @@ $controller->setPageTemplate(<<<EOF
                     <div class="am-footer-actions">
                         <a href="#top"><img src="../application/default/views/public/img/top.png" /></a>
                     </div>
-                    aMember Pro&trade; 4.7.0 by <a href="http://www.amember.com">aMember.com</a>  &copy; 2002&ndash;{$year} CGI-Central.Net
+                    aMember Pro&trade; 4.7.1 by <a href="http://www.amember.com">aMember.com</a>  &copy; 2002&ndash;{$year} CGI-Central.Net
                 </div>
             </div>
         </div>

@@ -3,7 +3,7 @@
 class Am_Protect_NewRewrite extends Am_Protect_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.1';
 
     const NR_COOKIE = 'amember_nr';
 

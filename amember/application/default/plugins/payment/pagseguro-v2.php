@@ -11,7 +11,7 @@
 class Am_Paysystem_PagseguroV2 extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.1';
 
     const LIVE_WS_HOST = 'ws.pagseguro.uol.com.br';
     const LIVE_HOST = 'pagseguro.uol.com.br';

@@ -12,7 +12,7 @@ class Am_Plugin_Facebook extends Am_Plugin
     const
         PLUGIN_STATUS = self::STATUS_BETA;
     const
-        PLUGIN_REVISION = '4.7.0';
+        PLUGIN_REVISION = '4.7.1';
     const
         FACEBOOK_UID = 'facebook-uid';
     const

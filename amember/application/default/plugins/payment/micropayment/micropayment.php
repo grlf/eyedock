@@ -10,7 +10,7 @@
 class Am_Paysystem_Micropayment extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
     
     const URL = 'https://billing.micropayment.de/';
 

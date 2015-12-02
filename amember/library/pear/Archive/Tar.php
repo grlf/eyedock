@@ -1323,10 +1323,16 @@ class Archive_Tar extends PEAR
         for ($i=156; $i<512; $i++)
            $v_checksum+=ord(substr($v_binary_data,$i,1));
 
-        $v_data = unpack("a100filename/a8mode/a8uid/a8gid/a12size/a12mtime/"
-		                 ."a8checksum/a1typeflag/a100link/a6magic/a2version/"
-						 ."a32uname/a32gname/a8devmajor/a8devminor",
-						 $v_binary_data);
+        if (version_compare(PHP_VERSION, "5.5.0-dev") < 0) {
+            $fmt = "a100filename/a8mode/a8uid/a8gid/a12size/a12mtime/" .
+                "a8checksum/a1typeflag/a100link/a6magic/a2version/" .
+                "a32uname/a32gname/a8devmajor/a8devminor";
+        } else {
+            $fmt = "Z100filename/Z8mode/Z8uid/Z8gid/Z12size/Z12mtime/" .
+                "Z8checksum/Z1typeflag/Z100link/Z6magic/Z2version/" .
+                "Z32uname/Z32gname/Z8devmajor/Z8devminor";
+        }
+        $v_data = unpack($fmt, $v_binary_data);
 
         // ----- Extract the checksum
         $v_header['checksum'] = OctDec(trim($v_data['checksum']));

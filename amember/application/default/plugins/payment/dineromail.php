@@ -9,7 +9,7 @@
  */
 class Am_Paysystem_Dineromail extends Am_Paysystem_Abstract{
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.1';
 
     protected $defaultTitle = 'DineroMail';
     protected $defaultDescription = 'Pay by credit card card/wire transfer';

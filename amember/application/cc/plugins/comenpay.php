@@ -11,7 +11,7 @@ class Am_Paysystem_Comenpay extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     const COMENPAY_CARD_TOKEN = 'comenpay_card_token';
     const COMENPAY_CARD_KEY = 'comenpay_card_key';

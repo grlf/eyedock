@@ -3,7 +3,7 @@ class Am_Paysystem_CcDemo extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     public function __construct(Am_Di $di, array $config)
     {

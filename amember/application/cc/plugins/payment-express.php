@@ -11,7 +11,7 @@ class Am_Paysystem_PaymentExpress extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.1';
     
     const URL = 'https://sec.paymentexpress.com/pxpay/pxaccess.aspx';
     const URL_RECURRING = 'https://sec.paymentexpress.com/pxpost.aspx';

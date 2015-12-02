@@ -25,7 +25,7 @@ class Am_Paysystem_Action_HtmlTemplate_Selz extends Am_Paysystem_Action_HtmlTemp
 class Am_Paysystem_Selz extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     protected $defaultTitle = 'Selz';
     protected $defaultDescription = 'Credit Card Payment';

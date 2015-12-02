@@ -11,7 +11,7 @@ class Am_Paysystem_Stripe extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
     
     const TOKEN = 'stripe_token';
     const CC_EXPIRES = 'stripe_cc_expires';

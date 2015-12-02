@@ -3,7 +3,7 @@
 class Am_Plugin_GoogleAnalytics extends Am_Plugin
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
     const TRACKED_DATA_KEY = 'google-analytics-done';
 
     protected $id;

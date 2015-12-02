@@ -11,7 +11,7 @@
 class Am_Paysystem_SmartDebitDl extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
     const REF_PREFIX = 'A00';
 
     const GATEWAY = 'https://secure.ddprocessing.co.uk/direct_debit_request';

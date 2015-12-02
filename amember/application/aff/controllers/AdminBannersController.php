@@ -8,7 +8,7 @@
  *        Web: http://www.cgi-central.net
  *    Details: Affiliate commission
  *    FileName $RCSfile$
- *    Release: 4.4.4 ($Revision$)
+ *    Release: 4.7.1 ($Revision$)
  *
  * Please direct bug reports,suggestions or feedback to the cgi-central forums.
  * http://www.cgi-central.net/forum/

@@ -11,7 +11,7 @@
 class Am_Paysystem_Worldpay extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     const URL = "https://secure.worldpay.com/wcc/purchase";
     const TEST_URL = "https://secure-test.worldpay.com/wcc/purchase";

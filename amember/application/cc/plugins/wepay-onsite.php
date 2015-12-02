@@ -13,7 +13,7 @@ class Am_Paysystem_WepayOnsite extends Am_Paysystem_CreditCard
 
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.1';
     const LIVE_URL = "https://wepayapi.com/v2/";
     const SANDBOX_URL = "https://stage.wepayapi.com/v2/";
     const WEPAY_PREAPPROVAL_ID = 'wepayonsite_preapproval_id';

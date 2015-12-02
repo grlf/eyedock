@@ -10,7 +10,7 @@ class Am_Paysystem_Blockchain extends Am_Paysystem_Abstract
 {
 
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.1';
     const LIVE_URL = 'https://blockchain.info/api/receive';
     const CURRENCY_URL = 'https://blockchain.info/tobtc';
     const BLOCKHAIN_AMOUNT = 'blockhain_amount';

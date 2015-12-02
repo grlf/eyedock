@@ -12,7 +12,7 @@ class Am_Paysystem_MicropaymentDbt extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.1';
 
     const MCP__DEBITSERVICE_NVP_URL = 'http://webservices.micropayment.de/public/debit/v1.4/nvp/';
     const MCP__DEBITSERVICE_INTERFACE = 'IMcpDebitService_v1_4';

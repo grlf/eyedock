@@ -12,7 +12,7 @@
 class Am_Paysystem_EGhl extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     const LIVE_URL = 'https://secure2pay.e-ghl.com/IPG/payment.aspx';
     const SANDBOX_URL = 'https://test2pay.ghl.com/IPGSG/Payment.aspx';

@@ -12,7 +12,7 @@
  */
 class Am_Paysystem_Allopass extends Am_Paysystem_Abstract{
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.1';
     
     const API_BASE_URL = 'http://api.allopass.com/rest';
     const API_HASH_FUNCTION = 'sha1'; // md5

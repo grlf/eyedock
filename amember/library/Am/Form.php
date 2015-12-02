@@ -525,7 +525,13 @@ image gallery script</span><br></label></div>
             </label>
             ";
         }
-        return implode('<br />', $ret);
+        $add_empty = '';
+        if ($this->type == 'checkbox') {
+            $name = Am_Controller::escape($this->getName() . '[]');
+            $add_empty = sprintf('<input type="hidden" name="%s" value="" />', $name);
+        }
+
+        return $add_empty . implode('<br />', $ret);
     }
 
     public function getRawValue()

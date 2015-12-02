@@ -6,7 +6,7 @@
 *        Web: http://www.cgi-central.net
 *    Details: Admin Info / PHP
 *    FileName $RCSfile$
-*    Release: 4.4.2 ($Revision: 4883 $)
+*    Release: 4.7.1 ($Revision: 4883 $)
 *
 * Please direct bug reports,suggestions or feedback to the cgi-central forums.
 * http://www.cgi-central.net/forum/

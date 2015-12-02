@@ -11,7 +11,7 @@ class Am_Paysystem_Korta extends Am_Paysystem_Abstract
 {
 
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     protected $defaultTitle = 'Korta';
     protected $defaultDescription = 'accepts all major credit cards';

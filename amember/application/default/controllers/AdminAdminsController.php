@@ -7,7 +7,7 @@
 *        Web: http://www.cgi-central.net
 *    Details: Admin accounts
 *    FileName $RCSfile$
-*    Release: 4.7.0 ($Revision$)
+*    Release: 4.7.1 ($Revision$)
 *
 * Please direct bug reports,suggestions or feedback to the cgi-central forums.
 * http://www.cgi-central.net/forum/

@@ -484,6 +484,8 @@ ul.list li {
   padding: 0.5em;
   border: 1px solid white;
   vertical-align: top;
+}
+.grid td.break {
   word-break: break-word;
   word-wrap: break-word;
 }

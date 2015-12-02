@@ -3,7 +3,7 @@
 *     Author: Alex Scott
 *      Email: alex@cgi-central.net
 *        Web: http://www.amember.com/
-*    Release: 4.4.2
+*    Release: 4.7.1
 *    License: LGPL http://www.gnu.org/copyleft/lesser.html
 */
 

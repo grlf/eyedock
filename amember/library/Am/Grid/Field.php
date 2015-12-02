@@ -3,7 +3,7 @@
 *     Author: Alex Scott
 *      Email: alex@cgi-central.net
 *        Web: http://www.amember.com/
-*    Release: 4.4.2
+*    Release: 4.7.1
 *    License: LGPL http://www.gnu.org/copyleft/lesser.html
 */
 
@@ -20,6 +20,7 @@ class Am_Grid_Field  {
     protected $title;
     protected $isSortable;
     protected $align; // left=''=default, center, right
+    protected $attrs = array();
     protected $renderFunc;
     protected $renderFuncIsEval = false;
     protected $getFunc;
@@ -90,8 +91,15 @@ class Am_Grid_Field  {
     {
         $val = $this->get($obj, $controller, $field);
         if ($this->formatFunc) $val = call_user_func($this->formatFunc, $val);
-        $align_html = $this->align ? ' align="'.$this->align.'"' : null;
-        return sprintf('<td%s>%s</td>', $align_html, htmlentities($val, null, 'UTF-8'));
+        $attr_string = '';
+        $attrs = $this->attrs;
+        if ($this->align) {
+            $attrs['align'] = $this->align;
+        }
+        foreach ($attrs as $k=>$v) {
+            $attr_string .= sprintf(' %s="%s"', Am_Controller::escape($k), Am_Controller::escape($v));
+        }
+        return sprintf('<td%s>%s</td>', $attr_string, Am_Controller::escape($val));
     }
     function getFieldName()
     {
@@ -104,6 +112,10 @@ class Am_Grid_Field  {
     function setWidth($width){
         $this->width = $width;
         return $this;
+    }
+    function setAttrs($attrs)
+    {
+        $this->attrs = $attrs;
     }
     function setRenderFunction($renderFunc){
         if (is_string($renderFunc) && !is_callable($renderFunc) && strlen($renderFunc)) {

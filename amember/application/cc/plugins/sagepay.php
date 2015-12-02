@@ -9,7 +9,7 @@
  */
 class Am_Paysystem_Sagepay extends Am_Paysystem_CreditCard{
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     protected $defaultTitle = 'Sagepay';
     protected $defaultDescription = 'Pay by credit card';

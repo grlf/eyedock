@@ -669,6 +669,9 @@ class EmailTemplateTable extends ResourceAbstractTable
         }
     }
 
+    /**
+     * @return PDOStatement
+     */
     public function sendCronExpires()
     {
         $mails = $this->findBy(array('name' => EmailTemplate::EXPIRE));

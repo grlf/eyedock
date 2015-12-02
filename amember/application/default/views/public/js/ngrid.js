@@ -185,7 +185,7 @@ var methods = {
             numOfCols = this.row.children().size();
             this.row.after('<tr class="expandable-data-row"><td colspan="' +
                 numOfCols +
-                '" class="expandable-data">' +
+                '" class="expandable-data break">' +
                 this.getText(this.cell.find('.data')) +
                 '</td></tr>');
             this.cell.addClass('expanded');

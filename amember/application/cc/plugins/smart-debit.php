@@ -4,7 +4,7 @@ class Am_Paysystem_SmartDebit extends Am_Paysystem_Echeck
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
     const REF_PREFIX = 'A00';
 
     const API_ENDPOINT = 'https://secure.ddprocessing.co.uk/api';

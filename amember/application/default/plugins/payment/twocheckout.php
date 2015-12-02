@@ -12,7 +12,7 @@
 class Am_Paysystem_Twocheckout extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     const URL = "https://www.2checkout.com/checkout/spurchase";
     const mURL = "https://www.2checkout.com/checkout/purchase";

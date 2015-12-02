@@ -36,7 +36,7 @@ class Am_Paysystem_Netdebits extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     const LIVE_URL = 'https://www.netdebit-payment.de/pay/';
     const TEST_URL = 'https://web.netdebit-test.de/pay/';

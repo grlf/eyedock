@@ -12,7 +12,7 @@ class Am_Paysystem_Payflow extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.7.0';    
+    const PLUGIN_REVISION = '4.7.1';    
     
     const LIVE_URL = 'https://payflowpro.paypal.com';
     const TEST_URL = 'https://pilot-payflowpro.paypal.com';

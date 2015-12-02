@@ -10,7 +10,7 @@
 class Am_Paysystem_Cashu extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.4';
+    const PLUGIN_REVISION = '4.7.1';
     
     public function _initSetupForm(Am_Form_Setup $form)
     {

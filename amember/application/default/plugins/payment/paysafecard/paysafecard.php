@@ -30,7 +30,7 @@ Actually we only can see a payment history, but we can’t see which transaction
 class Am_Paysystem_Paysafecard extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     protected $defaultTitle = 'paysafecard';
     protected $defaultDescription = 'prepaid payment';

@@ -35,7 +35,7 @@
  *        Web: http://www.cgi-central.net
  *    Details: Signup Page
  *    FileName $RCSfile$
- *    Release: 4.7.0 ($Revision: 4867 $)
+ *    Release: 4.7.1 ($Revision: 4867 $)
  *
  * Please direct bug reports,suggestions or feedback to the cgi-central forums.
  * http://www.cgi-central.net/forum/

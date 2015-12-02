@@ -14,7 +14,6 @@
 $.fn.resourceAccess = function(param) {
 return this.each(function(){
     var without_period = param.without_period ;
-    var varname = param.varname ? param.varname : this.id ;
     var resourceAccess = {
         mainDiv: this,
         currentEditor: null,
@@ -22,6 +21,11 @@ return this.each(function(){
         startText   : "start",
         stopText    : "expiration",
         foreverText : "forever",
+        
+        getVarName : function(){
+            return $(this.mainDiv).data('varname');
+        },
+                
         textCallback : function (id, text, cl, start, stop){
             var startText = start ? start : resourceAccess.startText;
             var stopText = (parseInt(stop) == -1 ? resourceAccess.foreverText : (stop ? stop : resourceAccess.stopText));
@@ -41,9 +45,9 @@ return this.each(function(){
                 divcont.append(document.createTextNode(" from "), astart, document.createTextNode(" to "), astop);
             }
             // Hiddens; 
-            divcont.append("<input type='hidden' class=resourceaccess-hidden name='"+varname+"["+cl+"]["+id+"][start]' value='"+start+"'>");
-            divcont.append("<input type='hidden' class=resourceaccess-hidden name='"+varname+"["+cl+"]["+id+"][stop]' value='"+stop+"'>");
-            divcont.append("<input type='hidden' class=resourceaccess-hidden name='"+varname+"["+cl+"]["+id+"][title]' value='"+encodedText+"'>");
+            divcont.append("<input type='hidden' class=resourceaccess-hidden name='"+this.getVarName()+"["+cl+"]["+id+"][start]' value='"+start+"'>");
+            divcont.append("<input type='hidden' class=resourceaccess-hidden name='"+this.getVarName()+"["+cl+"]["+id+"][stop]' value='"+stop+"'>");
+            divcont.append("<input type='hidden' class=resourceaccess-hidden name='"+this.getVarName()+"["+cl+"]["+id+"][title]' value='"+encodedText+"'>");
             
             return divcont;
         },

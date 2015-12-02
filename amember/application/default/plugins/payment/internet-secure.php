@@ -9,7 +9,7 @@
 class Am_Paysystem_InternetSecure extends Am_Paysystem_Abstract
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.1';
 
     protected $defaultTitle = 'Internet Secure';
     protected $defaultDescription = 'Credit card payment';

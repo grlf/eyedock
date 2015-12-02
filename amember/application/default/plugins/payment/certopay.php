@@ -12,7 +12,7 @@
  */
 class Am_Paysystem_Certopay extends Am_Paysystem_Abstract{
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.1';
 
     const LIVE_URL ='https://secure.certopay.com/customer/order';
     protected $defaultTitle = 'Certopay';

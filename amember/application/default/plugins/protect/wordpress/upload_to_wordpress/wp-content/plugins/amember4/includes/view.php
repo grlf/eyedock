@@ -223,9 +223,10 @@ class am4View{
     }
     function resourceAccess($id, $access=array(), $varname='access',$text=null, $without_period=false){
             if(!$text) $text = __('Choose Products and/or Product Categories that allows access', 'am4-plugin');
+            $uniqid  = uniqid('amw-');
         ?>
                 
-                <div class="resourceaccess" id="<?php echo $id;?>"><?php _e($text);?><br/>
+                <div class="resourceaccess <?php echo $uniqid;?>" id="<?php echo $id;?>" data-varname='<?php echo $varname;?>'><?php _e($text);?><br/>
                                 <input type='hidden' class='resourceaccess-init' value='<?php  if($access){$this->e(aMemberJson::init($this->addProductTitle($access))); }else{print '{}';}?>' />
                                 <select class='category' size=1>
                                     <option value='' ><?php _e('Please select an item...', 'am4-plugin');?></option>
@@ -242,8 +243,8 @@ class am4View{
                             <br />                        
                 </div>        
                 <script type="text/javascript">
-                    jQuery(document).ready(function (){
-                        jQuery('#<?php echo $id;?>').resourceAccess({varname: '<?php echo $varname;?>',without_period: <?php echo ($without_period ? 'true' : 'false'); ?>});
+                    jQuery(document).ready(function ($){
+                        jQuery('.<?php echo $uniqid;?>').resourceAccess({without_period: <?php echo ($without_period ? 'true' : 'false'); ?>});
                     });
                 </script>
                 <?php

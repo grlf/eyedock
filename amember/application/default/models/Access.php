@@ -166,13 +166,19 @@ class AccessTable extends Am_Table_WithData {
                         a.expire_date AS _expire_date, 
                         i.invoice_id          
                 FROM    
-                    (   SELECT 
+                    (SELECT
                             a.user_id, 
-                            CONCAT(user_id, '-',IF(IFNULL(p.renewal_group, '')<>'', p.renewal_group, CONCAT('-PRODUCT-', p.product_id))) AS usergroup,
-                            MAX(expire_date) AS max_expire 
+                            CONCAT(user_id, '-',IF(IFNULL(p.renewal_group, '')<>'', p.renewal_group, CONCAT('-PRODUCT-', p.product_id)))
+                                AS usergroup,
+                            GROUP_CONCAT(DISTINCT ':', p.product_id, ':')
+                                AS product_ids,
+                            MAX(expire_date)
+                                AS max_expire
                         FROM ?_access a LEFT JOIN ?_product p USING( product_id ) GROUP BY usergroup
-                     ) AS aa  
-                     LEFT JOIN ?_access a ON a.user_id = aa.user_id AND a.expire_date = aa.max_expire 
+                     ) AS aa
+                     LEFT JOIN ?_access a ON a.user_id = aa.user_id
+                        AND a.expire_date = aa.max_expire
+                        AND LOCATE(CONCAT(':', a.product_id, ':'), product_ids) > 0
                      LEFT JOIN ?_user u ON u.user_id = a.user_id 
                      LEFT JOIN ?_invoice i ON a.invoice_id = i.invoice_id 
                 WHERE  

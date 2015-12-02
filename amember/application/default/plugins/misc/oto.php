@@ -3,7 +3,7 @@
 class Am_Plugin_Oto extends Am_Plugin
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION; //dev status
-    const PLUGIN_REVISION = '4.7.0';
+    const PLUGIN_REVISION = '4.7.1';
 
     const NEED_SHOW_OTO = 'need_show_oto';
     const LAST_OTO_SHOWN = 'last_oto_shown';

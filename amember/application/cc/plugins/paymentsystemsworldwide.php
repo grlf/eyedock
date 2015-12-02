@@ -9,7 +9,7 @@ class Am_Paysystem_Paymentsystemsworldwide extends Am_Paysystem_CreditCard
 {
     const PLUGIN_STATUS = self::STATUS_BETA;
     const PLUGIN_DATE = '$Date$';
-    const PLUGIN_REVISION = '4.4.2';    
+    const PLUGIN_REVISION = '4.7.1';    
     
     const URL = 'https://secure.pswwgateway.com/api/transact.php';
     

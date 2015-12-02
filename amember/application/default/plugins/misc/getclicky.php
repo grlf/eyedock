@@ -3,7 +3,7 @@
 class Am_Plugin_Getclicky extends Am_Plugin
 {
     const PLUGIN_STATUS = self::STATUS_PRODUCTION;
-    const PLUGIN_REVISION = '4.4.2';
+    const PLUGIN_REVISION = '4.7.1';
 
     protected $id;
     protected $done = false;
